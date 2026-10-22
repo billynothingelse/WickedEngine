@@ -261,13 +261,12 @@ namespace Protean::Config
 		std::string section_id;
 		std::string comment;
 		Section* current_section = this;
-		enum class State
-		{
-			Key,
-			Value,
-			Section,
-			Comment,
-		} state = State::Key;
+		enum State {
+			State_Key,
+			State_Value,
+			State_Section,
+			State_Comment,
+		} state = State_Key;
 
 		bool flushed = false;
 		auto flush_line = [&]() {
@@ -293,7 +292,7 @@ namespace Protean::Config
 			key.clear();
 			value.clear();
 			comment.clear();
-			state = State::Key;
+			state = State_Key;
 		};
 
 		for (auto c : text)
@@ -304,16 +303,16 @@ namespace Protean::Config
 				break;
 			case ';':
 			case '#':
-				state = State::Comment;
+				state = State_Comment;
 				comment += c;
 				break;
 			case ' ':
 			case '\t':
-				if (state == State::Value && !value.empty())
+				if (state == State_Value && !value.empty())
 				{
 					value += c;
 				}
-				else if (state == State::Comment)
+				else if (state == State_Comment)
 				{
 					comment += c;
 				}
@@ -323,47 +322,47 @@ namespace Protean::Config
 				flush_line();
 				break;
 			case '=':
-				if (state == State::Key)
+				if (state == State_Key)
 				{
-					state = State::Value;
+					state = State_Value;
 				}
-				else if (state == State::Value)
+				else if (state == State_Value)
 				{
 					value += c;
 				}
-				else if (state == State::Comment)
+				else if (state == State_Comment)
 				{
 					comment += c;
 				}
 				break;
 			case '[':
-				if (state == State::Key)
+				if (state == State_Key)
 				{
-					state = State::Section;
+					state = State_Section;
 					section_label.clear();
 					section_id.clear();
 				}
-				else if (state == State::Value)
+				else if (state == State_Value)
 				{
 					value += c;
 				}
-				else if (state == State::Comment)
+				else if (state == State_Comment)
 				{
 					comment += c;
 				}
 				break;
 			case ']':
-				if (state == State::Section)
+				if (state == State_Section)
 				{
 					sections[section_id] = Section();
 					current_section = &sections[section_id];
-					state = State::Key;
+					state = State_Key;
 				}
-				else if (state == State::Value)
+				else if (state == State_Value)
 				{
 					value += c;
 				}
-				else if (state == State::Comment)
+				else if (state == State_Comment)
 				{
 					comment += c;
 				}
@@ -371,17 +370,17 @@ namespace Protean::Config
 			default:
 				switch (state)
 				{
-				case State::Key:
+				case State_Key:
 					key += c;
 					break;
-				case State::Value:
+				case State_Value:
 					value += c;
 					break;
-				case State::Section:
+				case State_Section:
 					section_label += c;
 					section_id += c;
 					break;
-				case State::Comment:
+				case State_Comment:
 					comment += c;
 					break;
 				default:

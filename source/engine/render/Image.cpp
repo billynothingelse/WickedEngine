@@ -70,17 +70,17 @@ namespace Protean::Image
 		ImageConstants image = {};
 		image.buffer_index = -1;
 		image.buffer_offset = 0;
-		image.texture_base_index = device->GetDescriptorIndex(texture, SubresourceType::SRV, params.image_subresource);
-		image.texture_mask_index = device->GetDescriptorIndex(params.maskMap, SubresourceType::SRV, params.mask_subresource);
+		image.texture_base_index = device->GetDescriptorIndex(texture, SubresourceType_SRV, params.image_subresource);
+		image.texture_mask_index = device->GetDescriptorIndex(params.maskMap, SubresourceType_SRV, params.mask_subresource);
 		if (params.isBackgroundEnabled())
 		{
 			if (params.backgroundMap != nullptr)
 			{
-				image.texture_background_index = device->GetDescriptorIndex(params.backgroundMap, SubresourceType::SRV, params.background_subresource);
+				image.texture_background_index = device->GetDescriptorIndex(params.backgroundMap, SubresourceType_SRV, params.background_subresource);
 			}
 			else
 			{
-				image.texture_background_index = device->GetDescriptorIndex(&backgroundTexture, SubresourceType::SRV);
+				image.texture_background_index = device->GetDescriptorIndex(&backgroundTexture, SubresourceType_SRV);
 			}
 		}
 		else
@@ -151,11 +151,11 @@ namespace Protean::Image
 			image.highlight_xy = Protean::Math::pack_half2(params.highlight_pos.x * canvas_aspect, params.highlight_pos.y);
 			image.highlight_color_spread = Protean::Math::pack_half4(params.highlight_color.x, params.highlight_color.y, params.highlight_color.z, params.highlight_spread);
 		}
-		if (texture != nullptr && has_flag(texture->GetDesc().misc_flags, ResourceMiscFlag::TEXTURECUBE))
+		if (texture != nullptr && has_flag(texture->GetDesc().misc_flags, ResourceMiscFlag_TEXTURECUBE))
 		{
 			image.flags |= IMAGE_FLAG_CUBEMAP_BASE;
 		}
-		if (texture != nullptr && texture->GetDesc().type == TextureDesc::Type::TEXTURE_1D)
+		if (texture != nullptr && texture->GetDesc().type == TextureDesc::Type_TEXTURE_1D)
 		{
 			image.flags |= IMAGE_FLAG_TEXTURE1D_BASE;
 		}
@@ -230,7 +230,7 @@ namespace Protean::Image
 
 				vertex_count = 2 * perimeter_count + 1;
 				GraphicsDevice::GPUAllocation mem = device->AllocateGPU(sizeof(float4) * vertex_count, cmd);
-				image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType::SRV);
+				image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType_SRV);
 				image.buffer_offset = (uint)mem.offset;
 				float4* strip = (float4*)mem.data;
 
@@ -286,7 +286,7 @@ namespace Protean::Image
 				// Non rounded image will simply use a 4 vertex triangle strip (simple quad)
 				vertex_count = 4;
 				GraphicsDevice::GPUAllocation mem = device->AllocateGPU(sizeof(float4) * vertex_count, cmd);
-				image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType::SRV);
+				image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType_SRV);
 				image.buffer_offset = (uint)mem.offset;
 				std::memcpy(mem.data, corners, sizeof(corners));
 			}
@@ -342,18 +342,18 @@ namespace Protean::Image
 		image.texMulAdd2.z += params.texMulAdd2.z;
 		image.texMulAdd2.w += params.texMulAdd2.w;
 
-		if (params.gradient != Params::Gradient::None)
+		if (params.gradient != Params::Gradient_None)
 		{
 			switch (params.gradient)
 			{
 			default:
-			case Params::Gradient::Linear:
+			case Params::Gradient_Linear:
 				image.flags |= IMAGE_FLAG_GRADIENT_LINEAR;
 				break;
-			case Params::Gradient::LinearReflected:
+			case Params::Gradient_LinearReflected:
 				image.flags |= IMAGE_FLAG_GRADIENT_LINEAR_REFLECTED;
 				break;
-			case Params::Gradient::Circular:
+			case Params::Gradient_Circular:
 				image.flags |= IMAGE_FLAG_GRADIENT_CIRCULAR;
 				break;
 			}
@@ -383,8 +383,8 @@ namespace Protean::Image
 
 	void LoadShaders()
 	{
-		Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "imageVS.cso");
-		Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "imagePS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_VS, vertexShader, "imageVS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader, "imagePS.cso");
 
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
@@ -392,7 +392,7 @@ namespace Protean::Image
 		desc.vs = &vertexShader;
 		desc.ps = &pixelShader;
 		desc.rs = &rasterizerState;
-		desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+		desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 
 		for (int j = 0; j < BLENDMODE_COUNT; ++j)
 		{
@@ -418,8 +418,8 @@ namespace Protean::Image
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		RasterizerState rs;
-		rs.fill_mode = FillMode::SOLID;
-		rs.cull_mode = CullMode::NONE;
+		rs.fill_mode = FillMode_SOLID;
+		rs.cull_mode = CullMode_NONE;
 		rs.front_counter_clockwise = false;
 		rs.depth_bias = 0;
 		rs.depth_bias_clamp = 0;
@@ -437,7 +437,7 @@ namespace Protean::Image
 			for (int d = 0; d < DEPTH_TEST_MODE_COUNT; ++d)
 			{
 				DepthStencilState dsd;
-				dsd.depth_write_mask = DepthWriteMask::ZERO;
+				dsd.depth_write_mask = DepthWriteMask_ZERO;
 
 				switch (d)
 				{
@@ -447,7 +447,7 @@ namespace Protean::Image
 					break;
 				case DEPTH_TEST_ON:
 					dsd.depth_enable = true;
-					dsd.depth_func = ComparisonFunc::GREATER_EQUAL;
+					dsd.depth_func = ComparisonFunc_GREATER_EQUAL;
 					break;
 				}
 
@@ -468,39 +468,39 @@ namespace Protean::Image
 					break;
 				}
 				dsd.stencil_write_mask = 0;
-				dsd.front_face.stencil_pass_op = StencilOp::KEEP;
-				dsd.front_face.stencil_fail_op = StencilOp::KEEP;
-				dsd.front_face.stencil_depth_fail_op = StencilOp::KEEP;
-				dsd.back_face.stencil_pass_op = StencilOp::KEEP;
-				dsd.back_face.stencil_fail_op = StencilOp::KEEP;
-				dsd.back_face.stencil_depth_fail_op = StencilOp::KEEP;
+				dsd.front_face.stencil_pass_op = StencilOp_KEEP;
+				dsd.front_face.stencil_fail_op = StencilOp_KEEP;
+				dsd.front_face.stencil_depth_fail_op = StencilOp_KEEP;
+				dsd.back_face.stencil_pass_op = StencilOp_KEEP;
+				dsd.back_face.stencil_fail_op = StencilOp_KEEP;
+				dsd.back_face.stencil_depth_fail_op = StencilOp_KEEP;
 
-				dsd.front_face.stencil_func = ComparisonFunc::EQUAL;
-				dsd.back_face.stencil_func = ComparisonFunc::EQUAL;
+				dsd.front_face.stencil_func = ComparisonFunc_EQUAL;
+				dsd.back_face.stencil_func = ComparisonFunc_EQUAL;
 				depthStencilStates[STENCILMODE_EQUAL][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::LESS;
-				dsd.back_face.stencil_func = ComparisonFunc::LESS;
+				dsd.front_face.stencil_func = ComparisonFunc_LESS;
+				dsd.back_face.stencil_func = ComparisonFunc_LESS;
 				depthStencilStates[STENCILMODE_LESS][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::LESS_EQUAL;
-				dsd.back_face.stencil_func = ComparisonFunc::LESS_EQUAL;
+				dsd.front_face.stencil_func = ComparisonFunc_LESS_EQUAL;
+				dsd.back_face.stencil_func = ComparisonFunc_LESS_EQUAL;
 				depthStencilStates[STENCILMODE_LESSEQUAL][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::GREATER;
-				dsd.back_face.stencil_func = ComparisonFunc::GREATER;
+				dsd.front_face.stencil_func = ComparisonFunc_GREATER;
+				dsd.back_face.stencil_func = ComparisonFunc_GREATER;
 				depthStencilStates[STENCILMODE_GREATER][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::GREATER_EQUAL;
-				dsd.back_face.stencil_func = ComparisonFunc::GREATER_EQUAL;
+				dsd.front_face.stencil_func = ComparisonFunc_GREATER_EQUAL;
+				dsd.back_face.stencil_func = ComparisonFunc_GREATER_EQUAL;
 				depthStencilStates[STENCILMODE_GREATEREQUAL][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::NOT_EQUAL;
-				dsd.back_face.stencil_func = ComparisonFunc::NOT_EQUAL;
+				dsd.front_face.stencil_func = ComparisonFunc_NOT_EQUAL;
+				dsd.back_face.stencil_func = ComparisonFunc_NOT_EQUAL;
 				depthStencilStates[STENCILMODE_NOT][i][d] = dsd;
 
-				dsd.front_face.stencil_func = ComparisonFunc::ALWAYS;
-				dsd.back_face.stencil_func = ComparisonFunc::ALWAYS;
+				dsd.front_face.stencil_func = ComparisonFunc_ALWAYS;
+				dsd.back_face.stencil_func = ComparisonFunc_ALWAYS;
 				depthStencilStates[STENCILMODE_ALWAYS][i][d] = dsd;
 			}
 		}
@@ -508,127 +508,127 @@ namespace Protean::Image
 
 		BlendState bd;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ALPHA] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::ONE;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_ONE;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_PREMULTIPLIED] = bd;
 
 		bd.render_target[0].blend_enable = false;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_OPAQUE] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::ONE;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ZERO;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_ONE;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ZERO;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ADDITIVE] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ZERO;
-		bd.render_target[0].dest_blend_alpha = Blend::SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ZERO;
+		bd.render_target[0].dest_blend_alpha = Blend_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_MULTIPLY] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::INV_DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ZERO;
-		bd.render_target[0].dest_blend_alpha = Blend::SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_INV_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ZERO;
+		bd.render_target[0].dest_blend_alpha = Blend_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_INVERSE] = bd;
 
 		SamplerDesc samplerDesc;
-		samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
-		samplerDesc.address_u = TextureAddressMode::MIRROR;
-		samplerDesc.address_v = TextureAddressMode::MIRROR;
-		samplerDesc.address_w = TextureAddressMode::MIRROR;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_LINEAR;
+		samplerDesc.address_u = TextureAddressMode_MIRROR;
+		samplerDesc.address_v = TextureAddressMode_MIRROR;
+		samplerDesc.address_w = TextureAddressMode_MIRROR;
 		samplerDesc.mip_lod_bias = 0.0f;
 		samplerDesc.max_anisotropy = 0;
-		samplerDesc.comparison_func = ComparisonFunc::NEVER;
-		samplerDesc.border_color = SamplerBorderColor::TRANSPARENT_BLACK;
+		samplerDesc.comparison_func = ComparisonFunc_NEVER;
+		samplerDesc.border_color = SamplerBorderColor_TRANSPARENT_BLACK;
 		samplerDesc.min_lod = 0;
 		samplerDesc.max_lod = std::numeric_limits<float>::max();
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_LINEAR_MIRROR]);
 
-		samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
-		samplerDesc.address_u = TextureAddressMode::CLAMP;
-		samplerDesc.address_v = TextureAddressMode::CLAMP;
-		samplerDesc.address_w = TextureAddressMode::CLAMP;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_LINEAR;
+		samplerDesc.address_u = TextureAddressMode_CLAMP;
+		samplerDesc.address_v = TextureAddressMode_CLAMP;
+		samplerDesc.address_w = TextureAddressMode_CLAMP;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_LINEAR_CLAMP]);
 
-		samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
-		samplerDesc.address_u = TextureAddressMode::WRAP;
-		samplerDesc.address_v = TextureAddressMode::WRAP;
-		samplerDesc.address_w = TextureAddressMode::WRAP;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_LINEAR;
+		samplerDesc.address_u = TextureAddressMode_WRAP;
+		samplerDesc.address_v = TextureAddressMode_WRAP;
+		samplerDesc.address_w = TextureAddressMode_WRAP;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_LINEAR_WRAP]);
 
-		samplerDesc.filter = Filter::MIN_MAG_MIP_POINT;
-		samplerDesc.address_u = TextureAddressMode::MIRROR;
-		samplerDesc.address_v = TextureAddressMode::MIRROR;
-		samplerDesc.address_w = TextureAddressMode::MIRROR;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_POINT;
+		samplerDesc.address_u = TextureAddressMode_MIRROR;
+		samplerDesc.address_v = TextureAddressMode_MIRROR;
+		samplerDesc.address_w = TextureAddressMode_MIRROR;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_POINT_MIRROR]);
 
-		samplerDesc.filter = Filter::MIN_MAG_MIP_POINT;
-		samplerDesc.address_u = TextureAddressMode::WRAP;
-		samplerDesc.address_v = TextureAddressMode::WRAP;
-		samplerDesc.address_w = TextureAddressMode::WRAP;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_POINT;
+		samplerDesc.address_u = TextureAddressMode_WRAP;
+		samplerDesc.address_v = TextureAddressMode_WRAP;
+		samplerDesc.address_w = TextureAddressMode_WRAP;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_POINT_WRAP]);
 
 
-		samplerDesc.filter = Filter::MIN_MAG_MIP_POINT;
-		samplerDesc.address_u = TextureAddressMode::CLAMP;
-		samplerDesc.address_v = TextureAddressMode::CLAMP;
-		samplerDesc.address_w = TextureAddressMode::CLAMP;
+		samplerDesc.filter = Filter_MIN_MAG_MIP_POINT;
+		samplerDesc.address_u = TextureAddressMode_CLAMP;
+		samplerDesc.address_v = TextureAddressMode_CLAMP;
+		samplerDesc.address_w = TextureAddressMode_CLAMP;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_POINT_CLAMP]);
 
-		samplerDesc.filter = Filter::ANISOTROPIC;
-		samplerDesc.address_u = TextureAddressMode::CLAMP;
-		samplerDesc.address_v = TextureAddressMode::CLAMP;
-		samplerDesc.address_w = TextureAddressMode::CLAMP;
+		samplerDesc.filter = Filter_ANISOTROPIC;
+		samplerDesc.address_u = TextureAddressMode_CLAMP;
+		samplerDesc.address_v = TextureAddressMode_CLAMP;
+		samplerDesc.address_w = TextureAddressMode_CLAMP;
 		samplerDesc.max_anisotropy = 16;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_ANISO_CLAMP]);
 
-		samplerDesc.filter = Filter::ANISOTROPIC;
-		samplerDesc.address_u = TextureAddressMode::WRAP;
-		samplerDesc.address_v = TextureAddressMode::WRAP;
-		samplerDesc.address_w = TextureAddressMode::WRAP;
+		samplerDesc.filter = Filter_ANISOTROPIC;
+		samplerDesc.address_u = TextureAddressMode_WRAP;
+		samplerDesc.address_v = TextureAddressMode_WRAP;
+		samplerDesc.address_w = TextureAddressMode_WRAP;
 		samplerDesc.max_anisotropy = 16;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_ANISO_WRAP]);
 
-		samplerDesc.filter = Filter::ANISOTROPIC;
-		samplerDesc.address_u = TextureAddressMode::MIRROR;
-		samplerDesc.address_v = TextureAddressMode::MIRROR;
-		samplerDesc.address_w = TextureAddressMode::MIRROR;
+		samplerDesc.filter = Filter_ANISOTROPIC;
+		samplerDesc.address_u = TextureAddressMode_MIRROR;
+		samplerDesc.address_v = TextureAddressMode_MIRROR;
+		samplerDesc.address_w = TextureAddressMode_MIRROR;
 		samplerDesc.max_anisotropy = 16;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_ANISO_MIRROR]);
 

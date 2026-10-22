@@ -24,17 +24,16 @@ namespace Protean
 	public:
 		Protean::Resource backgroundTexture;
 
-		enum class BackgroundMode
-		{
-			Fill,	// fill the whole screen, will cut off parts of the image if aspects don't match
-			Fit,	// fit the image completely inside the screen, will result in black bars on screen if aspects don't match
-			Stretch	// fill the whole screen, and stretch the image if needed
-		} background_mode = BackgroundMode::Fill;
+		enum BackgroundMode {
+			BackgroundMode_Fill,	// fill the whole screen, will cut off parts of the image if aspects don't match
+			BackgroundMode_Fit,	// fit the image completely inside the screen, will result in black bars on screen if aspects don't match
+			BackgroundMode_Stretch	// fill the whole screen, and stretch the image if needed
+		} background_mode = BackgroundMode_Fill;
 
 		//Add a loading task which should be executed
 		void addLoadingFunction(const std::function<void(Protean::JobSystem::JobArgs)>& loadingFunction);
 		//Helper for loading a whole renderable component
-		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, Protean::Color fadeColor = Protean::Color(0, 0, 0, 255), Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType::FadeToColor);
+		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, Protean::Color fadeColor = Protean::Color(0, 0, 0, 255), Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType_FadeToColor);
 		//Set a function that should be called when the loading finishes
 		void onFinished(const std::function<void()>& finishFunction);
 		//See if the loading is currently running

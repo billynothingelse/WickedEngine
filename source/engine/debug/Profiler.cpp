@@ -82,13 +82,13 @@ namespace Protean::Profiler
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			GPUQueryHeapDesc desc;
-			desc.type = GpuQueryType::TIMESTAMP;
+			desc.type = GpuQueryType_TIMESTAMP;
 			desc.query_count = 1024;
 			bool success = device->CreateQueryHeap(&desc, &queryHeap);
 			assert(success);
 
 			GPUBufferDesc bd;
-			bd.usage = Usage::READBACK;
+			bd.usage = Usage_READBACK;
 			bd.size = desc.query_count * sizeof(uint64_t);
 
 			for (int i = 0; i < arraysize(queryResultBuffer); ++i)
@@ -303,10 +303,10 @@ namespace Protean::Profiler
 		desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 		desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_WIRE_SMOOTH);
 		desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-		desc.pt = PrimitiveTopology::LINESTRIP;
+		desc.pt = PrimitiveTopology_LINESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pso_linestrip);
 
-		desc.pt = PrimitiveTopology::LINELIST;
+		desc.pt = PrimitiveTopology_LINELIST;
 		success = device->CreatePipelineState(&desc, &pso_linelist);
 		assert(success);
 	}
@@ -403,7 +403,7 @@ namespace Protean::Profiler
 		fx.siz.y = (float)Protean::Font::TextHeight(ss.str(), params) + (graph_size.y + graph_padding_y) * 2 + 20;
 		fx.color = background_color;
 
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			params.enableLinearOutputMapping(9);
 			fx.enableLinearOutputMapping(9);

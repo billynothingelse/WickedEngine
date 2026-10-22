@@ -5,23 +5,23 @@ using namespace Protean::Graphics;
 using namespace Protean;
 static const std::string languages_directory = Protean::Helper::GetCurrentPath() + "/languages/";
 
-enum class Theme : uint64_t
+enum Theme : uint64_t
 {
-	Dark,
-	Bright,
-	Soft,
-	Hacking,
-	Nord,
+	Theme_Dark,
+	Theme_Bright,
+	Theme_Soft,
+	Theme_Hacking,
+	Theme_Nord,
 
-	User = ~0ull - 1,
-	Custom = ~0ull
+	Theme_User = ~0ull - 1,
+	Theme_Custom = ~0ull
 };
 
 void GeneralWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create("General", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("General", Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_RESIZE_RIGHT);
 	SetText("General Options " ICON_GENERALOPTIONS);
 
 	XMFLOAT2 size = XMFLOAT2(300, 740);
@@ -297,8 +297,8 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	otherinfoCheckBox.SetCheck(editor->main->infoDisplay.heap_allocation_counter);
 
 	saveModeComboBox.Create("Save Mode: ");
-	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)Protean::ResourceManager::Mode::EMBED_FILE_DATA);
-	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)Protean::ResourceManager::Mode::NO_EMBEDDING);
+	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)Protean::ResourceManager::Mode_EMBED_FILE_DATA);
+	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)Protean::ResourceManager::Mode_NO_EMBEDDING);
 	saveModeComboBox.SetTooltip("Choose whether to embed resources (textures, sounds...) in the scene file when saving, or keep them as separate files.\nThe Dump to header (" ICON_SAVE_HEADER ") option will use embedding and create a C++ header file with byte data of the scene to be used with Protean::Archive serialization.");
 	saveModeComboBox.SetColor(Protean::Color(50, 180, 100, 180), Protean::Gui::IDLE);
 	saveModeComboBox.SetColor(Protean::Color(50, 220, 140, 255), Protean::Gui::FOCUS);
@@ -456,7 +456,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	AddWidget(&wireFrameComboBox);
 
 	languageCombo.Create("Language: ");
-	languageCombo.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Text | Protean::Gui::LocalizationEnabled::Tooltip);
+	languageCombo.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Text | Protean::Gui::LocalizationEnabled_Tooltip);
 	languageCombo.SetTooltip("Select a language. \nYou can also create a new language option by adding an XML file to the languages folder.\nThere is a button below that you can use to create a language template.");
 	languageCombo.AddItem("English");
 	languageCombo.SetColor(Protean::Color(50, 180, 100, 180), Protean::Gui::IDLE);
@@ -478,7 +478,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			Protean::Backlog::post("Couldn't import localization file: " + filename, Protean::Backlog::LogLevel::Warning);
+			Protean::Backlog::post("Couldn't import localization file: " + filename, Protean::Backlog::LogLevel_Warning);
 		}
 	});
 	AddWidget(&languageCombo);
@@ -524,12 +524,12 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		{
 		default:
 			break;
-		case Theme::Dark:
+		case Theme_Dark:
 			editor->main->config.GetSection("options").Set("theme", "Dark");
 			editor->themeEditorWnd.imageResource = {};
 			theme_color_wave = Protean::Color(99, 155, 220, 103);
 			break;
-		case Theme::Bright:
+		case Theme_Bright:
 			editor->main->config.GetSection("options").Set("theme", "Bright");
 			theme_color_idle = Protean::Color(200, 210, 220, 230);
 			theme_color_focus = Protean::Color(210, 230, 255, 250);
@@ -541,7 +541,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			theme_color_wave.w = 0.4f;
 			editor->themeEditorWnd.imageResource = {};
 			break;
-		case Theme::Soft:
+		case Theme_Soft:
 			editor->main->config.GetSection("options").Set("theme", "Soft");
 			theme_color_idle = Protean::Color(200, 180, 190, 190);
 			theme_color_focus = Protean::Color(240, 190, 200, 230);
@@ -553,7 +553,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			theme_color_wave.w = 0.4f;
 			editor->themeEditorWnd.imageResource = {};
 			break;
-		case Theme::Hacking:
+		case Theme_Hacking:
 			editor->main->config.GetSection("options").Set("theme", "Hacking");
 			theme_color_idle = Protean::Color(0, 38, 0, 255);
 			theme_color_focus = Protean::Color(0, 160, 60, 255);
@@ -566,7 +566,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			theme_color_wave.w = 0.4f;
 			editor->themeEditorWnd.imageResource = {};
 			break;
-		case Theme::Nord:
+		case Theme_Nord:
 			editor->main->config.GetSection("options").Set("theme", "Nord");
 			theme_color_idle = Protean::Color(46, 52, 64, 255);
 			theme_color_focus = Protean::Color(59, 66, 82, 255);
@@ -577,7 +577,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			theme_color_wave = Protean::Color(58, 75, 93, 153);
 			editor->themeEditorWnd.imageResource = {};
 			break;
-		case Theme::User:
+		case Theme_User:
 			{
 				editor->main->config.GetSection("options").Set("theme", currentTheme);
 				Protean::Archive archive(Protean::Helper::GetCurrentPath() + "/themes/" + currentTheme + ".witheme");
@@ -626,13 +626,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					}
 					else
 					{
-						editor->themeEditorWnd.imageResource = Protean::ResourceManager::Load(Protean::Helper::GetCurrentPath() + "/themes/" + imageresourcename, Protean::ResourceManager::Flags::IMPORT_RETAIN_FILEDATA, imagedata.data(), imagedata.size());
+						editor->themeEditorWnd.imageResource = Protean::ResourceManager::Load(Protean::Helper::GetCurrentPath() + "/themes/" + imageresourcename, Protean::ResourceManager::Flags_IMPORT_RETAIN_FILEDATA, imagedata.data(), imagedata.size());
 						editor->themeEditorWnd.imageResourceName = imageresourcename;
 					}
 				}
 			}
 			break;
-		case Theme::Custom:
+		case Theme_Custom:
 			theme_color_idle = editor->themeEditorWnd.idleColor;
 			theme_color_focus = editor->themeEditorWnd.focusColor;
 			theme_color_background = editor->themeEditorWnd.backgroundColor;
@@ -1303,7 +1303,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->componentsWnd.newComponentCombo.SetShadowRadius(0);
 		}
 
-		Protean::Image::Params::Gradient gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient::None : Protean::Image::Params::Gradient::Linear;
+		Protean::Image::Params::Gradient gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient_None : Protean::Image::Params::Gradient_Linear;
 		XMFLOAT2 gradient_start = XMFLOAT2(0, 0);
 		XMFLOAT2 gradient_end = XMFLOAT2(0, 0.32f);
 		for (int i = 0; i < /*arraysize(Protean::Gui::Widget::sprites)*/1; ++i)
@@ -1369,7 +1369,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->exitButton.sprites[i].params.gradient_uv_end = gradient_end;
 		}
 
-		gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient::None : Protean::Image::Params::Gradient::Circular;
+		gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient_None : Protean::Image::Params::Gradient_Circular;
 		gradient_start = XMFLOAT2(0.9f, 0.1f);
 		gradient_end = XMFLOAT2(0.42f, 0.1f);
 		for (int i = 0; i < /*arraysize(Protean::Gui::Widget::sprites)*/1; ++i)
@@ -1436,7 +1436,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			{
 				if (x.GetGPUResource() == nullptr)
 					continue;
-				if (has_flag(x.resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag::SPARSE))
+				if (has_flag(x.resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag_SPARSE))
 					continue;
 				if (Protean::Helper::GetExtensionFromFileName(x.name).compare("DDS"))
 				{
@@ -1451,7 +1451,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			Protean::vector<uint8_t> filedata;
 			if (Protean::Helper::saveTextureToMemoryFile(x.second.GetTexture(), "DDS", filedata))
 			{
-				x.second = Protean::ResourceManager::Load(x.first, Protean::ResourceManager::Flags::NONE, filedata.data(), filedata.size());
+				x.second = Protean::ResourceManager::Load(x.first, Protean::ResourceManager::Flags_NONE, filedata.data(), filedata.size());
 				x.second.SetFileData(std::move(filedata));
 			}
 		}
@@ -1507,11 +1507,11 @@ void GeneralWindow::ReloadThemes()
 		currentTheme = "Dark";
 
 	themeCombo.ClearItems();
-	themeCombo.AddItem("Dark " ICON_DARK, (uint64_t)Theme::Dark);
-	themeCombo.AddItem("Bright " ICON_BRIGHT, (uint64_t)Theme::Bright);
-	themeCombo.AddItem("Soft " ICON_SOFT, (uint64_t)Theme::Soft);
-	themeCombo.AddItem("Hacking " ICON_HACKING, (uint64_t)Theme::Hacking);
-	themeCombo.AddItem("Nord " ICON_NORD, (uint64_t)Theme::Nord);
+	themeCombo.AddItem("Dark " ICON_DARK, (uint64_t)Theme_Dark);
+	themeCombo.AddItem("Bright " ICON_BRIGHT, (uint64_t)Theme_Bright);
+	themeCombo.AddItem("Soft " ICON_SOFT, (uint64_t)Theme_Soft);
+	themeCombo.AddItem("Hacking " ICON_HACKING, (uint64_t)Theme_Hacking);
+	themeCombo.AddItem("Nord " ICON_NORD, (uint64_t)Theme_Nord);
 
 	Protean::vector<std::string> custom_themes;
 	Protean::Helper::GetFileNamesInDirectory(Protean::Helper::GetCurrentPath() + "/themes/", [&](std::string filename) {
@@ -1520,28 +1520,28 @@ void GeneralWindow::ReloadThemes()
 	std::sort(custom_themes.begin(), custom_themes.end(), std::less());
 	for (auto& x : custom_themes)
 	{
-		themeCombo.AddItem(x, (uint64_t)Theme::User);
+		themeCombo.AddItem(x, (uint64_t)Theme_User);
 	}
 
 	if (currentTheme == "Dark")
 	{
-		themeCombo.SetSelectedByUserdata((uint64_t)Theme::Dark);
+		themeCombo.SetSelectedByUserdata((uint64_t)Theme_Dark);
 	}
 	else if (currentTheme == "Bright")
 	{
-		themeCombo.SetSelectedByUserdata((uint64_t)Theme::Bright);
+		themeCombo.SetSelectedByUserdata((uint64_t)Theme_Bright);
 	}
 	else if (currentTheme == "Soft")
 	{
-		themeCombo.SetSelectedByUserdata((uint64_t)Theme::Soft);
+		themeCombo.SetSelectedByUserdata((uint64_t)Theme_Soft);
 	}
 	else if (currentTheme == "Hacking")
 	{
-		themeCombo.SetSelectedByUserdata((uint64_t)Theme::Hacking);
+		themeCombo.SetSelectedByUserdata((uint64_t)Theme_Hacking);
 	}
 	else if (currentTheme == "Nord")
 	{
-		themeCombo.SetSelectedByUserdata((uint64_t)Theme::Nord);
+		themeCombo.SetSelectedByUserdata((uint64_t)Theme_Nord);
 	}
 	else
 	{
@@ -1556,7 +1556,7 @@ void GeneralWindow::ReloadThemes()
 	}
 
 	// add after!
-	themeCombo.AddItem("Custom " ICON_THEME_EDITOR, (uint64_t)Theme::Custom);
+	themeCombo.AddItem("Custom " ICON_THEME_EDITOR, (uint64_t)Theme_Custom);
 }
 
 void GeneralWindow::ResizeLayout()

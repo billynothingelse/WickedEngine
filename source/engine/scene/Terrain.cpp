@@ -248,10 +248,10 @@ namespace Protean::Terrain
 			td.width = granularity;
 			td.height = granularity;
 
-			td.format = Format::R8G8B8A8_UINT;
-			td.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			td.usage = Usage::DEFAULT;
-			td.layout = ResourceState::UNORDERED_ACCESS;
+			td.format = Format_R8G8B8A8_UINT;
+			td.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			td.usage = Usage_DEFAULT;
+			td.layout = ResourceState_UNORDERED_ACCESS;
 			td.mip_levels = lod_count;
 			Protean::vector<uint32_t> default_data(td.width * td.height, 0xff);
 			Protean::vector<SubresourceData> initdata(lod_count);
@@ -266,14 +266,14 @@ namespace Protean::Terrain
 
 			for (uint32_t i = 0; i < lod_count; ++i)
 			{
-				int subresource_index = device->CreateSubresource(&residencyMap, SubresourceType::UAV, 0, 1, i, 1);
+				int subresource_index = device->CreateSubresource(&residencyMap, SubresourceType_UAV, 0, 1, i, 1);
 				assert(subresource_index == i);
 			}
 
-			td.format = Format::R32_UINT; // shader atomic support needed
-			td.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-			td.usage = Usage::DEFAULT;
-			td.layout = ResourceState::UNORDERED_ACCESS;
+			td.format = Format_R32_UINT; // shader atomic support needed
+			td.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+			td.usage = Usage_DEFAULT;
+			td.layout = ResourceState_UNORDERED_ACCESS;
 			td.mip_levels = 1;
 			success = device->CreateTexture(&td, initdata.data(), &feedbackMap);
 			assert(success);
@@ -281,9 +281,9 @@ namespace Protean::Terrain
 
 			{
 				GPUBufferDesc bd;
-				bd.misc_flags = ResourceMiscFlag::BUFFER_RAW;
-				bd.usage = Usage::DEFAULT;
-				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
+				bd.misc_flags = ResourceMiscFlag_BUFFER_RAW;
+				bd.usage = Usage_DEFAULT;
+				bd.bind_flags = BindFlag_UNORDERED_ACCESS;
 				bd.size = sizeof(uint32_t) * tile_count;
 				success = device->CreateBufferClearedWithType(&bd, 0x000000FFu, &requestBuffer);
 				assert(success);
@@ -291,9 +291,9 @@ namespace Protean::Terrain
 			}
 			{
 				GPUBufferDesc bd;
-				bd.misc_flags = ResourceMiscFlag::BUFFER_RAW;
-				bd.usage = Usage::DEFAULT;
-				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
+				bd.misc_flags = ResourceMiscFlag_BUFFER_RAW;
+				bd.usage = Usage_DEFAULT;
+				bd.bind_flags = BindFlag_UNORDERED_ACCESS;
 				bd.size = sizeof(uint32_t) * (tile_count + 1); // +1: atomic global counter
 				Protean::vector<uint32_t> data(tile_count + 1);
 				success = device->CreateBuffer(&bd, data.data(), &allocationBuffer);
@@ -301,8 +301,8 @@ namespace Protean::Terrain
 				device->SetName(&allocationBuffer, "VirtualTexture::allocationBuffer");
 
 				bd.misc_flags = {};
-				bd.bind_flags = BindFlag::NONE;
-				bd.usage = Usage::READBACK;
+				bd.bind_flags = BindFlag_NONE;
+				bd.usage = Usage_READBACK;
 				for (int i = 0; i < arraysize(allocationBuffer_CPU_readback); ++i)
 				{
 					success = device->CreateBuffer(&bd, nullptr, &allocationBuffer_CPU_readback[i]);
@@ -312,16 +312,16 @@ namespace Protean::Terrain
 			}
 			{
 				GPUBufferDesc bd;
-				bd.format = Format::R16_UINT;
-				bd.usage = Usage::DEFAULT;
-				bd.bind_flags = BindFlag::SHADER_RESOURCE;
+				bd.format = Format_R16_UINT;
+				bd.usage = Usage_DEFAULT;
+				bd.bind_flags = BindFlag_SHADER_RESOURCE;
 				bd.size = GetFormatStride(bd.format) * tile_count;
 				success = device->CreateBuffer(&bd, nullptr, &pageBuffer);
 				assert(success);
 				device->SetName(&pageBuffer, "VirtualTexture::pageBuffer");
 
 				bd.misc_flags = {};
-				bd.usage = Usage::UPLOAD;
+				bd.usage = Usage_UPLOAD;
 				bd.bind_flags = {};
 				for (int i = 0; i < arraysize(pageBuffer_CPU_upload); ++i)
 				{
@@ -926,10 +926,10 @@ namespace Protean::Terrain
 		if (chunk_buffer.desc.size < required_chunk_buffer_size)
 		{
 			GPUBufferDesc desc;
-			desc.usage = Usage::DEFAULT;
+			desc.usage = Usage_DEFAULT;
 			desc.size = required_chunk_buffer_size;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			desc.stride = sizeof(ShaderTerrainChunk);
 			bool success = device->CreateBuffer(&desc, nullptr, &chunk_buffer);
 			assert(success);
@@ -938,7 +938,7 @@ namespace Protean::Terrain
 
 		// Start the generation on a background thread and keep it running until the next frame
 		generator->cancelled.store(false);
-		generator->workload.priority = Protean::JobSystem::Priority::Low;
+		generator->workload.priority = Protean::JobSystem::Priority_Low;
 		size_t terrain_spline_count_scene = 0; // Count the current terrain modifier splines in scene
 		for (size_t i = 0; i < scene->splines.GetCount(); ++i)
 		{
@@ -1099,7 +1099,7 @@ namespace Protean::Terrain
 
 					// Do a parallel for loop over all the chunk's vertices and compute their properties:
 					Protean::JobSystem::context ctx;
-					ctx.priority = Protean::JobSystem::Priority::Low;
+					ctx.priority = Protean::JobSystem::Priority_Low;
 
 					// Preload height grid with padding, because neighbors will need to be accessed to determine slopes:
 					constexpr int chunk_width_padded = chunk_width + 1;
@@ -1420,8 +1420,8 @@ namespace Protean::Terrain
 											archive,
 											seri,
 											INVALID_ENTITY,
-											Protean::Scene::EntitySerializeFlags::RECURSIVE |
-											Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+											Protean::Scene::EntitySerializeFlags_RECURSIVE |
+											Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 										);
 										NameComponent* name = generator->scene.names.GetComponent(entity);
 										if (name != nullptr)
@@ -1467,13 +1467,13 @@ namespace Protean::Terrain
 			//  capacity, so after the first run it never reallocates.
 			const uint32_t batch_capacity = std::max(
 				1u,
-				Protean::JobSystem::GetThreadCount(Protean::JobSystem::Priority::Low)
+				Protean::JobSystem::GetThreadCount(Protean::JobSystem::Priority_Low)
 			);
 			generator->build_batch.clear();
 			generator->build_batch.reserve(batch_capacity);
 
 			Protean::JobSystem::context build_ctx;
-			build_ctx.priority = Protean::JobSystem::Priority::Low;
+			build_ctx.priority = Protean::JobSystem::Priority_Low;
 
 			// Set up and build every chunk queued in the batch, then clear it.
 			// Returns false if the per-frame time budget was exceeded (the
@@ -1672,8 +1672,8 @@ namespace Protean::Terrain
 			TextureDesc desc;
 			desc.width = (uint32_t)chunk_width;
 			desc.height = (uint32_t)chunk_width;
-			desc.format = Format::R16_UNORM;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.format = Format_R16_UNORM;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 			SubresourceData data;
 			data.data_ptr = chunk_data.heightmap_data.data();
@@ -1691,8 +1691,8 @@ namespace Protean::Terrain
 			desc.width = (uint32_t)chunk_width;
 			desc.height = (uint32_t)chunk_width;
 			desc.array_size = required_layers;
-			desc.format = Format::R8_UNORM;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.format = Format_R8_UNORM;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 			Protean::vector<SubresourceData> data(required_layers);
 			for (size_t i = 0; i < chunk_data.blendmap_layers.size(); ++i)
@@ -1716,7 +1716,7 @@ namespace Protean::Terrain
 	void Terrain::UpdateVirtualTexturesCPU()
 	{
 		Protean::JobSystem::Wait(virtual_texture_ctx);
-		virtual_texture_ctx.priority = Protean::JobSystem::Priority::Low;
+		virtual_texture_ctx.priority = Protean::JobSystem::Priority_Low;
 
 		GraphicsDevice* device = GetDevice();
 		virtual_textures_in_use.clear();
@@ -1724,14 +1724,14 @@ namespace Protean::Terrain
 		if (!sampler.IsValid())
 		{
 			SamplerDesc samplerDesc;
-			samplerDesc.filter = Filter::ANISOTROPIC;
+			samplerDesc.filter = Filter_ANISOTROPIC;
 			samplerDesc.max_anisotropy = 4;
 			// Note: using wrap mode by intention!
 			//	Terrain itself doesn't need wrap mode, but decals will reuse the base material's sampler
 			//	and decals can use wrapped textures (texmuladd)
-			samplerDesc.address_u = TextureAddressMode::WRAP;
-			samplerDesc.address_v = TextureAddressMode::WRAP;
-			samplerDesc.address_w = TextureAddressMode::WRAP;
+			samplerDesc.address_u = TextureAddressMode_WRAP;
+			samplerDesc.address_v = TextureAddressMode_WRAP;
+			samplerDesc.address_w = TextureAddressMode_WRAP;
 			bool success = device->CreateSampler(&samplerDesc, &sampler);
 			assert(success);
 		}
@@ -1761,37 +1761,37 @@ namespace Protean::Terrain
 					desc.width = atlas_physical_width;
 					desc.height = atlas_physical_height;
 #ifndef NOSPARSE
-					desc.misc_flags = ResourceMiscFlag::SPARSE;
+					desc.misc_flags = ResourceMiscFlag_SPARSE;
 #endif // NOSPARSE
-					desc.bind_flags = BindFlag::SHADER_RESOURCE;
+					desc.bind_flags = BindFlag_SHADER_RESOURCE;
 					desc.mip_levels = 1;
-					desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+					desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 
 					TextureDesc desc_raw_block = desc;
 					desc_raw_block.width /= 4;
 					desc_raw_block.height /= 4;
-					desc_raw_block.bind_flags = BindFlag::UNORDERED_ACCESS;
-					desc_raw_block.layout = ResourceState::UNORDERED_ACCESS;
+					desc_raw_block.bind_flags = BindFlag_UNORDERED_ACCESS;
+					desc_raw_block.layout = ResourceState_UNORDERED_ACCESS;
 
 					switch (map_type)
 					{
 					default:
 					case MaterialComponent::BASECOLORMAP:
 					case MaterialComponent::EMISSIVEMAP:
-						desc.format = Format::BC1_UNORM_SRGB;
-						desc_raw_block.format = Format::R32G32_UINT;
+						desc.format = Format_BC1_UNORM_SRGB;
+						desc_raw_block.format = Format_R32G32_UINT;
 						break;
 					case MaterialComponent::NORMALMAP:
-						desc.format = Format::BC5_UNORM;
-						desc_raw_block.format = Format::R32G32B32A32_UINT;
-						desc.swizzle.r = ComponentSwizzle::R;
-						desc.swizzle.g = ComponentSwizzle::G;
-						desc.swizzle.b = ComponentSwizzle::ONE;
-						desc.swizzle.a = ComponentSwizzle::ONE;
+						desc.format = Format_BC5_UNORM;
+						desc_raw_block.format = Format_R32G32B32A32_UINT;
+						desc.swizzle.r = ComponentSwizzle_R;
+						desc.swizzle.g = ComponentSwizzle_G;
+						desc.swizzle.b = ComponentSwizzle_ONE;
+						desc.swizzle.a = ComponentSwizzle_ONE;
 						break;
 					case MaterialComponent::SURFACEMAP:
-						desc.format = Format::BC3_UNORM;
-						desc_raw_block.format = Format::R32G32B32A32_UINT;
+						desc.format = Format_BC3_UNORM;
+						desc_raw_block.format = Format_R32G32B32A32_UINT;
 						break;
 					}
 
@@ -1813,13 +1813,13 @@ namespace Protean::Terrain
 
 					for (uint32_t i = 0; i < atlas.maps[map_type].texture_raw_block.desc.mip_levels; ++i)
 					{
-						int subresource_index = device->CreateSubresource(&atlas.maps[map_type].texture_raw_block, SubresourceType::UAV, 0, 1, i, 1);
+						int subresource_index = device->CreateSubresource(&atlas.maps[map_type].texture_raw_block, SubresourceType_UAV, 0, 1, i, 1);
 						assert(subresource_index == i);
 					}
 				}
 
 #ifndef NOSPARSE
-				tile_pool_desc.misc_flags = ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS;
+				tile_pool_desc.misc_flags = ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS;
 				bool success = device->CreateBuffer(&tile_pool_desc, nullptr, &atlas.tile_pool);
 				assert(success);
 #endif // NOSPARSE
@@ -1892,11 +1892,11 @@ namespace Protean::Terrain
 					{
 						material->texMulAdd = XMFLOAT4(1, 1, 0, 0);
 						material->textures[map_type].virtual_anisotropy = sampler.desc.max_anisotropy;
-						material->textures[map_type].sparse_residencymap_descriptor = device->GetDescriptorIndex(&vt.residency->residencyMap, SubresourceType::SRV);
+						material->textures[map_type].sparse_residencymap_descriptor = device->GetDescriptorIndex(&vt.residency->residencyMap, SubresourceType_SRV);
 						if (map_type == 0)
 						{
 							// Only first texture slot will write feedback
-							material->textures[map_type].sparse_feedbackmap_descriptor = device->GetDescriptorIndex(&vt.residency->feedbackMap, SubresourceType::UAV);
+							material->textures[map_type].sparse_feedbackmap_descriptor = device->GetDescriptorIndex(&vt.residency->feedbackMap, SubresourceType_UAV);
 						}
 						else
 						{
@@ -2093,12 +2093,12 @@ namespace Protean::Terrain
 			cb.lodCount = vt->lod_count;
 			cb.width = vt->residency->residencyMap.desc.width;
 			cb.height = vt->residency->residencyMap.desc.height;
-			cb.pageBufferRO = device->GetDescriptorIndex(&vt->residency->pageBuffer, SubresourceType::SRV);
+			cb.pageBufferRO = device->GetDescriptorIndex(&vt->residency->pageBuffer, SubresourceType_SRV);
 			for (uint mip = 0; mip < arraysize(cb.residencyTextureRW_mips); ++mip)
 			{
 				if (mip < vt->lod_count)
 				{
-					cb.residencyTextureRW_mips[mip].x = device->GetDescriptorIndex(&vt->residency->residencyMap, SubresourceType::UAV, mip);
+					cb.residencyTextureRW_mips[mip].x = device->GetDescriptorIndex(&vt->residency->residencyMap, SubresourceType_UAV, mip);
 				}
 				else
 				{
@@ -2130,19 +2130,19 @@ namespace Protean::Terrain
 				{
 				case MaterialComponent::BASECOLORMAP:
 					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_BASECOLORMAP), cmd);
-					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::BASECOLORMAP].texture_raw_block, SubresourceType::UAV);
+					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::BASECOLORMAP].texture_raw_block, SubresourceType_UAV);
 					break;
 				case MaterialComponent::NORMALMAP:
 					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_NORMALMAP), cmd);
-					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::NORMALMAP].texture_raw_block, SubresourceType::UAV);
+					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::NORMALMAP].texture_raw_block, SubresourceType_UAV);
 					break;
 				case MaterialComponent::SURFACEMAP:
 					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_SURFACEMAP), cmd);
-					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::SURFACEMAP].texture_raw_block, SubresourceType::UAV);
+					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::SURFACEMAP].texture_raw_block, SubresourceType_UAV);
 					break;
 				case MaterialComponent::EMISSIVEMAP:
 					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_EMISSIVEMAP), cmd);
-					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::EMISSIVEMAP].texture_raw_block, SubresourceType::UAV);
+					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::EMISSIVEMAP].texture_raw_block, SubresourceType_UAV);
 					break;
 				default:
 					assert(0);
@@ -2151,7 +2151,7 @@ namespace Protean::Terrain
 				if (push.output_texture < 0)
 					continue;
 
-				push.blendmap_texture = device->GetDescriptorIndex(&vt->blendmap, SubresourceType::SRV);
+				push.blendmap_texture = device->GetDescriptorIndex(&vt->blendmap, SubresourceType_SRV);
 				push.blendmap_layers = vt->blendmap.desc.array_size;
 				if (push.blendmap_texture < 0)
 					continue;
@@ -2172,7 +2172,7 @@ namespace Protean::Terrain
 					std::memcpy((uint*)mem.data + i, &material_index, sizeof(uint)); // force memcpy to avoid uncached read from GPU pointer!
 				}
 
-				push.blendmap_buffer = device->GetDescriptorIndex(&mem.buffer, SubresourceType::SRV);
+				push.blendmap_buffer = device->GetDescriptorIndex(&mem.buffer, SubresourceType_SRV);
 				if (push.blendmap_buffer < 0)
 					continue;
 				push.blendmap_buffer_offset = (uint)mem.offset;
@@ -2256,8 +2256,8 @@ namespace Protean::Terrain
 		{
 			if (!map.texture.IsValid())
 				continue;
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::SHADER_RESOURCE, ResourceState::COPY_DST));
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::UNORDERED_ACCESS, ResourceState::COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState_SHADER_RESOURCE, ResourceState_COPY_DST));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState_UNORDERED_ACCESS, ResourceState_COPY_SRC));
 		}
 		Protean::Renderer::FlushBarriers(cmd);
 
@@ -2271,8 +2271,8 @@ namespace Protean::Terrain
 		{
 			if (!map.texture.IsValid())
 				continue;
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::COPY_DST, ResourceState::SHADER_RESOURCE));
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::COPY_SRC, ResourceState::UNORDERED_ACCESS));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState_COPY_DST, ResourceState_SHADER_RESOURCE));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState_COPY_SRC, ResourceState_UNORDERED_ACCESS));
 		}
 		Protean::Renderer::FlushBarriers(cmd);
 		device->EventEnd(cmd);
@@ -2314,7 +2314,7 @@ namespace Protean::Terrain
 					if (it != chunks.end())
 					{
 						const auto& chunk_data = it->second;
-						shader_chunk.heightmap = device->GetDescriptorIndex(&chunk_data.heightmap, SubresourceType::SRV);
+						shader_chunk.heightmap = device->GetDescriptorIndex(&chunk_data.heightmap, SubresourceType_SRV);
 						shader_chunk.materialID = (uint)scene->materials.GetIndex(chunk_data.entity);
 					}
 
@@ -2345,8 +2345,8 @@ namespace Protean::Terrain
 				push.lodCount = vt->lod_count;
 				push.width = vt->residency->feedbackMap.desc.width;
 				push.height = vt->residency->feedbackMap.desc.height;
-				push.feedbackTextureRW = device->GetDescriptorIndex(&vt->residency->feedbackMap, SubresourceType::UAV);
-				push.requestBufferRW = device->GetDescriptorIndex(&vt->residency->requestBuffer, SubresourceType::UAV);
+				push.feedbackTextureRW = device->GetDescriptorIndex(&vt->residency->feedbackMap, SubresourceType_UAV);
+				push.requestBufferRW = device->GetDescriptorIndex(&vt->residency->requestBuffer, SubresourceType_UAV);
 				device->PushConstants(&push, sizeof(push), cmd);
 
 				device->Dispatch(
@@ -2373,9 +2373,9 @@ namespace Protean::Terrain
 				push.lodCount = vt->lod_count;
 				push.width = vt->residency->feedbackMap.desc.width;
 				push.height = vt->residency->feedbackMap.desc.height;
-				push.pageBufferRO = device->GetDescriptorIndex(&vt->residency->pageBuffer, SubresourceType::SRV);
-				push.requestBufferRW = device->GetDescriptorIndex(&vt->residency->requestBuffer, SubresourceType::UAV);
-				push.allocationBufferRW = device->GetDescriptorIndex(&vt->residency->allocationBuffer, SubresourceType::UAV);
+				push.pageBufferRO = device->GetDescriptorIndex(&vt->residency->pageBuffer, SubresourceType_SRV);
+				push.requestBufferRW = device->GetDescriptorIndex(&vt->residency->requestBuffer, SubresourceType_UAV);
+				push.allocationBufferRW = device->GetDescriptorIndex(&vt->residency->allocationBuffer, SubresourceType_UAV);
 				device->PushConstants(&push, sizeof(push), cmd);
 
 				device->Dispatch(
@@ -2403,7 +2403,7 @@ namespace Protean::Terrain
 			if (vt->residency == nullptr)
 				continue;
 			device->CopyResource(&vt->residency->allocationBuffer_CPU_readback[vt->residency->cpu_resource_id], &vt->residency->allocationBuffer, cmd);
-			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState::COPY_SRC, ResourceState::COPY_DST));
+			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState_COPY_SRC, ResourceState_COPY_DST));
 		}
 
 		Protean::Renderer::FlushBarriers(cmd);
@@ -2429,7 +2429,7 @@ namespace Protean::Terrain
 			device->CopyResource(&vt->residency->requestBuffer, &clear.requestBuffer, cmd);
 			device->CopyResource(&vt->residency->allocationBuffer, &clear.allocationBuffer, cmd);
 
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState::COPY_DST, ResourceState::COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState_COPY_DST, ResourceState_COPY_SRC));
 		}
 		Protean::Renderer::FlushBarriers(cmd);
 		device->EventEnd(cmd);
@@ -2450,7 +2450,7 @@ namespace Protean::Terrain
 			shader_terrain.center_chunk_pos.x = center_chunk.x * shader_terrain.chunk_size - shader_terrain.chunk_size * 0.5f;
 			shader_terrain.center_chunk_pos.y = 0;
 			shader_terrain.center_chunk_pos.z = center_chunk.z * shader_terrain.chunk_size - shader_terrain.chunk_size * 0.5f;
-			shader_terrain.chunk_buffer = device->GetDescriptorIndex(&chunk_buffer, SubresourceType::SRV);
+			shader_terrain.chunk_buffer = device->GetDescriptorIndex(&chunk_buffer, SubresourceType_SRV);
 			shader_terrain.chunk_buffer_range = chunk_buffer_range;
 			shader_terrain.min_height = bottomLevel;
 			shader_terrain.max_height = topLevel;
@@ -2548,7 +2548,7 @@ namespace Protean::Terrain
 							tmp_archive,
 							seri,
 							INVALID_ENTITY,
-							Protean::Scene::EntitySerializeFlags::RECURSIVE
+							Protean::Scene::EntitySerializeFlags_RECURSIVE
 						);
 
 						// Serialize again with the remapped references:
@@ -2558,7 +2558,7 @@ namespace Protean::Terrain
 							remapped_archive,
 							seri,
 							entity,
-							Protean::Scene::EntitySerializeFlags::RECURSIVE
+							Protean::Scene::EntitySerializeFlags_RECURSIVE
 						);
 
 						// Replace original data with remapped references for current session:
@@ -2585,7 +2585,7 @@ namespace Protean::Terrain
 						archive,
 						seri,
 						object_entity,
-						Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+						Protean::Scene::EntitySerializeFlags_RECURSIVE | Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 					);
 					archive.WriteData(prop.data);
 				}
@@ -2668,7 +2668,7 @@ namespace Protean::Terrain
 				switch (type)
 				{
 				default:
-				case Modifier::Type::Perlin:
+				case Modifier::Type_Perlin:
 					{
 						Protean::Allocator::shared_ptr<PerlinModifier> modifier = Protean::Allocator::make_shared_single<PerlinModifier>();
 						modifiers[i] = modifier;
@@ -2677,7 +2677,7 @@ namespace Protean::Terrain
 						modifier->perlin_noise.Serialize(archive);
 					}
 					break;
-				case Modifier::Type::Voronoi:
+				case Modifier::Type_Voronoi:
 					{
 						Protean::Allocator::shared_ptr<VoronoiModifier> modifier = Protean::Allocator::make_shared_single<VoronoiModifier>();
 						modifiers[i] = modifier;
@@ -2689,7 +2689,7 @@ namespace Protean::Terrain
 						modifier->perlin_noise.Serialize(archive);
 					}
 					break;
-				case Modifier::Type::Heightmap:
+				case Modifier::Type_Heightmap:
 					{
 						Protean::Allocator::shared_ptr<HeightmapModifier> modifier = Protean::Allocator::make_shared_single<HeightmapModifier>();
 						modifiers[i] = modifier;
@@ -2797,12 +2797,12 @@ namespace Protean::Terrain
 				switch (modifier->type)
 				{
 				default:
-				case Modifier::Type::Perlin:
+				case Modifier::Type_Perlin:
 					archive << ((PerlinModifier*)modifier.get())->octaves;
 					archive << ((PerlinModifier*)modifier.get())->seed;
 					((PerlinModifier*)modifier.get())->perlin_noise.Serialize(archive);
 					break;
-				case Modifier::Type::Voronoi:
+				case Modifier::Type_Voronoi:
 					archive << ((VoronoiModifier*)modifier.get())->fade;
 					archive << ((VoronoiModifier*)modifier.get())->shape;
 					archive << ((VoronoiModifier*)modifier.get())->falloff;
@@ -2810,7 +2810,7 @@ namespace Protean::Terrain
 					archive << ((VoronoiModifier*)modifier.get())->seed;
 					((VoronoiModifier*)modifier.get())->perlin_noise.Serialize(archive);
 					break;
-				case Modifier::Type::Heightmap:
+				case Modifier::Type_Heightmap:
 					archive << ((HeightmapModifier*)modifier.get())->amount;
 					archive << ((HeightmapModifier*)modifier.get())->data;
 					archive << ((HeightmapModifier*)modifier.get())->width;

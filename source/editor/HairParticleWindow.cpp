@@ -5,7 +5,7 @@ using namespace Protean;
 void HairParticleWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_HAIR " Hair Particle System", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_HAIR " Hair Particle System", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(600, 1000));
 
 	closeButton.SetTooltip("Delete HairParticleSystem");

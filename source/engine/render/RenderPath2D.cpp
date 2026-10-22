@@ -34,19 +34,19 @@ namespace Protean
 		if (dsv != nullptr && (resolutionScale != 1.0f || dsv->GetDesc().sample_count != sampleCount))
 		{
 			TextureDesc desc = GetDepthStencil()->GetDesc();
-			desc.layout = ResourceState::SHADER_RESOURCE;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc.format = Format::R8_UINT;
-			desc.layout = ResourceState::SHADER_RESOURCE;
+			desc.layout = ResourceState_SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc.format = Format_R8_UINT;
+			desc.layout = ResourceState_SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &rtStencilExtracted);
 			device->SetName(&rtStencilExtracted, "renderpath2D.rtStencilExtracted");
 
 			desc.width = GetPhysicalWidth();
 			desc.height = GetPhysicalHeight();
 			desc.sample_count = sampleCount;
-			desc.bind_flags = BindFlag::DEPTH_STENCIL;
-			desc.format = Format::D32_FLOAT_S8X24_UINT; // D24 was erroring on Vulkan AMD though here it would be enough
-			desc.layout = ResourceState::DEPTHSTENCIL;
+			desc.bind_flags = BindFlag_DEPTH_STENCIL;
+			desc.format = Format_D32_FLOAT_S8X24_UINT; // D24 was erroring on Vulkan AMD though here it would be enough
+			desc.layout = ResourceState_DEPTHSTENCIL;
 			device->CreateTexture(&desc, nullptr, &stencilScaled);
 			device->SetName(&stencilScaled, "renderpath2D.stencilScaled");
 		}
@@ -58,8 +58,8 @@ namespace Protean
 
 		{
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc.format = Format_R8G8B8A8_UNORM;
 			desc.width = GetPhysicalWidth();
 			desc.height = GetPhysicalHeight();
 			device->CreateTexture(&desc, nullptr, &rtFinal);
@@ -68,9 +68,9 @@ namespace Protean
 			if (sampleCount > 1)
 			{
 				desc.sample_count = sampleCount;
-				desc.bind_flags = BindFlag::RENDER_TARGET;
-				desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
-				desc.layout = ResourceState::RENDERTARGET;
+				desc.bind_flags = BindFlag_RENDER_TARGET;
+				desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
+				desc.layout = ResourceState_RENDERTARGET;
 				device->CreateTexture(&desc, nullptr, &rtFinal_MSAA);
 				device->SetName(&rtFinal_MSAA, "renderpath2D.rtFinal_MSAA");
 				
@@ -216,27 +216,27 @@ namespace Protean
 			// MSAA:
 			rp[rp_count++] = RenderPassImage::RenderTarget(
 				&rtFinal_MSAA,
-				RenderPassImage::LoadOp::CLEAR,
-				RenderPassImage::StoreOp::DONTCARE,
-				ResourceState::RENDERTARGET,
-				ResourceState::RENDERTARGET
+				RenderPassImage::LoadOp_CLEAR,
+				RenderPassImage::StoreOp_DONTCARE,
+				ResourceState_RENDERTARGET,
+				ResourceState_RENDERTARGET
 			);
 			rp[rp_count++] = RenderPassImage::Resolve(&rtFinal);
 		}
 		else
 		{
 			// Single sample:
-			rp[rp_count++] = RenderPassImage::RenderTarget(&rtFinal, RenderPassImage::LoadOp::CLEAR);
+			rp[rp_count++] = RenderPassImage::RenderTarget(&rtFinal, RenderPassImage::LoadOp_CLEAR);
 		}
 		if (stencilScaled.IsValid())
 		{
 			// Scaled stencil:
-			rp[rp_count++] = RenderPassImage::DepthStencil(&stencilScaled, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE);
+			rp[rp_count++] = RenderPassImage::DepthStencil(&stencilScaled, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE);
 		}
 		else if (dsv != nullptr)
 		{
 			// Native stencil:
-			rp[rp_count++] = RenderPassImage::DepthStencil(dsv, RenderPassImage::LoadOp::LOAD, RenderPassImage::StoreOp::STORE);
+			rp[rp_count++] = RenderPassImage::DepthStencil(dsv, RenderPassImage::LoadOp_LOAD, RenderPassImage::StoreOp_STORE);
 		}
 		device->RenderPassBegin(rp, rp_count, cmd);
 
@@ -297,7 +297,7 @@ namespace Protean
 		Protean::Image::Params fx;
 		fx.enableFullScreen();
 		fx.blendFlag = Protean::BLENDMODE_PREMULTIPLIED;
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			// Convert the regular SRGB result of the render path to linear space for HDR compositing:
 			fx.enableLinearOutputMapping(hdr_scaling);

@@ -406,14 +406,14 @@ namespace Protean
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHREAD);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+			desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 
 			GraphicsDevice* device = GetDevice();
 			device->CreatePipelineState(&desc, &pso_curve);
 
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_FRONT);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_ADDITIVE);
-			desc.pt = PrimitiveTopology::TRIANGLELIST;
+			desc.pt = PrimitiveTopology_TRIANGLELIST;
 			device->CreatePipelineState(&desc, &pso_waypoint);
 		}
 	}

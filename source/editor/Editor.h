@@ -312,23 +312,22 @@ public:
 };
 
 // Additional localizations that are outside the GUI can be defined here:
-enum class EditorLocalization
-{
+enum EditorLocalization {
 	// Top menu:
-	Save,
-	Open,
-	Backlog,
-	Profiler,
-	__REMOVED_Cinema,
-	FullScreen,
-	Windowed,
-	BugReport,
-	About,
-	Exit,
-	UntitledScene,
-	ContentBrowser,
+	EditorLocalization_Save,
+	EditorLocalization_Open,
+	EditorLocalization_Backlog,
+	EditorLocalization_Profiler,
+	EditorLocalization___REMOVED_Cinema,
+	EditorLocalization_FullScreen,
+	EditorLocalization_Windowed,
+	EditorLocalization_BugReport,
+	EditorLocalization_About,
+	EditorLocalization_Exit,
+	EditorLocalization_UntitledScene,
+	EditorLocalization_ContentBrowser,
 
-	Count
+	EditorLocalization_Count
 };
 static const char* EditorLocalizationStrings[] = {
 	// Top menu:
@@ -345,7 +344,7 @@ static const char* EditorLocalizationStrings[] = {
 	"Untitled scene",
 	"Content",
 };
-static_assert(arraysize(EditorLocalizationStrings) == size_t(EditorLocalization::Count));
+static_assert(arraysize(EditorLocalizationStrings) == size_t(EditorLocalization_Count));
 
 struct ApplicationExeCustomization
 {

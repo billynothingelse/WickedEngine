@@ -96,15 +96,14 @@ namespace Protean::Gui
 		WIDGET_ID_USER,
 	};
 
-	enum class LocalizationEnabled
-	{
-		None = 0,
-		Text = 1 << 0,
-		Tooltip = 1 << 1,
-		Items = 1 << 2,		// ComboBox items
-		Children = 1 << 3,	// Window children
+	enum LocalizationEnabled {
+		LocalizationEnabled_None = 0,
+		LocalizationEnabled_Text = 1 << 0,
+		LocalizationEnabled_Tooltip = 1 << 1,
+		LocalizationEnabled_Items = 1 << 2,		// ComboBox items
+		LocalizationEnabled_Children = 1 << 3,	// Window children
 
-		All = Text | Tooltip | Items | Children,
+		LocalizationEnabled_All = LocalizationEnabled_Text | LocalizationEnabled_Tooltip | LocalizationEnabled_Items | LocalizationEnabled_Children,
 	};
 
 	struct Theme
@@ -270,7 +269,7 @@ namespace Protean::Gui
 		std::string name;
 		bool enabled = true;
 		bool visible = true;
-		LocalizationEnabled localization_enabled = LocalizationEnabled::All;
+		LocalizationEnabled localization_enabled = LocalizationEnabled_All;
 		float shadow = 1; // shadow radius
 		Protean::Color shadow_color = Protean::Color::Shadow();
 		bool shadow_highlight = false;
@@ -366,10 +365,10 @@ namespace Protean::Gui
 		uint32_t priority = 0;
 		bool force_disable = false;
 
-		bool IsLocalizationEnabled() const { return localization_enabled != LocalizationEnabled::None; }
+		bool IsLocalizationEnabled() const { return localization_enabled != LocalizationEnabled_None; }
 		LocalizationEnabled GetLocalizationEnabled() const { return localization_enabled; }
 		void SetLocalizationEnabled(LocalizationEnabled value) { localization_enabled = value; }
-		void SetLocalizationEnabled(bool value) { localization_enabled = value ? LocalizationEnabled::All : LocalizationEnabled::None; }
+		void SetLocalizationEnabled(bool value) { localization_enabled = value ? LocalizationEnabled_All : LocalizationEnabled_None; }
 		virtual void ExportLocalization(Protean::Localization& localization) const;
 		virtual void ImportLocalization(const Protean::Localization& localization);
 
@@ -847,7 +846,7 @@ namespace Protean::Gui
 				if (res.IsValid())
 				{
 					const Protean::Graphics::Texture& tex = res.GetTexture();
-					if (has_flag(tex.desc.misc_flags, Protean::Graphics::ResourceMiscFlag::TEXTURECUBE))
+					if (has_flag(tex.desc.misc_flags, Protean::Graphics::ResourceMiscFlag_TEXTURECUBE))
 					{
 						// fixed aspect for cubemap cross:
 						h_aspect = 3.0f / 4.0f;
@@ -911,35 +910,33 @@ namespace Protean::Gui
 		} layout;
 
 	public:
-		enum class WindowControls
-		{
-			NONE = 0,
-			RESIZE_LEFT = 1 << 0,
-			RESIZE_TOP = 1 << 1,
-			RESIZE_RIGHT = 1 << 2,
-			RESIZE_BOTTOM = 1 << 3,
-			RESIZE_TOPLEFT = 1 << 4,
-			RESIZE_TOPRIGHT = 1 << 5,
-			RESIZE_BOTTOMLEFT = 1 << 6,
-			RESIZE_BOTTOMRIGHT = 1 << 7,
-			MOVE = 1 << 8,
-			CLOSE = 1 << 9,
-			COLLAPSE = 1 << 10,
-			DISABLE_TITLE_BAR = 1 << 11,
-			FIT_ALL_WIDGETS_VERTICAL = 1 << 12, // auto resize window vertically to fit all widgets that are in it
+		enum WindowControls {
+			WindowControls_NONE = 0,
+			WindowControls_RESIZE_LEFT = 1 << 0,
+			WindowControls_RESIZE_TOP = 1 << 1,
+			WindowControls_RESIZE_RIGHT = 1 << 2,
+			WindowControls_RESIZE_BOTTOM = 1 << 3,
+			WindowControls_RESIZE_TOPLEFT = 1 << 4,
+			WindowControls_RESIZE_TOPRIGHT = 1 << 5,
+			WindowControls_RESIZE_BOTTOMLEFT = 1 << 6,
+			WindowControls_RESIZE_BOTTOMRIGHT = 1 << 7,
+			WindowControls_MOVE = 1 << 8,
+			WindowControls_CLOSE = 1 << 9,
+			WindowControls_COLLAPSE = 1 << 10,
+			WindowControls_DISABLE_TITLE_BAR = 1 << 11,
+			WindowControls_FIT_ALL_WIDGETS_VERTICAL = 1 << 12, // auto resize window vertically to fit all widgets that are in it
 
-			RESIZE = RESIZE_LEFT | RESIZE_TOP | RESIZE_RIGHT | RESIZE_BOTTOM | RESIZE_TOPLEFT | RESIZE_TOPRIGHT | RESIZE_BOTTOMLEFT | RESIZE_BOTTOMRIGHT,
-			CLOSE_AND_COLLAPSE = CLOSE | COLLAPSE,
-			ALL = RESIZE | MOVE | CLOSE | COLLAPSE,
+			WindowControls_RESIZE = WindowControls_RESIZE_LEFT | WindowControls_RESIZE_TOP | WindowControls_RESIZE_RIGHT | WindowControls_RESIZE_BOTTOM | WindowControls_RESIZE_TOPLEFT | WindowControls_RESIZE_TOPRIGHT | WindowControls_RESIZE_BOTTOMLEFT | WindowControls_RESIZE_BOTTOMRIGHT,
+			WindowControls_CLOSE_AND_COLLAPSE = WindowControls_CLOSE | WindowControls_COLLAPSE,
+			WindowControls_ALL = WindowControls_RESIZE | WindowControls_MOVE | WindowControls_CLOSE | WindowControls_COLLAPSE,
 		};
-		void Create(const std::string& name, WindowControls window_controls = WindowControls::ALL);
+		void Create(const std::string& name, WindowControls window_controls = WindowControls_ALL);
 
-		enum class AttachmentOptions
-		{
-			NONE = 0,
-			SCROLLABLE = 1 << 0,
+		enum AttachmentOptions {
+			AttachmentOptions_NONE = 0,
+			AttachmentOptions_SCROLLABLE = 1 << 0,
 		};
-		void AddWidget(Widget* widget, AttachmentOptions options = AttachmentOptions::SCROLLABLE);
+		void AddWidget(Widget* widget, AttachmentOptions options = AttachmentOptions_SCROLLABLE);
 		void RemoveWidget(Widget* widget);
 		void RemoveWidgets();
 
@@ -1002,7 +999,7 @@ namespace Protean::Gui
 
 		void FireEvents();
 	public:
-		void Create(const std::string& name, WindowControls window_controls = WindowControls::ALL);
+		void Create(const std::string& name, WindowControls window_controls = WindowControls_ALL);
 
 		void Update(const Protean::Canvas& canvas, float dt) override;
 		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;

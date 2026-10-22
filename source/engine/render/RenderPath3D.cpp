@@ -107,7 +107,7 @@ namespace Protean
 		// Aliased texture descriptions:
 		TextureDesc desc_rtPostprocess;
 		{
-			desc_rtPostprocess.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc_rtPostprocess.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc_rtPostprocess.format = Protean::Renderer::format_rendertarget_main;
 			desc_rtPostprocess.width = internalResolution.x;
 			desc_rtPostprocess.height = internalResolution.y;
@@ -115,19 +115,19 @@ namespace Protean
 		TextureDesc desc_rtPrimitiveID;
 		{
 			desc_rtPrimitiveID.format = Protean::Renderer::format_idbuffer;
-			desc_rtPrimitiveID.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+			desc_rtPrimitiveID.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 			if (getMSAASampleCount() > 1)
 			{
-				desc_rtPrimitiveID.bind_flags |= BindFlag::UNORDERED_ACCESS;
+				desc_rtPrimitiveID.bind_flags |= BindFlag_UNORDERED_ACCESS;
 			}
 			desc_rtPrimitiveID.width = internalResolution.x;
 			desc_rtPrimitiveID.height = internalResolution.y;
 			desc_rtPrimitiveID.sample_count = 1;
-			desc_rtPrimitiveID.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+			desc_rtPrimitiveID.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 		}
 		TextureDesc desc_rtSceneCopy;
 		{
-			desc_rtSceneCopy.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::RENDER_TARGET;
+			desc_rtSceneCopy.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS | BindFlag_RENDER_TARGET;
 			desc_rtSceneCopy.format = Protean::Renderer::format_rendertarget_main;
 			desc_rtSceneCopy.width = internalResolution.x / 4;
 			desc_rtSceneCopy.height = internalResolution.y / 4;
@@ -135,24 +135,24 @@ namespace Protean
 		}
 		TextureDesc desc_rtParticleDistortion;
 		{
-			desc_rtParticleDistortion.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc_rtParticleDistortion.format = Format::R16G16_FLOAT;
+			desc_rtParticleDistortion.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc_rtParticleDistortion.format = Format_R16G16_FLOAT;
 			desc_rtParticleDistortion.width = internalResolution.x;
 			desc_rtParticleDistortion.height = internalResolution.y;
 			desc_rtParticleDistortion.sample_count = 1;
 		}
 		TextureDesc desc_rtWaterRipple;
 		{
-			desc_rtWaterRipple.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc_rtWaterRipple.format = Format::R16G16_FLOAT;
+			desc_rtWaterRipple.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc_rtWaterRipple.format = Format_R16G16_FLOAT;
 			desc_rtWaterRipple.width = internalResolution.x / 8;
 			desc_rtWaterRipple.height = internalResolution.y / 8;
 			desc_rtWaterRipple.sample_count = 1;
 		}
 		TextureDesc desc_rtAO;
 		{
-			desc_rtAO.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::RENDER_TARGET;
-			desc_rtAO.format = Format::R8_UNORM;
+			desc_rtAO.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS | BindFlag_RENDER_TARGET;
+			desc_rtAO.format = Format_R8_UNORM;
 			desc_rtAO.width = internalResolution.x; // max ao res
 			desc_rtAO.height = internalResolution.y; // max ao res
 		}
@@ -176,8 +176,8 @@ namespace Protean
 			if (getMSAASampleCount() > 1)
 			{
 				desc.sample_count = getMSAASampleCount();
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 				device->CreateTexture(&desc, nullptr, &rtPrimitiveID_render);
 				device->SetName(&rtPrimitiveID_render, "renderpath3D.rtPrimitiveID_render");
 			}
@@ -203,7 +203,7 @@ namespace Protean
 			if (getMSAASampleCount() > 1)
 			{
 				desc.sample_count = getMSAASampleCount();
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 				device->CreateTexture(&desc, nullptr, &rtParticleDistortion_render);
 				device->SetName(&rtParticleDistortion_render, "renderpath3D.rtParticleDistortion_render");
 			}
@@ -217,7 +217,7 @@ namespace Protean
 		{
 			TextureDesc desc;
 			desc.format = Protean::Renderer::format_rendertarget_main;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			desc.sample_count = 1;
@@ -227,7 +227,7 @@ namespace Protean
 			if (getMSAASampleCount() > 1)
 			{
 				desc.sample_count = getMSAASampleCount();
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 
 				device->CreateTexture(&desc, nullptr, &rtMain_render);
 				device->SetName(&rtMain_render, "renderpath3D.rtMain_render");
@@ -242,11 +242,11 @@ namespace Protean
 		}
 		{
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R10G10B10A2_UNORM;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R10G10B10A2_UNORM;
 			desc.width = internalResolution.x / 4;
 			desc.height = internalResolution.y / 4;
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &rtGUIBlurredBackground[0]);
 			device->SetName(&rtGUIBlurredBackground[0], "renderpath3D.rtGUIBlurredBackground[0]");
 
@@ -257,15 +257,15 @@ namespace Protean
 			device->CreateTexture(&desc, nullptr, &rtGUIBlurredBackground[2]);
 			device->SetName(&rtGUIBlurredBackground[2], "renderpath3D.rtGUIBlurredBackground[2]");
 		}
-		if (device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2) &&
+		if (device->CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2) &&
 			Protean::Renderer::GetVariableRateShadingClassification())
 		{
 			uint32_t tileSize = device->GetVariableRateShadingTileSize();
 
 			TextureDesc desc;
-			desc.layout = ResourceState::UNORDERED_ACCESS;
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADING_RATE;
-			desc.format = Format::R8_UINT;
+			desc.layout = ResourceState_UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADING_RATE;
+			desc.format = Format_R8_UINT;
 			desc.width = (internalResolution.x + tileSize - 1) / tileSize;
 			desc.height = (internalResolution.y + tileSize - 1) / tileSize;
 
@@ -280,15 +280,15 @@ namespace Protean
 			desc.height = internalResolution.y;
 
 			desc.sample_count = getMSAASampleCount();
-			desc.layout = ResourceState::DEPTHSTENCIL;
+			desc.layout = ResourceState_DEPTHSTENCIL;
 			desc.format = Protean::Renderer::format_depthbuffer_main;
-			desc.bind_flags = BindFlag::DEPTH_STENCIL;
+			desc.bind_flags = BindFlag_DEPTH_STENCIL;
 			device->CreateTexture(&desc, nullptr, &depthBuffer_Main);
 			device->SetName(&depthBuffer_Main, "renderpath3D.depthBuffer_Main");
 
-			desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
-			desc.format = Format::R32_FLOAT;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
+			desc.format = Format_R32_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.sample_count = 1;
 			desc.mip_levels = 5;
 			device->CreateTexture(&desc, nullptr, &depthBuffer_Copy);
@@ -307,11 +307,11 @@ namespace Protean
 			desc.height = internalResolution.y;
 			desc.mip_levels = 1;
 			desc.array_size = 1;
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.format = Format_R8G8B8A8_UNORM;
 			desc.sample_count = 1;
-			desc.usage = Usage::DEFAULT;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.layout = ResourceState::SHADER_RESOURCE;
+			desc.usage = Usage_DEFAULT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.layout = ResourceState_SHADER_RESOURCE;
 
 			device->CreateTexture(&desc, nullptr, &debugUAV);
 			device->SetName(&debugUAV, "renderpath3D.debugUAV");
@@ -351,7 +351,7 @@ namespace Protean
 
 		Protean::Renderer::SetShadowsEnabled(getShadowsEnabled());
 
-		const bool hw_raytrace = device->CheckCapability(GraphicsDeviceCapability::RAYTRACING);
+		const bool hw_raytrace = device->CheckCapability(GraphicsDeviceCapability_RAYTRACING);
 		if (getSceneUpdateEnabled())
 		{
 			if (Protean::Renderer::GetSurfelGIEnabled() ||
@@ -469,7 +469,7 @@ namespace Protean
 			rtAO = {};
 		}
 
-		if (Protean::Renderer::GetRaytracedShadowsEnabled() && device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		if (Protean::Renderer::GetRaytracedShadowsEnabled() && device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 		{
 			if (!rtshadowResources.denoised.IsValid())
 			{
@@ -522,8 +522,8 @@ namespace Protean
 			if (!rtWaterRipple.IsValid())
 			{
 				TextureDesc desc;
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-				desc.format = Format::R16G16_FLOAT;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+				desc.format = Format_R16G16_FLOAT;
 				desc.width = internalResolution.x / 8;
 				desc.height = internalResolution.y / 8;
 				device->CreateTexture(&desc, nullptr, &rtWaterRipple, &aliasingAllocation, offset_rtWaterRipple); // aliased!
@@ -558,21 +558,21 @@ namespace Protean
 		if (!first_frame && Protean::Renderer::IsMeshShaderAllowed() && Protean::Renderer::IsMeshletOcclusionCullingEnabled())
 		{
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16_UNORM;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R16_UNORM;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			desc.mip_levels = GetMipCount(desc.width, desc.height, 1, 4);
-			desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+			desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 			device->CreateTexture(&desc, nullptr, &reprojectedDepth);
 			device->SetName(&reprojectedDepth, "renderpath3D.reprojectedDepth");
 
 			for (uint32_t i = 0; i < reprojectedDepth.desc.mip_levels; ++i)
 			{
 				int subresource_index;
-				subresource_index = device->CreateSubresource(&reprojectedDepth, SubresourceType::SRV, 0, 1, i, 1);
+				subresource_index = device->CreateSubresource(&reprojectedDepth, SubresourceType_SRV, 0, 1, i, 1);
 				assert(subresource_index == i);
-				subresource_index = device->CreateSubresource(&reprojectedDepth, SubresourceType::UAV, 0, 1, i, 1);
+				subresource_index = device->CreateSubresource(&reprojectedDepth, SubresourceType_UAV, 0, 1, i, 1);
 				assert(subresource_index == i);
 			}
 		}
@@ -599,11 +599,11 @@ namespace Protean
 			if (!rtVelocity.IsValid())
 			{
 				TextureDesc desc;
-				desc.format = Format::R16G16_FLOAT;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::RENDER_TARGET;
+				desc.format = Format_R16G16_FLOAT;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS | BindFlag_RENDER_TARGET;
 				desc.width = internalResolution.x;
 				desc.height = internalResolution.y;
-				desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+				desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 				device->CreateTexture(&desc, nullptr, &rtVelocity);
 				device->SetName(&rtVelocity, "renderpath3D.rtVelocity");
 			}
@@ -619,12 +619,12 @@ namespace Protean
 			if (!rtShadow.IsValid())
 			{
 				TextureDesc desc;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-				desc.format = Format::R8_UNORM;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+				desc.format = Format_R8_UNORM;
 				desc.array_size = 16;
 				desc.width = internalResolution.x;
 				desc.height = internalResolution.y;
-				desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+				desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 				device->CreateTexture(&desc, nullptr, &rtShadow);
 				device->SetName(&rtShadow, "renderpath3D.rtShadow");
 			}
@@ -728,39 +728,39 @@ namespace Protean
 		camera->scissor = GetScissorInternalResolution();
 		camera->sample_count = depthBuffer_Main.desc.sample_count;
 		camera->shadercamera_options = SHADERCAMERA_OPTION_NONE;
-		camera->texture_primitiveID_index = device->GetDescriptorIndex(&rtPrimitiveID, SubresourceType::SRV);
-		camera->texture_depth_index = device->GetDescriptorIndex(&depthBuffer_Copy, SubresourceType::SRV);
-		camera->texture_velocity_index = device->GetDescriptorIndex(&rtVelocity, SubresourceType::SRV);
-		camera->texture_normal_roughness_index = device->GetDescriptorIndex(&visibilityResources.texture_normal_roughness, SubresourceType::SRV);
-		camera->buffer_entitytiles_index = device->GetDescriptorIndex(&tiledLightResources.entityTiles, SubresourceType::SRV);
-		camera->texture_reflection_index = device->GetDescriptorIndex(&rtReflection, SubresourceType::SRV);
-		camera->texture_reflection_depth_index = device->GetDescriptorIndex(&depthBuffer_Reflection, SubresourceType::SRV);
-		camera->texture_refraction_index = device->GetDescriptorIndex(&rtSceneCopy, SubresourceType::SRV);
-		camera->texture_waterriples_index = device->GetDescriptorIndex(&rtWaterRipple, SubresourceType::SRV);
-		camera->texture_ao_index = device->GetDescriptorIndex(&rtAO, SubresourceType::SRV);
-		camera->texture_ssr_index = device->GetDescriptorIndex(&rtSSR, SubresourceType::SRV);
-		camera->texture_ssgi_index = device->GetDescriptorIndex(&rtSSGI, SubresourceType::SRV);
+		camera->texture_primitiveID_index = device->GetDescriptorIndex(&rtPrimitiveID, SubresourceType_SRV);
+		camera->texture_depth_index = device->GetDescriptorIndex(&depthBuffer_Copy, SubresourceType_SRV);
+		camera->texture_velocity_index = device->GetDescriptorIndex(&rtVelocity, SubresourceType_SRV);
+		camera->texture_normal_roughness_index = device->GetDescriptorIndex(&visibilityResources.texture_normal_roughness, SubresourceType_SRV);
+		camera->buffer_entitytiles_index = device->GetDescriptorIndex(&tiledLightResources.entityTiles, SubresourceType_SRV);
+		camera->texture_reflection_index = device->GetDescriptorIndex(&rtReflection, SubresourceType_SRV);
+		camera->texture_reflection_depth_index = device->GetDescriptorIndex(&depthBuffer_Reflection, SubresourceType_SRV);
+		camera->texture_refraction_index = device->GetDescriptorIndex(&rtSceneCopy, SubresourceType_SRV);
+		camera->texture_waterriples_index = device->GetDescriptorIndex(&rtWaterRipple, SubresourceType_SRV);
+		camera->texture_ao_index = device->GetDescriptorIndex(&rtAO, SubresourceType_SRV);
+		camera->texture_ssr_index = device->GetDescriptorIndex(&rtSSR, SubresourceType_SRV);
+		camera->texture_ssgi_index = device->GetDescriptorIndex(&rtSSGI, SubresourceType_SRV);
 		if (rtShadow.IsValid())
 		{
 			camera->shadercamera_options |= SHADERCAMERA_OPTION_USE_SHADOW_MASK;
-			camera->texture_rtshadow_index = device->GetDescriptorIndex(&rtShadow, SubresourceType::SRV);
+			camera->texture_rtshadow_index = device->GetDescriptorIndex(&rtShadow, SubresourceType_SRV);
 		}
 		else
 		{
-			camera->texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
+			camera->texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType_SRV); // AMD descriptor branching fix
 		}
-		camera->texture_rtdiffuse_index = device->GetDescriptorIndex(&rtRaytracedDiffuse, SubresourceType::SRV);
-		camera->texture_surfelgi_index = device->GetDescriptorIndex(&surfelGIResources.result, SubresourceType::SRV);
-		camera->texture_vxgi_diffuse_index = device->GetDescriptorIndex(&vxgiResources.diffuse, SubresourceType::SRV);
+		camera->texture_rtdiffuse_index = device->GetDescriptorIndex(&rtRaytracedDiffuse, SubresourceType_SRV);
+		camera->texture_surfelgi_index = device->GetDescriptorIndex(&surfelGIResources.result, SubresourceType_SRV);
+		camera->texture_vxgi_diffuse_index = device->GetDescriptorIndex(&vxgiResources.diffuse, SubresourceType_SRV);
 		if (Protean::Renderer::GetVXGIReflectionsEnabled())
 		{
-			camera->texture_vxgi_specular_index = device->GetDescriptorIndex(&vxgiResources.specular, SubresourceType::SRV);
+			camera->texture_vxgi_specular_index = device->GetDescriptorIndex(&vxgiResources.specular, SubresourceType_SRV);
 		}
 		else
 		{
 			camera->texture_vxgi_specular_index = -1;
 		}
-		camera->texture_reprojected_depth_index = device->GetDescriptorIndex(&reprojectedDepth, SubresourceType::SRV);
+		camera->texture_reprojected_depth_index = device->GetDescriptorIndex(&reprojectedDepth, SubresourceType_SRV);
 
 		camera_reflection.canvas.init(*this);
 		camera_reflection.width = (float)depthBuffer_Reflection_render.desc.width;
@@ -772,10 +772,10 @@ namespace Protean
 		camera_reflection.sample_count = depthBuffer_Reflection_render.desc.sample_count;
 		camera_reflection.shadercamera_options = SHADERCAMERA_OPTION_NONE;
 		camera_reflection.texture_primitiveID_index = -1;
-		camera_reflection.texture_depth_index = device->GetDescriptorIndex(&depthBuffer_Reflection, SubresourceType::SRV);
+		camera_reflection.texture_depth_index = device->GetDescriptorIndex(&depthBuffer_Reflection, SubresourceType_SRV);
 		camera_reflection.texture_velocity_index = -1;
 		camera_reflection.texture_normal_roughness_index = -1;
-		camera_reflection.buffer_entitytiles_index = device->GetDescriptorIndex(&tiledLightResources_planarReflection.entityTiles, SubresourceType::SRV);
+		camera_reflection.buffer_entitytiles_index = device->GetDescriptorIndex(&tiledLightResources_planarReflection.entityTiles, SubresourceType_SRV);
 		camera_reflection.texture_reflection_index = -1;
 		camera_reflection.texture_reflection_depth_index = -1;
 		camera_reflection.texture_refraction_index = -1;
@@ -783,7 +783,7 @@ namespace Protean
 		camera_reflection.texture_ao_index = -1;
 		camera_reflection.texture_ssr_index = -1;
 		camera_reflection.texture_ssgi_index = -1;
-		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
+		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType_SRV); // AMD descriptor branching fix
 		camera_reflection.texture_rtdiffuse_index = -1;
 		camera_reflection.texture_surfelgi_index = -1;
 		camera_reflection.texture_vxgi_diffuse_index = -1;
@@ -869,7 +869,7 @@ namespace Protean
 			Protean::Renderer::UpdateRenderData(visibility_main, frameCB, cmd);
 
 			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&debugUAV, debugUAV.desc.layout, ResourceState::UNORDERED_ACCESS),
+				GPUBarrier::Image(&debugUAV, debugUAV.desc.layout, ResourceState_UNORDERED_ACCESS),
 				GPUBarrier::Aliasing(&rtPostprocess, &rtPrimitiveID),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
@@ -961,18 +961,18 @@ namespace Protean
 			RenderPassImage rp[] = {
 				RenderPassImage::DepthStencil(
 					&depthBuffer_Main,
-					RenderPassImage::LoadOp::CLEAR,
-					RenderPassImage::StoreOp::STORE,
-					ResourceState::DEPTHSTENCIL,
-					ResourceState::DEPTHSTENCIL,
-					ResourceState::DEPTHSTENCIL
+					RenderPassImage::LoadOp_CLEAR,
+					RenderPassImage::StoreOp_STORE,
+					ResourceState_DEPTHSTENCIL,
+					ResourceState_DEPTHSTENCIL,
+					ResourceState_DEPTHSTENCIL
 				),
 				RenderPassImage::RenderTarget(
 					&rtPrimitiveID_render,
-					RenderPassImage::LoadOp::CLEAR,
-					RenderPassImage::StoreOp::STORE,
-					ResourceState::SHADER_RESOURCE_COMPUTE,
-					ResourceState::SHADER_RESOURCE_COMPUTE
+					RenderPassImage::LoadOp_CLEAR,
+					RenderPassImage::StoreOp_STORE,
+					ResourceState_SHADER_RESOURCE_COMPUTE,
+					ResourceState_SHADER_RESOURCE_COMPUTE
 				),
 			};
 			device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1097,7 +1097,7 @@ namespace Protean
 
 			RenderAO(cmd);
 
-			if (Protean::Renderer::GetVariableRateShadingClassification() && device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2))
+			if (Protean::Renderer::GetVariableRateShadingClassification() && device->CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2))
 			{
 				Protean::Renderer::ComputeShadingRateClassification(
 					rtShadingRate,
@@ -1206,11 +1206,11 @@ namespace Protean
 				RenderPassImage rp[] = {
 					RenderPassImage::DepthStencil(
 						&depthBuffer_Reflection_render,
-						RenderPassImage::LoadOp::CLEAR,
-						RenderPassImage::StoreOp::STORE,
-						ResourceState::SHADER_RESOURCE,
-						ResourceState::DEPTHSTENCIL,
-						ResourceState::SHADER_RESOURCE
+						RenderPassImage::LoadOp_CLEAR,
+						RenderPassImage::StoreOp_STORE,
+						ResourceState_SHADER_RESOURCE,
+						ResourceState_DEPTHSTENCIL,
+						ResourceState_SHADER_RESOURCE
 					)
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1346,19 +1346,19 @@ namespace Protean
 					RenderPassImage rp[] = {
 						RenderPassImage::RenderTarget(
 							&rtReflection_render,
-							RenderPassImage::LoadOp::CLEAR,
-							RenderPassImage::StoreOp::DONTCARE,
-							ResourceState::RENDERTARGET,
-							ResourceState::RENDERTARGET
+							RenderPassImage::LoadOp_CLEAR,
+							RenderPassImage::StoreOp_DONTCARE,
+							ResourceState_RENDERTARGET,
+							ResourceState_RENDERTARGET
 						),
 						RenderPassImage::Resolve(&rtReflection),
 						RenderPassImage::DepthStencil(
 							&depthBuffer_Reflection_render,
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE,
-							ResourceState::SHADER_RESOURCE,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::SHADER_RESOURCE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE,
+							ResourceState_SHADER_RESOURCE,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_SHADER_RESOURCE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1368,18 +1368,18 @@ namespace Protean
 					RenderPassImage rp[] = {
 						RenderPassImage::RenderTarget(
 							&rtReflection_render,
-							RenderPassImage::LoadOp::CLEAR,
-							RenderPassImage::StoreOp::STORE,
-							ResourceState::SHADER_RESOURCE,
-							ResourceState::SHADER_RESOURCE
+							RenderPassImage::LoadOp_CLEAR,
+							RenderPassImage::StoreOp_STORE,
+							ResourceState_SHADER_RESOURCE,
+							ResourceState_SHADER_RESOURCE
 						),
 						RenderPassImage::DepthStencil(
 							&depthBuffer_Reflection_render,
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE,
-							ResourceState::SHADER_RESOURCE,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::SHADER_RESOURCE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE,
+							ResourceState_SHADER_RESOURCE,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_SHADER_RESOURCE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1502,8 +1502,8 @@ namespace Protean
 				if (getMSAASampleCount() > 1)
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rtOutlineSource_MSAA, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE, ResourceState::RENDERTARGET, ResourceState::RENDERTARGET),
-						RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp::LOAD),
+						RenderPassImage::RenderTarget(&rtOutlineSource_MSAA, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE, ResourceState_RENDERTARGET, ResourceState_RENDERTARGET),
+						RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp_LOAD),
 						RenderPassImage::Resolve(&rtOutlineSource)
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1511,8 +1511,8 @@ namespace Protean
 				else
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rtOutlineSource, RenderPassImage::LoadOp::CLEAR),
-						RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp::LOAD)
+						RenderPassImage::RenderTarget(&rtOutlineSource, RenderPassImage::LoadOp_CLEAR),
+						RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp_LOAD)
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
 				}
@@ -1532,21 +1532,21 @@ namespace Protean
 			uint32_t rp_count = 0;
 			rp[rp_count++] = RenderPassImage::RenderTarget(
 				&rtMain_render,
-				visibility_shading_in_compute ? RenderPassImage::LoadOp::LOAD : RenderPassImage::LoadOp::CLEAR
+				visibility_shading_in_compute ? RenderPassImage::LoadOp_LOAD : RenderPassImage::LoadOp_CLEAR
 			);
-			if (device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2) && rtShadingRate.IsValid())
+			if (device->CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2) && rtShadingRate.IsValid())
 			{
-				rp[rp_count++] = RenderPassImage::ShadingRateSource(&rtShadingRate, ResourceState::UNORDERED_ACCESS, ResourceState::UNORDERED_ACCESS);
+				rp[rp_count++] = RenderPassImage::ShadingRateSource(&rtShadingRate, ResourceState_UNORDERED_ACCESS, ResourceState_UNORDERED_ACCESS);
 			}
 			rp[rp_count++] = RenderPassImage::DepthStencil(
 				&depthBuffer_Main,
-				RenderPassImage::LoadOp::LOAD,
-				RenderPassImage::StoreOp::STORE,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL
+				RenderPassImage::LoadOp_LOAD,
+				RenderPassImage::StoreOp_STORE,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL
 			);
-			device->RenderPassBegin(rp, rp_count, cmd, RenderPassFlags::ALLOW_UAV_WRITES);
+			device->RenderPassBegin(rp, rp_count, cmd, RenderPassFlags_ALLOW_UAV_WRITES);
 
 			if (visibility_shading_in_compute)
 			{
@@ -1596,7 +1596,7 @@ namespace Protean
 
 			if (getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 			{
-				rp[0].loadop = RenderPassImage::LoadOp::LOAD;
+				rp[0].loadop = RenderPassImage::LoadOp_LOAD;
 				Protean::Renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, rp_count, cmd);
 			}
 
@@ -1682,7 +1682,7 @@ namespace Protean
 
 				RenderPassImage rp[4] = {};
 				uint32_t rp_count = 0;
-				rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp::LOAD);
+				rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp_LOAD);
 				if (getMSAASampleCount() > 1)
 				{
 					rp[rp_count++] = RenderPassImage::Resolve(&rtMain);
@@ -1766,7 +1766,7 @@ namespace Protean
 			RenderPostprocessChain(cmd);
 
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
-			device->Barrier(GPUBarrier::Image(&debugUAV, ResourceState::UNORDERED_ACCESS, debugUAV.desc.layout), cmd);
+			device->Barrier(GPUBarrier::Image(&debugUAV, ResourceState_UNORDERED_ACCESS, debugUAV.desc.layout), cmd);
 		});
 
 		cmd = device->BeginCommandList(QUEUE_COPY);
@@ -1957,15 +1957,15 @@ namespace Protean
 				if (getMSAASampleCount() > 1)
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rtSun[0], RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE),
+						RenderPassImage::RenderTarget(&rtSun[0], RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE),
 						RenderPassImage::Resolve(&rtSun_resolved),
 						RenderPassImage::DepthStencil(
 							&depthBuffer_Main,
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::DEPTHSTENCIL
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_DEPTHSTENCIL
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -1976,13 +1976,13 @@ namespace Protean
 					RenderPassImage rp[] = {
 						RenderPassImage::DepthStencil(
 							&depthBuffer_Main,
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::DEPTHSTENCIL,
-							ResourceState::DEPTHSTENCIL
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_DEPTHSTENCIL,
+							ResourceState_DEPTHSTENCIL
 						),
-						RenderPassImage::RenderTarget(&rtSun[0], RenderPassImage::LoadOp::CLEAR),
+						RenderPassImage::RenderTarget(&rtSun[0], RenderPassImage::LoadOp_CLEAR),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
 					texture_fullres = &rtSun[0];
@@ -2033,7 +2033,7 @@ namespace Protean
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			RenderPassImage rp[] = {
-				RenderPassImage::RenderTarget(&rtVolumetricLights, RenderPassImage::LoadOp::CLEAR),
+				RenderPassImage::RenderTarget(&rtVolumetricLights, RenderPassImage::LoadOp_CLEAR),
 			};
 			device->RenderPassBegin(rp, arraysize(rp), cmd);
 
@@ -2059,7 +2059,7 @@ namespace Protean
 		{
 			GPUBarrier barriers[] = {
 				GPUBarrier::Aliasing(&rtPrimitiveID, &rtSceneCopy_tmp),
-				GPUBarrier::Image(&rtSceneCopy_tmp, rtSceneCopy_tmp.desc.layout, ResourceState::UNORDERED_ACCESS),
+				GPUBarrier::Image(&rtSceneCopy_tmp, rtSceneCopy_tmp.desc.layout, ResourceState_UNORDERED_ACCESS),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 			device->ClearUAV(&rtSceneCopy_tmp, 0, cmd);
@@ -2067,7 +2067,7 @@ namespace Protean
 
 		Protean::Renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
 
-		device->Barrier(GPUBarrier::Image(&rtSceneCopy_tmp, ResourceState::UNORDERED_ACCESS, rtSceneCopy_tmp.desc.layout), cmd);
+		device->Barrier(GPUBarrier::Image(&rtSceneCopy_tmp, ResourceState_UNORDERED_ACCESS, rtSceneCopy_tmp.desc.layout), cmd);
 
 		Protean::Renderer::MIPGEN_OPTIONS mipopt;
 		mipopt.gaussian_temp = &rtSceneCopy_tmp;
@@ -2087,7 +2087,7 @@ namespace Protean
 		{
 			device->Barrier(GPUBarrier::Aliasing(&rtParticleDistortion, &rtWaterRipple), cmd);
 			RenderPassImage rp[] = {
-				RenderPassImage::RenderTarget(&rtWaterRipple, RenderPassImage::LoadOp::CLEAR),
+				RenderPassImage::RenderTarget(&rtWaterRipple, RenderPassImage::LoadOp_CLEAR),
 			};
 			device->RenderPassBegin(rp, arraysize(rp), cmd);
 
@@ -2105,8 +2105,8 @@ namespace Protean
 			// Save the pre-alpha for FSR2 reactive mask:
 			//	Note that rtFSR temp resource is always larger or equal to rtMain, so CopyTexture is used instead of CopyResource!
 			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&rtMain, rtMain.desc.layout, ResourceState::COPY_SRC),
-				GPUBarrier::Image(&rtFSR[1], rtFSR->desc.layout, ResourceState::COPY_DST),
+				GPUBarrier::Image(&rtMain, rtMain.desc.layout, ResourceState_COPY_SRC),
+				GPUBarrier::Image(&rtFSR[1], rtFSR->desc.layout, ResourceState_COPY_DST),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 			device->CopyTexture(
@@ -2137,28 +2137,28 @@ namespace Protean
 		uint32_t rp_count = 0;
 		if (getMSAASampleCount() > 1)
 		{
-			rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp::LOAD);
+			rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp_LOAD);
 			rp[rp_count++] = RenderPassImage::Resolve(&rtMain);
 			rp[rp_count++] = RenderPassImage::DepthStencil(
 				&depthBuffer_Main,
-				RenderPassImage::LoadOp::LOAD,
-				RenderPassImage::StoreOp::STORE,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL
+				RenderPassImage::LoadOp_LOAD,
+				RenderPassImage::StoreOp_STORE,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL
 			);
 		}
 		else
 		{
 
-			rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp::LOAD);
+			rp[rp_count++] = RenderPassImage::RenderTarget(&rtMain_render, RenderPassImage::LoadOp_LOAD);
 			rp[rp_count++] = RenderPassImage::DepthStencil(
 				&depthBuffer_Main,
-				RenderPassImage::LoadOp::LOAD,
-				RenderPassImage::StoreOp::STORE,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL,
-				ResourceState::DEPTHSTENCIL
+				RenderPassImage::LoadOp_LOAD,
+				RenderPassImage::StoreOp_STORE,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL,
+				ResourceState_DEPTHSTENCIL
 			);
 		}
 
@@ -2286,15 +2286,15 @@ namespace Protean
 			if (getMSAASampleCount() > 1)
 			{
 				RenderPassImage rp[] = {
-					RenderPassImage::RenderTarget(&rtParticleDistortion_render, RenderPassImage::LoadOp::CLEAR),
+					RenderPassImage::RenderTarget(&rtParticleDistortion_render, RenderPassImage::LoadOp_CLEAR),
 					RenderPassImage::Resolve(&rtParticleDistortion),
 					RenderPassImage::DepthStencil(
 						&depthBuffer_Main,
-						RenderPassImage::LoadOp::LOAD,
-						RenderPassImage::StoreOp::STORE,
-						ResourceState::DEPTHSTENCIL,
-						ResourceState::DEPTHSTENCIL,
-						ResourceState::DEPTHSTENCIL
+						RenderPassImage::LoadOp_LOAD,
+						RenderPassImage::StoreOp_STORE,
+						ResourceState_DEPTHSTENCIL,
+						ResourceState_DEPTHSTENCIL,
+						ResourceState_DEPTHSTENCIL
 					),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -2302,14 +2302,14 @@ namespace Protean
 			else
 			{
 				RenderPassImage rp[] = {
-					RenderPassImage::RenderTarget(&rtParticleDistortion, RenderPassImage::LoadOp::CLEAR),
+					RenderPassImage::RenderTarget(&rtParticleDistortion, RenderPassImage::LoadOp_CLEAR),
 					RenderPassImage::DepthStencil(
 						&depthBuffer_Main,
-						RenderPassImage::LoadOp::LOAD,
-						RenderPassImage::StoreOp::STORE,
-						ResourceState::DEPTHSTENCIL,
-						ResourceState::DEPTHSTENCIL,
-						ResourceState::DEPTHSTENCIL
+						RenderPassImage::LoadOp_LOAD,
+						RenderPassImage::StoreOp_STORE,
+						ResourceState_DEPTHSTENCIL,
+						ResourceState_DEPTHSTENCIL,
+						ResourceState_DEPTHSTENCIL
 					),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -2394,7 +2394,7 @@ namespace Protean
 
 			for (auto& x : custom_post_processes)
 			{
-				if (x.stage == CustomPostprocess::Stage::BeforeTonemap)
+				if (x.stage == CustomPostprocess::Stage_BeforeTonemap)
 				{
 					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
@@ -2494,7 +2494,7 @@ namespace Protean
 		{
 			for (auto& x : custom_post_processes)
 			{
-				if (x.stage == CustomPostprocess::Stage::AfterTonemap)
+				if (x.stage == CustomPostprocess::Stage_AfterTonemap)
 				{
 					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
@@ -2544,7 +2544,7 @@ namespace Protean
 			{
 				auto range = Protean::Profiler::BeginRangeGPU("GUI Background Blur", cmd);
 				device->EventBegin("GUI Background Blur", cmd);
-				bool hdrToSRGB = colorspace != ColorSpace::SRGB;
+				bool hdrToSRGB = colorspace != ColorSpace_SRGB;
 				Protean::Renderer::Postprocess_Downsample4x(*rt_read, rtGUIBlurredBackground[0], cmd, hdrToSRGB);
 				Protean::Renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
 				Protean::Renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
@@ -2594,7 +2594,7 @@ namespace Protean
 				desc.width = camera.render_to_texture.resolution.x;
 				desc.height = camera.render_to_texture.resolution.y;
 				desc.format = Protean::Renderer::format_rendertarget_main;
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 				desc.mip_levels = GetMipCount(desc.width, desc.height);
 				bool success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.rendertarget_render);
 				assert(success);
@@ -2606,24 +2606,24 @@ namespace Protean
 				for (uint32_t i = 0; i < camera.render_to_texture.rendertarget_render.desc.mip_levels; ++i)
 				{
 					int subresource_index;
-					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType::SRV, 0, 1, i, 1);
+					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType_SRV, 0, 1, i, 1);
 					assert(subresource_index == i);
-					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType::SRV, 0, 1, i, 1);
+					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType_SRV, 0, 1, i, 1);
 					assert(subresource_index == i);
-					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType::UAV, 0, 1, i, 1);
+					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType_UAV, 0, 1, i, 1);
 					assert(subresource_index == i);
-					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType::UAV, 0, 1, i, 1);
+					subresource_index = device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType_UAV, 0, 1, i, 1);
 					assert(subresource_index == i);
 				}
 
 				desc.mip_levels = 1;
 				if (camera.render_to_texture.sample_count > 1)
 				{
-					device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType::RTV, 0, 1, 0, 1); // resolve, swapped
-					device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType::RTV, 0, 1, 0, 1); // resolve, swapped
+					device->CreateSubresource(&camera.render_to_texture.rendertarget_render, SubresourceType_RTV, 0, 1, 0, 1); // resolve, swapped
+					device->CreateSubresource(&camera.render_to_texture.rendertarget_display, SubresourceType_RTV, 0, 1, 0, 1); // resolve, swapped
 					desc.sample_count = camera.render_to_texture.sample_count;
-					desc.layout = ResourceState::RENDERTARGET;
-					desc.bind_flags = BindFlag::RENDER_TARGET;
+					desc.layout = ResourceState_RENDERTARGET;
+					desc.bind_flags = BindFlag_RENDER_TARGET;
 					success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.rendertarget_MSAA);
 					assert(success);
 					device->SetName(&camera.render_to_texture.rendertarget_MSAA, "CameraComponent::rendertarget_MSAA");
@@ -2634,8 +2634,8 @@ namespace Protean
 				}
 
 				desc.format = Protean::Renderer::format_depthbuffer_main;
-				desc.bind_flags = BindFlag::DEPTH_STENCIL | BindFlag::SHADER_RESOURCE;
-				desc.layout = ResourceState::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_DEPTH_STENCIL | BindFlag_SHADER_RESOURCE;
+				desc.layout = ResourceState_SHADER_RESOURCE;
 				success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.depthstencil);
 				assert(success);
 				device->SetName(&camera.render_to_texture.depthstencil, "CameraComponent::depthstencil");
@@ -2643,9 +2643,9 @@ namespace Protean
 				if (camera.render_to_texture.sample_count > 1)
 				{
 					desc.sample_count = 1;
-					desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-					desc.layout = ResourceState::SHADER_RESOURCE;
-					desc.format = Format::R32_FLOAT;
+					desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+					desc.layout = ResourceState_SHADER_RESOURCE;
+					desc.format = Format_R32_FLOAT;
 					success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.depthstencil_resolved);
 					assert(success);
 					device->SetName(&camera.render_to_texture.depthstencil_resolved, "CameraComponent::depthstencil_resolved");
@@ -2673,13 +2673,13 @@ namespace Protean
 
 			if (camera.render_to_texture.depthstencil_resolved.IsValid())
 			{
-				camera.texture_depth_index = device->GetDescriptorIndex(&camera.render_to_texture.depthstencil_resolved, SubresourceType::SRV);
+				camera.texture_depth_index = device->GetDescriptorIndex(&camera.render_to_texture.depthstencil_resolved, SubresourceType_SRV);
 			}
 			else
 			{
-				camera.texture_depth_index = device->GetDescriptorIndex(&camera.render_to_texture.depthstencil, SubresourceType::SRV);
+				camera.texture_depth_index = device->GetDescriptorIndex(&camera.render_to_texture.depthstencil, SubresourceType_SRV);
 			}
-			camera.buffer_entitytiles_index = device->GetDescriptorIndex(&camera.render_to_texture.entityTiles, SubresourceType::SRV);
+			camera.buffer_entitytiles_index = device->GetDescriptorIndex(&camera.render_to_texture.entityTiles, SubresourceType_SRV);
 
 
 			Protean::JobSystem::Execute(ctx, [this, cmd, i](Protean::JobSystem::JobArgs args) {
@@ -2716,7 +2716,7 @@ namespace Protean
 				// prepass:
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::STORE, camera.render_to_texture.depthstencil.desc.layout, ResourceState::DEPTHSTENCIL, ResourceState::SHADER_RESOURCE),
+						RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_STORE, camera.render_to_texture.depthstencil.desc.layout, ResourceState_DEPTHSTENCIL, ResourceState_SHADER_RESOURCE),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
 					Protean::Renderer::DrawScene(
@@ -2743,14 +2743,14 @@ namespace Protean
 					uint32_t rp_count = 0;
 					if (camera.render_to_texture.rendertarget_MSAA.IsValid())
 					{
-						rp[rp_count++] = RenderPassImage::RenderTarget(&camera.render_to_texture.rendertarget_MSAA, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE, ResourceState::RENDERTARGET, ResourceState::RENDERTARGET);
-						rp[rp_count++] = RenderPassImage::Resolve(&camera.render_to_texture.rendertarget_render, ResourceState::SHADER_RESOURCE, ResourceState::SHADER_RESOURCE, 0);
+						rp[rp_count++] = RenderPassImage::RenderTarget(&camera.render_to_texture.rendertarget_MSAA, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE, ResourceState_RENDERTARGET, ResourceState_RENDERTARGET);
+						rp[rp_count++] = RenderPassImage::Resolve(&camera.render_to_texture.rendertarget_render, ResourceState_SHADER_RESOURCE, ResourceState_SHADER_RESOURCE, 0);
 					}
 					else
 					{
-						rp[rp_count++] = RenderPassImage::RenderTarget(&camera.render_to_texture.rendertarget_render, RenderPassImage::LoadOp::CLEAR);
+						rp[rp_count++] = RenderPassImage::RenderTarget(&camera.render_to_texture.rendertarget_render, RenderPassImage::LoadOp_CLEAR);
 					}
-					rp[rp_count++] = RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp::LOAD, RenderPassImage::StoreOp::DONTCARE, ResourceState::SHADER_RESOURCE, ResourceState::DEPTHSTENCIL, camera.render_to_texture.depthstencil.desc.layout);
+					rp[rp_count++] = RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp_LOAD, RenderPassImage::StoreOp_DONTCARE, ResourceState_SHADER_RESOURCE, ResourceState_DEPTHSTENCIL, camera.render_to_texture.depthstencil.desc.layout);
 					device->RenderPassBegin(rp, rp_count, cmd);
 					Protean::Renderer::DrawScene(
 						visibility,
@@ -2806,9 +2806,9 @@ namespace Protean
 			return;
 
 		TextureDesc desc;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::RENDER_TARGET; // render target binding for aliasing (in case resource heap tier < 2)
-		desc.format = Format::R8_UNORM;
-		desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS | BindFlag_RENDER_TARGET; // render target binding for aliasing (in case resource heap tier < 2)
+		desc.format = Format_R8_UNORM;
+		desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 
 		switch (ao)
 		{
@@ -2870,11 +2870,11 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R16G16B16A16_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
-			desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+			desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 			device->CreateTexture(&desc, nullptr, &rtSSR);
 			device->SetName(&rtSSR, "renderpath3D.rtSSR");
 
@@ -2897,11 +2897,11 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R16G16B16A16_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
-			desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+			desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 			device->CreateTexture(&desc, nullptr, &rtSSGI);
 			device->SetName(&rtSSGI, "renderpath3D.rtSSGI");
 
@@ -2924,8 +2924,8 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R16G16B16A16_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtSSR);
@@ -2950,8 +2950,8 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R16G16B16A16_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R16G16B16A16_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtRaytracedDiffuse);
@@ -2976,7 +2976,7 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = GetPhysicalWidth();
 			desc.height = GetPhysicalHeight();
@@ -3013,7 +3013,7 @@ namespace Protean
 			Protean::Renderer::CreateFSR2Resources(fsr2Resources, GetInternalResolution(), displayResolution);
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = displayResolution.x;
 			desc.height = displayResolution.y;
@@ -3043,19 +3043,19 @@ namespace Protean
 		switch (preset)
 		{
 		default:
-		case FSR2_Preset::Quality:
+		case FSR2_Preset_Quality:
 			resolutionScale = 1.0f / 1.5f;
 			desc.mip_lod_bias = -1.58f;
 			break;
-		case FSR2_Preset::Balanced:
+		case FSR2_Preset_Balanced:
 			resolutionScale = 1.0f / 1.7f;
 			desc.mip_lod_bias = -1.76f;
 			break;
-		case FSR2_Preset::Performance:
+		case FSR2_Preset_Performance:
 			resolutionScale = 1.0f / 2.0f;
 			desc.mip_lod_bias = -2.0f;
 			break;
-		case FSR2_Preset::Ultra_Performance:
+		case FSR2_Preset_Ultra_Performance:
 			resolutionScale = 1.0f / 3.0f;
 			desc.mip_lod_bias = -2.58f;
 			break;
@@ -3101,21 +3101,21 @@ namespace Protean
 			desc.sample_count = planarReflectionMSAASampleCount;
 			if (desc.sample_count > 1)
 			{
-				desc.bind_flags = BindFlag::RENDER_TARGET;
-				desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
-				desc.layout = ResourceState::RENDERTARGET;
+				desc.bind_flags = BindFlag_RENDER_TARGET;
+				desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
+				desc.layout = ResourceState_RENDERTARGET;
 			}
 			else
 			{
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 			}
 			device->CreateTexture(&desc, nullptr, &rtReflection_render);
 			device->SetName(&rtReflection_render, "renderpath3D.rtReflection_render");
 
-			desc.misc_flags = ResourceMiscFlag::NONE;
-			desc.bind_flags = BindFlag::DEPTH_STENCIL | BindFlag::SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_NONE;
+			desc.bind_flags = BindFlag_DEPTH_STENCIL | BindFlag_SHADER_RESOURCE;
 			desc.format = Protean::Renderer::format_depthbuffer_main;
-			desc.layout = ResourceState::SHADER_RESOURCE;
+			desc.layout = ResourceState_SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &depthBuffer_Reflection_render);
 			device->SetName(&depthBuffer_Reflection_render, "renderpath3D.depthBuffer_Reflection_render");
 
@@ -3123,12 +3123,12 @@ namespace Protean
 			{
 				desc.sample_count = 1;
 				desc.format = Protean::Renderer::format_rendertarget_main;
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 				device->CreateTexture(&desc, nullptr, &rtReflection);
 				device->SetName(&rtReflection, "renderpath3D.rtReflection");
 
-				desc.format = Format::R16_UNORM;
-				desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
+				desc.format = Format_R16_UNORM;
+				desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
 				device->CreateTexture(&desc, nullptr, &depthBuffer_Reflection);
 				device->SetName(&depthBuffer_Reflection, "renderpath3D.depthBuffer_Reflection");
 			}
@@ -3183,8 +3183,8 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.format = Format::R16G16B16A16_FLOAT;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.format = Format_R16G16B16A16_FLOAT;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.width = internalResolution.x / 2;
 			desc.height = internalResolution.y / 2;
 			device->CreateTexture(&desc, nullptr, &rtVolumetricLights);
@@ -3207,7 +3207,7 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
@@ -3215,7 +3215,7 @@ namespace Protean
 			device->CreateTexture(&desc, nullptr, &rtSun[0]);
 			device->SetName(&rtSun[0], "renderpath3D.rtSun[0]");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.sample_count = 1;
 			desc.width = internalResolution.x / 4;
 			desc.height = internalResolution.y / 4;
@@ -3226,7 +3226,7 @@ namespace Protean
 
 			if (getMSAASampleCount() > 1)
 			{
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 				desc.width = internalResolution.x;
 				desc.height = internalResolution.y;
 				desc.sample_count = 1;
@@ -3254,8 +3254,8 @@ namespace Protean
 				return;
 
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc.format = Format::R32_FLOAT;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc.format = Format_R32_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtOutlineSource);
@@ -3263,10 +3263,10 @@ namespace Protean
 
 			if (getMSAASampleCount() > 1)
 			{
-				desc.bind_flags = BindFlag::RENDER_TARGET;
+				desc.bind_flags = BindFlag_RENDER_TARGET;
 				desc.sample_count = getMSAASampleCount();
-				desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
-				desc.layout = ResourceState::RENDERTARGET;
+				desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
+				desc.layout = ResourceState_RENDERTARGET;
 				device->CreateTexture(&desc, nullptr, &rtOutlineSource_MSAA);
 				device->SetName(&rtOutlineSource_MSAA, "renderpath3D.rtOutlineSource_MSAA");
 			}
@@ -3281,8 +3281,8 @@ namespace Protean
 	Texture RenderPath3D::CreateScreenshotWithAlphaBackground(uint8_t stencilref, Protean::Image::STENCILMODE stencilmode, Protean::Image::STENCILREFMODE stencilrefmode)
 	{
 		TextureDesc desc = rtMain_render.GetDesc();
-		desc.format = Format::R8G8B8A8_UNORM;
-		desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+		desc.format = Format_R8G8B8A8_UNORM;
+		desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 		Texture tex;
 		GraphicsDevice* device = GetDevice();
 		bool success = device->CreateTexture(&desc, nullptr, &tex);
@@ -3298,7 +3298,7 @@ namespace Protean
 
 		CommandList cmd = device->BeginCommandList();
 		RenderPassImage rp[] = {
-			RenderPassImage::RenderTarget(&tex, RenderPassImage::LoadOp::CLEAR),
+			RenderPassImage::RenderTarget(&tex, RenderPassImage::LoadOp_CLEAR),
 			RenderPassImage::DepthStencil(GetDepthStencil()),
 			RenderPassImage::Resolve(&tex_resolved),
 		};

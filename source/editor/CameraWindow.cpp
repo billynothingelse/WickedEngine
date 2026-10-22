@@ -39,7 +39,7 @@ void CameraWindow::ResetCam()
 void CameraWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create("Camera", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Camera", Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_RESIZE_RIGHT);
 	SetText("Camera " ICON_CAMERAOPTIONS);
 
 	editor->GetCurrentEditorScene().camera_transform.MatrixTransform(editor->GetCurrentEditorScene().camera.GetInvView());

@@ -348,7 +348,7 @@ namespace Protean::Graphics
 				pool_sizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, DESCRIPTORBINDER_SRV_COUNT * set_count });
 				pool_sizes.push_back({ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, DESCRIPTORBINDER_UAV_COUNT * set_count });
 				pool_sizes.push_back({ VK_DESCRIPTOR_TYPE_SAMPLER, (DESCRIPTORBINDER_SAMPLER_COUNT + STATIC_SAMPLER_COUNT) * set_count });
-				if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+				if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 				{
 					pool_sizes.push_back({ VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, DESCRIPTORBINDER_SRV_COUNT * set_count });
 				}
@@ -504,7 +504,7 @@ namespace Protean::Graphics
 				active_cs = nullptr;
 				active_rt = nullptr;
 				dirty_pso = false;
-				prev_shadingrate = ShadingRate::RATE_INVALID;
+				prev_shadingrate = ShadingRate_RATE_INVALID;
 				prev_stencilref = 0;
 				prev_swapchains.clear();
 				renderpass_info = {};
@@ -544,7 +544,7 @@ namespace Protean::Graphics
 		void set_semaphore_name(VkSemaphore semaphore, const char* name);
 
 	public:
-		GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
+		GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
 		~GraphicsDevice_Vulkan() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
@@ -580,7 +580,7 @@ namespace Protean::Graphics
 		void ClearPipelineStateCache() override;
 		size_t GetActivePipelineCount() const override { return pipelines_global.size(); }
 
-		ShaderFormat GetShaderFormat() const override { return ShaderFormat::SPIRV; }
+		ShaderFormat GetShaderFormat() const override { return ShaderFormat_SPIRV; }
 
 		Texture GetBackBuffer(const SwapChain* swapchain) const override;
 
@@ -590,23 +590,23 @@ namespace Protean::Graphics
 		uint32_t GetMinOffsetAlignment(const GPUBufferDesc* desc) const override
 		{
 			uint32_t alignment = std::max(1u, desc->alignment);
-			if (has_flag(desc->bind_flags, BindFlag::CONSTANT_BUFFER))
+			if (has_flag(desc->bind_flags, BindFlag_CONSTANT_BUFFER))
 			{
 				alignment = std::max(alignment, (uint32_t)properties2.properties.limits.minUniformBufferOffsetAlignment);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::BUFFER_RAW) || has_flag(desc->misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_BUFFER_RAW) || has_flag(desc->misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED))
 			{
 				alignment = std::max(alignment, (uint32_t)properties2.properties.limits.minStorageBufferOffsetAlignment);
 			}
-			if (desc->format != Format::UNKNOWN || has_flag(desc->misc_flags, ResourceMiscFlag::TYPED_FORMAT_CASTING))
+			if (desc->format != Format_UNKNOWN || has_flag(desc->misc_flags, ResourceMiscFlag_TYPED_FORMAT_CASTING))
 			{
 				alignment = std::max(alignment, (uint32_t)properties2.properties.limits.minTexelBufferOffsetAlignment);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				alignment = std::max(alignment, uint32_t(64 * 1024)); // 64KB safety to match DX12, because cannot use vkGetBufferMemoryRequirements here
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::RAY_TRACING))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_RAY_TRACING))
 			{
 				alignment = std::max(alignment, raytracing_properties.shaderGroupBaseAlignment);
 			}
@@ -643,7 +643,7 @@ namespace Protean::Graphics
 
 		void WaitCommandList(CommandList cmd, CommandList wait_for) override;
 		void RenderPassBegin(const SwapChain* swapchain, CommandList cmd) override;
-		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) override;
+		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) override;
 		void RenderPassEnd(CommandList cmd) override;
 		void BindScissorRects(uint32_t numRects, const Rect* rects, CommandList cmd) override;
 		void BindViewports(uint32_t NumViewports, const Viewport *pViewports, CommandList cmd) override;

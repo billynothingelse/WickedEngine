@@ -1688,7 +1688,7 @@ namespace Protean
 				if (!colorGradingMapName.empty())
 				{
 					colorGradingMapName = dir + colorGradingMapName;
-					colorGradingMap = Protean::ResourceManager::Load(colorGradingMapName, Protean::ResourceManager::Flags::IMPORT_COLORGRADINGLUT);
+					colorGradingMap = Protean::ResourceManager::Load(colorGradingMapName, Protean::ResourceManager::Flags_IMPORT_COLORGRADINGLUT);
 				}
 			}
 
@@ -2352,11 +2352,11 @@ namespace Protean
 			{
 				Expression& expression = expressions[expression_index];
 				archive >> expression.name;
-				if (expression.preset == ExpressionComponent::Preset::Count && expression.name.compare("Surprised") == 0)
+				if (expression.preset == ExpressionComponent::Preset_Count && expression.name.compare("Surprised") == 0)
 				{
 					// Vroid was not exporting Suprised expression properly and it was not handled at import for some models:
-					expression.preset = ExpressionComponent::Preset::Surprised;
-					presets[size_t(ExpressionComponent::Preset::Surprised)] = int(expression_index);
+					expression.preset = ExpressionComponent::Preset_Surprised;
+					presets[size_t(ExpressionComponent::Preset_Surprised)] = int(expression_index);
 				}
 				archive >> expression.weight;
 
@@ -2708,7 +2708,7 @@ namespace Protean
 
 		// With this we will ensure that serialized entities are unique and persistent across the scene:
 		EntitySerializer seri;
-		seri.ctx.priority = Protean::JobSystem::Priority::Low; // serialization tasks will be low priority to not block rendering if scene loading is asynchronous
+		seri.ctx.priority = Protean::JobSystem::Priority_Low; // serialization tasks will be low priority to not block rendering if scene loading is asynchronous
 
 		if(archive.GetVersion() >= 84)
 		{
@@ -2862,9 +2862,9 @@ namespace Protean
 				GPUBufferDesc buf;
 				buf.stride = sizeof(DDGIProbe);
 				buf.size = buf.stride * probe_count;
-				buf.bind_flags = BindFlag::SHADER_RESOURCE;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-				buf.format = Format::UNKNOWN;
+				buf.bind_flags = BindFlag_SHADER_RESOURCE;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+				buf.format = Format_UNKNOWN;
 				device->CreateBuffer(&buf, data.data(), &probe_buffer);
 				device->SetName(&probe_buffer, "ddgi.probe_buffer[serialized]");
 			}
@@ -2876,8 +2876,8 @@ namespace Protean
 				TextureDesc desc;
 				desc.width = DDGI_DEPTH_TEXELS * grid_dimensions.x * grid_dimensions.y;
 				desc.height = DDGI_DEPTH_TEXELS * grid_dimensions.z;
-				desc.format = Format::R16G16_FLOAT;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE;
+				desc.format = Format_R16G16_FLOAT;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 				SubresourceData initdata;
 				initdata.data_ptr = data.data();
@@ -2894,7 +2894,7 @@ namespace Protean
 
 				if (!data.empty())
 				{
-					Protean::Backlog::post("Found older DDGI data in the scene which is now incompatible. Please recompute the DDGI if you need it.", Protean::Backlog::LogLevel::Warning);
+					Protean::Backlog::post("Found older DDGI data in the scene which is now incompatible. Please recompute the DDGI if you need it.", Protean::Backlog::LogLevel_Warning);
 					depth_texture = {};
 					probe_buffer = {};
 				}
@@ -2942,7 +2942,7 @@ namespace Protean
 		SerializeEntity(archive, entity, seri);
 
 		bool restore_remap = seri.allow_remap;
-		if (has_flag(flags, Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES))
+		if (has_flag(flags, Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES))
 		{
 			seri.allow_remap = false;
 		}
@@ -2959,7 +2959,7 @@ namespace Protean
 				//	The pointers must not be invalidated while serialization jobs are not finished
 				Protean::JobSystem::Wait(seri.ctx);
 
-				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
+				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags_RECURSIVE))
 				{
 					// serialize children:
 					seri.allow_remap = restore_remap;
@@ -2986,7 +2986,7 @@ namespace Protean
 				//	The pointers must not be invalidated while serialization jobs are not finished
 				Protean::JobSystem::Wait(seri.ctx);
 
-				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
+				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags_RECURSIVE))
 				{
 					// Recursive serialization for all children:
 					seri.allow_remap = restore_remap;
@@ -3288,7 +3288,7 @@ namespace Protean
 				//	The pointers must not be invalidated while serialization jobs are not finished
 				Protean::JobSystem::Wait(seri.ctx);
 
-				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
+				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags_RECURSIVE))
 				{
 					// serialize children:
 					seri.allow_remap = restore_remap;
@@ -3621,7 +3621,7 @@ namespace Protean
 				//	The pointers must not be invalidated while serialization jobs are not finished
 				Protean::JobSystem::Wait(seri.ctx);
 
-				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
+				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags_RECURSIVE))
 				{
 					// Recursive serialization for all children:
 					seri.allow_remap = restore_remap;

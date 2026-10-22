@@ -7,7 +7,7 @@ const std::string default_text = "Environment probes can be used to capture the 
 void EnvProbeWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 340));
 
 	closeButton.SetTooltip("Delete EnvironmentProbeComponent");
@@ -111,7 +111,7 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
 					probe->resource = Protean::ResourceManager::Load(fileName);
-					if (has_flag(probe->resource.GetTexture().GetDesc().misc_flags, Protean::Graphics::ResourceMiscFlag::TEXTURECUBE))
+					if (has_flag(probe->resource.GetTexture().GetDesc().misc_flags, Protean::Graphics::ResourceMiscFlag_TEXTURECUBE))
 					{
 						probe->textureName = fileName;
 						probe->CreateRenderData();

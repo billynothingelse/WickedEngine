@@ -15,11 +15,10 @@ namespace Protean
 		float opacity = 0;
 		float timer = 0;
 		float targetFadeTimeInSeconds = 1.0f;
-		enum class FadeType
-		{
-			FadeToColor,
-			CrossFade
-		} type = FadeType::FadeToColor;
+		enum FadeType {
+			FadeType_FadeToColor,
+			FadeType_CrossFade
+		} type = FadeType_FadeToColor;
 		enum FADE_STATE
 		{
 			FADE_IN,	// no fade -> faded
@@ -38,7 +37,7 @@ namespace Protean
 			Clear();
 		}
 		void Clear();
-		void Start(float seconds, Protean::Color color, std::function<void()> onFadeFunction, FadeType fadetype = FadeType::FadeToColor)
+		void Start(float seconds, Protean::Color color, std::function<void()> onFadeFunction, FadeType fadetype = FadeType_FadeToColor)
 		{
 			type = fadetype;
 			targetFadeTimeInSeconds = seconds;
@@ -54,7 +53,7 @@ namespace Protean
 				state = FADE_IN;
 			}
 			onFade = onFadeFunction;
-			if (type == FadeType::CrossFade)
+			if (type == FadeType_CrossFade)
 			{
 				// starts from full faded state and only blends out from it
 				state = FADE_MID;

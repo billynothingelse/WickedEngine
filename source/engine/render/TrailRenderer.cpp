@@ -98,8 +98,8 @@ namespace Protean
 		sb.g_xTrailTexMulAdd = texMulAdd;
 		sb.g_xTrailTexMulAdd2 = texMulAdd2;
 		sb.g_xTrailDepthSoften = 1.0f / (width * depth_soften);
-		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : Protean::TextureHelper::getWhite(), SubresourceType::SRV);
-		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture2 : Protean::TextureHelper::getWhite(), SubresourceType::SRV);
+		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : Protean::TextureHelper::getWhite(), SubresourceType_SRV);
+		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture2 : Protean::TextureHelper::getWhite(), SubresourceType_SRV);
 		sb.g_xTrailDepthTextureIndex = camera.texture_depth_index;
 		sb.g_xTrailCameraFar = camera.zFarP;
 		device->BindDynamicConstantBuffer(sb, CBSLOT_TRAILRENDERER, cmd);
@@ -285,7 +285,7 @@ namespace Protean
 		};
 		device->BindVertexBuffers(vbs, 0, arraysize(vbs), strides, offsets, cmd);
 
-		device->BindIndexBuffer(&mem.buffer, IndexBufferFormat::UINT32, mem.offset + sizeof(Vertex) * vertexCountAlloc, cmd);
+		device->BindIndexBuffer(&mem.buffer, IndexBufferFormat_UINT32, mem.offset + sizeof(Vertex) * vertexCountAlloc, cmd);
 
 		device->DrawIndexed(indexCount, 0, 0, cmd);
 
@@ -296,13 +296,13 @@ namespace Protean
 	{
 		void LoadShaders()
 		{
-			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "trailVS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "trailPS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, vertexShader, "trailVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader, "trailPS.cso");
 
 			inputLayout.elements = {
-				{ "POSITION", 0, Format::R32G32B32_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
-				{ "TEXCOORD", 0, Format::R16G16_UNORM, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
-				{ "COLOR", 0, Format::R16G16B16A16_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
+				{ "POSITION", 0, Format_R32G32B32_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification_PER_VERTEX_DATA },
+				{ "TEXCOORD", 0, Format_R16G16_UNORM, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification_PER_VERTEX_DATA },
+				{ "COLOR", 0, Format_R16G16B16A16_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification_PER_VERTEX_DATA },
 			};
 
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
@@ -310,7 +310,7 @@ namespace Protean
 			for (int i = 0; i < BLENDMODE_COUNT; ++i)
 			{
 				PipelineStateDesc desc;
-				desc.pt = PrimitiveTopology::TRIANGLELIST;
+				desc.pt = PrimitiveTopology_TRIANGLELIST;
 				desc.vs = &vertexShader;
 				desc.ps = &pixelShader;
 				desc.il = &inputLayout;
@@ -322,7 +322,7 @@ namespace Protean
 
 			{
 				PipelineStateDesc desc;
-				desc.pt = PrimitiveTopology::TRIANGLELIST;
+				desc.pt = PrimitiveTopology_TRIANGLELIST;
 				desc.vs = &vertexShader;
 				desc.ps = &pixelShader;
 				desc.il = &inputLayout;
@@ -339,8 +339,8 @@ namespace Protean
 		Protean::Timer timer;
 
 		RasterizerState rs;
-		rs.fill_mode = FillMode::SOLID;
-		rs.cull_mode = CullMode::NONE;
+		rs.fill_mode = FillMode_SOLID;
+		rs.cull_mode = CullMode_NONE;
 		rs.front_counter_clockwise = true;
 		rs.depth_bias = 0;
 		rs.depth_bias_clamp = 0;
@@ -351,8 +351,8 @@ namespace Protean
 		rasterizerState = rs;
 
 
-		rs.fill_mode = FillMode::WIREFRAME;
-		rs.cull_mode = CullMode::NONE;
+		rs.fill_mode = FillMode_WIREFRAME;
+		rs.cull_mode = CullMode_NONE;
 		rs.front_counter_clockwise = true;
 		rs.depth_bias = 0;
 		rs.depth_bias_clamp = 0;
@@ -365,66 +365,66 @@ namespace Protean
 
 		DepthStencilState dsd;
 		dsd.depth_enable = true;
-		dsd.depth_write_mask = DepthWriteMask::ZERO;
-		dsd.depth_func = ComparisonFunc::GREATER_EQUAL;
+		dsd.depth_write_mask = DepthWriteMask_ZERO;
+		dsd.depth_func = ComparisonFunc_GREATER_EQUAL;
 		dsd.stencil_enable = false;
 		depthStencilState = dsd;
 
 
 		BlendState bd;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ALPHA] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::ONE;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ZERO;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_ONE;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ZERO;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ADDITIVE] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::ONE;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_ONE;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_PREMULTIPLIED] = bd;
 
-		bd.render_target[0].src_blend = Blend::DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::DEST_ALPHA;
-		bd.render_target[0].dest_blend_alpha = Blend::ZERO;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
+		bd.render_target[0].src_blend = Blend_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_DEST_ALPHA;
+		bd.render_target[0].dest_blend_alpha = Blend_ZERO;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.alpha_to_coverage_enable = false;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_MULTIPLY] = bd;
 
-		bd.render_target[0].src_blend = Blend::INV_DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::DEST_ALPHA;
-		bd.render_target[0].dest_blend_alpha = Blend::ZERO;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
+		bd.render_target[0].src_blend = Blend_INV_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_DEST_ALPHA;
+		bd.render_target[0].dest_blend_alpha = Blend_ZERO;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.alpha_to_coverage_enable = false;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_INVERSE] = bd;

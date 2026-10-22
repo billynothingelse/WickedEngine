@@ -7,7 +7,7 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create(ICON_HUMANOID " Humanoid", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_HUMANOID " Humanoid", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 620));
 
 	closeButton.SetTooltip("Delete HumanoidComponent");
@@ -138,7 +138,7 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 	headSizeSlider.Create(0.5f, 2, 1, 1000, "Head size: ");
 	headSizeSlider.SetTooltip("Adjust head size.");
 	headSizeSlider.OnSlide(forEachSelected([this] (auto humanoid, auto args) {
-		Entity bone = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::Head)];
+		Entity bone = humanoid->bones[size_t(HumanoidComponent::HumanoidBone_Head)];
 		Protean::Scene& scene = editor->GetCurrentScene();
 		TransformComponent* transform = scene.transforms.GetComponent(bone);
 		if (transform != nullptr)
@@ -365,7 +365,7 @@ void HumanoidWindow::SetEntity(Entity entity)
 			armSpacingSlider.SetValue(humanoid->arm_spacing);
 			legSpacingSlider.SetValue(humanoid->leg_spacing);
 
-			Entity bone = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::Head)];
+			Entity bone = humanoid->bones[size_t(HumanoidComponent::HumanoidBone_Head)];
 			const TransformComponent* transform = scene.transforms.GetComponent(bone);
 			if (transform != nullptr)
 			{
@@ -425,174 +425,174 @@ void HumanoidWindow::RefreshBoneList()
 
 			switch (type)
 			{
-			case Protean::HumanoidComponent::HumanoidBone::Hips:
+			case Protean::HumanoidComponent::HumanoidBone_Hips:
 				boneList.AddItem("Torso"); // grouping item
 				item.name += "Hips";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::Spine:
+			case Protean::HumanoidComponent::HumanoidBone_Spine:
 				item.name += "Spine";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::Chest:
+			case Protean::HumanoidComponent::HumanoidBone_Chest:
 				item.name += "Chest";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::UpperChest:
+			case Protean::HumanoidComponent::HumanoidBone_UpperChest:
 				item.name += "UpperChest";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::Neck:
+			case Protean::HumanoidComponent::HumanoidBone_Neck:
 				item.name += "Neck";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::Head:
+			case Protean::HumanoidComponent::HumanoidBone_Head:
 				boneList.AddItem("Head"); // grouping item
 				item.name += "Head";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftEye:
+			case Protean::HumanoidComponent::HumanoidBone_LeftEye:
 				item.name += "LeftEye";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightEye:
+			case Protean::HumanoidComponent::HumanoidBone_RightEye:
 				item.name += "RightEye";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::Jaw:
+			case Protean::HumanoidComponent::HumanoidBone_Jaw:
 				item.name += "Jaw";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftUpperLeg:
+			case Protean::HumanoidComponent::HumanoidBone_LeftUpperLeg:
 				boneList.AddItem("Legs"); // grouping item
 				item.name += "LeftUpperLeg";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftLowerLeg:
+			case Protean::HumanoidComponent::HumanoidBone_LeftLowerLeg:
 				item.name += "LeftLowerLeg";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftFoot:
+			case Protean::HumanoidComponent::HumanoidBone_LeftFoot:
 				item.name += "LeftFoot";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftToes:
+			case Protean::HumanoidComponent::HumanoidBone_LeftToes:
 				item.name += "LeftToes";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightUpperLeg:
+			case Protean::HumanoidComponent::HumanoidBone_RightUpperLeg:
 				item.name += "RightUpperLeg";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightLowerLeg:
+			case Protean::HumanoidComponent::HumanoidBone_RightLowerLeg:
 				item.name += "RightLowerLeg";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightFoot:
+			case Protean::HumanoidComponent::HumanoidBone_RightFoot:
 				item.name += "RightFoot";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightToes:
+			case Protean::HumanoidComponent::HumanoidBone_RightToes:
 				item.name += "RightToes";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftShoulder:
+			case Protean::HumanoidComponent::HumanoidBone_LeftShoulder:
 				boneList.AddItem("Arms"); // grouping item
 				item.name += "LeftShoulder";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftUpperArm:
+			case Protean::HumanoidComponent::HumanoidBone_LeftUpperArm:
 				item.name += "LeftUpperArm";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftLowerArm:
+			case Protean::HumanoidComponent::HumanoidBone_LeftLowerArm:
 				item.name += "LeftLowerArm";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftHand:
+			case Protean::HumanoidComponent::HumanoidBone_LeftHand:
 				item.name += "LeftHand";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightShoulder:
+			case Protean::HumanoidComponent::HumanoidBone_RightShoulder:
 				item.name += "RightShoulder";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightUpperArm:
+			case Protean::HumanoidComponent::HumanoidBone_RightUpperArm:
 				item.name += "RightUpperArm";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightLowerArm:
+			case Protean::HumanoidComponent::HumanoidBone_RightLowerArm:
 				item.name += "RightLowerArm";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightHand:
+			case Protean::HumanoidComponent::HumanoidBone_RightHand:
 				item.name += "RightHand";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftThumbMetacarpal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftThumbMetacarpal:
 				boneList.AddItem("Fingers"); // grouping item
 				item.name += "LeftThumbMetacarpal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftThumbProximal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftThumbProximal:
 				item.name += "LeftThumbProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftThumbDistal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftThumbDistal:
 				item.name += "LeftThumbDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftIndexProximal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftIndexProximal:
 				item.name += "LeftIndexProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftIndexIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_LeftIndexIntermediate:
 				item.name += "LeftIndexIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftIndexDistal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftIndexDistal:
 				item.name += "LeftIndexDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleProximal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftMiddleProximal:
 				item.name += "LeftMiddleProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_LeftMiddleIntermediate:
 				item.name += "LeftMiddleIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleDistal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftMiddleDistal:
 				item.name += "LeftMiddleDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftRingProximal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftRingProximal:
 				item.name += "LeftRingProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftRingIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_LeftRingIntermediate:
 				item.name += "LeftRingIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftRingDistal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftRingDistal:
 				item.name += "LeftRingDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftLittleProximal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftLittleProximal:
 				item.name += "LeftLittleProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftLittleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_LeftLittleIntermediate:
 				item.name += "LeftLittleIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::LeftLittleDistal:
+			case Protean::HumanoidComponent::HumanoidBone_LeftLittleDistal:
 				item.name += "LeftLittleDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightThumbMetacarpal:
+			case Protean::HumanoidComponent::HumanoidBone_RightThumbMetacarpal:
 				item.name += "RightThumbMetacarpal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightThumbProximal:
+			case Protean::HumanoidComponent::HumanoidBone_RightThumbProximal:
 				item.name += "RightThumbProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightThumbDistal:
+			case Protean::HumanoidComponent::HumanoidBone_RightThumbDistal:
 				item.name += "RightThumbDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightIndexIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_RightIndexIntermediate:
 				item.name += "RightIndexIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightIndexDistal:
+			case Protean::HumanoidComponent::HumanoidBone_RightIndexDistal:
 				item.name += "RightIndexDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightIndexProximal:
+			case Protean::HumanoidComponent::HumanoidBone_RightIndexProximal:
 				item.name += "RightIndexProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightMiddleProximal:
+			case Protean::HumanoidComponent::HumanoidBone_RightMiddleProximal:
 				item.name += "RightMiddleProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightMiddleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_RightMiddleIntermediate:
 				item.name += "RightMiddleIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightMiddleDistal:
+			case Protean::HumanoidComponent::HumanoidBone_RightMiddleDistal:
 				item.name += "RightMiddleDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightRingProximal:
+			case Protean::HumanoidComponent::HumanoidBone_RightRingProximal:
 				item.name += "RightRingProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightRingIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_RightRingIntermediate:
 				item.name += "RightRingIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightRingDistal:
+			case Protean::HumanoidComponent::HumanoidBone_RightRingDistal:
 				item.name += "RightRingDistal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightLittleProximal:
+			case Protean::HumanoidComponent::HumanoidBone_RightLittleProximal:
 				item.name += "RightLittleProximal";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightLittleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone_RightLittleIntermediate:
 				item.name += "RightLittleIntermediate";
 				break;
-			case Protean::HumanoidComponent::HumanoidBone::RightLittleDistal:
+			case Protean::HumanoidComponent::HumanoidBone_RightLittleDistal:
 				item.name += "RightLittleDistal";
 				break;
 			default:
@@ -677,7 +677,7 @@ void HumanoidWindow::UpdateHumanoids()
 		{
 			HumanoidComponent& humanoid = scene.humanoids[i];
 
-			Entity bone = humanoid.bones[size_t(HumanoidComponent::HumanoidBone::Head)];
+			Entity bone = humanoid.bones[size_t(HumanoidComponent::HumanoidBone_Head)];
 			const TransformComponent* transform = scene.transforms.GetComponent(bone);
 			if (transform != nullptr)
 			{

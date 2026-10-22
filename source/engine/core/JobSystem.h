@@ -37,22 +37,21 @@ namespace Protean::JobSystem
 	using job_function_type = std::function<void(JobArgs)>;
 #endif // JOB_SYSTEM_FIXED_SIZE_FUNCTION
 
-	enum class Priority
-	{
-		High,		// Default
-		Low,		// Pool of low priority threads, useful for generic tasks that shouldn't interfere with high priority tasks
-		Streaming,	// Single low priority thread, for streaming resources
-		Count
+	enum Priority {
+		Priority_High,		// Default
+		Priority_Low,		// Pool of low priority threads, useful for generic tasks that shouldn't interfere with high priority tasks
+		Priority_Streaming,	// Single low priority thread, for streaming resources
+		Priority_Count
 	};
 
 	// Defines a state of execution, can be waited on
 	struct context
 	{
 		std::atomic<uint32_t> counter{ 0 };
-		Priority priority = Priority::High;
+		Priority priority = Priority_High;
 	};
 
-	uint32_t GetThreadCount(Priority priority = Priority::High);
+	uint32_t GetThreadCount(Priority priority = Priority_High);
 
 	// Add a task to execute asynchronously. Any idle thread will execute this.
 	void Execute(context& ctx, const job_function_type& task);

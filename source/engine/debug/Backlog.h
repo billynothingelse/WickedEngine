@@ -9,15 +9,15 @@
 #include <cassert>
 
 #define wilog_level(str,level,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); Protean::Backlog::post(text, level);}
-#define wilog_messagebox(str,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); Protean::Backlog::post(text, Protean::Backlog::LogLevel::Error); Protean::Helper::messageBox(text, "Error!");}
-#define wilog_warning(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Warning, ## __VA_ARGS__);}
-#define wilog_error(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Error, ## __VA_ARGS__);}
-#define wilog_success(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Success, ## __VA_ARGS__);}
-#define wilog(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Default, ## __VA_ARGS__);}
+#define wilog_messagebox(str,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); Protean::Backlog::post(text, Protean::Backlog::LogLevel_Error); Protean::Helper::messageBox(text, "Error!");}
+#define wilog_warning(str,...) {wilog_level(str, Protean::Backlog::LogLevel_Warning, ## __VA_ARGS__);}
+#define wilog_error(str,...) {wilog_level(str, Protean::Backlog::LogLevel_Error, ## __VA_ARGS__);}
+#define wilog_success(str,...) {wilog_level(str, Protean::Backlog::LogLevel_Success, ## __VA_ARGS__);}
+#define wilog(str,...) {wilog_level(str, Protean::Backlog::LogLevel_Default, ## __VA_ARGS__);}
 #define wilog_assert(cond,str,...) {if(!(cond)){wilog_error(str, ## __VA_ARGS__); assert(cond);}}
 
 #ifdef _DEBUG
-#define wilog_debug(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Default, ## __VA_ARGS__);}
+#define wilog_debug(str,...) {wilog_level(str, Protean::Backlog::LogLevel_Default, ## __VA_ARGS__);}
 #else
 #define wilog_debug(str,...)
 #endif // DEBUG
@@ -25,13 +25,12 @@
 namespace Protean::Backlog
 {
 	// Keep it in sync with LogLevel LUA binding
-	enum class LogLevel
-	{
-		None,
-		Default,
-		Success,
-		Warning,
-		Error,
+	enum LogLevel {
+		LogLevel_None,
+		LogLevel_Default,
+		LogLevel_Success,
+		LogLevel_Warning,
+		LogLevel_Error,
 	};
 	void Toggle();
 	void Scroll(float direction);
@@ -39,18 +38,18 @@ namespace Protean::Backlog
 	void Draw(
 		const Protean::Canvas& canvas,
 		Protean::Graphics::CommandList cmd,
-		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace_SRGB
 	);
 	void DrawOutputText(
 		const Protean::Canvas& canvas,
 		Protean::Graphics::CommandList cmd,
-		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace_SRGB
 	);
 
 	std::string getText();
 	void clear();
-	void post(const char* input, LogLevel level = LogLevel::Default);
-	void post(const std::string& input, LogLevel level = LogLevel::Default);
+	void post(const char* input, LogLevel level = LogLevel_Default);
+	void post(const std::string& input, LogLevel level = LogLevel_Default);
 
 	void historyPrev();
 	void historyNext();
@@ -85,7 +84,7 @@ namespace Protean::Backlog
 	struct LogEntry
 	{
 		std::string text;
-		LogLevel level = LogLevel::Default;
+		LogLevel level = LogLevel_Default;
 	};
 	// this function is intended to be used only in crash handlers to write the current
 	// backlog, but without locking or any mallocs. It might iterate over complete garbage,

@@ -6,7 +6,7 @@ using namespace Protean;
 void MaterialPickerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create("Materials", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Materials", Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_RESIZE_RIGHT);
 	SetText("Materials " ICON_MATERIALBROWSER);
 	SetSize(XMFLOAT2(300, 400));
 

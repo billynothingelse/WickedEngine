@@ -7,7 +7,7 @@ using namespace Protean::Graphics;
 void GraphicsWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create("Graphics", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Graphics", Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_RESIZE_RIGHT);
 	SetText("Graphics Options " ICON_GRAPHICSOPTIONS);
 
 	Protean::Renderer::SetToDrawDebugEnvProbes(true);
@@ -145,7 +145,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 	});
 	AddWidget(&meshShaderCheckBox);
-	meshShaderCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::MESH_SHADER));
+	meshShaderCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_MESH_SHADER));
 
 	meshletOcclusionCullingCheckBox.Create("Meshlet Occlusion Culling: ");
 	meshletOcclusionCullingCheckBox.SetTooltip("Whether individual meshlets can use specialized occlusion culling (requires GPU support for mesh shaders).");
@@ -161,7 +161,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 	});
 	AddWidget(&meshletOcclusionCullingCheckBox);
-	meshletOcclusionCullingCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::MESH_SHADER));
+	meshletOcclusionCullingCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_MESH_SHADER));
 
 	shadowLODCheckBox.Create("Shadow LOD override: ");
 	shadowLODCheckBox.SetTooltip("Enable custom LOD selection for shadow maps.\nThis can cause LOD mismatch between objects in the camera and shadows, but can be a performance benefit.");
@@ -396,7 +396,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		});
 	variableRateShadingClassificationCheckBox.SetCheck(Protean::Renderer::GetVariableRateShadingClassification());
 	AddWidget(&variableRateShadingClassificationCheckBox);
-	variableRateShadingClassificationCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2));
+	variableRateShadingClassificationCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2));
 
 	variableRateShadingClassificationDebugCheckBox.Create("DEBUG: ");
 	variableRateShadingClassificationDebugCheckBox.SetTooltip("Toggle visualization of variable rate shading classification feature");
@@ -407,7 +407,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		});
 	variableRateShadingClassificationDebugCheckBox.SetCheck(Protean::Renderer::GetVariableRateShadingClassificationDebug());
 	AddWidget(&variableRateShadingClassificationDebugCheckBox);
-	variableRateShadingClassificationDebugCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2));
+	variableRateShadingClassificationDebugCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2));
 
 	advancedLightCullingCheckBox.Create("2.5D Light Culling: ");
 	advancedLightCullingCheckBox.SetTooltip("Enable a more aggressive light culling approach which can result in slower culling but faster rendering (Tiled renderer only)");
@@ -444,7 +444,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 	});
 	AddWidget(&tessellationCheckBox);
-	tessellationCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::TESSELLATION));
+	tessellationCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_TESSELLATION));
 
 	meshblendCheckBox.Create("Mesh Blend: ");
 	meshblendCheckBox.SetTooltip("Enable mesh blend post process globally.");
@@ -476,7 +476,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	shadowTypeComboBox.SetSize(XMFLOAT2(wid, itemheight));
 	shadowTypeComboBox.SetPos(XMFLOAT2(x, y += step));
 	shadowTypeComboBox.AddItem("Shadowmaps");
-	if (Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::RAYTRACING))
+	if (Protean::Graphics::GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_RAYTRACING))
 	{
 		shadowTypeComboBox.AddItem("Ray traced");
 
@@ -665,16 +665,16 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		switch (args.iValue)
 		{
 		case 0:
-			desc.filter = Protean::Graphics::Filter::MIN_MAG_MIP_POINT;
+			desc.filter = Protean::Graphics::Filter_MIN_MAG_MIP_POINT;
 			break;
 		case 1:
-			desc.filter = Protean::Graphics::Filter::MIN_MAG_LINEAR_MIP_POINT;
+			desc.filter = Protean::Graphics::Filter_MIN_MAG_LINEAR_MIP_POINT;
 			break;
 		case 2:
-			desc.filter = Protean::Graphics::Filter::MIN_MAG_MIP_LINEAR;
+			desc.filter = Protean::Graphics::Filter_MIN_MAG_MIP_LINEAR;
 			break;
 		case 3:
-			desc.filter = Protean::Graphics::Filter::ANISOTROPIC;
+			desc.filter = Protean::Graphics::Filter_ANISOTROPIC;
 			break;
 		default:
 			break;
@@ -757,9 +757,9 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	tonemapCombo.Create("Tonemap: ");
 	tonemapCombo.SetTooltip("Choose tone mapping type");
 	tonemapCombo.SetScriptTip("RenderPath3D::SetTonemap(Tonemap value)");
-	tonemapCombo.AddItem("Reinhard", (uint64_t)Protean::Renderer::Tonemap::Reinhard);
-	tonemapCombo.AddItem("ACES", (uint64_t)Protean::Renderer::Tonemap::ACES);
-	tonemapCombo.AddItem("Uchimura", (uint64_t)Protean::Renderer::Tonemap::Uchimura);
+	tonemapCombo.AddItem("Reinhard", (uint64_t)Protean::Renderer::Tonemap_Reinhard);
+	tonemapCombo.AddItem("ACES", (uint64_t)Protean::Renderer::Tonemap_ACES);
+	tonemapCombo.AddItem("Uchimura", (uint64_t)Protean::Renderer::Tonemap_Uchimura);
 	tonemapCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		editor->renderPath->setTonemap((Protean::Renderer::Tonemap)args.iValue);
 		editor->main->config.GetSection("graphics").Set("tonemap", args.iValue);
@@ -944,7 +944,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	aoComboBox.AddItem("SSAO");
 	aoComboBox.AddItem("HBAO");
 	aoComboBox.AddItem("MSAO");
-	if (Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+	if (Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 	{
 		aoComboBox.AddItem("RTAO");
 		ao = std::min(ao, 4);
@@ -1098,7 +1098,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedReflectionsCheckBox);
-	raytracedReflectionsCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedReflectionsCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	raytracedReflectionsRangeSlider.Create(1.0f, 10000.0f, 1, 1000, "RTReflection.Range: ");
 	raytracedReflectionsRangeSlider.SetText("Range: ");
@@ -1115,7 +1115,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedReflectionsRangeSlider);
-	raytracedReflectionsRangeSlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedReflectionsRangeSlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	raytracedReflectionsQualitySlider.Create(0, 2, 1, 2, "RTReflection.Quality: ");
 	raytracedReflectionsQualitySlider.SetText("Quality: ");
@@ -1136,7 +1136,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedReflectionsQualitySlider);
-	raytracedReflectionsQualitySlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedReflectionsQualitySlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	raytracedDiffuseCheckBox.Create("RT Diffuse: ");
 	raytracedDiffuseCheckBox.SetTooltip("Enable Ray Traced Diffuse. Only if GPU supports raytracing.\nThis effect computes single bounce diffuse with ray tracing per pixel.\nIf DDGI is enabled, it will make it multi bounce.");
@@ -1150,7 +1150,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedDiffuseCheckBox);
-	raytracedDiffuseCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedDiffuseCheckBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	raytracedDiffuseRangeSlider.Create(1.0f, 100.0f, 1, 1000, "RTDiffuse.Range: ");
 	raytracedDiffuseRangeSlider.SetText("Range: ");
@@ -1167,7 +1167,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedDiffuseRangeSlider);
-	raytracedDiffuseRangeSlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedDiffuseRangeSlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	raytracedDiffuseQualitySlider.Create(0, 2, 1, 2, "RTDiffuse.Quality: ");
 	raytracedDiffuseQualitySlider.SetText("Quality: ");
@@ -1188,7 +1188,7 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 		editor->main->config.Commit();
 		});
 	AddWidget(&raytracedDiffuseQualitySlider);
-	raytracedDiffuseQualitySlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+	raytracedDiffuseQualitySlider.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 
 	ssgiCheckBox.Create("SSGI: ");
 	ssgiCheckBox.SetTooltip("Enable Screen Space Global Illumination, this can add a light bounce effect coming from objects on the screen.");
@@ -1648,10 +1648,10 @@ void GraphicsWindow::Create(EditorComponent* _editor)
 	fsr2Combo.SetTooltip("Set resolution scaling quality mode for FSR 2.1:\nQuality: 1.5x\nBalanced: 1.7x\nPerformance: 2.0x\nUltra performance: 3.0x");
 	fsr2Combo.SetSize(XMFLOAT2(wid, hei));
 	fsr2Combo.SetPos(XMFLOAT2(x, y += step));
-	fsr2Combo.AddItem("Quality", (uint64_t)Protean::RenderPath3D::FSR2_Preset::Quality);
-	fsr2Combo.AddItem("Balanced", (uint64_t)Protean::RenderPath3D::FSR2_Preset::Balanced);
-	fsr2Combo.AddItem("Performance", (uint64_t)Protean::RenderPath3D::FSR2_Preset::Performance);
-	fsr2Combo.AddItem("Ultra performance", (uint64_t)Protean::RenderPath3D::FSR2_Preset::Ultra_Performance);
+	fsr2Combo.AddItem("Quality", (uint64_t)Protean::RenderPath3D::FSR2_Preset_Quality);
+	fsr2Combo.AddItem("Balanced", (uint64_t)Protean::RenderPath3D::FSR2_Preset_Balanced);
+	fsr2Combo.AddItem("Performance", (uint64_t)Protean::RenderPath3D::FSR2_Preset_Performance);
+	fsr2Combo.AddItem("Ultra performance", (uint64_t)Protean::RenderPath3D::FSR2_Preset_Ultra_Performance);
 	fsr2Combo.OnSelect([=](Protean::Gui::EventArgs args) {
 		if (editor->renderPath->getFSR2Enabled())
 		{
@@ -1671,20 +1671,20 @@ void GraphicsWindow::UpdateSwapChainFormats(Protean::Graphics::SwapChain* swapCh
 {
 	swapchainComboBox.OnSelect(nullptr);
 	swapchainComboBox.ClearItems();
-	swapchainComboBox.AddItem("SDR 8bit", static_cast<uint64_t>(Protean::Graphics::Format::R8G8B8A8_UNORM));
-	swapchainComboBox.AddItem("SDR 10bit", static_cast<uint64_t>(Protean::Graphics::Format::R10G10B10A2_UNORM));
+	swapchainComboBox.AddItem("SDR 8bit", static_cast<uint64_t>(Protean::Graphics::Format_R8G8B8A8_UNORM));
+	swapchainComboBox.AddItem("SDR 10bit", static_cast<uint64_t>(Protean::Graphics::Format_R10G10B10A2_UNORM));
 	if (Protean::Graphics::GetDevice()->IsSwapChainSupportsHDR(swapChain))
 	{
-		swapchainComboBox.AddItem("HDR 10bit", static_cast<uint64_t>(Protean::Graphics::Format::R10G10B10A2_UNORM));
-		swapchainComboBox.AddItem("HDR 16bit", static_cast<uint64_t>(Protean::Graphics::Format::R16G16B16A16_FLOAT));
+		swapchainComboBox.AddItem("HDR 10bit", static_cast<uint64_t>(Protean::Graphics::Format_R10G10B10A2_UNORM));
+		swapchainComboBox.AddItem("HDR 16bit", static_cast<uint64_t>(Protean::Graphics::Format_R16G16B16A16_FLOAT));
 
 		switch (swapChain->desc.format)
 		{
 		default:
-		case Protean::Graphics::Format::R8G8B8A8_UNORM:
+		case Protean::Graphics::Format_R8G8B8A8_UNORM:
 			swapchainComboBox.SetSelected(0);
 			break;
-		case Protean::Graphics::Format::R10G10B10A2_UNORM:
+		case Protean::Graphics::Format_R10G10B10A2_UNORM:
 			if (swapChain->desc.allow_hdr)
 			{
 				swapchainComboBox.SetSelected(2);
@@ -1694,7 +1694,7 @@ void GraphicsWindow::UpdateSwapChainFormats(Protean::Graphics::SwapChain* swapCh
 				swapchainComboBox.SetSelected(1);
 			}
 			break;
-		case Protean::Graphics::Format::R16G16B16A16_FLOAT:
+		case Protean::Graphics::Format_R16G16B16A16_FLOAT:
 			swapchainComboBox.SetSelected(4);
 			break;
 		}
@@ -1704,13 +1704,13 @@ void GraphicsWindow::UpdateSwapChainFormats(Protean::Graphics::SwapChain* swapCh
 		switch (swapChain->desc.format)
 		{
 		default:
-		case Protean::Graphics::Format::R8G8B8A8_UNORM:
+		case Protean::Graphics::Format_R8G8B8A8_UNORM:
 			swapchainComboBox.SetSelected(0);
 			break;
-		case Protean::Graphics::Format::R10G10B10A2_UNORM:
+		case Protean::Graphics::Format_R10G10B10A2_UNORM:
 			swapchainComboBox.SetSelected(1);
 			break;
-		case Protean::Graphics::Format::R16G16B16A16_FLOAT:
+		case Protean::Graphics::Format_R16G16B16A16_FLOAT:
 			swapchainComboBox.SetSelected(1);
 			break;
 		}

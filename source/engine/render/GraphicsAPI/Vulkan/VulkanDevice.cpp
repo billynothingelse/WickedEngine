@@ -46,137 +46,137 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case Format::UNKNOWN:
+		case Format_UNKNOWN:
 			return VK_FORMAT_UNDEFINED;
-		case Format::R32G32B32A32_FLOAT:
+		case Format_R32G32B32A32_FLOAT:
 			return VK_FORMAT_R32G32B32A32_SFLOAT;
-		case Format::R32G32B32A32_UINT:
+		case Format_R32G32B32A32_UINT:
 			return VK_FORMAT_R32G32B32A32_UINT;
-		case Format::R32G32B32A32_SINT:
+		case Format_R32G32B32A32_SINT:
 			return VK_FORMAT_R32G32B32A32_SINT;
-		case Format::R32G32B32_FLOAT:
+		case Format_R32G32B32_FLOAT:
 			return VK_FORMAT_R32G32B32_SFLOAT;
-		case Format::R32G32B32_UINT:
+		case Format_R32G32B32_UINT:
 			return VK_FORMAT_R32G32B32_UINT;
-		case Format::R32G32B32_SINT:
+		case Format_R32G32B32_SINT:
 			return VK_FORMAT_R32G32B32_SINT;
-		case Format::R16G16B16A16_FLOAT:
+		case Format_R16G16B16A16_FLOAT:
 			return VK_FORMAT_R16G16B16A16_SFLOAT;
-		case Format::R16G16B16A16_UNORM:
+		case Format_R16G16B16A16_UNORM:
 			return VK_FORMAT_R16G16B16A16_UNORM;
-		case Format::R16G16B16A16_UINT:
+		case Format_R16G16B16A16_UINT:
 			return VK_FORMAT_R16G16B16A16_UINT;
-		case Format::R16G16B16A16_SNORM:
+		case Format_R16G16B16A16_SNORM:
 			return VK_FORMAT_R16G16B16A16_SNORM;
-		case Format::R16G16B16A16_SINT:
+		case Format_R16G16B16A16_SINT:
 			return VK_FORMAT_R16G16B16A16_SINT;
-		case Format::R32G32_FLOAT:
+		case Format_R32G32_FLOAT:
 			return VK_FORMAT_R32G32_SFLOAT;
-		case Format::R32G32_UINT:
+		case Format_R32G32_UINT:
 			return VK_FORMAT_R32G32_UINT;
-		case Format::R32G32_SINT:
+		case Format_R32G32_SINT:
 			return VK_FORMAT_R32G32_SINT;
-		case Format::D32_FLOAT_S8X24_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
 			return VK_FORMAT_D32_SFLOAT_S8_UINT;
-		case Format::R10G10B10A2_UNORM:
+		case Format_R10G10B10A2_UNORM:
 			return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-		case Format::R10G10B10A2_UINT:
+		case Format_R10G10B10A2_UINT:
 			return VK_FORMAT_A2B10G10R10_UINT_PACK32;
-		case Format::R11G11B10_FLOAT:
+		case Format_R11G11B10_FLOAT:
 			return VK_FORMAT_B10G11R11_UFLOAT_PACK32;
-		case Format::R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM:
 			return VK_FORMAT_R8G8B8A8_UNORM;
-		case Format::R8G8B8A8_UNORM_SRGB:
+		case Format_R8G8B8A8_UNORM_SRGB:
 			return VK_FORMAT_R8G8B8A8_SRGB;
-		case Format::R8G8B8A8_UINT:
+		case Format_R8G8B8A8_UINT:
 			return VK_FORMAT_R8G8B8A8_UINT;
-		case Format::R8G8B8A8_SNORM:
+		case Format_R8G8B8A8_SNORM:
 			return VK_FORMAT_R8G8B8A8_SNORM;
-		case Format::R8G8B8A8_SINT:
+		case Format_R8G8B8A8_SINT:
 			return VK_FORMAT_R8G8B8A8_SINT;
-		case Format::R16G16_FLOAT:
+		case Format_R16G16_FLOAT:
 			return VK_FORMAT_R16G16_SFLOAT;
-		case Format::R16G16_UNORM:
+		case Format_R16G16_UNORM:
 			return VK_FORMAT_R16G16_UNORM;
-		case Format::R16G16_UINT:
+		case Format_R16G16_UINT:
 			return VK_FORMAT_R16G16_UINT;
-		case Format::R16G16_SNORM:
+		case Format_R16G16_SNORM:
 			return VK_FORMAT_R16G16_SNORM;
-		case Format::R16G16_SINT:
+		case Format_R16G16_SINT:
 			return VK_FORMAT_R16G16_SINT;
-		case Format::D32_FLOAT:
+		case Format_D32_FLOAT:
 			return VK_FORMAT_D32_SFLOAT;
-		case Format::R32_FLOAT:
+		case Format_R32_FLOAT:
 			return VK_FORMAT_R32_SFLOAT;
-		case Format::R32_UINT:
+		case Format_R32_UINT:
 			return VK_FORMAT_R32_UINT;
-		case Format::R32_SINT:
+		case Format_R32_SINT:
 			return VK_FORMAT_R32_SINT;
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return VK_FORMAT_D24_UNORM_S8_UINT;
-		case Format::R9G9B9E5_SHAREDEXP:
+		case Format_R9G9B9E5_SHAREDEXP:
 			return VK_FORMAT_E5B9G9R9_UFLOAT_PACK32;
-		case Format::R8G8_UNORM:
+		case Format_R8G8_UNORM:
 			return VK_FORMAT_R8G8_UNORM;
-		case Format::R8G8_UINT:
+		case Format_R8G8_UINT:
 			return VK_FORMAT_R8G8_UINT;
-		case Format::R8G8_SNORM:
+		case Format_R8G8_SNORM:
 			return VK_FORMAT_R8G8_SNORM;
-		case Format::R8G8_SINT:
+		case Format_R8G8_SINT:
 			return VK_FORMAT_R8G8_SINT;
-		case Format::R16_FLOAT:
+		case Format_R16_FLOAT:
 			return VK_FORMAT_R16_SFLOAT;
-		case Format::D16_UNORM:
+		case Format_D16_UNORM:
 			return VK_FORMAT_D16_UNORM;
-		case Format::R16_UNORM:
+		case Format_R16_UNORM:
 			return VK_FORMAT_R16_UNORM;
-		case Format::R16_UINT:
+		case Format_R16_UINT:
 			return VK_FORMAT_R16_UINT;
-		case Format::R16_SNORM:
+		case Format_R16_SNORM:
 			return VK_FORMAT_R16_SNORM;
-		case Format::R16_SINT:
+		case Format_R16_SINT:
 			return VK_FORMAT_R16_SINT;
-		case Format::R8_UNORM:
+		case Format_R8_UNORM:
 			return VK_FORMAT_R8_UNORM;
-		case Format::R8_UINT:
+		case Format_R8_UINT:
 			return VK_FORMAT_R8_UINT;
-		case Format::R8_SNORM:
+		case Format_R8_SNORM:
 			return VK_FORMAT_R8_SNORM;
-		case Format::R8_SINT:
+		case Format_R8_SINT:
 			return VK_FORMAT_R8_SINT;
-		case Format::BC1_UNORM:
+		case Format_BC1_UNORM:
 			return VK_FORMAT_BC1_RGBA_UNORM_BLOCK;
-		case Format::BC1_UNORM_SRGB:
+		case Format_BC1_UNORM_SRGB:
 			return VK_FORMAT_BC1_RGBA_SRGB_BLOCK;
-		case Format::BC2_UNORM:
+		case Format_BC2_UNORM:
 			return VK_FORMAT_BC2_UNORM_BLOCK;
-		case Format::BC2_UNORM_SRGB:
+		case Format_BC2_UNORM_SRGB:
 			return VK_FORMAT_BC2_SRGB_BLOCK;
-		case Format::BC3_UNORM:
+		case Format_BC3_UNORM:
 			return VK_FORMAT_BC3_UNORM_BLOCK;
-		case Format::BC3_UNORM_SRGB:
+		case Format_BC3_UNORM_SRGB:
 			return VK_FORMAT_BC3_SRGB_BLOCK;
-		case Format::BC4_UNORM:
+		case Format_BC4_UNORM:
 			return VK_FORMAT_BC4_UNORM_BLOCK;
-		case Format::BC4_SNORM:
+		case Format_BC4_SNORM:
 			return VK_FORMAT_BC4_SNORM_BLOCK;
-		case Format::BC5_UNORM:
+		case Format_BC5_UNORM:
 			return VK_FORMAT_BC5_UNORM_BLOCK;
-		case Format::BC5_SNORM:
+		case Format_BC5_SNORM:
 			return VK_FORMAT_BC5_SNORM_BLOCK;
-		case Format::B8G8R8A8_UNORM:
+		case Format_B8G8R8A8_UNORM:
 			return VK_FORMAT_B8G8R8A8_UNORM;
-		case Format::B8G8R8A8_UNORM_SRGB:
+		case Format_B8G8R8A8_UNORM_SRGB:
 			return VK_FORMAT_B8G8R8A8_SRGB;
-		case Format::BC6H_UF16:
+		case Format_BC6H_UF16:
 			return VK_FORMAT_BC6H_UFLOAT_BLOCK;
-		case Format::BC6H_SF16:
+		case Format_BC6H_SF16:
 			return VK_FORMAT_BC6H_SFLOAT_BLOCK;
-		case Format::BC7_UNORM:
+		case Format_BC7_UNORM:
 			return VK_FORMAT_BC7_UNORM_BLOCK;
-		case Format::BC7_UNORM_SRGB:
+		case Format_BC7_UNORM_SRGB:
 			return VK_FORMAT_BC7_SRGB_BLOCK;
-		case Format::NV12:
+		case Format_NV12:
 			return VK_FORMAT_G8_B8R8_2PLANE_420_UNORM;
 		}
 		return VK_FORMAT_UNDEFINED;
@@ -185,21 +185,21 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case ComparisonFunc::NEVER:
+		case ComparisonFunc_NEVER:
 			return VK_COMPARE_OP_NEVER;
-		case ComparisonFunc::LESS:
+		case ComparisonFunc_LESS:
 			return VK_COMPARE_OP_LESS;
-		case ComparisonFunc::EQUAL:
+		case ComparisonFunc_EQUAL:
 			return VK_COMPARE_OP_EQUAL;
-		case ComparisonFunc::LESS_EQUAL:
+		case ComparisonFunc_LESS_EQUAL:
 			return VK_COMPARE_OP_LESS_OR_EQUAL;
-		case ComparisonFunc::GREATER:
+		case ComparisonFunc_GREATER:
 			return VK_COMPARE_OP_GREATER;
-		case ComparisonFunc::NOT_EQUAL:
+		case ComparisonFunc_NOT_EQUAL:
 			return VK_COMPARE_OP_NOT_EQUAL;
-		case ComparisonFunc::GREATER_EQUAL:
+		case ComparisonFunc_GREATER_EQUAL:
 			return VK_COMPARE_OP_GREATER_OR_EQUAL;
-		case ComparisonFunc::ALWAYS:
+		case ComparisonFunc_ALWAYS:
 			return VK_COMPARE_OP_ALWAYS;
 		default:
 			return VK_COMPARE_OP_NEVER;
@@ -209,40 +209,40 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case Blend::ZERO:
+		case Blend_ZERO:
 			return VK_BLEND_FACTOR_ZERO;
-		case Blend::ONE:
+		case Blend_ONE:
 			return VK_BLEND_FACTOR_ONE;
-		case Blend::SRC_COLOR:
+		case Blend_SRC_COLOR:
 			return VK_BLEND_FACTOR_SRC_COLOR;
-		case Blend::INV_SRC_COLOR:
+		case Blend_INV_SRC_COLOR:
 			return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
-		case Blend::SRC_ALPHA:
+		case Blend_SRC_ALPHA:
 			return VK_BLEND_FACTOR_SRC_ALPHA;
-		case Blend::INV_SRC_ALPHA:
+		case Blend_INV_SRC_ALPHA:
 			return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-		case Blend::DEST_ALPHA:
+		case Blend_DEST_ALPHA:
 			return VK_BLEND_FACTOR_DST_ALPHA;
-		case Blend::INV_DEST_ALPHA:
+		case Blend_INV_DEST_ALPHA:
 			return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
-		case Blend::DEST_COLOR:
+		case Blend_DEST_COLOR:
 			return VK_BLEND_FACTOR_DST_COLOR;
-		case Blend::INV_DEST_COLOR:
+		case Blend_INV_DEST_COLOR:
 			return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
-		case Blend::SRC_ALPHA_SAT:
+		case Blend_SRC_ALPHA_SAT:
 			return VK_BLEND_FACTOR_SRC_ALPHA_SATURATE;
-		case Blend::BLEND_FACTOR:
+		case Blend_BLEND_FACTOR:
 			return VK_BLEND_FACTOR_CONSTANT_COLOR;
-		case Blend::INV_BLEND_FACTOR:
+		case Blend_INV_BLEND_FACTOR:
 			return VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
 			break;
-		case Blend::SRC1_COLOR:
+		case Blend_SRC1_COLOR:
 			return VK_BLEND_FACTOR_SRC1_COLOR;
-		case Blend::INV_SRC1_COLOR:
+		case Blend_INV_SRC1_COLOR:
 			return VK_BLEND_FACTOR_ONE_MINUS_SRC1_COLOR;
-		case Blend::SRC1_ALPHA:
+		case Blend_SRC1_ALPHA:
 			return VK_BLEND_FACTOR_SRC1_ALPHA;
-		case Blend::INV_SRC1_ALPHA:
+		case Blend_INV_SRC1_ALPHA:
 			return VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA;
 		default:
 			return VK_BLEND_FACTOR_ZERO;
@@ -252,15 +252,15 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case BlendOp::ADD:
+		case BlendOp_ADD:
 			return VK_BLEND_OP_ADD;
-		case BlendOp::SUBTRACT:
+		case BlendOp_SUBTRACT:
 			return VK_BLEND_OP_SUBTRACT;
-		case BlendOp::REV_SUBTRACT:
+		case BlendOp_REV_SUBTRACT:
 			return VK_BLEND_OP_REVERSE_SUBTRACT;
-		case BlendOp::MIN:
+		case BlendOp_MIN:
 			return VK_BLEND_OP_MIN;
-		case BlendOp::MAX:
+		case BlendOp_MAX:
 			return VK_BLEND_OP_MAX;
 		default:
 			return VK_BLEND_OP_ADD;
@@ -270,15 +270,15 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case TextureAddressMode::WRAP:
+		case TextureAddressMode_WRAP:
 			return VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		case TextureAddressMode::MIRROR:
+		case TextureAddressMode_MIRROR:
 			return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
-		case TextureAddressMode::CLAMP:
+		case TextureAddressMode_CLAMP:
 			return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		case TextureAddressMode::BORDER:
+		case TextureAddressMode_BORDER:
 			return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
-		case TextureAddressMode::MIRROR_ONCE:
+		case TextureAddressMode_MIRROR_ONCE:
 			if (features_1_2.samplerMirrorClampToEdge == VK_TRUE)
 			{
 				return VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE;
@@ -292,11 +292,11 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case SamplerBorderColor::TRANSPARENT_BLACK:
+		case SamplerBorderColor_TRANSPARENT_BLACK:
 			return VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
-		case SamplerBorderColor::OPAQUE_BLACK:
+		case SamplerBorderColor_OPAQUE_BLACK:
 			return VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
-		case SamplerBorderColor::OPAQUE_WHITE:
+		case SamplerBorderColor_OPAQUE_WHITE:
 			return VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 		default:
 			return VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
@@ -306,21 +306,21 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case Protean::Graphics::StencilOp::KEEP:
+		case Protean::Graphics::StencilOp_KEEP:
 			return VK_STENCIL_OP_KEEP;
-		case Protean::Graphics::StencilOp::ZERO:
+		case Protean::Graphics::StencilOp_ZERO:
 			return VK_STENCIL_OP_ZERO;
-		case Protean::Graphics::StencilOp::REPLACE:
+		case Protean::Graphics::StencilOp_REPLACE:
 			return VK_STENCIL_OP_REPLACE;
-		case Protean::Graphics::StencilOp::INCR_SAT:
+		case Protean::Graphics::StencilOp_INCR_SAT:
 			return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
-		case Protean::Graphics::StencilOp::DECR_SAT:
+		case Protean::Graphics::StencilOp_DECR_SAT:
 			return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
-		case Protean::Graphics::StencilOp::INVERT:
+		case Protean::Graphics::StencilOp_INVERT:
 			return VK_STENCIL_OP_INVERT;
-		case Protean::Graphics::StencilOp::INCR:
+		case Protean::Graphics::StencilOp_INCR:
 			return VK_STENCIL_OP_INCREMENT_AND_WRAP;
-		case Protean::Graphics::StencilOp::DECR:
+		case Protean::Graphics::StencilOp_DECR:
 			return VK_STENCIL_OP_DECREMENT_AND_WRAP;
 		default:
 			return VK_STENCIL_OP_KEEP;
@@ -330,33 +330,33 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case ResourceState::UNDEFINED:
+		case ResourceState_UNDEFINED:
 			return VK_IMAGE_LAYOUT_UNDEFINED;
-		case ResourceState::RENDERTARGET:
+		case ResourceState_RENDERTARGET:
 			return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		case ResourceState::DEPTHSTENCIL:
+		case ResourceState_DEPTHSTENCIL:
 			return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-		case ResourceState::DEPTHSTENCIL_READONLY:
+		case ResourceState_DEPTHSTENCIL_READONLY:
 			return VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-		case ResourceState::SHADER_RESOURCE:
-		case ResourceState::SHADER_RESOURCE_COMPUTE:
+		case ResourceState_SHADER_RESOURCE:
+		case ResourceState_SHADER_RESOURCE_COMPUTE:
 			return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		case ResourceState::UNORDERED_ACCESS:
+		case ResourceState_UNORDERED_ACCESS:
 			return VK_IMAGE_LAYOUT_GENERAL;
-		case ResourceState::COPY_SRC:
-		case ResourceState::COPY_DST:
+		case ResourceState_COPY_SRC:
+		case ResourceState_COPY_DST:
 			// we can't assume transfer layout because it's allowed for resource to be used by multiple queues like DX12 (decay to common state), so this is a workaround
 			//	the problem is that image copy commands will require specifying the current layout, but different queues can often use textures in different layouts
 			return VK_IMAGE_LAYOUT_GENERAL;
-		case ResourceState::SHADING_RATE_SOURCE:
+		case ResourceState_SHADING_RATE_SOURCE:
 			return VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
-		case ResourceState::VIDEO_DECODE_DPB:
+		case ResourceState_VIDEO_DECODE_DPB:
 			return VK_IMAGE_LAYOUT_VIDEO_DECODE_DPB_KHR;
-		case ResourceState::VIDEO_DECODE_SRC:
+		case ResourceState_VIDEO_DECODE_SRC:
 			return VK_IMAGE_LAYOUT_VIDEO_DECODE_SRC_KHR;
-		case ResourceState::VIDEO_DECODE_DST:
+		case ResourceState_VIDEO_DECODE_DST:
 			return VK_IMAGE_LAYOUT_VIDEO_DECODE_DST_KHR;
-		case ResourceState::SWAPCHAIN:
+		case ResourceState_SWAPCHAIN:
 			return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		default:
 			// combination of state flags will default to general
@@ -369,21 +369,21 @@ namespace VulkanInternal
 	{
 		switch (value)
 		{
-		case ShaderStage::MS:
+		case ShaderStage_MS:
 			return VK_SHADER_STAGE_MESH_BIT_EXT;
-		case ShaderStage::AS:
+		case ShaderStage_AS:
 			return VK_SHADER_STAGE_TASK_BIT_EXT;
-		case ShaderStage::VS:
+		case ShaderStage_VS:
 			return VK_SHADER_STAGE_VERTEX_BIT;
-		case ShaderStage::HS:
+		case ShaderStage_HS:
 			return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-		case ShaderStage::DS:
+		case ShaderStage_DS:
 			return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-		case ShaderStage::GS:
+		case ShaderStage_GS:
 			return VK_SHADER_STAGE_GEOMETRY_BIT;
-		case ShaderStage::PS:
+		case ShaderStage_PS:
 			return VK_SHADER_STAGE_FRAGMENT_BIT;
-		case ShaderStage::CS:
+		case ShaderStage_CS:
 			return VK_SHADER_STAGE_COMPUTE_BIT;
 		default:
 			return VK_SHADER_STAGE_ALL;
@@ -394,15 +394,15 @@ namespace VulkanInternal
 		switch (value)
 		{
 		default:
-		case Protean::Graphics::ImageAspect::COLOR:
+		case Protean::Graphics::ImageAspect_COLOR:
 			return VK_IMAGE_ASPECT_COLOR_BIT;
-		case Protean::Graphics::ImageAspect::DEPTH:
+		case Protean::Graphics::ImageAspect_DEPTH:
 			return VK_IMAGE_ASPECT_DEPTH_BIT;
-		case Protean::Graphics::ImageAspect::STENCIL:
+		case Protean::Graphics::ImageAspect_STENCIL:
 			return VK_IMAGE_ASPECT_STENCIL_BIT;
-		case Protean::Graphics::ImageAspect::LUMINANCE:
+		case Protean::Graphics::ImageAspect_LUMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_0_BIT;
-		case Protean::Graphics::ImageAspect::CHROMINANCE:
+		case Protean::Graphics::ImageAspect_CHROMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_1_BIT;
 		}
 	}
@@ -410,54 +410,54 @@ namespace VulkanInternal
 	{
 		VkPipelineStageFlags2 flags = VK_PIPELINE_STAGE_2_NONE;
 
-		if (has_flag(value, ResourceState::SHADER_RESOURCE) ||
-			has_flag(value, ResourceState::SHADER_RESOURCE_COMPUTE) ||
-			has_flag(value, ResourceState::UNORDERED_ACCESS) ||
-			has_flag(value, ResourceState::CONSTANT_BUFFER))
+		if (has_flag(value, ResourceState_SHADER_RESOURCE) ||
+			has_flag(value, ResourceState_SHADER_RESOURCE_COMPUTE) ||
+			has_flag(value, ResourceState_UNORDERED_ACCESS) ||
+			has_flag(value, ResourceState_CONSTANT_BUFFER))
 		{
 			flags |= VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
 		}
-		if (has_flag(value, ResourceState::COPY_SRC) ||
-			has_flag(value, ResourceState::COPY_DST))
+		if (has_flag(value, ResourceState_COPY_SRC) ||
+			has_flag(value, ResourceState_COPY_DST))
 		{
 			flags |= VK_PIPELINE_STAGE_2_TRANSFER_BIT;
 		}
-		if (has_flag(value, ResourceState::RENDERTARGET))
+		if (has_flag(value, ResourceState_RENDERTARGET))
 		{
 			flags |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
 		}
-		if (has_flag(value, ResourceState::DEPTHSTENCIL) ||
-			has_flag(value, ResourceState::DEPTHSTENCIL_READONLY))
+		if (has_flag(value, ResourceState_DEPTHSTENCIL) ||
+			has_flag(value, ResourceState_DEPTHSTENCIL_READONLY))
 		{
 			flags |= VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
 		}
-		if (has_flag(value, ResourceState::SHADING_RATE_SOURCE))
+		if (has_flag(value, ResourceState_SHADING_RATE_SOURCE))
 		{
 			flags |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 		}
-		if (has_flag(value, ResourceState::VERTEX_BUFFER))
+		if (has_flag(value, ResourceState_VERTEX_BUFFER))
 		{
 			flags |= VK_PIPELINE_STAGE_2_VERTEX_INPUT_BIT;
 		}
-		if (has_flag(value, ResourceState::INDEX_BUFFER))
+		if (has_flag(value, ResourceState_INDEX_BUFFER))
 		{
 			flags |= VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT;
 		}
-		if (has_flag(value, ResourceState::INDIRECT_ARGUMENT))
+		if (has_flag(value, ResourceState_INDIRECT_ARGUMENT))
 		{
 			flags |= VK_PIPELINE_STAGE_2_DRAW_INDIRECT_BIT;
 		}
-		if (has_flag(value, ResourceState::RAYTRACING_ACCELERATION_STRUCTURE))
+		if (has_flag(value, ResourceState_RAYTRACING_ACCELERATION_STRUCTURE))
 		{
 			flags |= VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR | VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR;
 		}
-		if (has_flag(value, ResourceState::PREDICATION))
+		if (has_flag(value, ResourceState_PREDICATION))
 		{
 			flags |= VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT;
 		}
-		if (has_flag(value, ResourceState::VIDEO_DECODE_DST) ||
-			has_flag(value, ResourceState::VIDEO_DECODE_SRC) ||
-			has_flag(value, ResourceState::VIDEO_DECODE_DPB))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_DST) ||
+			has_flag(value, ResourceState_VIDEO_DECODE_SRC) ||
+			has_flag(value, ResourceState_VIDEO_DECODE_DPB))
 		{
 			flags |= VK_PIPELINE_STAGE_2_VIDEO_DECODE_BIT_KHR;
 		}
@@ -468,74 +468,74 @@ namespace VulkanInternal
 	{
 		VkAccessFlags2 flags = 0;
 
-		if (has_flag(value, ResourceState::SHADER_RESOURCE))
+		if (has_flag(value, ResourceState_SHADER_RESOURCE))
 		{
 			flags |= VK_ACCESS_2_SHADER_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::SHADER_RESOURCE_COMPUTE))
+		if (has_flag(value, ResourceState_SHADER_RESOURCE_COMPUTE))
 		{
 			flags |= VK_ACCESS_2_SHADER_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::UNORDERED_ACCESS))
+		if (has_flag(value, ResourceState_UNORDERED_ACCESS))
 		{
 			flags |= VK_ACCESS_2_SHADER_READ_BIT;
 			flags |= VK_ACCESS_2_SHADER_WRITE_BIT;
 		}
-		if (has_flag(value, ResourceState::COPY_SRC))
+		if (has_flag(value, ResourceState_COPY_SRC))
 		{
 			flags |= VK_ACCESS_2_TRANSFER_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::COPY_DST))
+		if (has_flag(value, ResourceState_COPY_DST))
 		{
 			flags |= VK_ACCESS_2_TRANSFER_WRITE_BIT;
 		}
-		if (has_flag(value, ResourceState::RENDERTARGET))
+		if (has_flag(value, ResourceState_RENDERTARGET))
 		{
 			flags |= VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT;
 			flags |= VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
 		}
-		if (has_flag(value, ResourceState::DEPTHSTENCIL))
+		if (has_flag(value, ResourceState_DEPTHSTENCIL))
 		{
 			flags |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
 			flags |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 		}
-		if (has_flag(value, ResourceState::DEPTHSTENCIL_READONLY))
+		if (has_flag(value, ResourceState_DEPTHSTENCIL_READONLY))
 		{
 			flags |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::VERTEX_BUFFER))
+		if (has_flag(value, ResourceState_VERTEX_BUFFER))
 		{
 			flags |= VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::INDEX_BUFFER))
+		if (has_flag(value, ResourceState_INDEX_BUFFER))
 		{
 			flags |= VK_ACCESS_2_INDEX_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::CONSTANT_BUFFER))
+		if (has_flag(value, ResourceState_CONSTANT_BUFFER))
 		{
 			flags |= VK_ACCESS_2_UNIFORM_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::INDIRECT_ARGUMENT))
+		if (has_flag(value, ResourceState_INDIRECT_ARGUMENT))
 		{
 			flags |= VK_ACCESS_2_INDIRECT_COMMAND_READ_BIT;
 		}
-		if (has_flag(value, ResourceState::PREDICATION))
+		if (has_flag(value, ResourceState_PREDICATION))
 		{
 			flags |= VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT;
 		}
-		if (has_flag(value, ResourceState::SHADING_RATE_SOURCE))
+		if (has_flag(value, ResourceState_SHADING_RATE_SOURCE))
 		{
 			flags |= VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR;
 		}
-		if (has_flag(value, ResourceState::VIDEO_DECODE_DST))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_DST))
 		{
 			flags |= VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR;
 		}
-		if (has_flag(value, ResourceState::VIDEO_DECODE_SRC))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_SRC))
 		{
 			flags |= VK_ACCESS_2_VIDEO_DECODE_READ_BIT_KHR;
 		}
-		if (has_flag(value, ResourceState::VIDEO_DECODE_DPB))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_DPB))
 		{
 			flags |= VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR;
 		}
@@ -548,17 +548,17 @@ namespace VulkanInternal
 		{
 		default:
 			return VK_COMPONENT_SWIZZLE_IDENTITY;
-		case Protean::Graphics::ComponentSwizzle::R:
+		case Protean::Graphics::ComponentSwizzle_R:
 			return VK_COMPONENT_SWIZZLE_R;
-		case Protean::Graphics::ComponentSwizzle::G:
+		case Protean::Graphics::ComponentSwizzle_G:
 			return VK_COMPONENT_SWIZZLE_G;
-		case Protean::Graphics::ComponentSwizzle::B:
+		case Protean::Graphics::ComponentSwizzle_B:
 			return VK_COMPONENT_SWIZZLE_B;
-		case Protean::Graphics::ComponentSwizzle::A:
+		case Protean::Graphics::ComponentSwizzle_A:
 			return VK_COMPONENT_SWIZZLE_A;
-		case Protean::Graphics::ComponentSwizzle::ZERO:
+		case Protean::Graphics::ComponentSwizzle_ZERO:
 			return VK_COMPONENT_SWIZZLE_ZERO;
-		case Protean::Graphics::ComponentSwizzle::ONE:
+		case Protean::Graphics::ComponentSwizzle_ONE:
 			return VK_COMPONENT_SWIZZLE_ONE;
 		}
 	}
@@ -586,11 +586,11 @@ namespace VulkanInternal
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		imageInfo.usage = 0;
-		if (has_flag(desc.bind_flags, BindFlag::SHADER_RESOURCE))
+		if (has_flag(desc.bind_flags, BindFlag_SHADER_RESOURCE))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
 		}
-		if (has_flag(desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (has_flag(desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
 
@@ -599,19 +599,19 @@ namespace VulkanInternal
 				imageInfo.flags |= VK_IMAGE_CREATE_EXTENDED_USAGE_BIT;
 			}
 		}
-		if (has_flag(desc.bind_flags, BindFlag::RENDER_TARGET))
+		if (has_flag(desc.bind_flags, BindFlag_RENDER_TARGET))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		}
-		if (has_flag(desc.bind_flags, BindFlag::DEPTH_STENCIL))
+		if (has_flag(desc.bind_flags, BindFlag_DEPTH_STENCIL))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		}
-		if (has_flag(desc.bind_flags, BindFlag::SHADING_RATE))
+		if (has_flag(desc.bind_flags, BindFlag_SHADING_RATE))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 		}
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::TRANSIENT_ATTACHMENT))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_TRANSIENT_ATTACHMENT))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 		}
@@ -621,38 +621,38 @@ namespace VulkanInternal
 			imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		}
 
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 		{
 			imageInfo.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 		}
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::TYPED_FORMAT_CASTING) || has_flag(desc.misc_flags, ResourceMiscFlag::TYPELESS_FORMAT_CASTING))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_TYPED_FORMAT_CASTING) || has_flag(desc.misc_flags, ResourceMiscFlag_TYPELESS_FORMAT_CASTING))
 		{
 			imageInfo.flags |= VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
 		}
 
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::SPARSE))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_SPARSE))
 		{
 			imageInfo.flags |= VK_IMAGE_CREATE_SPARSE_BINDING_BIT;
 			imageInfo.flags |= VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT;
 			imageInfo.flags |= VK_IMAGE_CREATE_SPARSE_ALIASED_BIT;
 		}
 
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR;
 			imageInfo.usage |= VK_IMAGE_USAGE_VIDEO_DECODE_SRC_BIT_KHR;
 			imageInfo.usage |= VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR;
 		}
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_OUTPUT_ONLY))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_OUTPUT_ONLY))
 		{
 			imageInfo.usage |= VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR;
 		}
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY))
 		{
 			imageInfo.usage = VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR; // Note: this is not a combination of flags, but complete assignment!
 		}
 
-		if (desc.format == Format::NV12 && has_flag(desc.bind_flags, BindFlag::SHADER_RESOURCE))
+		if (desc.format == Format_NV12 && has_flag(desc.bind_flags, BindFlag_SHADER_RESOURCE))
 		{
 			imageInfo.flags |= VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
 		}
@@ -670,13 +670,13 @@ namespace VulkanInternal
 
 		switch (desc.type)
 		{
-		case TextureDesc::Type::TEXTURE_1D:
+		case TextureDesc::Type_TEXTURE_1D:
 			imageInfo.imageType = VK_IMAGE_TYPE_1D;
 			break;
-		case TextureDesc::Type::TEXTURE_2D:
+		case TextureDesc::Type_TEXTURE_2D:
 			imageInfo.imageType = VK_IMAGE_TYPE_2D;
 			break;
-		case TextureDesc::Type::TEXTURE_3D:
+		case TextureDesc::Type_TEXTURE_3D:
 			imageInfo.imageType = VK_IMAGE_TYPE_3D;
 			break;
 		default:
@@ -684,13 +684,13 @@ namespace VulkanInternal
 			break;
 		}
 
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_COMPATIBILITY_H264))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_COMPATIBILITY_H264))
 		{
 			profile_list_info.pProfiles = &profile_h264;
 			profile_list_info.profileCount = 1;
 			imageInfo.pNext = &profile_list_info;
 		}
-		else if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_COMPATIBILITY_H265))
+		else if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_COMPATIBILITY_H265))
 		{
 			profile_list_info.pProfiles = &profile_h265;
 			profile_list_info.profileCount = 1;
@@ -751,14 +751,14 @@ namespace VulkanInternal
 			ss += "[Vulkan Warning]: ";
 			ss += callback_data->pMessage;
 			ss += "\n";
-			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel::Warning);
+			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel_Warning);
 		}
 		else if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			ss += "[Vulkan Error]: ";
 			ss += callback_data->pMessage;
 			ss += "\n";
-			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel::Error);
+			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel_Error);
 		}
 
 		return VK_FALSE;
@@ -1110,7 +1110,7 @@ namespace VulkanInternal
 		Protean::vector<VkSemaphore> swapchainAcquireSemaphores;
 		Protean::vector<VkSemaphore> swapchainReleaseSemaphores;
 
-		ColorSpace colorSpace = ColorSpace::SRGB;
+		ColorSpace colorSpace = ColorSpace_SRGB;
 		SwapChainDesc desc;
 		std::mutex locker;
 
@@ -1234,7 +1234,7 @@ namespace VulkanInternal
 		}
 		if (!valid)
 		{
-			internal_state->desc.format = Format::B8G8R8A8_UNORM;
+			internal_state->desc.format = Format_B8G8R8A8_UNORM;
 			surfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
 			surfaceFormat.colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 		}
@@ -1245,13 +1245,13 @@ namespace VulkanInternal
 		{
 		default:
 		case VK_COLOR_SPACE_SRGB_NONLINEAR_KHR:
-			internal_state->colorSpace = ColorSpace::SRGB;
+			internal_state->colorSpace = ColorSpace_SRGB;
 			break;
 		case VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT:
-			internal_state->colorSpace = ColorSpace::HDR_LINEAR;
+			internal_state->colorSpace = ColorSpace_HDR_LINEAR;
 			break;
 		case VK_COLOR_SPACE_HDR10_ST2084_EXT:
-			internal_state->colorSpace = ColorSpace::HDR10_ST2084;
+			internal_state->colorSpace = ColorSpace_HDR10_ST2084;
 			break;
 		}
 
@@ -1487,7 +1487,7 @@ using namespace VulkanInternal;
 		descriptor_set_layouts[DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE] = allocationhandler->bindlessSampledImages.descriptorSetLayout;
 		descriptor_set_layouts[DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE] = allocationhandler->bindlessStorageImages.descriptorSetLayout;
 		descriptor_set_layouts[DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER] = allocationhandler->bindlessStorageTexelBuffers.descriptorSetLayout;
-		if (CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		if (CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 		{
 			descriptor_set_layouts[DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE] = allocationhandler->bindlessAccelerationStructures.descriptorSetLayout;
 		}
@@ -1698,7 +1698,7 @@ using namespace VulkanInternal;
 				GPUBufferDesc uploaddesc;
 				uploaddesc.size = Protean::Math::GetNextPowerOfTwo(staging_size);
 				uploaddesc.size = std::max(uploaddesc.size, uint64_t(65536));
-				uploaddesc.usage = Usage::UPLOAD;
+				uploaddesc.usage = Usage_UPLOAD;
 				bool upload_success = device->CreateBuffer(&uploaddesc, nullptr, &cmd.uploadbuffer);
 				assert(upload_success);
 				device->SetName(&cmd.uploadbuffer, "CopyAllocator::uploadBuffer");
@@ -2086,7 +2086,7 @@ using namespace VulkanInternal;
 		{
 			bindPoint = VK_PIPELINE_BIND_POINT_COMPUTE;
 
-			if (commandlist.active_cs->stage == ShaderStage::LIB)
+			if (commandlist.active_cs->stage == ShaderStage_LIB)
 			{
 				bindPoint = VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR;
 			}
@@ -2173,11 +2173,11 @@ using namespace VulkanInternal;
 	GraphicsDevice_Vulkan::GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode_, GPUPreference preference)
 	{
 		Protean::Timer timer;
-		capabilities |= GraphicsDeviceCapability::ALIASING_GENERIC;
+		capabilities |= GraphicsDeviceCapability_ALIASING_GENERIC;
 
 		// This functionalty is missing from Vulkan but might be added in the future:
 		//	Issue: https://github.com/KhronosGroup/Vulkan-Docs/issues/2079
-		capabilities |= GraphicsDeviceCapability::COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
+		capabilities |= GraphicsDeviceCapability_COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
 
 		Protean::unordered_map<uint32_t, Protean::Allocator::shared_ptr<std::mutex>> queue_lockers;
 
@@ -2265,7 +2265,7 @@ using namespace VulkanInternal;
 		}
 #endif // _WIN32
 
-		if (validationMode != ValidationMode::Disabled)
+		if (validationMode != ValidationMode_Disabled)
 		{
 			// Determine the optimal validation layers to enable that are necessary for useful debugging
 			static const Protean::vector<const char*> validationLayerPriorityList[] =
@@ -2314,12 +2314,12 @@ using namespace VulkanInternal;
 
 			VkDebugUtilsMessengerCreateInfoEXT debugUtilsCreateInfo = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
 
-			if (validationMode != ValidationMode::Disabled && debugUtils)
+			if (validationMode != ValidationMode_Disabled && debugUtils)
 			{
 				debugUtilsCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 				debugUtilsCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-				if (validationMode == ValidationMode::Verbose)
+				if (validationMode == ValidationMode_Verbose)
 				{
 					debugUtilsCreateInfo.messageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
 					debugUtilsCreateInfo.messageSeverity |= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
@@ -2338,7 +2338,7 @@ using namespace VulkanInternal;
 
 			volkLoadInstanceOnly(instance);
 
-			if (validationMode != ValidationMode::Disabled && debugUtils)
+			if (validationMode != ValidationMode_Disabled && debugUtils)
 			{
 				vulkan_check(vkCreateDebugUtilsMessengerEXT(instance, &debugUtilsCreateInfo, nullptr, &debugUtilsMessenger));
 			}
@@ -2558,19 +2558,19 @@ using namespace VulkanInternal;
 					continue;
 
 				bool priority = properties2.properties.deviceType == VkPhysicalDeviceType::VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
-				if (preference == GPUPreference::Integrated)
+				if (preference == GPUPreference_Integrated)
 				{
 					priority = properties2.properties.deviceType == VkPhysicalDeviceType::VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
 				}
-				else if (preference == GPUPreference::AMD)
+				else if (preference == GPUPreference_AMD)
 				{
 					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("AMD") != std::string::npos;
 				}
-				else if (preference == GPUPreference::Nvidia)
+				else if (preference == GPUPreference_Nvidia)
 				{
 					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("NVIDIA") != std::string::npos;
 				}
-				else if (preference == GPUPreference::Intel)
+				else if (preference == GPUPreference_Intel)
 				{
 					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("INTEL") != std::string::npos;
 				}
@@ -2616,33 +2616,33 @@ using namespace VulkanInternal;
 			switch (properties2.properties.deviceType)
 			{
 			case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-				adapterType = AdapterType::IntegratedGpu;
+				adapterType = AdapterType_IntegratedGpu;
 				break;
 			case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-				adapterType = AdapterType::DiscreteGpu;
+				adapterType = AdapterType_DiscreteGpu;
 				break;
 			case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-				adapterType = AdapterType::VirtualGpu;
+				adapterType = AdapterType_VirtualGpu;
 				break;
 			case VK_PHYSICAL_DEVICE_TYPE_CPU:
-				adapterType = AdapterType::Cpu;
+				adapterType = AdapterType_Cpu;
 				break;
 			default:
-				adapterType = AdapterType::Other;
+				adapterType = AdapterType_Other;
 				break;
 			}
 
 			if (features2.features.tessellationShader == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::TESSELLATION;
+				capabilities |= GraphicsDeviceCapability_TESSELLATION;
 			}
 			if (conservativeRasterization)
 			{
-				capabilities |= GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION;
+				capabilities |= GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION;
 			}
 			if (features2.features.shaderStorageImageExtendedFormats == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_COMMON;
+				capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_COMMON;
 			}
 
 			if (
@@ -2651,63 +2651,63 @@ using namespace VulkanInternal;
 				acceleration_structure_features.accelerationStructure == VK_TRUE &&
 				features_1_2.bufferDeviceAddress == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::RAYTRACING;
+				capabilities |= GraphicsDeviceCapability_RAYTRACING;
 				SHADER_IDENTIFIER_SIZE = raytracing_properties.shaderGroupHandleSize;
 			}
 			if (mesh_shader_features.meshShader == VK_TRUE && mesh_shader_features.taskShader == VK_TRUE)
 			{
 				// Mesh shader still has issues on Vulkan: https://github.com/microsoft/DirectXShaderCompiler/issues/6862
-				//capabilities |= GraphicsDeviceCapability::MESH_SHADER;
+				//capabilities |= GraphicsDeviceCapability_MESH_SHADER;
 			}
 			if (fragment_shading_rate_features.pipelineFragmentShadingRate == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING;
+				capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING;
 			}
 			if (fragment_shading_rate_features.attachmentFragmentShadingRate == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2;
+				capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2;
 				VARIABLE_RATE_SHADING_TILE_SIZE = std::min(fragment_shading_rate_properties.maxFragmentShadingRateAttachmentTexelSize.width, fragment_shading_rate_properties.maxFragmentShadingRateAttachmentTexelSize.height);
 			}
 
 			VkFormatProperties formatProperties = {};
-			vkGetPhysicalDeviceFormatProperties(physicalDevice, _ConvertFormat(Format::R11G11B10_FLOAT), &formatProperties);
+			vkGetPhysicalDeviceFormatProperties(physicalDevice, _ConvertFormat(Format_R11G11B10_FLOAT), &formatProperties);
 			if (formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
 			{
-				capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_R11G11B10_FLOAT;
+				capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_R11G11B10_FLOAT;
 			}
 
 			if (conditional_rendering_features.conditionalRendering == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::PREDICATION;
+				capabilities |= GraphicsDeviceCapability_PREDICATION;
 			}
 
 			if (features_1_2.samplerFilterMinmax == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::SAMPLER_MINMAX;
+				capabilities |= GraphicsDeviceCapability_SAMPLER_MINMAX;
 			}
 
 			if (features2.features.depthBounds == VK_TRUE)
 			{
-				capabilities |= GraphicsDeviceCapability::DEPTH_BOUNDS_TEST;
+				capabilities |= GraphicsDeviceCapability_DEPTH_BOUNDS_TEST;
 			}
 
 			if (features2.features.sparseBinding == VK_TRUE && features2.features.sparseResidencyAliased == VK_TRUE)
 			{
 				if (properties2.properties.sparseProperties.residencyNonResidentStrict == VK_TRUE)
 				{
-					capabilities |= GraphicsDeviceCapability::SPARSE_NULL_MAPPING;
+					capabilities |= GraphicsDeviceCapability_SPARSE_NULL_MAPPING;
 				}
 				if (features2.features.sparseResidencyBuffer == VK_TRUE)
 				{
-					capabilities |= GraphicsDeviceCapability::SPARSE_BUFFER;
+					capabilities |= GraphicsDeviceCapability_SPARSE_BUFFER;
 				}
 				if (features2.features.sparseResidencyImage2D == VK_TRUE)
 				{
-					capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE2D;
+					capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE2D;
 				}
 				if (features2.features.sparseResidencyImage3D == VK_TRUE)
 				{
-					capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE3D;
+					capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE3D;
 				}
 			}
 
@@ -2716,14 +2716,14 @@ using namespace VulkanInternal;
 				(depth_stencil_resolve_properties.supportedDepthResolveModes & VK_RESOLVE_MODE_MAX_BIT)
 				)
 			{
-				capabilities |= GraphicsDeviceCapability::DEPTH_RESOLVE_MIN_MAX;
+				capabilities |= GraphicsDeviceCapability_DEPTH_RESOLVE_MIN_MAX;
 			}
 			if (
 				(depth_stencil_resolve_properties.supportedStencilResolveModes & VK_RESOLVE_MODE_MIN_BIT) &&
 				(depth_stencil_resolve_properties.supportedStencilResolveModes & VK_RESOLVE_MODE_MAX_BIT)
 				)
 			{
-				capabilities |= GraphicsDeviceCapability::STENCIL_RESOLVE_MIN_MAX;
+				capabilities |= GraphicsDeviceCapability_STENCIL_RESOLVE_MIN_MAX;
 			}
 
 			if(h264_decode_extension)
@@ -2750,7 +2750,7 @@ using namespace VulkanInternal;
 
 				if (video_capability_h264.decode_capabilities.flags)
 				{
-					capabilities |= GraphicsDeviceCapability::VIDEO_DECODE_H264;
+					capabilities |= GraphicsDeviceCapability_VIDEO_DECODE_H264;
 					VIDEO_DECODE_BITSTREAM_ALIGNMENT = align(VIDEO_DECODE_BITSTREAM_ALIGNMENT, video_capability_h264.video_capabilities.minBitstreamBufferOffsetAlignment);
 					VIDEO_DECODE_BITSTREAM_ALIGNMENT = align(VIDEO_DECODE_BITSTREAM_ALIGNMENT, video_capability_h264.video_capabilities.minBitstreamBufferSizeAlignment);
 				}
@@ -2779,7 +2779,7 @@ using namespace VulkanInternal;
 
 				if (video_capability_h265.decode_capabilities.flags)
 				{
-					//capabilities |= GraphicsDeviceCapability::VIDEO_DECODE_H265; //TODO
+					//capabilities |= GraphicsDeviceCapability_VIDEO_DECODE_H265; //TODO
 					VIDEO_DECODE_BITSTREAM_ALIGNMENT = align(VIDEO_DECODE_BITSTREAM_ALIGNMENT, video_capability_h265.video_capabilities.minBitstreamBufferOffsetAlignment);
 					VIDEO_DECODE_BITSTREAM_ALIGNMENT = align(VIDEO_DECODE_BITSTREAM_ALIGNMENT, video_capability_h265.video_capabilities.minBitstreamBufferSizeAlignment);
 				}
@@ -3011,7 +3011,7 @@ using namespace VulkanInternal;
 			// https://registry.khronos.org/vulkan/specs/1.0-extensions/html/vkspec.html#memory-device
 			//	"In a unified memory architecture (UMA) system there is often only a single memory heap which is
 			//	considered to be equally “local” to the host and to the device, and such an implementation must advertise the heap as device-local."
-			capabilities |= GraphicsDeviceCapability::CACHE_COHERENT_UMA;
+			capabilities |= GraphicsDeviceCapability_CACHE_COHERENT_UMA;
 		}
 
 		allocationhandler = Protean::Allocator::make_shared_single<AllocationHandler>();
@@ -3128,11 +3128,11 @@ using namespace VulkanInternal;
 		pso_dynamicStates.push_back(VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT);
 		pso_dynamicStates.push_back(VK_DYNAMIC_STATE_STENCIL_REFERENCE);
 		pso_dynamicStates.push_back(VK_DYNAMIC_STATE_BLEND_CONSTANTS);
-		if (CheckCapability(GraphicsDeviceCapability::DEPTH_BOUNDS_TEST))
+		if (CheckCapability(GraphicsDeviceCapability_DEPTH_BOUNDS_TEST))
 		{
 			pso_dynamicStates.push_back(VK_DYNAMIC_STATE_DEPTH_BOUNDS);
 		}
-		if (CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING))
+		if (CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING))
 		{
 			pso_dynamicStates.push_back(VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR);
 		}
@@ -3471,7 +3471,7 @@ using namespace VulkanInternal;
 			allocationhandler->bindlessStorageTexelBuffers.init(this, VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, std::min(BINDLESS_RESOURCE_CAPACITY, properties_1_2.maxDescriptorSetUpdateAfterBindStorageImages / 2));
 			descriptor_sets.sets[DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER] = allocationhandler->bindlessStorageTexelBuffers.descriptorSet;
 
-			if (CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+			if (CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 			{
 				allocationhandler->bindlessAccelerationStructures.init(this, VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR, 32);
 				descriptor_sets.sets[DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE] = allocationhandler->bindlessAccelerationStructures.descriptorSet;
@@ -3710,7 +3710,7 @@ using namespace VulkanInternal;
 		auto internal_state = Protean::Allocator::make_shared<Buffer_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		buffer->internal_state = internal_state;
-		buffer->type = GPUResource::Type::BUFFER;
+		buffer->type = GPUResource::Type_BUFFER;
 		buffer->mapped_data = nullptr;
 		buffer->mapped_size = 0;
 		buffer->desc = *desc;
@@ -3719,49 +3719,49 @@ using namespace VulkanInternal;
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		bufferInfo.size = buffer->desc.size;
 		bufferInfo.usage = 0;
-		if (has_flag(buffer->desc.bind_flags, BindFlag::VERTEX_BUFFER))
+		if (has_flag(buffer->desc.bind_flags, BindFlag_VERTEX_BUFFER))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.bind_flags, BindFlag::INDEX_BUFFER))
+		if (has_flag(buffer->desc.bind_flags, BindFlag_INDEX_BUFFER))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.bind_flags, BindFlag::CONSTANT_BUFFER))
+		if (has_flag(buffer->desc.bind_flags, BindFlag_CONSTANT_BUFFER))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 			bufferInfo.size = align(bufferInfo.size + dynamic_cbv_maxsize, dynamic_cbv_maxsize); // hack: padding for descriptor writes!
 		}
-		if (has_flag(buffer->desc.bind_flags, BindFlag::SHADER_RESOURCE))
+		if (has_flag(buffer->desc.bind_flags, BindFlag_SHADER_RESOURCE))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // read only ByteAddressBuffer is also storage buffer
 			bufferInfo.usage |= VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (has_flag(buffer->desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 			bufferInfo.usage |= VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::BUFFER_RAW))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_BUFFER_RAW))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::INDIRECT_ARGS))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_INDIRECT_ARGS))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::RAY_TRACING))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_RAY_TRACING))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
 			bufferInfo.usage |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
 			buffer->desc.alignment = std::max(buffer->desc.alignment, 16u);
 			buffer->desc.alignment = std::max(buffer->desc.alignment, raytracing_properties.shaderGroupBaseAlignment);
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::PREDICATION))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_PREDICATION))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT;
 		}
@@ -3769,7 +3769,7 @@ using namespace VulkanInternal;
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT;
 		}
-		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE))
+		if (has_flag(buffer->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE))
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR;
 		}
@@ -3778,13 +3778,13 @@ using namespace VulkanInternal;
 
 		VkVideoProfileListInfoKHR profile_list_info = {};
 		profile_list_info.sType = VK_STRUCTURE_TYPE_VIDEO_PROFILE_LIST_INFO_KHR;
-		if (has_flag(desc->misc_flags, ResourceMiscFlag::VIDEO_COMPATIBILITY_H264))
+		if (has_flag(desc->misc_flags, ResourceMiscFlag_VIDEO_COMPATIBILITY_H264))
 		{
 			profile_list_info.pProfiles = &video_capability_h264.profile;
 			profile_list_info.profileCount = 1;
 			bufferInfo.pNext = &profile_list_info;
 		}
-		else if (has_flag(desc->misc_flags, ResourceMiscFlag::VIDEO_COMPATIBILITY_H265))
+		else if (has_flag(desc->misc_flags, ResourceMiscFlag_VIDEO_COMPATIBILITY_H265))
 		{
 			profile_list_info.pProfiles = &video_capability_h265.profile;
 			profile_list_info.profileCount = 1;
@@ -3804,20 +3804,20 @@ using namespace VulkanInternal;
 			bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		}
 
-		if (desc->usage == Usage::READBACK)
+		if (desc->usage == Usage_READBACK)
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 		}
-		else if (desc->usage == Usage::UPLOAD)
+		else if (desc->usage == Usage_UPLOAD)
 		{
 			bufferInfo.usage |= VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		}
 
 		VkResult res;
 
-		if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+		if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 		{
 			VkMemoryRequirements memory_requirements = {};
 			memory_requirements.alignment = buffer->desc.alignment;
@@ -3829,12 +3829,12 @@ using namespace VulkanInternal;
 			memory_requirements.memoryTypeBits = ~0u;
 
 			VmaAllocationCreateInfo create_info = {};
-			if (desc->usage == Usage::READBACK)
+			if (desc->usage == Usage_READBACK)
 			{
 				create_info.usage = VMA_MEMORY_USAGE_GPU_TO_CPU;
 				create_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
 			}
-			else if (desc->usage == Usage::UPLOAD)
+			else if (desc->usage == Usage_UPLOAD)
 			{
 				create_info.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
 				create_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
@@ -3846,8 +3846,8 @@ using namespace VulkanInternal;
 
 			create_info.flags |= VMA_ALLOCATION_CREATE_CAN_ALIAS_BIT;
 
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) ||
-				has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) ||
+				has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				create_info.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT; // workaround for potential image offset issue (varying formats, varying offset requirements)
 			}
@@ -3876,9 +3876,9 @@ using namespace VulkanInternal;
 				internal_state->allocation->GetOffset()
 			));
 		}
-		else if (has_flag(desc->misc_flags, ResourceMiscFlag::SPARSE))
+		else if (has_flag(desc->misc_flags, ResourceMiscFlag_SPARSE))
 		{
-			assert(CheckCapability(GraphicsDeviceCapability::SPARSE_BUFFER));
+			assert(CheckCapability(GraphicsDeviceCapability_SPARSE_BUFFER));
 			bufferInfo.flags |= VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
 			bufferInfo.flags |= VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT;
 			bufferInfo.flags |= VK_BUFFER_CREATE_SPARSE_ALIASED_BIT;
@@ -3896,12 +3896,12 @@ using namespace VulkanInternal;
 		else
 		{
 			VmaAllocationCreateInfo create_info = {};
-			if (desc->usage == Usage::READBACK)
+			if (desc->usage == Usage_READBACK)
 			{
 				create_info.usage = VMA_MEMORY_USAGE_AUTO_PREFER_HOST;
 				create_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
 			}
-			else if (desc->usage == Usage::UPLOAD)
+			else if (desc->usage == Usage_UPLOAD)
 			{
 				create_info.usage = VMA_MEMORY_USAGE_AUTO_PREFER_HOST;
 				create_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
@@ -3911,7 +3911,7 @@ using namespace VulkanInternal;
 				create_info.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
 			}
 
-			if (desc->usage == Usage::DEFAULT && (bufferInfo.usage & VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR))
+			if (desc->usage == Usage_DEFAULT && (bufferInfo.usage & VK_BUFFER_USAGE_VIDEO_DECODE_SRC_BIT_KHR))
 			{
 				// NVidia video bitstream buffer workaround: DEFAULT usage resource which is not mapped producing incorrect result
 				create_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
@@ -3971,7 +3971,7 @@ using namespace VulkanInternal;
 			}
 		}
 
-		if (desc->usage == Usage::READBACK || desc->usage == Usage::UPLOAD)
+		if (desc->usage == Usage_READBACK || desc->usage == Usage_UPLOAD)
 		{
 			if (alias == nullptr)
 			{
@@ -3999,7 +3999,7 @@ using namespace VulkanInternal;
 		{
 			CopyAllocator::CopyCMD cmd;
 			void* mapped_data = nullptr;
-			if (desc->usage == Usage::UPLOAD)
+			if (desc->usage == Usage_UPLOAD)
 			{
 				mapped_data = buffer->mapped_data;
 			}
@@ -4031,15 +4031,15 @@ using namespace VulkanInternal;
 		}
 
 		// Create resource views if needed
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(desc->bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(desc->bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(buffer, SubresourceType::SRV, 0);
+				CreateSubresource(buffer, SubresourceType_SRV, 0);
 			}
-			if (has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(buffer, SubresourceType::UAV, 0);
+				CreateSubresource(buffer, SubresourceType_UAV, 0);
 			}
 		}
 
@@ -4051,7 +4051,7 @@ using namespace VulkanInternal;
 		internal_state->allocationhandler = allocationhandler;
 		internal_state->defaultLayout = _ConvertImageLayout(desc->layout);
 		texture->internal_state = internal_state;
-		texture->type = GPUResource::Type::TEXTURE;
+		texture->type = GPUResource::Type_TEXTURE;
 		texture->mapped_data = nullptr;
 		texture->mapped_size = 0;
 		texture->mapped_subresources = nullptr;
@@ -4068,10 +4068,10 @@ using namespace VulkanInternal;
 
 		VkResult res = VK_SUCCESS;
 
-		if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SPARSE))
+		if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SPARSE))
 		{
-			assert(CheckCapability(GraphicsDeviceCapability::SPARSE_TEXTURE2D) || imageInfo.imageType != VK_IMAGE_TYPE_2D);
-			assert(CheckCapability(GraphicsDeviceCapability::SPARSE_TEXTURE3D) || imageInfo.imageType != VK_IMAGE_TYPE_3D);
+			assert(CheckCapability(GraphicsDeviceCapability_SPARSE_TEXTURE2D) || imageInfo.imageType != VK_IMAGE_TYPE_2D);
+			assert(CheckCapability(GraphicsDeviceCapability_SPARSE_TEXTURE3D) || imageInfo.imageType != VK_IMAGE_TYPE_3D);
 
 			vulkan_check(vkCreateImage(device, &imageInfo, nullptr, &internal_state->resource));
 
@@ -4128,15 +4128,15 @@ using namespace VulkanInternal;
 			VmaAllocationCreateInfo allocInfo = {};
 			allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
 
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) ||
-				has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) ||
-				has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) ||
+				has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) ||
+				has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				allocInfo.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT; // workaround for potential image offset issue (varying formats, varying offset requirements)
 				allocInfo.flags |= VMA_ALLOCATION_CREATE_CAN_ALIAS_BIT;
 			}
 
-			if (texture->desc.usage == Usage::READBACK || texture->desc.usage == Usage::UPLOAD)
+			if (texture->desc.usage == Usage_READBACK || texture->desc.usage == Usage_UPLOAD)
 			{
 				// Note: we are creating a buffer instead of linear image because linear image cannot have mips
 				//	With a buffer, we can tightly pack mips linearly into a buffer so it won't have that limitation
@@ -4145,12 +4145,12 @@ using namespace VulkanInternal;
 				bufferInfo.size = ComputeTextureMemorySizeInBytes(*desc);
 
 				allocInfo.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
-				if (texture->desc.usage == Usage::READBACK)
+				if (texture->desc.usage == Usage_READBACK)
 				{
 					allocInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT;
 					bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 				}
-				else if (texture->desc.usage == Usage::UPLOAD)
+				else if (texture->desc.usage == Usage_UPLOAD)
 				{
 					allocInfo.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
 					bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -4158,7 +4158,7 @@ using namespace VulkanInternal;
 
 				res = vulkan_check(vmaCreateBuffer(allocationhandler->allocator, &bufferInfo, &allocInfo, &internal_state->staging_resource, &internal_state->allocation, nullptr));
 
-				if (texture->desc.usage == Usage::READBACK || texture->desc.usage == Usage::UPLOAD)
+				if (texture->desc.usage == Usage_READBACK || texture->desc.usage == Usage_UPLOAD)
 				{
 					texture->mapped_data = internal_state->allocation->GetMappedData();
 					texture->mapped_size = internal_state->allocation->GetSize();
@@ -4173,7 +4173,7 @@ using namespace VulkanInternal;
 				VmaAllocator allocator = allocationhandler->allocator;
 				VkExternalMemoryImageCreateInfo externalMemImageCreateInfo = {};
 
-				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SHARED))
+				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SHARED))
 				{
 					externalMemImageCreateInfo.sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -4242,7 +4242,7 @@ using namespace VulkanInternal;
 					}
 				}
 
-				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SHARED))
+				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SHARED))
 				{
 					VmaAllocationInfo allocationInfo;
 					vmaGetAllocationInfo(allocator, internal_state->allocation, &allocationInfo);
@@ -4271,7 +4271,7 @@ using namespace VulkanInternal;
 		{
 			CopyAllocator::CopyCMD cmd;
 			void* mapped_data = nullptr;
-			if (desc->usage == Usage::UPLOAD)
+			if (desc->usage == Usage_UPLOAD)
 			{
 				mapped_data = texture->mapped_data;
 			}
@@ -4394,7 +4394,7 @@ using namespace VulkanInternal;
 				init_transitions.push_back(barrier);
 			}
 		}
-		else if(texture->desc.layout != ResourceState::UNDEFINED && internal_state->resource != VK_NULL_HANDLE)
+		else if(texture->desc.layout != ResourceState_UNDEFINED && internal_state->resource != VK_NULL_HANDLE)
 		{
 			VkImageMemoryBarrier2 barrier = {};
 			barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
@@ -4428,27 +4428,27 @@ using namespace VulkanInternal;
 			init_transitions.push_back(barrier);
 		}
 
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(texture->desc.bind_flags, BindFlag::RENDER_TARGET))
+			if (has_flag(texture->desc.bind_flags, BindFlag_RENDER_TARGET))
 			{
-				CreateSubresource(texture, SubresourceType::RTV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_RTV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::DEPTH_STENCIL))
+			if (has_flag(texture->desc.bind_flags, BindFlag_DEPTH_STENCIL))
 			{
-				CreateSubresource(texture, SubresourceType::DSV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_DSV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(texture->desc.bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(texture, SubresourceType::SRV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_SRV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(texture->desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(texture, SubresourceType::UAV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_UAV, 0, -1, 0, -1);
 			}
 		}
 
-		if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE) || has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_OUTPUT_ONLY) || has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY))
+		if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE) || has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_OUTPUT_ONLY) || has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY))
 		{
 			VkImageViewCreateInfo view_desc = {};
 			view_desc.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -4464,11 +4464,11 @@ using namespace VulkanInternal;
 
 			VkImageViewUsageCreateInfo viewUsageInfo = {};
 			viewUsageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_USAGE_CREATE_INFO;
-			if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY))
+			if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY))
 			{
 				viewUsageInfo.usage = VK_IMAGE_USAGE_VIDEO_DECODE_DPB_BIT_KHR;
 			}
-			else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_OUTPUT_ONLY))
+			else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_OUTPUT_ONLY))
 			{
 				viewUsageInfo.usage = VK_IMAGE_USAGE_VIDEO_DECODE_DST_BIT_KHR;
 			}
@@ -4504,28 +4504,28 @@ using namespace VulkanInternal;
 		internal_state->stageInfo.pName = internal_state->entrypoint.c_str();
 		switch (stage)
 		{
-		case ShaderStage::MS:
+		case ShaderStage_MS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_MESH_BIT_EXT;
 			break;
-		case ShaderStage::AS:
+		case ShaderStage_AS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_TASK_BIT_EXT;
 			break;
-		case ShaderStage::VS:
+		case ShaderStage_VS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 			break;
-		case ShaderStage::HS:
+		case ShaderStage_HS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
 			break;
-		case ShaderStage::DS:
+		case ShaderStage_DS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
 			break;
-		case ShaderStage::GS:
+		case ShaderStage_GS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
 			break;
-		case ShaderStage::PS:
+		case ShaderStage_PS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 			break;
-		case ShaderStage::CS:
+		case ShaderStage_CS:
 			internal_state->stageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
 			break;
 		default:
@@ -4641,7 +4641,7 @@ using namespace VulkanInternal;
 			spvReflectDestroyShaderModule(&module);
 		}
 
-		if (stage == ShaderStage::CS)
+		if (stage == ShaderStage_CS)
 		{
 			VkComputePipelineCreateInfo pipelineInfo = {};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
@@ -4653,7 +4653,7 @@ using namespace VulkanInternal;
 
 			res = vulkan_check(vkCreateComputePipelines(device, pipelineCache, 1, &pipelineInfo, nullptr, &internal_state->pipeline_cs));
 		}
-		else if (stage == ShaderStage::LIB)
+		else if (stage == ShaderStage_LIB)
 		{
 			cache_pso_layout(internal_state->layout);
 		}
@@ -4674,81 +4674,81 @@ using namespace VulkanInternal;
 
 		switch (desc->filter)
 		{
-		case Filter::MIN_MAG_MIP_POINT:
-		case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-		case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
+		case Filter_MIN_MAG_MIP_POINT:
+		case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+		case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_MAG_POINT_MIP_LINEAR:
-		case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
-		case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_POINT_MAG_LINEAR_MIP_POINT:
-		case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-		case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_POINT_MAG_MIP_LINEAR:
-		case Filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
-		case Filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_LINEAR_MAG_MIP_POINT:
-		case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
-		case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-		case Filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-		case Filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_MAG_LINEAR_MIP_POINT:
-		case Filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
-		case Filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::MIN_MAG_MIP_LINEAR:
-		case Filter::MINIMUM_MIN_MAG_MIP_LINEAR:
-		case Filter::MAXIMUM_MIN_MAG_MIP_LINEAR:
+		case Filter_MIN_MAG_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_MAG_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_MAG_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = false;
 			break;
-		case Filter::ANISOTROPIC:
-		case Filter::MINIMUM_ANISOTROPIC:
-		case Filter::MAXIMUM_ANISOTROPIC:
+		case Filter_ANISOTROPIC:
+		case Filter_MINIMUM_ANISOTROPIC:
+		case Filter_MAXIMUM_ANISOTROPIC:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
@@ -4756,63 +4756,63 @@ using namespace VulkanInternal;
 			createInfo.maxAnisotropy = std::min(16.0f, std::max(1.0f, static_cast<float>(desc->max_anisotropy)));
 			createInfo.compareEnable = false;
 			break;
-		case Filter::COMPARISON_MIN_MAG_MIP_POINT:
+		case Filter_COMPARISON_MIN_MAG_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_NEAREST;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_NEAREST;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_MIN_MAG_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_MAG_MIP_LINEAR:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 			createInfo.anisotropyEnable = false;
 			createInfo.compareEnable = true;
 			break;
-		case Filter::COMPARISON_ANISOTROPIC:
+		case Filter_COMPARISON_ANISOTROPIC:
 			createInfo.minFilter = VK_FILTER_LINEAR;
 			createInfo.magFilter = VK_FILTER_LINEAR;
 			createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
@@ -4831,31 +4831,31 @@ using namespace VulkanInternal;
 
 		VkSamplerReductionModeCreateInfo reductionmode = {};
 		reductionmode.sType = VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO;
-		if (CheckCapability(GraphicsDeviceCapability::SAMPLER_MINMAX))
+		if (CheckCapability(GraphicsDeviceCapability_SAMPLER_MINMAX))
 		{
 			switch (desc->filter)
 			{
-			case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_MIP_LINEAR:
-			case Filter::MINIMUM_ANISOTROPIC:
+			case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_MIP_LINEAR:
+			case Filter_MINIMUM_ANISOTROPIC:
 				reductionmode.reductionMode = VK_SAMPLER_REDUCTION_MODE_MIN;
 				createInfo.pNext = &reductionmode;
 				break;
-			case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_MIP_LINEAR:
-			case Filter::MAXIMUM_ANISOTROPIC:
+			case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_MIP_LINEAR:
+			case Filter_MAXIMUM_ANISOTROPIC:
 				reductionmode.reductionMode = VK_SAMPLER_REDUCTION_MODE_MAX;
 				createInfo.pNext = &reductionmode;
 				break;
@@ -4911,11 +4911,11 @@ using namespace VulkanInternal;
 
 		switch (desc->type)
 		{
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			poolInfo.queryType = VK_QUERY_TYPE_TIMESTAMP;
 			break;
-		case GpuQueryType::OCCLUSION:
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION:
+		case GpuQueryType_OCCLUSION_BINARY:
 			poolInfo.queryType = VK_QUERY_TYPE_OCCLUSION;
 			break;
 		}
@@ -4938,7 +4938,7 @@ using namespace VulkanInternal;
 		internal_state->layout = layout_template;
 
 		VkGraphicsPipelineCreateInfo pipelineInfo = {};
-		VkPipelineShaderStageCreateInfo shaderStages[size_t(ShaderStage::Count)] = {};
+		VkPipelineShaderStageCreateInfo shaderStages[size_t(ShaderStage_Count)] = {};
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
 		VkPipelineRasterizationStateCreateInfo rasterizer = {};
 		VkPipelineRasterizationDepthClipStateCreateInfoEXT depthClipStateInfo = {};
@@ -4949,7 +4949,7 @@ using namespace VulkanInternal;
 		VkPipelineTessellationStateCreateInfo tessellationInfo = {};
 
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		if (CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2))
+		if (CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2))
 		{
 			pipelineInfo.flags |= VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 		}
@@ -5026,22 +5026,22 @@ using namespace VulkanInternal;
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		switch (pso->desc.pt)
 		{
-		case PrimitiveTopology::POINTLIST:
+		case PrimitiveTopology_POINTLIST:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 			break;
-		case PrimitiveTopology::LINELIST:
+		case PrimitiveTopology_LINELIST:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 			break;
-		case PrimitiveTopology::LINESTRIP:
+		case PrimitiveTopology_LINESTRIP:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
 			break;
-		case PrimitiveTopology::TRIANGLESTRIP:
+		case PrimitiveTopology_TRIANGLESTRIP:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 			break;
-		case PrimitiveTopology::TRIANGLELIST:
+		case PrimitiveTopology_TRIANGLELIST:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 			break;
-		case PrimitiveTopology::PATCHLIST:
+		case PrimitiveTopology_PATCHLIST:
 			inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST;
 			break;
 		default:
@@ -5078,10 +5078,10 @@ using namespace VulkanInternal;
 
 		switch (rs_desc.fill_mode)
 		{
-		case FillMode::WIREFRAME:
+		case FillMode_WIREFRAME:
 			rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
 			break;
-		case FillMode::SOLID:
+		case FillMode_SOLID:
 		default:
 			rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 			break;
@@ -5089,13 +5089,13 @@ using namespace VulkanInternal;
 
 		switch (rs_desc.cull_mode)
 		{
-		case CullMode::BACK:
+		case CullMode_BACK:
 			rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 			break;
-		case CullMode::FRONT:
+		case CullMode_FRONT:
 			rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
 			break;
-		case CullMode::NONE:
+		case CullMode_NONE:
 		default:
 			rasterizer.cullMode = VK_CULL_MODE_NONE;
 			break;
@@ -5110,7 +5110,7 @@ using namespace VulkanInternal;
 		// Depth clip will be enabled via Vulkan 1.1 extension VK_EXT_depth_clip_enable:
 		depthClipStateInfo.depthClipEnable = rs_desc.depth_clip_enable ? VK_TRUE : VK_FALSE;
 
-		if (CheckCapability(GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION) && rs_desc.conservative_rasterization_enable)
+		if (CheckCapability(GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION) && rs_desc.conservative_rasterization_enable)
 		{
 			rasterizationConservativeState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT;
 			rasterizationConservativeState.conservativeRasterizationMode = VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT;
@@ -5133,7 +5133,7 @@ using namespace VulkanInternal;
 		// Depth-Stencil:
 		depthstencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthstencil.depthTestEnable = dss_desc.depth_enable ? VK_TRUE : VK_FALSE;
-		depthstencil.depthWriteEnable = dss_desc.depth_write_mask == DepthWriteMask::ZERO ? VK_FALSE : VK_TRUE;
+		depthstencil.depthWriteEnable = dss_desc.depth_write_mask == DepthWriteMask_ZERO ? VK_FALSE : VK_TRUE;
 		depthstencil.depthCompareOp = _ConvertComparisonFunc(dss_desc.depth_func);
 
 		if (dss_desc.stencil_enable)
@@ -5177,7 +5177,7 @@ using namespace VulkanInternal;
 			depthstencil.back.depthFailOp = VK_STENCIL_OP_KEEP;
 		}
 
-		if (CheckCapability(GraphicsDeviceCapability::DEPTH_BOUNDS_TEST))
+		if (CheckCapability(GraphicsDeviceCapability_DEPTH_BOUNDS_TEST))
 		{
 			depthstencil.depthBoundsTestEnable = dss_desc.depth_bounds_test_enable ? VK_TRUE : VK_FALSE;
 		}
@@ -5242,19 +5242,19 @@ using namespace VulkanInternal;
 				attachment.blendEnable = desc.blend_enable ? VK_TRUE : VK_FALSE;
 
 				attachment.colorWriteMask = 0;
-				if (has_flag(desc.render_target_write_mask, ColorWrite::ENABLE_RED))
+				if (has_flag(desc.render_target_write_mask, ColorWrite_ENABLE_RED))
 				{
 					attachment.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
 				}
-				if (has_flag(desc.render_target_write_mask, ColorWrite::ENABLE_GREEN))
+				if (has_flag(desc.render_target_write_mask, ColorWrite_ENABLE_GREEN))
 				{
 					attachment.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
 				}
-				if (has_flag(desc.render_target_write_mask, ColorWrite::ENABLE_BLUE))
+				if (has_flag(desc.render_target_write_mask, ColorWrite_ENABLE_BLUE))
 				{
 					attachment.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
 				}
-				if (has_flag(desc.render_target_write_mask, ColorWrite::ENABLE_ALPHA))
+				if (has_flag(desc.render_target_write_mask, ColorWrite_ENABLE_ALPHA))
 				{
 					attachment.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 				}
@@ -5298,7 +5298,7 @@ using namespace VulkanInternal;
 					lastBinding = element.input_slot;
 					VkVertexInputBindingDescription& bind = bindings.emplace_back();
 					bind.binding = element.input_slot;
-					bind.inputRate = element.input_slot_class == InputClassification::PER_VERTEX_DATA ? VK_VERTEX_INPUT_RATE_VERTEX : VK_VERTEX_INPUT_RATE_INSTANCE;
+					bind.inputRate = element.input_slot_class == InputClassification_PER_VERTEX_DATA ? VK_VERTEX_INPUT_RATE_VERTEX : VK_VERTEX_INPUT_RATE_INSTANCE;
 					bind.stride = GetFormatStride(element.format);
 				}
 
@@ -5363,7 +5363,7 @@ using namespace VulkanInternal;
 		auto internal_state = Protean::Allocator::make_shared<BVH_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		bvh->internal_state = internal_state;
-		bvh->type = GPUResource::Type::RAYTRACING_ACCELERATION_STRUCTURE;
+		bvh->type = GPUResource::Type_RAYTRACING_ACCELERATION_STRUCTURE;
 		bvh->desc = *desc;
 		bvh->size = 0;
 
@@ -5392,7 +5392,7 @@ using namespace VulkanInternal;
 
 		switch (desc->type)
 		{
-		case RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL:
 		{
 			internal_state->buildInfo.type = VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR;
 
@@ -5406,18 +5406,18 @@ using namespace VulkanInternal;
 				internal_state->primitiveCounts.emplace_back();
 				uint32_t& primitiveCount = internal_state->primitiveCounts.back();
 
-				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES)
+				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES)
 				{
 					geometry.geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
 					geometry.geometry.triangles.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR;
-					geometry.geometry.triangles.indexType = x.triangles.index_format == IndexBufferFormat::UINT16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+					geometry.geometry.triangles.indexType = x.triangles.index_format == IndexBufferFormat_UINT16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
 					geometry.geometry.triangles.maxVertex = x.triangles.vertex_count;
 					geometry.geometry.triangles.vertexStride = x.triangles.vertex_stride;
 					geometry.geometry.triangles.vertexFormat = _ConvertFormat(x.triangles.vertex_format);
 
 					primitiveCount = x.triangles.index_count / 3;
 				}
-				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::PROCEDURAL_AABBS)
+				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_PROCEDURAL_AABBS)
 				{
 					geometry.geometryType = VK_GEOMETRY_TYPE_AABBS_KHR;
 					geometry.geometry.aabbs.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR;
@@ -5430,7 +5430,7 @@ using namespace VulkanInternal;
 
 		}
 		break;
-		case RaytracingAccelerationStructureDesc::Type::TOPLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_TOPLEVEL:
 		{
 			internal_state->buildInfo.type = VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR;
 
@@ -5510,7 +5510,7 @@ using namespace VulkanInternal;
 		addressinfo.buffer = internal_state->buffer;
 		internal_state->scratch_address = align(vkGetBufferDeviceAddress(device, &addressinfo) + internal_state->sizeInfo.accelerationStructureSize, (VkDeviceAddress)acceleration_structure_properties.minAccelerationStructureScratchOffsetAlignment);
 
-		if (desc->type == RaytracingAccelerationStructureDesc::Type::TOPLEVEL)
+		if (desc->type == RaytracingAccelerationStructureDesc::Type_TOPLEVEL)
 		{
 			internal_state->index = allocationhandler->bindlessAccelerationStructures.allocate();
 			if (internal_state->index >= 0)
@@ -5560,19 +5560,19 @@ using namespace VulkanInternal;
 			switch (x.type)
 			{
 			default:
-			case ShaderLibrary::Type::RAYGENERATION:
+			case ShaderLibrary::Type_RAYGENERATION:
 				stage.stage = VK_SHADER_STAGE_RAYGEN_BIT_KHR;
 				break;
-			case ShaderLibrary::Type::MISS:
+			case ShaderLibrary::Type_MISS:
 				stage.stage = VK_SHADER_STAGE_MISS_BIT_KHR;
 				break;
-			case ShaderLibrary::Type::CLOSESTHIT:
+			case ShaderLibrary::Type_CLOSESTHIT:
 				stage.stage = VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR;
 				break;
-			case ShaderLibrary::Type::ANYHIT:
+			case ShaderLibrary::Type_ANYHIT:
 				stage.stage = VK_SHADER_STAGE_ANY_HIT_BIT_KHR;
 				break;
-			case ShaderLibrary::Type::INTERSECTION:
+			case ShaderLibrary::Type_INTERSECTION:
 				stage.stage = VK_SHADER_STAGE_INTERSECTION_BIT_KHR;
 				break;
 			}
@@ -5592,13 +5592,13 @@ using namespace VulkanInternal;
 			switch (x.type)
 			{
 			default:
-			case ShaderHitGroup::Type::GENERAL:
+			case ShaderHitGroup::Type_GENERAL:
 				group.type = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR;
 				break;
-			case ShaderHitGroup::Type::TRIANGLES:
+			case ShaderHitGroup::Type_TRIANGLES:
 				group.type = VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR;
 				break;
-			case ShaderHitGroup::Type::PROCEDURAL:
+			case ShaderHitGroup::Type_PROCEDURAL:
 				group.type = VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR;
 				break;
 			}
@@ -5640,7 +5640,7 @@ using namespace VulkanInternal;
 		video_decoder->internal_state = internal_state;
 		video_decoder->desc = *desc;
 
-		if (video_decoder->desc.profile == VideoProfile::H264)
+		if (video_decoder->desc.profile == VideoProfile_H264)
 		{
 			Protean::vector<StdVideoH264PictureParameterSet> pps_array_h264(desc->pps_count);
 			Protean::vector<StdVideoH264ScalingLists> scalinglist_array_h264(desc->pps_count);
@@ -5931,15 +5931,15 @@ using namespace VulkanInternal;
 			video_decoder->support = {};
 			if (video_capability_h264.decode_capabilities.flags & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_COINCIDE_BIT_KHR)
 			{
-				video_decoder->support |= VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE;
+				video_decoder->support |= VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE;
 			}
 			if (video_capability_h264.decode_capabilities.flags & VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR)
 			{
-				video_decoder->support |= VideoDecoderSupportFlags::DPB_AND_OUTPUT_DISTINCT;
+				video_decoder->support |= VideoDecoderSupportFlags_DPB_AND_OUTPUT_DISTINCT;
 			}
-			video_decoder->support |= VideoDecoderSupportFlags::DPB_INDIVIDUAL_TEXTURES_SUPPORTED;
+			video_decoder->support |= VideoDecoderSupportFlags_DPB_INDIVIDUAL_TEXTURES_SUPPORTED;
 		}
-		else if (video_decoder->desc.profile == VideoProfile::H265)
+		else if (video_decoder->desc.profile == VideoProfile_H265)
 		{
 			assert(0); // TODO
 			return false;
@@ -5977,13 +5977,13 @@ using namespace VulkanInternal;
 		view_desc.subresourceRange.layerCount = sliceCount;
 		view_desc.subresourceRange.baseMipLevel = firstMip;
 		view_desc.subresourceRange.levelCount = mipCount;
-		if (type == SubresourceType::SRV)
+		if (type == SubresourceType_SRV)
 		{
 			view_desc.components = _ConvertSwizzle(swizzle == nullptr ? texture->desc.swizzle : *swizzle);
 		}
 		switch (format)
 		{
-		case Format::NV12:
+		case Format_NV12:
 			if (view_desc.subresourceRange.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT)
 			{
 				view_desc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_PLANE_0_BIT;
@@ -6003,7 +6003,7 @@ using namespace VulkanInternal;
 			break;
 		}
 
-		if (texture->desc.type == TextureDesc::Type::TEXTURE_1D)
+		if (texture->desc.type == TextureDesc::Type_TEXTURE_1D)
 		{
 			if (texture->desc.array_size > 1)
 			{
@@ -6014,11 +6014,11 @@ using namespace VulkanInternal;
 				view_desc.viewType = VK_IMAGE_VIEW_TYPE_1D;
 			}
 		}
-		else if (texture->desc.type == TextureDesc::Type::TEXTURE_2D)
+		else if (texture->desc.type == TextureDesc::Type_TEXTURE_2D)
 		{
 			if (texture->desc.array_size > 1)
 			{
-				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+				if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 				{
 					if (texture->desc.array_size > 6 && sliceCount > 6)
 					{
@@ -6039,14 +6039,14 @@ using namespace VulkanInternal;
 				view_desc.viewType = VK_IMAGE_VIEW_TYPE_2D;
 			}
 		}
-		else if (texture->desc.type == TextureDesc::Type::TEXTURE_3D)
+		else if (texture->desc.type == TextureDesc::Type_TEXTURE_3D)
 		{
 			view_desc.viewType = VK_IMAGE_VIEW_TYPE_3D;
 		}
 
 		switch (type)
 		{
-		case SubresourceType::SRV:
+		case SubresourceType_SRV:
 		{
 			if (IsFormatDepthSupport(format))
 			{
@@ -6103,7 +6103,7 @@ using namespace VulkanInternal;
 			}
 		}
 		break;
-		case SubresourceType::UAV:
+		case SubresourceType_UAV:
 		{
 			if (view_desc.viewType == VK_IMAGE_VIEW_TYPE_CUBE || view_desc.viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY)
 			{
@@ -6145,7 +6145,7 @@ using namespace VulkanInternal;
 			}
 		}
 		break;
-		case SubresourceType::RTV:
+		case SubresourceType_RTV:
 		{
 			view_desc.subresourceRange.levelCount = 1;
 			VkResult res = vkCreateImageView(device, &view_desc, nullptr, &subresource.image_view);
@@ -6167,7 +6167,7 @@ using namespace VulkanInternal;
 			}
 		}
 		break;
-		case SubresourceType::DSV:
+		case SubresourceType_DSV:
 		{
 			view_desc.subresourceRange.levelCount = 1;
 			view_desc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -6209,7 +6209,7 @@ using namespace VulkanInternal;
 		{
 			format = *format_change;
 		}
-		if (type == SubresourceType::UAV)
+		if (type == SubresourceType_UAV)
 		{
 			// RW resource can't be SRGB
 			format = GetFormatNonSRGB(format);
@@ -6218,10 +6218,10 @@ using namespace VulkanInternal;
 		switch (type)
 		{
 
-		case SubresourceType::SRV:
-		case SubresourceType::UAV:
+		case SubresourceType_SRV:
+		case SubresourceType_UAV:
 		{
-			if (format == Format::UNKNOWN)
+			if (format == Format_UNKNOWN)
 			{
 				// Raw buffer
 				subresource.index = allocationhandler->bindlessStorageBuffers.allocate();
@@ -6242,7 +6242,7 @@ using namespace VulkanInternal;
 					vkUpdateDescriptorSets(device, 1, &write, 0, nullptr);
 				}
 
-				if (type == SubresourceType::SRV)
+				if (type == SubresourceType_SRV)
 				{
 					if (!internal_state->srv.IsValid())
 					{
@@ -6278,7 +6278,7 @@ using namespace VulkanInternal;
 
 				if (res == VK_SUCCESS)
 				{
-					if (type == SubresourceType::SRV)
+					if (type == SubresourceType_SRV)
 					{
 						subresource.index = allocationhandler->bindlessUniformTexelBuffers.allocate();
 						if (subresource.IsValid())
@@ -6367,7 +6367,7 @@ using namespace VulkanInternal;
 		switch (type)
 		{
 		default:
-		case SubresourceType::SRV:
+		case SubresourceType_SRV:
 			if (resource->IsBuffer())
 			{
 				const auto internal_state = to_internal<GPUBuffer>(resource);
@@ -6402,7 +6402,7 @@ using namespace VulkanInternal;
 				return internal_state->index;
 			}
 			break;
-		case SubresourceType::UAV:
+		case SubresourceType_UAV:
 			if (resource->IsBuffer())
 			{
 				const auto internal_state = to_internal<GPUBuffer>(resource);
@@ -6453,25 +6453,25 @@ using namespace VulkanInternal;
 		switch (rate)
 		{
 		default:
-		case ShadingRate::RATE_1X1:
+		case ShadingRate_RATE_1X1:
 			*(uint8_t*)dest = 0;
 			break;
-		case ShadingRate::RATE_1X2:
+		case ShadingRate_RATE_1X2:
 			*(uint8_t*)dest = 0x1;
 			break;
-		case ShadingRate::RATE_2X1:
+		case ShadingRate_RATE_2X1:
 			*(uint8_t*)dest = 0x4;
 			break;
-		case ShadingRate::RATE_2X2:
+		case ShadingRate_RATE_2X2:
 			*(uint8_t*)dest = 0x5;
 			break;
-		case ShadingRate::RATE_2X4:
+		case ShadingRate_RATE_2X4:
 			*(uint8_t*)dest = 0x6;
 			break;
-		case ShadingRate::RATE_4X2:
+		case ShadingRate_RATE_4X2:
 			*(uint8_t*)dest = 0x9;
 			break;
-		case ShadingRate::RATE_4X4:
+		case ShadingRate_RATE_4X4:
 			*(uint8_t*)dest = 0xa;
 			break;
 		}
@@ -6663,7 +6663,7 @@ using namespace VulkanInternal;
 			const VkDeviceSize zero = {};
 			vkCmdBindVertexBuffers2(commandlist.GetCommandBuffer(), 0, 1, &nullBuffer, &zero, &zero, &zero);
 
-			if (CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING))
+			if (CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING))
 			{
 				VkExtent2D fragmentSize = {};
 				fragmentSize.width = 1;
@@ -6955,14 +6955,14 @@ using namespace VulkanInternal;
 		auto internal_state = swapchain_internal->textures[swapchain_internal->swapChainImageIndex];
 
 		Texture result;
-		result.type = GPUResource::Type::TEXTURE;
+		result.type = GPUResource::Type_TEXTURE;
 		result.internal_state = internal_state;
-		result.desc.type = TextureDesc::Type::TEXTURE_2D;
+		result.desc.type = TextureDesc::Type_TEXTURE_2D;
 		result.desc.width = swapchain_internal->swapChainExtent.width;
 		result.desc.height = swapchain_internal->swapChainExtent.height;
 		result.desc.format = swapchain->desc.format;
-		result.desc.layout = ResourceState::SWAPCHAIN;
-		result.desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET;
+		result.desc.layout = ResourceState_SWAPCHAIN;
+		result.desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET;
 		return result;
 	}
 	ColorSpace GraphicsDevice_Vulkan::GetSwapChainColorSpace(const SwapChain* swapchain) const
@@ -7059,7 +7059,7 @@ using namespace VulkanInternal;
 					out_memory_bind = {};
 					out_memory_bind.resourceOffset = in_coordinate.x * in_command.sparse_resource->sparse_page_size;
 					out_memory_bind.size = in_tile_count * in_command.sparse_resource->sparse_page_size;
-					if (in_flags == TileRangeFlags::Null)
+					if (in_flags == TileRangeFlags_Null)
 					{
 						out_memory_bind.memory = VK_NULL_HANDLE;
 					}
@@ -7091,9 +7091,9 @@ using namespace VulkanInternal;
 						aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 					}
 				}
-				if (has_flag(texture_desc.bind_flags, BindFlag::RENDER_TARGET) ||
-					has_flag(texture_desc.bind_flags, BindFlag::SHADER_RESOURCE) ||
-					has_flag(texture_desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+				if (has_flag(texture_desc.bind_flags, BindFlag_RENDER_TARGET) ||
+					has_flag(texture_desc.bind_flags, BindFlag_SHADER_RESOURCE) ||
+					has_flag(texture_desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 				{
 					aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 				}
@@ -7127,7 +7127,7 @@ using namespace VulkanInternal;
 						out_memory_bind = {};
 						out_memory_bind.resourceOffset = internal_sparse->sparse_texture_properties.packed_mip_tile_offset * sparse_texture->sparse_page_size;
 						out_memory_bind.size = in_tile_count * in_command.sparse_resource->sparse_page_size;
-						if (in_flags == TileRangeFlags::Null)
+						if (in_flags == TileRangeFlags_Null)
 						{
 							out_memory_bind.memory = VK_NULL_HANDLE;
 						}
@@ -7146,7 +7146,7 @@ using namespace VulkanInternal;
 						uint32_t in_tile_count = in_command.range_tile_counts[j];
 						VkSparseImageMemoryBind& out_image_memory_bind = out_bind.image_memory_binds.emplace_back();
 						out_image_memory_bind = {};
-						if (in_flags == TileRangeFlags::Null)
+						if (in_flags == TileRangeFlags_Null)
 						{
 							out_image_memory_bind.memory = VK_NULL_HANDLE;
 						}
@@ -7366,11 +7366,11 @@ using namespace VulkanInternal;
 
 		VkRenderingInfo info = {};
 		info.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		if (has_flag(flags, RenderPassFlags::SUSPENDING))
+		if (has_flag(flags, RenderPassFlags_SUSPENDING))
 		{
 			info.flags |= VK_RENDERING_SUSPENDING_BIT;
 		}
-		if (has_flag(flags, RenderPassFlags::RESUMING))
+		if (has_flag(flags, RenderPassFlags_RESUMING))
 		{
 			info.flags |= VK_RENDERING_RESUMING_BIT;
 		}
@@ -7395,7 +7395,7 @@ using namespace VulkanInternal;
 			int subresource = image.subresource;
 			auto internal_state = to_internal(texture);
 
-			if (image.type == RenderPassImage::Type::RENDERTARGET || image.type == RenderPassImage::Type::DEPTH_STENCIL)
+			if (image.type == RenderPassImage::Type_RENDERTARGET || image.type == RenderPassImage::Type_DEPTH_STENCIL)
 			{
 				info.renderArea.extent.width = std::min(info.renderArea.extent.width, desc.width);
 				info.renderArea.extent.height = std::min(info.renderArea.extent.height, desc.height);
@@ -7405,13 +7405,13 @@ using namespace VulkanInternal;
 			switch (image.loadop)
 			{
 			default:
-			case RenderPassImage::LoadOp::LOAD:
+			case RenderPassImage::LoadOp_LOAD:
 				loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 				break;
-			case RenderPassImage::LoadOp::CLEAR:
+			case RenderPassImage::LoadOp_CLEAR:
 				loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 				break;
-			case RenderPassImage::LoadOp::DONTCARE:
+			case RenderPassImage::LoadOp_DONTCARE:
 				loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 				break;
 			}
@@ -7420,10 +7420,10 @@ using namespace VulkanInternal;
 			switch (image.storeop)
 			{
 			default:
-			case RenderPassImage::StoreOp::STORE:
+			case RenderPassImage::StoreOp_STORE:
 				storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 				break;
-			case RenderPassImage::StoreOp::DONTCARE:
+			case RenderPassImage::StoreOp_DONTCARE:
 				storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 				break;
 			}
@@ -7432,7 +7432,7 @@ using namespace VulkanInternal;
 
 			switch (image.type)
 			{
-			case RenderPassImage::Type::RENDERTARGET:
+			case RenderPassImage::Type_RENDERTARGET:
 			{
 				descriptor = subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[subresource];
 				VkRenderingAttachmentInfo& color_attachment = color_attachments[info.colorAttachmentCount++];
@@ -7449,7 +7449,7 @@ using namespace VulkanInternal;
 			}
 			break;
 
-			case RenderPassImage::Type::RESOLVE:
+			case RenderPassImage::Type_RESOLVE:
 			{
 				descriptor = subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[subresource];
 				VkRenderingAttachmentInfo& color_attachment = color_attachments[color_resolve_count++];
@@ -7459,12 +7459,12 @@ using namespace VulkanInternal;
 			}
 			break;
 
-			case RenderPassImage::Type::DEPTH_STENCIL:
+			case RenderPassImage::Type_DEPTH_STENCIL:
 			{
 				descriptor = subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[subresource];
 				depth_attachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
 				depth_attachment.imageView = descriptor.image_view;
-				if (image.layout == ResourceState::DEPTHSTENCIL_READONLY)
+				if (image.layout == ResourceState_DEPTHSTENCIL_READONLY)
 				{
 					depth_attachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL;
 				}
@@ -7480,7 +7480,7 @@ using namespace VulkanInternal;
 				{
 					stencil_attachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
 					stencil_attachment.imageView = subresource < 0 ? internal_state->dsv.image_view : internal_state->subresources_dsv[subresource].image_view;
-					if (image.layout == ResourceState::DEPTHSTENCIL_READONLY)
+					if (image.layout == ResourceState_DEPTHSTENCIL_READONLY)
 					{
 						stencil_attachment.imageLayout = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL;
 					}
@@ -7496,7 +7496,7 @@ using namespace VulkanInternal;
 			}
 			break;
 
-			case RenderPassImage::Type::RESOLVE_DEPTH:
+			case RenderPassImage::Type_RESOLVE_DEPTH:
 			{
 				descriptor = subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[subresource];
 				depth_attachment.resolveImageView = descriptor.image_view;
@@ -7506,11 +7506,11 @@ using namespace VulkanInternal;
 				switch (image.depth_resolve_mode)
 				{
 				default:
-				case RenderPassImage::DepthResolveMode::Min:
+				case RenderPassImage::DepthResolveMode_Min:
 					depth_attachment.resolveMode = VK_RESOLVE_MODE_MIN_BIT;
 					stencil_attachment.resolveMode = VK_RESOLVE_MODE_MIN_BIT;
 					break;
-				case RenderPassImage::DepthResolveMode::Max:
+				case RenderPassImage::DepthResolveMode_Max:
 					depth_attachment.resolveMode = VK_RESOLVE_MODE_MAX_BIT;
 					stencil_attachment.resolveMode = VK_RESOLVE_MODE_MAX_BIT;
 					break;
@@ -7518,7 +7518,7 @@ using namespace VulkanInternal;
 			}
 			break;
 
-			case RenderPassImage::Type::SHADING_RATE_SOURCE:
+			case RenderPassImage::Type_SHADING_RATE_SOURCE:
 				descriptor = subresource < 0 ? internal_state->uav : internal_state->subresources_uav[subresource];
 				shading_rate_attachment.sType = VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR;
 				shading_rate_attachment.imageView = descriptor.image_view;
@@ -7790,7 +7790,7 @@ using namespace VulkanInternal;
 		{
 			auto internal_state = to_internal(indexBuffer);
 			CommandList_Vulkan& commandlist = GetCommandList(cmd);
-			vkCmdBindIndexBuffer(commandlist.GetCommandBuffer(), internal_state->resource, offset, format == IndexBufferFormat::UINT16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(commandlist.GetCommandBuffer(), internal_state->resource, offset, format == IndexBufferFormat_UINT16 ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32);
 		}
 	}
 	void GraphicsDevice_Vulkan::BindStencilRef(uint32_t value, CommandList cmd)
@@ -7811,38 +7811,38 @@ using namespace VulkanInternal;
 	void GraphicsDevice_Vulkan::BindShadingRate(ShadingRate rate, CommandList cmd)
 	{
 		CommandList_Vulkan& commandlist = GetCommandList(cmd);
-		if (CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING) && commandlist.prev_shadingrate != rate)
+		if (CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING) && commandlist.prev_shadingrate != rate)
 		{
 			commandlist.prev_shadingrate = rate;
 
 			VkExtent2D fragmentSize;
 			switch (rate)
 			{
-			case ShadingRate::RATE_1X1:
+			case ShadingRate_RATE_1X1:
 				fragmentSize.width = 1;
 				fragmentSize.height = 1;
 				break;
-			case ShadingRate::RATE_1X2:
+			case ShadingRate_RATE_1X2:
 				fragmentSize.width = 1;
 				fragmentSize.height = 2;
 				break;
-			case ShadingRate::RATE_2X1:
+			case ShadingRate_RATE_2X1:
 				fragmentSize.width = 2;
 				fragmentSize.height = 1;
 				break;
-			case ShadingRate::RATE_2X2:
+			case ShadingRate_RATE_2X2:
 				fragmentSize.width = 2;
 				fragmentSize.height = 2;
 				break;
-			case ShadingRate::RATE_2X4:
+			case ShadingRate_RATE_2X4:
 				fragmentSize.width = 2;
 				fragmentSize.height = 4;
 				break;
-			case ShadingRate::RATE_4X2:
+			case ShadingRate_RATE_4X2:
 				fragmentSize.width = 4;
 				fragmentSize.height = 2;
 				break;
-			case ShadingRate::RATE_4X4:
+			case ShadingRate_RATE_4X4:
 				fragmentSize.width = 4;
 				fragmentSize.height = 4;
 				break;
@@ -7943,11 +7943,11 @@ using namespace VulkanInternal;
 		commandlist.active_pso = nullptr;
 		commandlist.active_rt = nullptr;
 
-		assert(cs->stage == ShaderStage::CS || cs->stage == ShaderStage::LIB);
+		assert(cs->stage == ShaderStage_CS || cs->stage == ShaderStage_LIB);
 
 		auto internal_state = to_internal(cs);
 
-		if (cs->stage == ShaderStage::CS)
+		if (cs->stage == ShaderStage_CS)
 		{
 			vkCmdBindPipeline(commandlist.GetCommandBuffer(), VK_PIPELINE_BIND_POINT_COMPUTE, internal_state->pipeline_cs);
 		}
@@ -8059,7 +8059,7 @@ using namespace VulkanInternal;
 	void GraphicsDevice_Vulkan::CopyResource(const GPUResource* pDst, const GPUResource* pSrc, CommandList cmd)
 	{
 		CommandList_Vulkan& commandlist = GetCommandList(cmd);
-		if (pDst->type == GPUResource::Type::TEXTURE && pSrc->type == GPUResource::Type::TEXTURE)
+		if (pDst->type == GPUResource::Type_TEXTURE && pSrc->type == GPUResource::Type_TEXTURE)
 		{
 			auto internal_state_src = to_internal<Texture>(pSrc);
 			auto internal_state_dst = to_internal<Texture>(pDst);
@@ -8067,7 +8067,7 @@ using namespace VulkanInternal;
 			const TextureDesc& src_desc = ((const Texture*)pSrc)->GetDesc();
 			const TextureDesc& dst_desc = ((const Texture*)pDst)->GetDesc();
 
-			if (src_desc.usage == Usage::UPLOAD && dst_desc.usage == Usage::DEFAULT)
+			if (src_desc.usage == Usage_UPLOAD && dst_desc.usage == Usage_DEFAULT)
 			{
 				// CPU (buffer) -> GPU (texture)
 				VkBufferImageCopy copy = {};
@@ -8100,7 +8100,7 @@ using namespace VulkanInternal;
 								commandlist.GetCommandBuffer(),
 								internal_state_src->staging_resource,
 								internal_state_dst->resource,
-								_ConvertImageLayout(ResourceState::COPY_DST),
+								_ConvertImageLayout(ResourceState_COPY_DST),
 								1,
 								&copy
 							);
@@ -8113,7 +8113,7 @@ using namespace VulkanInternal;
 					}
 				}
 			}
-			else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::READBACK)
+			else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_READBACK)
 			{
 				// GPU (texture) -> CPU (buffer)
 				VkBufferImageCopy copy = {};
@@ -8145,7 +8145,7 @@ using namespace VulkanInternal;
 							vkCmdCopyImageToBuffer(
 								commandlist.GetCommandBuffer(),
 								internal_state_src->resource,
-								_ConvertImageLayout(ResourceState::COPY_SRC),
+								_ConvertImageLayout(ResourceState_COPY_SRC),
 								internal_state_dst->staging_resource,
 								1,
 								&copy
@@ -8159,7 +8159,7 @@ using namespace VulkanInternal;
 					}
 				}
 			}
-			else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::DEFAULT)
+			else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_DEFAULT)
 			{
 				// GPU (texture) -> GPU (texture)
 				VkImageCopy copy = {};
@@ -8191,7 +8191,7 @@ using namespace VulkanInternal;
 				copy.srcSubresource.layerCount = src_desc.array_size;
 				copy.srcSubresource.mipLevel = 0;
 
-				if (has_flag(dst_desc.bind_flags, BindFlag::DEPTH_STENCIL))
+				if (has_flag(dst_desc.bind_flags, BindFlag_DEPTH_STENCIL))
 				{
 					copy.dstSubresource.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 					if (IsFormatStencilSupport(dst_desc.format))
@@ -8208,8 +8208,8 @@ using namespace VulkanInternal;
 				copy.dstSubresource.mipLevel = 0;
 
 				vkCmdCopyImage(commandlist.GetCommandBuffer(),
-					internal_state_src->resource, _ConvertImageLayout(ResourceState::COPY_SRC),
-					internal_state_dst->resource, _ConvertImageLayout(ResourceState::COPY_DST),
+					internal_state_src->resource, _ConvertImageLayout(ResourceState_COPY_SRC),
+					internal_state_dst->resource, _ConvertImageLayout(ResourceState_COPY_DST),
 					1, &copy
 				);
 			}
@@ -8228,7 +8228,7 @@ using namespace VulkanInternal;
 				);
 			}
 		}
-		else if (pDst->type == GPUResource::Type::BUFFER && pSrc->type == GPUResource::Type::BUFFER)
+		else if (pDst->type == GPUResource::Type_BUFFER && pSrc->type == GPUResource::Type_BUFFER)
 		{
 			auto internal_state_src = to_internal<GPUBuffer>(pSrc);
 			auto internal_state_dst = to_internal<GPUBuffer>(pDst);
@@ -8274,7 +8274,7 @@ using namespace VulkanInternal;
 		const TextureDesc& src_desc = src->GetDesc();
 		const TextureDesc& dst_desc = dst->GetDesc();
 
-		if (src_desc.usage == Usage::UPLOAD && dst_desc.usage == Usage::DEFAULT)
+		if (src_desc.usage == Usage_UPLOAD && dst_desc.usage == Usage_DEFAULT)
 		{
 			// CPU (buffer) -> GPU (texture)
 			VkBufferImageCopy copy = {};
@@ -8307,9 +8307,9 @@ using namespace VulkanInternal;
 				copy.imageExtent.depth = srcbox->back - srcbox->front;
 				copy.bufferOffset += srcbox->top * data.row_pitch + srcbox->left * GetFormatStride(src_desc.format) / GetFormatBlockSize(src_desc.format);
 			}
-			vkCmdCopyBufferToImage(commandlist.GetCommandBuffer(), src_internal->staging_resource, dst_internal->resource, _ConvertImageLayout(ResourceState::COPY_DST), 1, &copy);
+			vkCmdCopyBufferToImage(commandlist.GetCommandBuffer(), src_internal->staging_resource, dst_internal->resource, _ConvertImageLayout(ResourceState_COPY_DST), 1, &copy);
 		}
-		else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::READBACK)
+		else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_READBACK)
 		{
 			// GPU (texture) -> CPU (buffer)
 			VkBufferImageCopy copy = {};
@@ -8341,9 +8341,9 @@ using namespace VulkanInternal;
 				copy.imageOffset.y = srcbox->top;
 				copy.imageOffset.z = srcbox->front;
 			}
-			vkCmdCopyImageToBuffer(commandlist.GetCommandBuffer(), src_internal->resource, _ConvertImageLayout(ResourceState::COPY_SRC), dst_internal->staging_resource, 1, &copy);
+			vkCmdCopyImageToBuffer(commandlist.GetCommandBuffer(), src_internal->resource, _ConvertImageLayout(ResourceState_COPY_SRC), dst_internal->staging_resource, 1, &copy);
 		}
-		else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::DEFAULT)
+		else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_DEFAULT)
 		{
 			// GPU (texture) -> GPU (texture)
 			VkImageCopy copy = {};
@@ -8365,7 +8365,7 @@ using namespace VulkanInternal;
 				copy.srcOffset.x = 0;
 				copy.srcOffset.y = 0;
 				copy.srcOffset.z = 0;
-				if (src->desc.format == Format::NV12 && src_aspect == ImageAspect::CHROMINANCE)
+				if (src->desc.format == Format_NV12 && src_aspect == ImageAspect_CHROMINANCE)
 				{
 					copy.extent.width = std::min(dst->desc.width, src->desc.width / 2);
 					copy.extent.height = std::min(dst->desc.height, src->desc.height / 2);
@@ -8394,9 +8394,9 @@ using namespace VulkanInternal;
 			vkCmdCopyImage(
 				commandlist.GetCommandBuffer(),
 				src_internal->resource,
-				_ConvertImageLayout(ResourceState::COPY_SRC),
+				_ConvertImageLayout(ResourceState_COPY_SRC),
 				dst_internal->resource,
-				_ConvertImageLayout(ResourceState::COPY_DST),
+				_ConvertImageLayout(ResourceState_COPY_DST),
 				1,
 				&copy
 			);
@@ -8413,13 +8413,13 @@ using namespace VulkanInternal;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION_BINARY:
 			vkCmdBeginQuery(commandlist.GetCommandBuffer(), internal_state->pool, index, 0);
 			break;
-		case GpuQueryType::OCCLUSION:
+		case GpuQueryType_OCCLUSION:
 			vkCmdBeginQuery(commandlist.GetCommandBuffer(), internal_state->pool, index, VK_QUERY_CONTROL_PRECISE_BIT);
 			break;
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			break;
 		}
 	}
@@ -8430,11 +8430,11 @@ using namespace VulkanInternal;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			vkCmdWriteTimestamp2(commandlist.GetCommandBuffer(), VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT, internal_state->pool, index);
 			break;
-		case GpuQueryType::OCCLUSION_BINARY:
-		case GpuQueryType::OCCLUSION:
+		case GpuQueryType_OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION:
 			vkCmdEndQuery(commandlist.GetCommandBuffer(), internal_state->pool, index);
 			break;
 		}
@@ -8451,7 +8451,7 @@ using namespace VulkanInternal;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION_BINARY:
 			flags |= VK_QUERY_RESULT_PARTIAL_BIT;
 			break;
 		default:
@@ -8496,16 +8496,16 @@ using namespace VulkanInternal;
 		{
 			const GPUBarrier& barrier = barriers[i];
 
-			if (barrier.type == GPUBarrier::Type::IMAGE && (barrier.image.texture == nullptr || !barrier.image.texture->IsValid()))
+			if (barrier.type == GPUBarrier::Type_IMAGE && (barrier.image.texture == nullptr || !barrier.image.texture->IsValid()))
 				continue;
-			if (barrier.type == GPUBarrier::Type::BUFFER && (barrier.buffer.buffer == nullptr || !barrier.buffer.buffer->IsValid()))
+			if (barrier.type == GPUBarrier::Type_BUFFER && (barrier.buffer.buffer == nullptr || !barrier.buffer.buffer->IsValid()))
 				continue;
 
 			switch (barrier.type)
 			{
 			default:
-			case GPUBarrier::Type::MEMORY:
-			case GPUBarrier::Type::ALIASING:
+			case GPUBarrier::Type_MEMORY:
+			case GPUBarrier::Type_ALIASING:
 			{
 				VkMemoryBarrier2 barrierdesc = {};
 				barrierdesc.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER_2;
@@ -8515,7 +8515,7 @@ using namespace VulkanInternal;
 				barrierdesc.srcAccessMask = VK_ACCESS_2_MEMORY_WRITE_BIT;
 				barrierdesc.dstAccessMask = VK_ACCESS_2_MEMORY_READ_BIT;
 
-				if (CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+				if (CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 				{
 					barrierdesc.srcStageMask |= VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR | VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR;
 					barrierdesc.dstStageMask |= VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR | VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_KHR;
@@ -8523,7 +8523,7 @@ using namespace VulkanInternal;
 					barrierdesc.dstAccessMask |= VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
 				}
 
-				if (CheckCapability(GraphicsDeviceCapability::PREDICATION))
+				if (CheckCapability(GraphicsDeviceCapability_PREDICATION))
 				{
 					barrierdesc.srcStageMask |= VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT;
 					barrierdesc.dstStageMask |= VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT;
@@ -8534,7 +8534,7 @@ using namespace VulkanInternal;
 				memoryBarriers.push_back(barrierdesc);
 			}
 			break;
-			case GPUBarrier::Type::IMAGE:
+			case GPUBarrier::Type_IMAGE:
 			{
 				const TextureDesc& desc = barrier.image.texture->desc;
 				auto internal_state = to_internal(barrier.image.texture);
@@ -8602,7 +8602,7 @@ using namespace VulkanInternal;
 				imageBarriers.push_back(barrierdesc);
 			}
 			break;
-			case GPUBarrier::Type::BUFFER:
+			case GPUBarrier::Type_BUFFER:
 			{
 				const GPUBufferDesc& desc = barrier.buffer.buffer->desc;
 				auto internal_state = to_internal(barrier.buffer.buffer);
@@ -8620,18 +8620,18 @@ using namespace VulkanInternal;
 				barrierdesc.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 				barrierdesc.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-				if (has_flag(desc.misc_flags, ResourceMiscFlag::RAY_TRACING))
+				if (has_flag(desc.misc_flags, ResourceMiscFlag_RAY_TRACING))
 				{
-					assert(CheckCapability(GraphicsDeviceCapability::RAYTRACING));
-					barrierdesc.srcStageMask |= _ConvertPipelineStage(ResourceState::RAYTRACING_ACCELERATION_STRUCTURE);
-					barrierdesc.dstStageMask |= _ConvertPipelineStage(ResourceState::RAYTRACING_ACCELERATION_STRUCTURE);
+					assert(CheckCapability(GraphicsDeviceCapability_RAYTRACING));
+					barrierdesc.srcStageMask |= _ConvertPipelineStage(ResourceState_RAYTRACING_ACCELERATION_STRUCTURE);
+					barrierdesc.dstStageMask |= _ConvertPipelineStage(ResourceState_RAYTRACING_ACCELERATION_STRUCTURE);
 				}
 
-				if (has_flag(desc.misc_flags, ResourceMiscFlag::PREDICATION))
+				if (has_flag(desc.misc_flags, ResourceMiscFlag_PREDICATION))
 				{
-					assert(CheckCapability(GraphicsDeviceCapability::PREDICATION));
-					barrierdesc.srcStageMask |= _ConvertPipelineStage(ResourceState::PREDICATION);
-					barrierdesc.dstStageMask |= _ConvertPipelineStage(ResourceState::PREDICATION);
+					assert(CheckCapability(GraphicsDeviceCapability_PREDICATION));
+					barrierdesc.srcStageMask |= _ConvertPipelineStage(ResourceState_PREDICATION);
+					barrierdesc.dstStageMask |= _ConvertPipelineStage(ResourceState_PREDICATION);
 				}
 
 				if (commandlist.queue == QUEUE_COPY)
@@ -8707,7 +8707,7 @@ using namespace VulkanInternal;
 
 		switch (dst->desc.type)
 		{
-		case RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL:
 		{
 			size_t i = 0;
 			for (auto& x : dst->desc.bottom_level.geometries)
@@ -8726,13 +8726,13 @@ using namespace VulkanInternal;
 					geometry.flags |= VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR;
 				}
 
-				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES)
+				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES)
 				{
 					geometry.geometry.triangles.vertexData.deviceAddress = to_internal(&x.triangles.vertex_buffer)->address +
 						x.triangles.vertex_byte_offset;
 
 					geometry.geometry.triangles.indexData.deviceAddress = to_internal(&x.triangles.index_buffer)->address +
-						x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat::UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
+						x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat_UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
 
 					if (x.flags & RaytracingAccelerationStructureDesc::BottomLevel::Geometry::FLAG_USE_TRANSFORM)
 					{
@@ -8743,7 +8743,7 @@ using namespace VulkanInternal;
 					range.primitiveCount = x.triangles.index_count / 3;
 					range.primitiveOffset = 0;
 				}
-				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::PROCEDURAL_AABBS)
+				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_PROCEDURAL_AABBS)
 				{
 					geometry.geometry.aabbs.data.deviceAddress = to_internal(&x.aabbs.aabb_buffer)->address;
 
@@ -8755,7 +8755,7 @@ using namespace VulkanInternal;
 			}
 		}
 		break;
-		case RaytracingAccelerationStructureDesc::Type::TOPLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_TOPLEVEL:
 		{
 			auto& geometry = commandlist.accelerationstructure_build_geometries.back();
 			geometry.geometry.instances.data.deviceAddress = to_internal(&dst->desc.top_level.instance_buffer)->address;
@@ -8851,14 +8851,14 @@ using namespace VulkanInternal;
 	}
 	void GraphicsDevice_Vulkan::PredicationBegin(const GPUBuffer* buffer, uint64_t offset, PredicationOp op, CommandList cmd)
 	{
-		if (CheckCapability(GraphicsDeviceCapability::PREDICATION))
+		if (CheckCapability(GraphicsDeviceCapability_PREDICATION))
 		{
 			CommandList_Vulkan& commandlist = GetCommandList(cmd);
 			auto internal_state = to_internal(buffer);
 
 			VkConditionalRenderingBeginInfoEXT info = {};
 			info.sType = VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT;
-			if (op == PredicationOp::NOT_EQUAL_ZERO)
+			if (op == PredicationOp_NOT_EQUAL_ZERO)
 			{
 				info.flags = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT;
 			}
@@ -8869,7 +8869,7 @@ using namespace VulkanInternal;
 	}
 	void GraphicsDevice_Vulkan::PredicationEnd(CommandList cmd)
 	{
-		if (CheckCapability(GraphicsDeviceCapability::PREDICATION))
+		if (CheckCapability(GraphicsDeviceCapability_PREDICATION))
 		{
 			CommandList_Vulkan& commandlist = GetCommandList(cmd);
 			vkCmdEndConditionalRenderingEXT(commandlist.GetCommandBuffer());
@@ -8924,7 +8924,7 @@ using namespace VulkanInternal;
 		auto stream_internal = to_internal(op->stream);
 		auto dpb_internal = to_internal(op->DPB);
 
-		if (video_decoder->desc.profile == VideoProfile::H264)
+		if (video_decoder->desc.profile == VideoProfile_H264)
 		{
 			const h264::SliceHeader* slice_header = (const h264::SliceHeader*)op->slice_header;
 			const h264::PPS* pps = (const h264::PPS*)op->pps;
@@ -8937,7 +8937,7 @@ using namespace VulkanInternal;
 			std_picture_info_h264.PicOrderCnt[0] = op->poc[0];
 			std_picture_info_h264.PicOrderCnt[1] = op->poc[1];
 			std_picture_info_h264.idr_pic_id = slice_header->idr_pic_id;
-			std_picture_info_h264.flags.is_intra = op->frame_type == VideoFrameType::Intra ? 1 : 0;
+			std_picture_info_h264.flags.is_intra = op->frame_type == VideoFrameType_Intra ? 1 : 0;
 			std_picture_info_h264.flags.is_reference = op->reference_priority > 0 ? 1 : 0;
 			std_picture_info_h264.flags.IdrPicFlag = std_picture_info_h264.flags.is_intra ? 1 : 0;
 			std_picture_info_h264.flags.field_pic_flag = slice_header->field_pic_flag;
@@ -9046,7 +9046,7 @@ using namespace VulkanInternal;
 			end_info.sType = VK_STRUCTURE_TYPE_VIDEO_END_CODING_INFO_KHR;
 			vkCmdEndVideoCodingKHR(commandlist.GetCommandBuffer(), &end_info);
 		}
-		else if (video_decoder->desc.profile == VideoProfile::H265)
+		else if (video_decoder->desc.profile == VideoProfile_H265)
 		{
 			assert(0); // TODO
 		}

@@ -61,11 +61,11 @@ namespace Protean
 		if (totalTriangles > 0 && !primitiveCounterBuffer.IsValid())
 		{
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 			desc.stride = sizeof(uint);
 			desc.size = desc.stride;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &primitiveCounterBuffer);
 			device->SetName(&primitiveCounterBuffer, "GPUBVH::primitiveCounterBuffer");
 		}
@@ -81,51 +81,51 @@ namespace Protean
 
 			GPUBufferDesc desc;
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(BVHNode);
 			desc.size = desc.stride * primitiveCapacity * 2;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &bvhNodeBuffer);
 			device->SetName(&bvhNodeBuffer, "GPUBVH::BVHNodeBuffer");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(uint);
 			desc.size = desc.stride * primitiveCapacity * 2;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &bvhParentBuffer);
 			device->SetName(&bvhParentBuffer, "GPUBVH::BVHParentBuffer");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(uint);
 			desc.size = desc.stride * (((primitiveCapacity - 1) + 31) / 32); // bitfield for internal nodes
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &bvhFlagBuffer);
 			device->SetName(&bvhFlagBuffer, "GPUBVH::BVHFlagBuffer");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(uint);
 			desc.size = desc.stride * primitiveCapacity;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &primitiveIDBuffer);
 			device->SetName(&primitiveIDBuffer, "GPUBVH::primitiveIDBuffer");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(BVHPrimitive);
 			desc.size = desc.stride * primitiveCapacity;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &primitiveBuffer);
 			device->SetName(&primitiveBuffer, "GPUBVH::primitiveBuffer");
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.stride = sizeof(uint);
 			desc.size = desc.stride * primitiveCapacity;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-			desc.usage = Usage::DEFAULT;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+			desc.usage = Usage_DEFAULT;
 			device->CreateBuffer(&desc, nullptr, &primitiveMortonBuffer);
 			device->SetName(&primitiveMortonBuffer, "GPUBVH::primitiveMortonBuffer");
 		}
@@ -234,17 +234,17 @@ namespace Protean
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&primitiveBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&primitiveBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 				GPUBarrier::Memory(&primitiveIDBuffer),
 				GPUBarrier::Memory(&primitiveMortonBuffer),
-				GPUBarrier::Buffer(&primitiveCounterBuffer, ResourceState::SHADER_RESOURCE, ResourceState::COPY_DST),
+				GPUBarrier::Buffer(&primitiveCounterBuffer, ResourceState_SHADER_RESOURCE, ResourceState_COPY_DST),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
 		device->UpdateBuffer(&primitiveCounterBuffer, &primitiveCount, cmd);
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&primitiveCounterBuffer, ResourceState::COPY_DST, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&primitiveCounterBuffer, ResourceState_COPY_DST, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -257,8 +257,8 @@ namespace Protean
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&primitiveIDBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&primitiveMortonBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&primitiveIDBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&primitiveMortonBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -289,7 +289,7 @@ namespace Protean
 			GPUBarrier barriers[] = {
 				GPUBarrier::Memory(&bvhNodeBuffer),
 				GPUBarrier::Memory(&bvhFlagBuffer),
-				GPUBarrier::Buffer(&bvhParentBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&bvhParentBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -318,8 +318,8 @@ namespace Protean
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&bvhNodeBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&bvhFlagBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&bvhNodeBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&bvhFlagBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -422,9 +422,9 @@ namespace Protean
 	{
 		void LoadShaders()
 		{
-			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
 		}
 	}
 

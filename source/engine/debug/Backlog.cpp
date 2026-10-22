@@ -44,8 +44,8 @@ namespace Protean::Backlog
 
 	bool locked = false;
 	bool blockLuaExec = false;
-	LogLevel logLevel = LogLevel::Default;
-	LogLevel unseen = LogLevel::None;
+	LogLevel logLevel = LogLevel_Default;
+	LogLevel unseen = LogLevel_None;
 
 	std::deque<LogEntry> history;
 	std::mutex historyLock;
@@ -80,7 +80,7 @@ namespace Protean::Backlog
 			logFileStream.open(filepath, std::ios::binary | std::ios::trunc);
 			if (!logFileStream.is_open())
 			{
-				Protean::Helper::DebugOut("Failed to open log file: " + filepath + "\n", Protean::Helper::DebugLevel::Error);
+				Protean::Helper::DebugOut("Failed to open log file: " + filepath + "\n", Protean::Helper::DebugLevel_Error);
 			}
 
 			writerThread = std::thread([this]() {
@@ -336,7 +336,7 @@ namespace Protean::Backlog
 						post(args.sValue);
 						LogEntry entry;
 						entry.text = args.sValue;
-						entry.level = LogLevel::Default;
+						entry.level = LogLevel_Default;
 						{
 							std::scoped_lock lock(historyLock);
 							history.push_back(entry);
@@ -351,7 +351,7 @@ namespace Protean::Backlog
 						}
 						else
 						{
-							post("Lua execution is disabled", LogLevel::Error);
+							post("Lua execution is disabled", LogLevel_Error);
 						}
 						inputField.SetText("");
 					});
@@ -468,7 +468,7 @@ namespace Protean::Backlog
 		Protean::Image::Params fx = Protean::Image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
 		fx.pos = XMFLOAT3(0, pos, 0);
 		fx.opacity = Protean::Math::Lerp(0.9f, 0, saturate(-pos / canvas.GetLogicalHeight()));
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			fx.enableLinearOutputMapping(9);
 		}
@@ -488,13 +488,13 @@ namespace Protean::Backlog
 		inputbg.corners_rounding[1].radius = 10;
 		inputbg.corners_rounding[2].radius = 10;
 		inputbg.corners_rounding[3].radius = 10;
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			inputbg.enableLinearOutputMapping(9);
 		}
 		Protean::Image::Draw(nullptr, inputbg, cmd);
 
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			inputField.sprites[inputField.GetState()].params.enableLinearOutputMapping(9);
 			inputField.font.params.enableLinearOutputMapping(9);
@@ -554,7 +554,7 @@ namespace Protean::Backlog
 		params.posX = 5;
 		params.posY = pos + scrollbar.GetOffset() + autoscroll;
 		params.h_wrap = canvas.GetLogicalWidth() - params.posX;
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			params.enableLinearOutputMapping(9);
 		}
@@ -570,13 +570,13 @@ namespace Protean::Backlog
 		{
 			switch (x.level)
 			{
-			case LogLevel::Warning:
+			case LogLevel_Warning:
 				params.color = Protean::Color::Warning();
 				break;
-			case LogLevel::Error:
+			case LogLevel_Error:
 				params.color = Protean::Color::Error();
 				break;
-			case LogLevel::Success:
+			case LogLevel_Success:
 				params.color = Protean::Color::Success();
 				break;
 			default:
@@ -586,7 +586,7 @@ namespace Protean::Backlog
 			params.cursor = Protean::Font::Draw(x.text, params, cmd);
 		}
 
-		unseen = LogLevel::None;
+		unseen = LogLevel_None;
 	}
 
 	std::string getText()
@@ -621,13 +621,13 @@ namespace Protean::Backlog
 		switch (level)
 		{
 		default:
-		case LogLevel::Default:
+		case LogLevel_Default:
 			str = "";
 			break;
-		case LogLevel::Warning:
+		case LogLevel_Warning:
 			str = "[Warning] ";
 			break;
-		case LogLevel::Error:
+		case LogLevel_Error:
 			str = "[Error] ";
 			break;
 		}
@@ -654,14 +654,14 @@ namespace Protean::Backlog
 		switch (level)
 		{
 		default:
-		case LogLevel::Default:
-			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Normal);
+		case LogLevel_Default:
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel_Normal);
 			break;
-		case LogLevel::Warning:
-			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Warning);
+		case LogLevel_Warning:
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel_Warning);
 			break;
-		case LogLevel::Error:
-			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Error);
+		case LogLevel_Error:
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel_Error);
 			break;
 		}
 
@@ -669,7 +669,7 @@ namespace Protean::Backlog
 
 		// Force an immediate flush on errors to prevent potential data loss
 		//	in case the application is about to crash
-		if (level >= LogLevel::Error)
+		if (level >= LogLevel_Error)
 		{
 			asyncWriter.FlushSync();
 		}

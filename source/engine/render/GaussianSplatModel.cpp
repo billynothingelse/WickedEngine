@@ -34,8 +34,8 @@ namespace Protean
 		}
 
 		GPUBufferDesc desc;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE;
-		desc.misc_flags = ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE;
+		desc.misc_flags = ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
 
 		const uint64_t alignment = device->GetMinOffsetAlignment(&desc);
 		desc.size =
@@ -155,10 +155,10 @@ namespace Protean
 		device->SetName(&buffer, "GaussianSplatModel::buffer");
 
 		static constexpr uint32_t splat_stride = sizeof(GaussianSplat);
-		subresource_splatBuffer = device->CreateSubresource(&buffer, SubresourceType::SRV, 0, positions.size() * sizeof(GaussianSplat), nullptr, &splat_stride);
+		subresource_splatBuffer = device->CreateSubresource(&buffer, SubresourceType_SRV, 0, positions.size() * sizeof(GaussianSplat), nullptr, &splat_stride);
 
 		static constexpr uint32_t sh_stride = sizeof(XMHALF4); // could be formatted buffer, but that has stricter size limitation on Mac OS
-		subresource_shBuffer = device->CreateSubresource(&buffer, SubresourceType::SRV, sh_aligned_offset, f_rest.size() / 3 * sizeof(XMHALF4), nullptr, &sh_stride);
+		subresource_shBuffer = device->CreateSubresource(&buffer, SubresourceType_SRV, sh_aligned_offset, f_rest.size() / 3 * sizeof(XMHALF4), nullptr, &sh_stride);
 	}
 
 	void GaussianSplatModel::Update(const XMFLOAT4X4& matrix)
@@ -206,10 +206,10 @@ namespace Protean
 		Protean::Timer timer;
 
 		static auto LoadShaders = []{
-			Protean::Renderer::LoadShader(ShaderStage::CS, computeShader, "gaussian_splatCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, computeShader_indirect, "gaussian_splat_indirectCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "gaussian_splatVS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "gaussian_splatPS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, computeShader, "gaussian_splatCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, computeShader_indirect, "gaussian_splat_indirectCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, vertexShader, "gaussian_splatVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader, "gaussian_splatPS.cso");
 		};
 		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
@@ -217,21 +217,21 @@ namespace Protean
 		GraphicsDevice* device = GetDevice();
 
 		depthStencilState.depth_enable = true;
-		depthStencilState.depth_write_mask = DepthWriteMask::ZERO;
-		depthStencilState.depth_func = ComparisonFunc::GREATER;
+		depthStencilState.depth_write_mask = DepthWriteMask_ZERO;
+		depthStencilState.depth_func = ComparisonFunc_GREATER;
 
-		rasterizerState.cull_mode = CullMode::BACK;
-		rasterizerState.fill_mode = FillMode::SOLID;
+		rasterizerState.cull_mode = CullMode_BACK;
+		rasterizerState.fill_mode = FillMode_SOLID;
 		rasterizerState.depth_clip_enable = true;
 
 		blendState.render_target[0].blend_enable = true;
-		blendState.render_target[0].src_blend = Blend::ONE;
-		blendState.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		blendState.render_target[0].blend_op = BlendOp::ADD;
-		blendState.render_target[0].src_blend_alpha = Blend::ONE;
-		blendState.render_target[0].dest_blend_alpha = Blend::INV_SRC_ALPHA;
-		blendState.render_target[0].blend_op_alpha = BlendOp::ADD;
-		blendState.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		blendState.render_target[0].src_blend = Blend_ONE;
+		blendState.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		blendState.render_target[0].blend_op = BlendOp_ADD;
+		blendState.render_target[0].src_blend_alpha = Blend_ONE;
+		blendState.render_target[0].dest_blend_alpha = Blend_INV_SRC_ALPHA;
+		blendState.render_target[0].blend_op_alpha = BlendOp_ADD;
+		blendState.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 
 		PipelineStateDesc desc;
 		desc.vs = &vertexShader;
@@ -239,7 +239,7 @@ namespace Protean
 		desc.rs = &rasterizerState;
 		desc.bs = &blendState;
 		desc.dss = &depthStencilState;
-		desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+		desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pipelineState);
 		assert(success);
 
@@ -295,8 +295,8 @@ namespace Protean
 			GPUBufferDesc desc;
 			desc.stride = sizeof(IndirectDrawArgsInstanced);
 			desc.size = desc.stride;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED | ResourceMiscFlag::INDIRECT_ARGS;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED | ResourceMiscFlag_INDIRECT_ARGS;
 			bool success = device->CreateBuffer(&desc, nullptr, &indirectBuffer);
 			assert(success);
 			device->SetName(&indirectBuffer, "GaussianSplatScene::indirectBuffer");
@@ -309,24 +309,24 @@ namespace Protean
 			GPUBufferDesc desc;
 			desc.stride = sizeof(uint32_t);
 			desc.size = splat_capacity * desc.stride;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			bool success = device->CreateBuffer(&desc, nullptr, &sortedIndexBuffer);
 			assert(success);
 			device->SetName(&sortedIndexBuffer, "GaussianSplatScene::sortedIndexBuffer");
 
 			desc.stride = sizeof(uint32_t);
 			desc.size = splat_capacity * desc.stride;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			success = device->CreateBuffer(&desc, nullptr, &distanceBuffer);
 			assert(success);
 			device->SetName(&distanceBuffer, "GaussianSplatScene::distanceBuffer");
 
 			desc.stride = sizeof(uint2);
 			desc.size = splat_capacity * desc.stride;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			success = device->CreateBuffer(&desc, nullptr, &splatLookupBuffer);
 			assert(success);
 			device->SetName(&splatLookupBuffer, "GaussianSplatScene::splatLookupBuffer");
@@ -339,8 +339,8 @@ namespace Protean
 			GPUBufferDesc desc;
 			desc.stride = sizeof(ShaderGaussianSplatModel);
 			desc.size = model_capacity * desc.stride;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			bool success = device->CreateBuffer(&desc, nullptr, &modelBuffer);
 			assert(success);
 			device->SetName(&modelBuffer, "GaussianSplatScene::modelBuffer");
@@ -361,8 +361,8 @@ namespace Protean
 		{
 			const GaussianSplatModel& model = *models[model_index];
 			ShaderGaussianSplatModel shmodel = {};
-			shmodel.descriptor_splatBuffer = device->GetDescriptorIndex(&model.buffer, SubresourceType::SRV, model.subresource_splatBuffer);
-			shmodel.descriptor_shBuffer = device->GetDescriptorIndex(&model.buffer, SubresourceType::SRV, model.subresource_shBuffer);
+			shmodel.descriptor_splatBuffer = device->GetDescriptorIndex(&model.buffer, SubresourceType_SRV, model.subresource_splatBuffer);
+			shmodel.descriptor_shBuffer = device->GetDescriptorIndex(&model.buffer, SubresourceType_SRV, model.subresource_shBuffer);
 			shmodel.transform.Create(model.transform);
 			shmodel.transform_inverse.Create(model.transform_inverse);
 			shmodel.aabb_min = model.aabb_rest._min;
@@ -411,8 +411,8 @@ namespace Protean
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&modelBuffer, ResourceState::COPY_DST, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&indirectBuffer, ResourceState::COPY_DST, ResourceState::UNORDERED_ACCESS),
+				GPUBarrier::Buffer(&modelBuffer, ResourceState_COPY_DST, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&indirectBuffer, ResourceState_COPY_DST, ResourceState_UNORDERED_ACCESS),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -455,8 +455,8 @@ namespace Protean
 			GPUBarrier barriers[] = {
 				GPUBarrier::Memory(&sortedIndexBuffer),
 				GPUBarrier::Memory(&distanceBuffer),
-				GPUBarrier::Buffer(&indirectBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&splatLookupBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&indirectBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&splatLookupBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -466,8 +466,8 @@ namespace Protean
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&sortedIndexBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&distanceBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
+				GPUBarrier::Buffer(&sortedIndexBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&distanceBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -478,13 +478,13 @@ namespace Protean
 			device->BindComputeShader(&computeShader_indirect, cmd);
 			device->BindUAV(&indirectBuffer, 0, cmd);
 			device->PushConstants(&camera_count, sizeof(camera_count), cmd);
-			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState::SHADER_RESOURCE, ResourceState::UNORDERED_ACCESS), cmd);
+			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState_SHADER_RESOURCE, ResourceState_UNORDERED_ACCESS), cmd);
 			device->Dispatch(1, 1, 1, cmd);
-			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT), cmd);
+			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT), cmd);
 		}
 		else
 		{
-			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState::SHADER_RESOURCE, ResourceState::INDIRECT_ARGUMENT), cmd);
+			device->Barrier(GPUBarrier::Buffer(&indirectBuffer, ResourceState_SHADER_RESOURCE, ResourceState_INDIRECT_ARGUMENT), cmd);
 		}
 
 		device->EventEnd(cmd);

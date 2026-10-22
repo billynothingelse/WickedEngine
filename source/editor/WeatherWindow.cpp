@@ -7,7 +7,7 @@ using namespace Protean::Graphics;
 void WeatherWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_WEATHER " Weather", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_WEATHER " Weather", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(660, 2140));
 
 	closeButton.SetTooltip("Delete WeatherComponent");
@@ -66,7 +66,7 @@ void WeatherWindow::Create(EditorComponent* _editor)
 	colorComboBox.SetMaxVisibleItemCount(100);
 	AddWidget(&colorComboBox);
 
-	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls_NONE);
 	colorPicker.SetPos(XMFLOAT2(mod_x, y += step));
 	colorPicker.SetVisible(false);
 	colorPicker.SetEnabled(true);
@@ -712,7 +712,7 @@ void WeatherWindow::Create(EditorComponent* _editor)
 				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 					auto& weather = GetWeather();
 					weather.colorGradingMapName = fileName;
-					weather.colorGradingMap = Protean::ResourceManager::Load(fileName, Protean::ResourceManager::Flags::IMPORT_COLORGRADINGLUT);
+					weather.colorGradingMap = Protean::ResourceManager::Load(fileName, Protean::ResourceManager::Flags_IMPORT_COLORGRADINGLUT);
 					colorgradingButton.SetText(Protean::Helper::GetFileNameFromPath(fileName));
 					});
 				});

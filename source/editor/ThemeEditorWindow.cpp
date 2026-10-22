@@ -25,7 +25,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	idleButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	idleButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	idleButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Idle ? ColorPickerMode::None : ColorPickerMode::Idle;
+		mode = mode == ColorPickerMode_Idle ? ColorPickerMode_None : ColorPickerMode_Idle;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&idleButton);
@@ -38,7 +38,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	focusButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	focusButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	focusButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Focus ? ColorPickerMode::None : ColorPickerMode::Focus;
+		mode = mode == ColorPickerMode_Focus ? ColorPickerMode_None : ColorPickerMode_Focus;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&focusButton);
@@ -51,7 +51,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	backgroundButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	backgroundButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	backgroundButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Background ? ColorPickerMode::None : ColorPickerMode::Background;
+		mode = mode == ColorPickerMode_Background ? ColorPickerMode_None : ColorPickerMode_Background;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&backgroundButton);
@@ -64,7 +64,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	shadowButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	shadowButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	shadowButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Shadow ? ColorPickerMode::None : ColorPickerMode::Shadow;
+		mode = mode == ColorPickerMode_Shadow ? ColorPickerMode_None : ColorPickerMode_Shadow;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&shadowButton);
@@ -77,7 +77,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	fontButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	fontButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	fontButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Font ? ColorPickerMode::None : ColorPickerMode::Font;
+		mode = mode == ColorPickerMode_Font ? ColorPickerMode_None : ColorPickerMode_Font;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&fontButton);
@@ -90,7 +90,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	fontShadowButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	fontShadowButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	fontShadowButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::FontShadow ? ColorPickerMode::None : ColorPickerMode::FontShadow;
+		mode = mode == ColorPickerMode_FontShadow ? ColorPickerMode_None : ColorPickerMode_FontShadow;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&fontShadowButton);
@@ -103,7 +103,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	gradientButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	gradientButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	gradientButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Gradient ? ColorPickerMode::None : ColorPickerMode::Gradient;
+		mode = mode == ColorPickerMode_Gradient ? ColorPickerMode_None : ColorPickerMode_Gradient;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&gradientButton);
@@ -116,38 +116,38 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 	waveButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 	waveButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	waveButton.OnClick([this](Protean::Gui::EventArgs args) {
-		mode = mode == ColorPickerMode::Wave ? ColorPickerMode::None : ColorPickerMode::Wave;
+		mode = mode == ColorPickerMode_Wave ? ColorPickerMode_None : ColorPickerMode_Wave;
 		UpdateColorPickerMode();
 		});
 	AddWidget(&waveButton);
 
-	colorpicker.Create("themeColorPicker", Protean::Gui::Window::WindowControls::NONE);
+	colorpicker.Create("themeColorPicker", Protean::Gui::Window::WindowControls_NONE);
 	colorpicker.SetSize(XMFLOAT2(256, 256));
 	colorpicker.OnColorChanged([this](Protean::Gui::EventArgs args) {
 		switch (mode)
 		{
-		case ThemeEditorWindow::ColorPickerMode::Idle:
+		case ThemeEditorWindow::ColorPickerMode_Idle:
 			idleColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Focus:
+		case ThemeEditorWindow::ColorPickerMode_Focus:
 			focusColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Background:
+		case ThemeEditorWindow::ColorPickerMode_Background:
 			backgroundColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Shadow:
+		case ThemeEditorWindow::ColorPickerMode_Shadow:
 			shadowColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Font:
+		case ThemeEditorWindow::ColorPickerMode_Font:
 			fontColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::FontShadow:
+		case ThemeEditorWindow::ColorPickerMode_FontShadow:
 			fontShadowColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Gradient:
+		case ThemeEditorWindow::ColorPickerMode_Gradient:
 			gradientColor = args.color;
 			break;
-		case ThemeEditorWindow::ColorPickerMode::Wave:
+		case ThemeEditorWindow::ColorPickerMode_Wave:
 			waveColor = args.color;
 			break;
 		default:
@@ -181,7 +181,7 @@ void ThemeEditorWindow::Create(EditorComponent* _editor)
 			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
 			Protean::Helper::FileDialog(params, [this](std::string fileName) {
 				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					Protean::Resource res = Protean::ResourceManager::Load(fileName, Protean::ResourceManager::Flags::IMPORT_RETAIN_FILEDATA);
+					Protean::Resource res = Protean::ResourceManager::Load(fileName, Protean::ResourceManager::Flags_IMPORT_RETAIN_FILEDATA);
 					if (!res.IsValid())
 						return;
 					imageResource = res;
@@ -266,30 +266,30 @@ void ThemeEditorWindow::UpdateColorPickerMode()
 {
 	switch (mode)
 	{
-	case ThemeEditorWindow::ColorPickerMode::None:
+	case ThemeEditorWindow::ColorPickerMode_None:
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Idle:
+	case ThemeEditorWindow::ColorPickerMode_Idle:
 		colorpicker.SetPickColor(idleColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Focus:
+	case ThemeEditorWindow::ColorPickerMode_Focus:
 		colorpicker.SetPickColor(focusColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Background:
+	case ThemeEditorWindow::ColorPickerMode_Background:
 		colorpicker.SetPickColor(backgroundColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Shadow:
+	case ThemeEditorWindow::ColorPickerMode_Shadow:
 		colorpicker.SetPickColor(shadowColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Font:
+	case ThemeEditorWindow::ColorPickerMode_Font:
 		colorpicker.SetPickColor(fontColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::FontShadow:
+	case ThemeEditorWindow::ColorPickerMode_FontShadow:
 		colorpicker.SetPickColor(fontShadowColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Gradient:
+	case ThemeEditorWindow::ColorPickerMode_Gradient:
 		colorpicker.SetPickColor(gradientColor);
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Wave:
+	case ThemeEditorWindow::ColorPickerMode_Wave:
 		colorpicker.SetPickColor(waveColor);
 		break;
 	default:
@@ -300,7 +300,7 @@ void ThemeEditorWindow::UpdateColorPickerMode()
 void ThemeEditorWindow::Update(const Protean::Canvas& canvas, float dt)
 {
 	const bool gui_round_enabled = !editor->generalWnd.disableRoundCornersCheckBox.GetCheck();
-	if (mode == ColorPickerMode::None)
+	if (mode == ColorPickerMode_None)
 	{
 		colorpicker.SetVisible(false);
 	}
@@ -321,35 +321,35 @@ void ThemeEditorWindow::Update(const Protean::Canvas& canvas, float dt)
 	const float rad = 6;
 	switch (mode)
 	{
-	case ThemeEditorWindow::ColorPickerMode::Idle:
+	case ThemeEditorWindow::ColorPickerMode_Idle:
 		idleButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Idle color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Focus:
+	case ThemeEditorWindow::ColorPickerMode_Focus:
 		focusButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Focus color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Background:
+	case ThemeEditorWindow::ColorPickerMode_Background:
 		backgroundButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Background color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Shadow:
+	case ThemeEditorWindow::ColorPickerMode_Shadow:
 		shadowButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Shadow color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Font:
+	case ThemeEditorWindow::ColorPickerMode_Font:
 		fontButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Font color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::FontShadow:
+	case ThemeEditorWindow::ColorPickerMode_FontShadow:
 		fontShadowButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Font shadow color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Gradient:
+	case ThemeEditorWindow::ColorPickerMode_Gradient:
 		gradientButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Gradient color");
 		break;
-	case ThemeEditorWindow::ColorPickerMode::Wave:
+	case ThemeEditorWindow::ColorPickerMode_Wave:
 		waveButton.SetShadowRadius(rad);
 		colorpicker.label.SetText("Wave color");
 		break;

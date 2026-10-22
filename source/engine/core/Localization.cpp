@@ -135,7 +135,7 @@ namespace Protean
 		pugi::xml_parse_result result = doc.load_buffer_inplace(filedata.data(), filedata.size());
 		if (result.status != pugi::xml_parse_status::status_ok)
 		{
-			Protean::Backlog::post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), Protean::Backlog::LogLevel::Warning);
+			Protean::Backlog::post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), Protean::Backlog::LogLevel_Warning);
 			return false;
 		}
 

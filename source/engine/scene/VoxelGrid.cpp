@@ -690,7 +690,7 @@ namespace Protean
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHREAD);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_FRONT);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_ADDITIVE);
-			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+			desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 
 			GraphicsDevice* device = GetDevice();
 			device->CreatePipelineState(&desc, &pso);

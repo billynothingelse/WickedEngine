@@ -388,7 +388,7 @@ namespace Protean::Graphics
 		void precopy(CommandList cmd);
 
 	public:
-		GraphicsDevice_Metal(ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
+		GraphicsDevice_Metal(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
 		~GraphicsDevice_Metal() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
@@ -424,7 +424,7 @@ namespace Protean::Graphics
 		void ClearPipelineStateCache() override;
 		size_t GetActivePipelineCount() const override { return 0; }
 
-		ShaderFormat GetShaderFormat() const override { return ShaderFormat::METAL; }
+		ShaderFormat GetShaderFormat() const override { return ShaderFormat_METAL; }
 
 		Texture GetBackBuffer(const SwapChain* swapchain) const override;
 
@@ -434,7 +434,7 @@ namespace Protean::Graphics
 		uint32_t GetMinOffsetAlignment(const GPUBufferDesc* desc) const override
 		{
 			uint32_t alignment = 256u;
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				alignment = std::max(alignment, uint32_t(64 * 1024)); // 64KB safety to match DX12
 			}
@@ -463,8 +463,8 @@ namespace Protean::Graphics
 
 		void WaitCommandList(CommandList cmd, CommandList wait_for) override;
 		void RenderPassBegin(const SwapChain* swapchain, CommandList cmd) override;
-		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) override { RenderPassBegin(images, image_count, nullptr, cmd, flags); };
-		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, const GPUQueryHeap* occlusionqueries, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) override;
+		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) override { RenderPassBegin(images, image_count, nullptr, cmd, flags); };
+		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, const GPUQueryHeap* occlusionqueries, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) override;
 		void RenderPassEnd(CommandList cmd) override;
 		void BindScissorRects(uint32_t numRects, const Rect* rects, CommandList cmd) override;
 		void BindViewports(uint32_t NumViewports, const Viewport *pViewports, CommandList cmd) override;

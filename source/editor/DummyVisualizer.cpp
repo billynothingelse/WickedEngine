@@ -31,7 +31,7 @@ struct DummyVisualizer
 				desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_VERTEXCOLOR);
 				desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 				desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-				desc.pt = PrimitiveTopology::TRIANGLELIST;
+				desc.pt = PrimitiveTopology_TRIANGLELIST;
 				desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 				Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &pso[0]);
 				desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEFAULT);
@@ -63,7 +63,7 @@ struct DummyVisualizer
 
 			GPUBufferDesc desc;
 			desc.size = indices_count * sizeof(uint32_t) + vertices_count * sizeof(Vertex);
-			desc.bind_flags = BindFlag::INDEX_BUFFER | BindFlag::VERTEX_BUFFER;
+			desc.bind_flags = BindFlag_INDEX_BUFFER | BindFlag_VERTEX_BUFFER;
 			GraphicsDevice* device = GetDevice();
 			device->CreateBuffer2(&desc, fill_data, &buffer);
 			device->SetName(&buffer, "DummyVisualizer::buffer");
@@ -100,7 +100,7 @@ struct DummyVisualizer
 			0,
 		};
 		device->BindVertexBuffers(vbs, 0, arraysize(vbs), strides, offsets, cmd);
-		device->BindIndexBuffer(&buffer, IndexBufferFormat::UINT32, vertices_count * sizeof(Vertex), cmd);
+		device->BindIndexBuffer(&buffer, IndexBufferFormat_UINT32, vertices_count * sizeof(Vertex), cmd);
 		device->DrawIndexed((uint32_t)indices_count, 0, 0, cmd);
 	}
 };

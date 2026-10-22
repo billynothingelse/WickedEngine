@@ -94,7 +94,7 @@ namespace Protean
 			switch (background_mode)
 			{
 			default:
-			case Protean::LoadingScreen::BackgroundMode::Fill:
+			case Protean::LoadingScreen::BackgroundMode_Fill:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -110,7 +110,7 @@ namespace Protean
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case Protean::LoadingScreen::BackgroundMode::Fit:
+			case Protean::LoadingScreen::BackgroundMode_Fit:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -126,13 +126,13 @@ namespace Protean
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case Protean::LoadingScreen::BackgroundMode::Stretch:
+			case Protean::LoadingScreen::BackgroundMode_Stretch:
 				fx.enableFullScreen();
 				break;
 			}
 
 			fx.blendFlag = Protean::BLENDMODE_ALPHA;
-			if (colorspace != ColorSpace::SRGB)
+			if (colorspace != ColorSpace_SRGB)
 			{
 				fx.enableLinearOutputMapping(hdr_scaling);
 			}

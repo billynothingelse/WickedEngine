@@ -8,21 +8,20 @@
 namespace Protean::ShaderCompiler
 {
 
-	enum class Flags
-	{
-		NONE = 0,
-		DISABLE_OPTIMIZATION = 1 << 0,
-		STRIP_REFLECTION = 1 << 1,
-		KEEP_DEBUG_INFORMATION = 1 << 2,
+	enum Flags {
+		Flags_NONE = 0,
+		Flags_DISABLE_OPTIMIZATION = 1 << 0,
+		Flags_STRIP_REFLECTION = 1 << 1,
+		Flags_KEEP_DEBUG_INFORMATION = 1 << 2,
 	};
 	struct CompilerInput
 	{
-		Flags flags = Flags::NONE;
-		Protean::Graphics::ShaderFormat format = Protean::Graphics::ShaderFormat::NONE;
-		Protean::Graphics::ShaderStage stage = Protean::Graphics::ShaderStage::Count;
+		Flags flags = Flags_NONE;
+		Protean::Graphics::ShaderFormat format = Protean::Graphics::ShaderFormat_NONE;
+		Protean::Graphics::ShaderStage stage = Protean::Graphics::ShaderStage_Count;
 		// if the shader relies on a higher shader model feature, it must be declared here.
 		//	But the compiler can also choose a higher one internally, if needed
-		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel::SM_5_0;
+		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel_SM_5_0;
 		std::string shadersourcefilename;
 		std::string entrypoint = "main";
 		Protean::vector<std::string> include_directories;

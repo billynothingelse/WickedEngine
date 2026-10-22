@@ -58,7 +58,7 @@ namespace Protean::Profiler
 		float x,
 		float y,
 		Protean::Graphics::CommandList cmd,
-		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace_SRGB
 	);
 	void DisableDrawForThisFrame();
 

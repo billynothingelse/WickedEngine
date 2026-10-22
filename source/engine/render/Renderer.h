@@ -26,14 +26,14 @@ namespace Protean
 
 namespace Protean::Renderer
 {
-	constexpr Protean::Graphics::Format format_depthbuffer_main = Protean::Graphics::Format::D32_FLOAT_S8X24_UINT;
-	constexpr Protean::Graphics::Format format_rendertarget_main = Protean::Graphics::Format::R11G11B10_FLOAT;
-	constexpr Protean::Graphics::Format format_idbuffer = Protean::Graphics::Format::R32_UINT;
-	constexpr Protean::Graphics::Format format_rendertarget_shadowmap = Protean::Graphics::Format::R16G16B16A16_FLOAT;
-	constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format::D16_UNORM;
-	//constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format::D32_FLOAT;
-	constexpr Protean::Graphics::Format format_rendertarget_envprobe = Protean::Graphics::Format::R11G11B10_FLOAT;
-	constexpr Protean::Graphics::Format format_depthbuffer_envprobe = Protean::Graphics::Format::D16_UNORM;
+	constexpr Protean::Graphics::Format format_depthbuffer_main = Protean::Graphics::Format_D32_FLOAT_S8X24_UINT;
+	constexpr Protean::Graphics::Format format_rendertarget_main = Protean::Graphics::Format_R11G11B10_FLOAT;
+	constexpr Protean::Graphics::Format format_idbuffer = Protean::Graphics::Format_R32_UINT;
+	constexpr Protean::Graphics::Format format_rendertarget_shadowmap = Protean::Graphics::Format_R16G16B16A16_FLOAT;
+	constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format_D16_UNORM;
+	//constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format_D32_FLOAT;
+	constexpr Protean::Graphics::Format format_rendertarget_envprobe = Protean::Graphics::Format_R11G11B10_FLOAT;
+	constexpr Protean::Graphics::Format format_depthbuffer_envprobe = Protean::Graphics::Format_D16_UNORM;
 
 	constexpr uint8_t raytracing_inclusion_mask_shadow = 1 << 0;
 	constexpr uint8_t raytracing_inclusion_mask_reflection = 1 << 1;
@@ -113,7 +113,7 @@ namespace Protean::Renderer
 		Protean::Graphics::ShaderStage stage,
 		Protean::Graphics::Shader& shader,
 		const std::string& filename,
-		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel::SM_6_0,
+		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel_SM_6_0,
 		const Protean::vector<std::string>& permutation_defines = {},
 		const std::string& entrypoint = "main"
 	);
@@ -475,21 +475,20 @@ namespace Protean::Renderer
 		Protean::Graphics::CommandList cmd
 	);
 
-	enum class PostProcessQuality
-	{
-		Low,
-		Medium,
-		High
+	enum PostProcessQuality {
+		PostProcessQuality_Low,
+		PostProcessQuality_Medium,
+		PostProcessQuality_High
 	};
 	inline constexpr uint32_t quality_downscalefactor(PostProcessQuality quality)
 	{
 		switch (quality)
 		{
-		case Protean::Renderer::PostProcessQuality::Low:
+		case Protean::Renderer::PostProcessQuality_Low:
 			return 4;
-		case Protean::Renderer::PostProcessQuality::Medium:
+		case Protean::Renderer::PostProcessQuality_Medium:
 			return 2;
-		case Protean::Renderer::PostProcessQuality::High:
+		case Protean::Renderer::PostProcessQuality_High:
 		default:
 			break;
 		}
@@ -657,14 +656,14 @@ namespace Protean::Renderer
 	struct RTDiffuseResources
 	{
 		mutable int frame = 0;
-		PostProcessQuality quality = PostProcessQuality::Medium;
+		PostProcessQuality quality = PostProcessQuality_Medium;
 		Protean::Graphics::Texture texture_rayIndirectDiffuse;
 		Protean::Graphics::Texture texture_spatial;
 		Protean::Graphics::Texture texture_spatial_variance;
 		Protean::Graphics::Texture texture_temporal[2];
 		Protean::Graphics::Texture texture_temporal_variance[2];
 	};
-	void CreateRTDiffuseResources(RTDiffuseResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
+	void CreateRTDiffuseResources(RTDiffuseResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality_Medium);
 	void Postprocess_RTDiffuse(
 		const RTDiffuseResources& res,
 		const Protean::Scene& scene,
@@ -694,7 +693,7 @@ namespace Protean::Renderer
 	struct RTReflectionResources
 	{
 		mutable int frame = 0;
-		PostProcessQuality quality = PostProcessQuality::Medium;
+		PostProcessQuality quality = PostProcessQuality_Medium;
 		Protean::Graphics::Texture texture_rayIndirectSpecular;
 		Protean::Graphics::Texture texture_rayDirectionPDF;
 		Protean::Graphics::Texture texture_rayLengths;
@@ -704,7 +703,7 @@ namespace Protean::Renderer
 		Protean::Graphics::Texture texture_temporal[2];
 		Protean::Graphics::Texture texture_temporal_variance[2];
 	};
-	void CreateRTReflectionResources(RTReflectionResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
+	void CreateRTReflectionResources(RTReflectionResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality_Medium);
 	void Postprocess_RTReflection(
 		const RTReflectionResources& res,
 		const Protean::Scene& scene,
@@ -716,7 +715,7 @@ namespace Protean::Renderer
 	struct SSRResources
 	{
 		mutable int frame = 0;
-		PostProcessQuality quality = PostProcessQuality::Medium;
+		PostProcessQuality quality = PostProcessQuality_Medium;
 		Protean::Graphics::Texture texture_tile_minmax_roughness_horizontal;
 		Protean::Graphics::Texture texture_tile_minmax_roughness;
 		Protean::Graphics::Texture texture_depth_hierarchy;
@@ -733,7 +732,7 @@ namespace Protean::Renderer
 		Protean::Graphics::GPUBuffer buffer_tiles_tracing_cheap;
 		Protean::Graphics::GPUBuffer buffer_tiles_tracing_expensive;
 	};
-	void CreateSSRResources(SSRResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
+	void CreateSSRResources(SSRResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality_Medium);
 	void Postprocess_SSR(
 		const SSRResources& res,
 		const Protean::Graphics::Texture& input,
@@ -916,11 +915,10 @@ namespace Protean::Renderer
 		float flicker_timer = 0,
 		bool srgb = true // if true, then srgb->linear->crt filter->srgb conversion will be done
 	);
-	enum class Tonemap
-	{
-		Reinhard,
-		ACES,
-		Uchimura
+	enum Tonemap {
+		Tonemap_Reinhard,
+		Tonemap_ACES,
+		Tonemap_Uchimura
 	};
 	void Postprocess_Tonemap(
 		const Protean::Graphics::Texture& input,
@@ -935,8 +933,8 @@ namespace Protean::Renderer
 		const Protean::Graphics::Texture* texture_distortion = nullptr,
 		const Protean::Graphics::GPUBuffer* buffer_luminance = nullptr,
 		const Protean::Graphics::Texture* texture_bloom = nullptr,
-		Protean::Graphics::ColorSpace display_colorspace = Protean::Graphics::ColorSpace::SRGB,
-		Tonemap tonemap = Tonemap::Reinhard,
+		Protean::Graphics::ColorSpace display_colorspace = Protean::Graphics::ColorSpace_SRGB,
+		Tonemap tonemap = Tonemap_Reinhard,
 		const Protean::Graphics::Texture* texture_distortion_overlay = nullptr,
 		float hdr_calibration = 1
 	);

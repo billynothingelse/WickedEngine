@@ -362,7 +362,7 @@ void TestsRenderer::Load()
 
 			HumanoidComponent& humanoid = scene.humanoids[0];
 			humanoid.SetLookAtEnabled(false);
-			ik_entity = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftHand];
+			ik_entity = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftHand];
 			if (ik_entity != INVALID_ENTITY)
 			{
 				InverseKinematicsComponent& ik = scene.inverse_kinematics.Create(ik_entity);

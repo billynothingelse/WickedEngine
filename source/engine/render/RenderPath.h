@@ -42,7 +42,7 @@ namespace Protean
 		inline uint32_t getLayerMask() const { return layerMask; }
 		inline void setlayerMask(uint32_t value) { layerMask = value; }
 
-		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB;
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace_SRGB;
 
 		// This is an identifier of RenderPath subtype that is used for lua binding.
 		static constexpr const auto script_check_identifier = relative_path_storage(__FILE__);

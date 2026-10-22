@@ -436,7 +436,7 @@ namespace Protean::Font
 				}
 
 				// Upload the CPU-side texture atlas bitmap to the GPU:
-				Protean::TextureHelper::CreateTexture(texture, atlas.data(), atlasWidth, atlasHeight, Format::R8_UNORM);
+				Protean::TextureHelper::CreateTexture(texture, atlas.data(), atlasWidth, atlasHeight, Format_R8_UNORM);
 				GetDevice()->SetName(&texture, "Protean::Font::texture");
 			}
 			else
@@ -563,9 +563,9 @@ namespace Protean::Font
 
 		ImageConstants image = {};
 		image.flags = FONT_FLAG_ISFONT;
-		image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType::SRV);
+		image.buffer_index = device->GetDescriptorIndex(&mem.buffer, SubresourceType_SRV);
 		image.buffer_offset = (uint)mem.offset;
-		image.texture_base_index = device->GetDescriptorIndex(&texture, SubresourceType::SRV);
+		image.texture_base_index = device->GetDescriptorIndex(&texture, SubresourceType_SRV);
 		if (image.buffer_index < 0 || image.texture_base_index < 0)
 			return status.cursor;
 

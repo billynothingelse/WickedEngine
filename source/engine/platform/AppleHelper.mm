@@ -170,9 +170,9 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"No"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Yes;
-				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult::No;
-				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult_Yes;
+				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult_No;
+				default:  return (int)Protean::Helper::MessageBoxResult_Cancel;
 			}
 		}
 		else if (strcmp(buttons, "YesNoCancel") == 0)
@@ -182,9 +182,9 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Cancel"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Yes;
-				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult::No;
-				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult_Yes;
+				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult_No;
+				default:  return (int)Protean::Helper::MessageBoxResult_Cancel;
 			}
 		}
 		else if (strcmp(buttons, "OKCancel") == 0)
@@ -193,8 +193,8 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Cancel"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::OK;
-				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult_OK;
+				default:  return (int)Protean::Helper::MessageBoxResult_Cancel;
 			}
 		}
 		else if (strcmp(buttons, "AbortRetryIgnore") == 0)
@@ -204,14 +204,14 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Ignore"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Abort;
-				case NSAlertSecondButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Retry;
-				default:  return (int)Protean::Helper::MessageBoxResult::Ignore;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult_Abort;
+				case NSAlertSecondButtonReturn:  return (int)Protean::Helper::MessageBoxResult_Retry;
+				default:  return (int)Protean::Helper::MessageBoxResult_Ignore;
 			}
 		}
 
 	}
-	return (int)Protean::Helper::MessageBoxResult::OK;
+	return (int)Protean::Helper::MessageBoxResult_OK;
 }
 
 std::string GetResourcePath()
@@ -505,7 +505,7 @@ void SetMousePositionInWindow(void* handle, XMFLOAT2 value)
 
 int MessageBox(const char* title, const char* message, const char* buttons)
 {
-	return (int)Protean::Helper::MessageBoxResult::OK;
+	return (int)Protean::Helper::MessageBoxResult_OK;
 }
 
 std::string GetResourcePath()

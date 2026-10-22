@@ -5,7 +5,7 @@ using namespace Protean;
 void VoxelGridWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_VOXELGRID " VoxelGrid", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_VOXELGRID " VoxelGrid", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(520, 480));
 
 	closeButton.SetTooltip("Delete VoxelGrid");
@@ -148,7 +148,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->create_mesh(indices, vertices, false);
 		if (vertices.empty())
 		{
-			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel_Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());
@@ -167,7 +167,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->create_mesh(indices, vertices, true);
 		if (vertices.empty())
 		{
-			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel_Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());
@@ -186,7 +186,7 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 		voxelgrid->create_mesh(indices, vertices, true, &scene);
 		if (vertices.empty())
 		{
-			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel_Warning);
 			return;
 		}
 		Entity entity = scene.Entity_CreateMeshFromData("voxelgrid_to_navmesh", indices.size(), indices.data(), vertices.size(), vertices.data());

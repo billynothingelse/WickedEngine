@@ -10,11 +10,11 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create("Paint Tool", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Paint Tool", Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_RESIZE_RIGHT);
 	SetText("Paint Tool " ICON_PAINTTOOL);
 	SetSize(XMFLOAT2(300, 800));
 
-	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls_NONE);
 
 	modeComboBox.Create("Mode: ");
 	modeComboBox.SetTooltip("Choose paint tool mode");
@@ -192,10 +192,10 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 
 	axisCombo.Create("Axis Lock: ");
 	axisCombo.SetTooltip("You can lock modification to an axis here.");
-	axisCombo.AddItem(ICON_DISABLED, (uint64_t)AxisLock::Disabled);
-	axisCombo.AddItem("X " ICON_LEFT_RIGHT, (uint64_t)AxisLock::X);
-	axisCombo.AddItem("Y " ICON_UP_DOWN, (uint64_t)AxisLock::Y);
-	axisCombo.AddItem("Z " ICON_UPRIGHT_DOWNLEFT, (uint64_t)AxisLock::Z);
+	axisCombo.AddItem(ICON_DISABLED, (uint64_t)AxisLock_Disabled);
+	axisCombo.AddItem("X " ICON_LEFT_RIGHT, (uint64_t)AxisLock_X);
+	axisCombo.AddItem("Y " ICON_UP_DOWN, (uint64_t)AxisLock_Y);
+	axisCombo.AddItem("Z " ICON_UPRIGHT_DOWNLEFT, (uint64_t)AxisLock_Z);
 	AddWidget(&axisCombo);
 
 	AddWidget(&colorPicker);
@@ -257,7 +257,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 				// Register into resource manager:
 				material->textures[sel].resource = Protean::ResourceManager::Load(
 					material->textures[sel].name,
-					Protean::ResourceManager::Flags::NONE,
+					Protean::ResourceManager::Flags_NONE,
 					texturefiledata.data(),
 					texturefiledata.size()
 				);
@@ -509,7 +509,7 @@ void PaintToolWindow::UpdateData(float dt)
 			int uvset = 0;
 			TextureSlot editTexture = GetEditTextureSlot(*material, &uvset);
 
-			if (has_flag(editTexture.texture.desc.misc_flags, ResourceMiscFlag::SPARSE))
+			if (has_flag(editTexture.texture.desc.misc_flags, ResourceMiscFlag_SPARSE))
 				break;
 
 			// Missing texture will be created a blank one:
@@ -927,22 +927,22 @@ void PaintToolWindow::UpdateData(float dt)
 				switch (axis_lock)
 				{
 				default:
-				case PaintToolWindow::AxisLock::Disabled:
+				case PaintToolWindow::AxisLock_Disabled:
 					if (sculpting_normal.x < FLT_EPSILON && sculpting_normal.y < FLT_EPSILON && sculpting_normal.z < FLT_EPSILON)
 					{
 						sculpting_normal = brushIntersect.normal;
 					}
 					sculptDir = XMVector3TransformNormal(XMVector3Normalize(XMLoadFloat3(&sculpting_normal)), XMMatrixInverse(nullptr, W));
 					break;
-				case PaintToolWindow::AxisLock::X:
+				case PaintToolWindow::AxisLock_X:
 					sculpting_normal = XMFLOAT3(1, 0, 0);
 					sculptDir = XMLoadFloat3(&sculpting_normal);
 					break;
-				case PaintToolWindow::AxisLock::Y:
+				case PaintToolWindow::AxisLock_Y:
 					sculpting_normal = XMFLOAT3(0, 1, 0);
 					sculptDir = XMLoadFloat3(&sculpting_normal);
 					break;
-				case PaintToolWindow::AxisLock::Z:
+				case PaintToolWindow::AxisLock_Z:
 					sculpting_normal = XMFLOAT3(0, 0, 1);
 					sculptDir = XMLoadFloat3(&sculpting_normal);
 					break;
@@ -1367,7 +1367,7 @@ namespace PaintTool_Internal
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-			desc.pt = PrimitiveTopology::TRIANGLELIST;
+			desc.pt = PrimitiveTopology_TRIANGLELIST;
 
 			device->CreatePipelineState(&desc, &pso);
 		}
@@ -1498,17 +1498,17 @@ void PaintToolWindow::WriteHistoryData(Entity entity, Protean::Archive& archive,
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			TextureSlot newslot;
 			TextureDesc desc = editTexture.texture.GetDesc();
-			desc.format = Format::R8G8B8A8_UNORM; // force format to one that is writable by GPU
-			desc.bind_flags |= BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::TYPED_FORMAT_CASTING;
+			desc.format = Format_R8G8B8A8_UNORM; // force format to one that is writable by GPU
+			desc.bind_flags |= BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_TYPED_FORMAT_CASTING;
 			device->CreateTexture(&desc, nullptr, &newslot.texture);
 			device->SetName(&newslot.texture, "editor.painttool.newslot.texture");
 			for (uint32_t i = 0; i < newslot.texture.GetDesc().mip_levels; ++i)
 			{
 				int subresource_index;
-				subresource_index = device->CreateSubresource(&newslot.texture, SubresourceType::SRV, 0, 1, i, 1);
+				subresource_index = device->CreateSubresource(&newslot.texture, SubresourceType_SRV, 0, 1, i, 1);
 				assert(subresource_index == i);
-				subresource_index = device->CreateSubresource(&newslot.texture, SubresourceType::UAV, 0, 1, i, 1);
+				subresource_index = device->CreateSubresource(&newslot.texture, SubresourceType_UAV, 0, 1, i, 1);
 				assert(subresource_index == i);
 			}
 			// This part must be AFTER mip level subresource creation:
@@ -1517,7 +1517,7 @@ void PaintToolWindow::WriteHistoryData(Entity entity, Protean::Archive& archive,
 				Format srgb_format = GetFormatSRGB(desc.format);
 				newslot.srgb_subresource = device->CreateSubresource(
 					&newslot.texture,
-					SubresourceType::SRV,
+					SubresourceType_SRV,
 					0, -1,
 					0, -1,
 					&srgb_format

@@ -252,7 +252,7 @@ namespace Protean
 		MeshComponent::BufferView impostor_vb_nor;
 		MeshComponent::BufferView impostor_data;
 		MeshComponent::BufferView impostor_indirect;
-		Protean::Graphics::Format impostor_ib_format = Protean::Graphics::Format::R32_UINT;
+		Protean::Graphics::Format impostor_ib_format = Protean::Graphics::Format_R32_UINT;
 		uint32_t impostorInstanceOffset = ~0u;
 		uint32_t impostorGeometryOffset = ~0u;
 		uint32_t impostorMaterialOffset = ~0u;
@@ -349,11 +349,10 @@ namespace Protean
 		//	returns true if entity is in the hierarchy tree of ancestor, false otherwise
 		bool Entity_IsDescendant(Protean::Entity entity, Protean::Entity ancestor) const;
 
-		enum class EntitySerializeFlags
-		{
-			NONE = 0,
-			RECURSIVE = 1 << 0, // children entities will be also serialized
-			KEEP_INTERNAL_ENTITY_REFERENCES = 1 << 1, // entity handles inside components will be kept intact, they won't use remapping of Protean::EntitySerializer
+		enum EntitySerializeFlags {
+			EntitySerializeFlags_NONE = 0,
+			EntitySerializeFlags_RECURSIVE = 1 << 0, // children entities will be also serialized
+			EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES = 1 << 1, // entity handles inside components will be kept intact, they won't use remapping of Protean::EntitySerializer
 		};
 		// Serializes entity and all of its components to archive:
 		//	archive		: archive used for serializing data
@@ -366,7 +365,7 @@ namespace Protean
 			Protean::Archive& archive,
 			Protean::EntitySerializer& seri,
 			Protean::Entity entity = Protean::INVALID_ENTITY,
-			EntitySerializeFlags flags = EntitySerializeFlags::RECURSIVE
+			EntitySerializeFlags flags = EntitySerializeFlags_RECURSIVE
 		);
 
 		Protean::Entity Entity_CreateTransform(
@@ -530,7 +529,7 @@ namespace Protean
 			int vertexID2 = -1;
 			XMFLOAT2 bary = XMFLOAT2(0, 0);
 			XMFLOAT4X4 orientation = Protean::Math::IDENTITY_MATRIX;
-			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone::Count;
+			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone_Count;
 
 			constexpr bool operator==(const RayIntersectionResult& other) const
 			{
@@ -564,7 +563,7 @@ namespace Protean
 			float depth = 0;
 			int subsetIndex = -1;
 			XMFLOAT4X4 orientation = Protean::Math::IDENTITY_MATRIX;
-			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone::Count;
+			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone_Count;
 		};
 		// Closest sphere intersection
 		SphereIntersectionResult Intersects(const Protean::Sphere& sphere, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;

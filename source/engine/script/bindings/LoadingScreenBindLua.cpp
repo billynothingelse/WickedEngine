@@ -194,7 +194,7 @@ namespace Protean::Lua
 
 		float fadeSeconds = 0;
 		Protean::Color fadeColor = Protean::Color::Black();
-		Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType::FadeToColor;
+		Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType_FadeToColor;
 
 		if (argc > 2)
 		{

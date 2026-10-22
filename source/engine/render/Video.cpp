@@ -40,7 +40,7 @@ namespace Protean::Video
 		const h264::PPS& pps = ((const h264::PPS*)video->pps_datas.data())[sh.pic_parameter_set_id];
 		const h264::SPS& sps = ((const h264::SPS*)video->sps_datas.data())[pps.seq_parameter_set_id];
 
-		if (frame_index == 0 || info.type == VideoFrameType::Intra)
+		if (frame_index == 0 || info.type == VideoFrameType_Intra)
 		{
 			for (auto& picture : dpb.pictures)
 				picture = {};
@@ -99,7 +99,7 @@ namespace Protean::Video
 		const int max_frame_num = 1 << (sps.log2_max_frame_num_minus4 + 4);
 		const int curr = sh.frame_num;
 		const int ref_limit = std::max(sps.num_ref_frames, 1);
-		const bool idr = info.type == VideoFrameType::Intra;
+		const bool idr = info.type == VideoFrameType_Intra;
 
 		if (info.reference_priority == 0)
 		{
@@ -159,7 +159,7 @@ namespace Protean::Video
 
 	void CalculatePictureOrder(Video* video)
 	{
-		if (video->profile == VideoProfile::H264)
+		if (video->profile == VideoProfile_H264)
 		{
 			const h264::SliceHeader* slice_header_array = (const h264::SliceHeader*)video->slice_header_datas.data();
 			const h264::PPS* pps_array = (const h264::PPS*)video->pps_datas.data();
@@ -172,7 +172,7 @@ namespace Protean::Video
 				const h264::SliceHeader& slice_header = slice_header_array[i];
 				const h264::PPS& pps = pps_array[slice_header.pic_parameter_set_id];
 				const h264::SPS& sps = sps_array[pps.seq_parameter_set_id];
-				const bool idr = video->frame_infos[i].type == VideoFrameType::Intra;
+				const bool idr = video->frame_infos[i].type == VideoFrameType_Intra;
 				const bool is_ref = video->frame_infos[i].reference_priority != 0;
 				const int max_poc_lsb = 1 << (sps.log2_max_pic_order_cnt_lsb_minus4 + 4);
 
@@ -204,7 +204,7 @@ namespace Protean::Video
 				}
 			}
 		}
-		if (video->profile == VideoProfile::H265)
+		if (video->profile == VideoProfile_H265)
 		{
 			assert(0); // TODO
 		}
@@ -320,10 +320,10 @@ namespace Protean::Video
 					switch (track.object_type_indication)
 					{
 					case MP4_OBJECT_TYPE_AVC:
-						video->profile = VideoProfile::H264;
+						video->profile = VideoProfile_H264;
 						break;
 					case MP4_OBJECT_TYPE_HEVC:
-						video->profile = VideoProfile::H265;
+						video->profile = VideoProfile_H265;
 						wilog_warning("H265 (HEVC) video format is not supported yet!");
 						return false;
 					default:
@@ -458,11 +458,11 @@ namespace Protean::Video
 
 							if (nal.type == h264::NAL_UNIT_TYPE_CODED_SLICE_IDR)
 							{
-								info.type = VideoFrameType::Intra;
+								info.type = VideoFrameType_Intra;
 							}
 							else if (nal.type == h264::NAL_UNIT_TYPE_CODED_SLICE_NON_IDR)
 							{
-								info.type = VideoFrameType::Predictive;
+								info.type = VideoFrameType_Predictive;
 							}
 							else
 							{
@@ -579,8 +579,8 @@ namespace Protean::Video
 
 					GPUBufferDesc bd;
 					bd.size = aligned_size;
-					bd.usage = Usage::DEFAULT;
-					bd.misc_flags = ResourceMiscFlag::VIDEO_DECODE | ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
+					bd.usage = Usage_DEFAULT;
+					bd.misc_flags = ResourceMiscFlag_VIDEO_DECODE | ResourceMiscFlag_VIDEO_COMPATIBILITY_H264;
 					success = device->CreateBuffer2(&bd, copy_video_track, &video->data_stream);
 					assert(success);
 					device->SetName(&video->data_stream, "Protean::Video::data_stream");
@@ -683,7 +683,7 @@ namespace Protean::Video
 				{
 					Video::FrameInfo& frame_info = video->frame_infos.emplace_back();
 					frame_info.offset = nal_offset;
-					frame_info.type = Protean::Graphics::VideoFrameType::Predictive;
+					frame_info.type = Protean::Graphics::VideoFrameType_Predictive;
 					frame_info.reference_priority = nal.idc;
 					h264::SliceHeader slice_header = {};
 					h264::read_slice_header(&slice_header, &nal, (const h264::PPS*)video->pps_datas.data(), (const h264::SPS*)video->sps_datas.data(), &bs);
@@ -696,7 +696,7 @@ namespace Protean::Video
 				{
 					Video::FrameInfo& frame_info = video->frame_infos.emplace_back();
 					frame_info.offset = nal_offset;
-					frame_info.type = Protean::Graphics::VideoFrameType::Intra;
+					frame_info.type = Protean::Graphics::VideoFrameType_Intra;
 					frame_info.reference_priority = nal.idc;
 					h264::SliceHeader slice_header = {};
 					h264::read_slice_header(&slice_header, &nal, (const h264::PPS*)video->pps_datas.data(), (const h264::SPS*)video->sps_datas.data(), &bs);
@@ -782,8 +782,8 @@ namespace Protean::Video
 
 		GPUBufferDesc bd;
 		bd.size = aligned_size;
-		bd.usage = Usage::DEFAULT;
-		bd.misc_flags = ResourceMiscFlag::VIDEO_DECODE | ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
+		bd.usage = Usage_DEFAULT;
+		bd.misc_flags = ResourceMiscFlag_VIDEO_DECODE | ResourceMiscFlag_VIDEO_COMPATIBILITY_H264;
 		success = device->CreateBuffer2(&bd, copy_video_track, &video->data_stream);
 		assert(success);
 		device->SetName(&video->data_stream, "Protean::Video::data_stream");
@@ -797,18 +797,18 @@ namespace Protean::Video
 		instance->audio_sync_time = 0;
 		instance->audio_unavailable = false;
 		instance->current_decode_frame = 0;
-		instance->flags &= ~VideoInstance::Flags::InitialFirstFrameDecoded;
+		instance->flags &= ~VideoInstance::Flags_InitialFirstFrameDecoded;
 		instance->output_textures_free.clear();
 		instance->output_textures_used.clear();
 		instance->output_textures_resolve_request.clear();
 
 		GraphicsDevice* device = GetDevice();
-		if (video->profile == VideoProfile::H264 && !device->CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H264))
+		if (video->profile == VideoProfile_H264 && !device->CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H264))
 		{
 			wilog_warning("The H264 video decoding implementation is not supported by your GPU!\nYou can attempt to update graphics driver.\nThere is no CPU decoding implemented now, video will be disabled!");
 			return false;
 		}
-		if (video->profile == VideoProfile::H265 && !device->CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H265))
+		if (video->profile == VideoProfile_H265 && !device->CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H265))
 		{
 			wilog_warning("The H265 video decoding implementation is not supported by your GPU!\nYou can attempt to update graphics driver.\nThere is no CPU decoding implemented now, video will be disabled!");
 			return false;
@@ -818,7 +818,7 @@ namespace Protean::Video
 		vd.width = video->padded_width;
 		vd.height = video->padded_height;
 		vd.bit_rate = video->bit_rate;
-		vd.format = Format::NV12;
+		vd.format = Format_NV12;
 		vd.profile = video->profile;
 		vd.pps_datas = instance->video->pps_datas.data();
 		vd.pps_count = instance->video->pps_count;
@@ -833,42 +833,42 @@ namespace Protean::Video
 		td.height = vd.height;
 		td.format = vd.format;
 		td.array_size = video->num_dpb_slots;
-		if (has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+		if (has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 		{
-			td.bind_flags = BindFlag::SHADER_RESOURCE;
-			td.misc_flags = ResourceMiscFlag::VIDEO_DECODE;
-			td.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+			td.bind_flags = BindFlag_SHADER_RESOURCE;
+			td.misc_flags = ResourceMiscFlag_VIDEO_DECODE;
+			td.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 		}
 		else
 		{
-			td.misc_flags = ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY;
-			td.layout = ResourceState::VIDEO_DECODE_DPB;
+			td.misc_flags = ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY;
+			td.layout = ResourceState_VIDEO_DECODE_DPB;
 		}
-		td.misc_flags |= ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
+		td.misc_flags |= ResourceMiscFlag_VIDEO_COMPATIBILITY_H264;
 		success = device->CreateTexture(&td, nullptr, &instance->dpb.texture);
 		assert(success);
 		device->SetName(&instance->dpb.texture, "VideoInstance::DPB::texture");
 
-		if (has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+		if (has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 		{
 			// DPB_AND_OUTPUT_COINCIDE so DPB can be used for output:
 			for (uint32_t i = 0; i < td.array_size; ++i)
 			{
 				instance->dpb.resource_states[i] = td.layout;
-				Format luminance_format = Format::R8_UNORM;
-				ImageAspect luminance_aspect = ImageAspect::LUMINANCE;
+				Format luminance_format = Format_R8_UNORM;
+				ImageAspect luminance_aspect = ImageAspect_LUMINANCE;
 				instance->dpb.subresources_luminance[i] = device->CreateSubresource(
 					&instance->dpb.texture,
-					SubresourceType::SRV,
+					SubresourceType_SRV,
 					i, 1, 0, 1,
 					&luminance_format, &luminance_aspect
 				);
 
-				Format chrominance_format = Format::R8G8_UNORM;
-				ImageAspect chrominance_aspect = ImageAspect::CHROMINANCE;
+				Format chrominance_format = Format_R8G8_UNORM;
+				ImageAspect chrominance_aspect = ImageAspect_CHROMINANCE;
 				instance->dpb.subresources_chrominance[i] = device->CreateSubresource(
 					&instance->dpb.texture,
-					SubresourceType::SRV,
+					SubresourceType_SRV,
 					i, 1, 0, 1,
 					&chrominance_format, &chrominance_aspect
 				);
@@ -899,9 +899,9 @@ namespace Protean::Video
 	{
 		if (instance == nullptr || instance->video == nullptr || !instance->video->audio.IsValid() || instance->audio_unavailable)
 			return;
-		const bool playing = has_flag(instance->flags, VideoInstance::Flags::Playing);
+		const bool playing = has_flag(instance->flags, VideoInstance::Flags_Playing);
 		const float video_time = instance->current_time > 0.f ? instance->current_time : 0.f;
-		if (!has_flag(instance->flags, VideoInstance::Flags::Looped) && video_time > instance->video->duration_seconds)
+		if (!has_flag(instance->flags, VideoInstance::Flags_Looped) && video_time > instance->video->duration_seconds)
 		{
 			if (instance->audio.IsValid())
 				Protean::Audio::Pause(&instance->audio);
@@ -991,7 +991,7 @@ namespace Protean::Video
 			return;
 
 		bool restart_audio = false;
-		if (has_flag(instance->flags, VideoInstance::Flags::Looped) && instance->current_time > instance->video->duration_seconds)
+		if (has_flag(instance->flags, VideoInstance::Flags_Looped) && instance->current_time > instance->video->duration_seconds)
 		{
 			instance->current_time = 0;
 			instance->current_decode_frame = 0;
@@ -1014,20 +1014,20 @@ namespace Protean::Video
 		SyncVideoAudio(instance, restart_audio);
 
 		// Important that this is at the end of func:
-		if (has_flag(instance->flags, VideoInstance::Flags::Playing))
+		if (has_flag(instance->flags, VideoInstance::Flags_Playing))
 		{
 			instance->current_time += dt;
 		}
 	}
 	bool IsDecodingRequired(const VideoInstance* instance)
 	{
-		if (!GetDevice()->CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H264))
+		if (!GetDevice()->CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H264))
 			return false;
 		if (instance == nullptr || instance->video == nullptr)
 			return false;
 		if (instance->current_decode_frame >= (int)instance->video->frame_infos.size())
 			return false;
-		if (!has_flag(instance->flags, VideoInstance::Flags::InitialFirstFrameDecoded))
+		if (!has_flag(instance->flags, VideoInstance::Flags_InitialFirstFrameDecoded))
 			return true;
 		// Ensure that we decode into the future so that always the next displayable picture will be available:
 		bool found_next_displayable = false;
@@ -1066,26 +1066,26 @@ namespace Protean::Video
 				TextureDesc td;
 				td.width = video->width;
 				td.height = video->height;
-				td.format = Format::R8G8B8A8_UNORM;
-				if (has_flag(instance->flags, VideoInstance::Flags::Mipmapped))
+				td.format = Format_R8G8B8A8_UNORM;
+				if (has_flag(instance->flags, VideoInstance::Flags_Mipmapped))
 				{
 					td.mip_levels = GetMipCount(td.width, td.height);
 				}
-				td.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				td.misc_flags = ResourceMiscFlag::TYPED_FORMAT_CASTING;
-				td.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+				td.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				td.misc_flags = ResourceMiscFlag_TYPED_FORMAT_CASTING;
+				td.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 				bool success = device->CreateTexture(&td, nullptr, &output.texture);
 				device->SetName(&output.texture, "VideoInstance::OutputTexture");
 				assert(success);
 
-				if (has_flag(instance->flags, VideoInstance::Flags::Mipmapped))
+				if (has_flag(instance->flags, VideoInstance::Flags_Mipmapped))
 				{
 					for (uint32_t i = 0; i < output.texture.GetDesc().mip_levels; ++i)
 					{
 						int subresource_index;
-						subresource_index = device->CreateSubresource(&output.texture, SubresourceType::SRV, 0, 1, i, 1);
+						subresource_index = device->CreateSubresource(&output.texture, SubresourceType_SRV, 0, 1, i, 1);
 						assert(subresource_index == i);
-						subresource_index = device->CreateSubresource(&output.texture, SubresourceType::UAV, 0, 1, i, 1);
+						subresource_index = device->CreateSubresource(&output.texture, SubresourceType_UAV, 0, 1, i, 1);
 						assert(subresource_index == i);
 					}
 				}
@@ -1094,41 +1094,41 @@ namespace Protean::Video
 				Format srgb_format = GetFormatSRGB(td.format);
 				output.subresource_srgb = device->CreateSubresource(
 					&output.texture,
-					SubresourceType::SRV,
+					SubresourceType_SRV,
 					0, -1,
 					0, -1,
 					&srgb_format
 				);
 
-				if (!has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+				if (!has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 				{
 					// Must create separate YUV texture from DPB in non-coincide mode:
 					td.width = video->padded_width;
 					td.height = video->padded_height;
-					td.format = Format::NV12;
+					td.format = Format_NV12;
 					td.mip_levels = 1;
-					td.bind_flags = BindFlag::SHADER_RESOURCE;
-					td.misc_flags = ResourceMiscFlag::VIDEO_DECODE_OUTPUT_ONLY;
-					td.misc_flags |= ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
-					td.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+					td.bind_flags = BindFlag_SHADER_RESOURCE;
+					td.misc_flags = ResourceMiscFlag_VIDEO_DECODE_OUTPUT_ONLY;
+					td.misc_flags |= ResourceMiscFlag_VIDEO_COMPATIBILITY_H264;
+					td.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 					success = device->CreateTexture(&td, nullptr, &output.src);
 					assert(success);
 					device->SetName(&output.src, "VideoInstance::OutputTexture::src");
 
-					Format luminance_format = Format::R8_UNORM;
-					ImageAspect luminance_aspect = ImageAspect::LUMINANCE;
+					Format luminance_format = Format_R8_UNORM;
+					ImageAspect luminance_aspect = ImageAspect_LUMINANCE;
 					output.src_subresource_luminance = device->CreateSubresource(
 						&output.src,
-						SubresourceType::SRV,
+						SubresourceType_SRV,
 						0, 1, 0, 1,
 						&luminance_format, &luminance_aspect
 					);
 
-					Format chrominance_format = Format::R8G8_UNORM;
-					ImageAspect chrominance_aspect = ImageAspect::CHROMINANCE;
+					Format chrominance_format = Format_R8G8_UNORM;
+					ImageAspect chrominance_aspect = ImageAspect_CHROMINANCE;
 					output.src_subresource_chrominance = device->CreateSubresource(
 						&output.src,
-						SubresourceType::SRV,
+						SubresourceType_SRV,
 						0, 1, 0, 1,
 						&chrominance_format, &chrominance_aspect
 					);
@@ -1137,7 +1137,7 @@ namespace Protean::Video
 			VideoInstance::OutputTexture decode = std::move(instance->output_textures_free.back());
 			instance->output_textures_free.pop_back();
 			decode.display_order = video->frame_infos[instance->current_decode_frame].display_order;
-			if (has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+			if (has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 			{
 				decode.src = instance->dpb.texture;
 				decode.src_subresource_luminance = instance->dpb.subresources_luminance[instance->dpb.current_slot];
@@ -1164,10 +1164,10 @@ namespace Protean::Video
 			const h264::SPS* sps = (const h264::SPS*)video->sps_datas.data() + pps->seq_parameter_set_id;
 
 			VideoDecodeOperation decode_operation;
-			if (instance->current_decode_frame == 0 || has_flag(instance->flags, VideoInstance::Flags::DecoderReset))
+			if (instance->current_decode_frame == 0 || has_flag(instance->flags, VideoInstance::Flags_DecoderReset))
 			{
 				decode_operation.flags = VideoDecodeOperation::FLAG_SESSION_RESET;
-				instance->flags &= ~VideoInstance::Flags::DecoderReset;
+				instance->flags &= ~VideoInstance::Flags_DecoderReset;
 			}
 			decode_operation.stream = &video->data_stream;
 			decode_operation.stream_offset = frame_info.offset;
@@ -1189,27 +1189,27 @@ namespace Protean::Video
 
 			if (decode.display_order >= instance->target_display_order || frame_info.reference_priority > 0) // this check can skip decoding for non-reference frame that is a low enough display order
 			{
-				ImageAspect aspect_luma = ImageAspect::LUMINANCE;
-				ImageAspect aspect_chroma = ImageAspect::CHROMINANCE;
-				if (has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+				ImageAspect aspect_luma = ImageAspect_LUMINANCE;
+				ImageAspect aspect_chroma = ImageAspect_CHROMINANCE;
+				if (has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 				{
 					decode_operation.output = nullptr;
 					// Ensure that current DPB slot is in DST state:
-					if (instance->dpb.resource_states[instance->dpb.current_slot] != ResourceState::VIDEO_DECODE_DPB)
+					if (instance->dpb.resource_states[instance->dpb.current_slot] != ResourceState_VIDEO_DECODE_DPB)
 					{
-						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_luma));
-						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_chroma));
-						instance->dpb.resource_states[instance->dpb.current_slot] = ResourceState::VIDEO_DECODE_DPB;
+						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState_VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_luma));
+						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState_VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_chroma));
+						instance->dpb.resource_states[instance->dpb.current_slot] = ResourceState_VIDEO_DECODE_DPB;
 					}
 					// Ensure that reference frame DPB slots are in SRC state:
 					for (size_t i = 0; i < instance->dpb.reference_usage.size(); ++i)
 					{
 						uint8_t ref = instance->dpb.reference_usage[i];
-						if (instance->dpb.resource_states[ref] != ResourceState::VIDEO_DECODE_SRC)
+						if (instance->dpb.resource_states[ref] != ResourceState_VIDEO_DECODE_SRC)
 						{
-							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_luma));
-							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_chroma));
-							instance->dpb.resource_states[ref] = ResourceState::VIDEO_DECODE_SRC;
+							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState_VIDEO_DECODE_SRC, 0, ref, &aspect_luma));
+							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState_VIDEO_DECODE_SRC, 0, ref, &aspect_chroma));
+							instance->dpb.resource_states[ref] = ResourceState_VIDEO_DECODE_SRC;
 						}
 					}
 				}
@@ -1217,33 +1217,33 @@ namespace Protean::Video
 				{
 					// if DPB_AND_OUTPUT_COINCIDE is NOT supported, then DPB is kept always in DPB state, and only the output tex is ever a shader resource:
 					decode_operation.output = &decode.src;
-					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_luma));
-					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_chroma));
+					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState_VIDEO_DECODE_DST, -1, -1, &aspect_luma));
+					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState_VIDEO_DECODE_DST, -1, -1, &aspect_chroma));
 				}
 				Protean::Renderer::FlushBarriers(cmd);
 
 				device->VideoDecode(&instance->decoder, &decode_operation, cmd);
 
-				if (has_flag(instance->decoder.support, VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE))
+				if (has_flag(instance->decoder.support, VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE))
 				{
 					// The current DPB slot is transitioned into a shader readable state because it will need to be resolved into RGB on a different GPU queue:
 					//	The video queue must be used to transition from video states
-					if (instance->dpb.resource_states[instance->dpb.current_slot] != ResourceState::SHADER_RESOURCE_COMPUTE)
+					if (instance->dpb.resource_states[instance->dpb.current_slot] != ResourceState_SHADER_RESOURCE_COMPUTE)
 					{
 						GPUBarrier barriers[] = {
-							GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::SHADER_RESOURCE_COMPUTE, 0, instance->dpb.current_slot, &aspect_luma),
-							GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::SHADER_RESOURCE_COMPUTE, 0, instance->dpb.current_slot, &aspect_chroma),
+							GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState_SHADER_RESOURCE_COMPUTE, 0, instance->dpb.current_slot, &aspect_luma),
+							GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState_SHADER_RESOURCE_COMPUTE, 0, instance->dpb.current_slot, &aspect_chroma),
 						};
 						device->Barrier(barriers, arraysize(barriers), cmd);
-						instance->dpb.resource_states[instance->dpb.current_slot] = ResourceState::SHADER_RESOURCE_COMPUTE;
+						instance->dpb.resource_states[instance->dpb.current_slot] = ResourceState_SHADER_RESOURCE_COMPUTE;
 					}
 				}
 				else
 				{
 					// if DPB_AND_OUTPUT_COINCIDE is NOT supported, then DPB is kept always in DPB state, and only the output tex is ever a shader resource:
 					GPUBarrier barriers[] = {
-						GPUBarrier::Image(&decode.src, ResourceState::VIDEO_DECODE_DST, decode.src.desc.layout, -1, -1, &aspect_luma),
-						GPUBarrier::Image(&decode.src, ResourceState::VIDEO_DECODE_DST, decode.src.desc.layout, -1, -1, &aspect_chroma),
+						GPUBarrier::Image(&decode.src, ResourceState_VIDEO_DECODE_DST, decode.src.desc.layout, -1, -1, &aspect_luma),
+						GPUBarrier::Image(&decode.src, ResourceState_VIDEO_DECODE_DST, decode.src.desc.layout, -1, -1, &aspect_chroma),
 					};
 					device->Barrier(barriers, arraysize(barriers), cmd);
 				}
@@ -1255,8 +1255,8 @@ namespace Protean::Video
 
 			EndDecodePicture(instance);
 
-			instance->flags |= VideoInstance::Flags::NeedsResolve;
-			instance->flags |= VideoInstance::Flags::InitialFirstFrameDecoded;
+			instance->flags |= VideoInstance::Flags_NeedsResolve;
+			instance->flags |= VideoInstance::Flags_InitialFirstFrameDecoded;
 			instance->current_decode_frame++;
 		}
 	}
@@ -1264,9 +1264,9 @@ namespace Protean::Video
 	{
 		if (instance == nullptr || instance->video == nullptr)
 			return;
-		if (!has_flag(instance->flags, VideoInstance::Flags::NeedsResolve))
+		if (!has_flag(instance->flags, VideoInstance::Flags_NeedsResolve))
 			return;
-		instance->flags &= ~VideoInstance::Flags::NeedsResolve;
+		instance->flags &= ~VideoInstance::Flags_NeedsResolve;
 
 		const Video* video = instance->video;
 		GraphicsDevice* device = GetDevice();
@@ -1280,7 +1280,7 @@ namespace Protean::Video
 				resolve_request.texture,
 				cmd
 			);
-			if (has_flag(instance->flags, VideoInstance::Flags::Mipmapped))
+			if (has_flag(instance->flags, VideoInstance::Flags_Mipmapped))
 			{
 				Protean::Renderer::GenerateMipChain(resolve_request.texture, Protean::Renderer::MIPGENFILTER_LINEAR, cmd);
 			}
@@ -1301,7 +1301,7 @@ namespace Protean::Video
 		for (size_t i = 0; i < video->frame_infos.size(); ++i)
 		{
 			auto& frame_info = video->frame_infos[i];
-			if (frame_info.type == Protean::Graphics::VideoFrameType::Intra)
+			if (frame_info.type == Protean::Graphics::VideoFrameType_Intra)
 			{
 				max_iframe = (int)i;
 			}
@@ -1313,8 +1313,8 @@ namespace Protean::Video
 			instance->current_decode_frame = max_iframe;
 			instance->current_time = video->frame_infos[max_iframe].timestamp_seconds;
 			instance->target_display_order = video->frame_infos[max_iframe].display_order;
-			instance->flags |= Protean::Video::VideoInstance::Flags::DecoderReset;
-			instance->flags &= ~Protean::Video::VideoInstance::Flags::InitialFirstFrameDecoded;
+			instance->flags |= Protean::Video::VideoInstance::Flags_DecoderReset;
+			instance->flags &= ~Protean::Video::VideoInstance::Flags_InitialFirstFrameDecoded;
 			instance->output_textures_free.clear();
 			instance->output_textures_used.clear();
 			instance->output_textures_resolve_request.clear();

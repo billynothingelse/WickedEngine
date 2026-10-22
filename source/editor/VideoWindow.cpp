@@ -27,7 +27,7 @@ void VideoPreview::Render(const Protean::Canvas& canvas, Protean::Graphics::Comm
 void VideoWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_VIDEO " Video", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_VIDEO " Video", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(440, 840));
 
 	closeButton.SetTooltip("Delete VideoComponent");
@@ -180,10 +180,10 @@ void VideoWindow::SetEntity(Entity entity)
 		{
 			const Protean::Video::Video& videofile = video->videoResource.GetVideo();
 			std::string str;
-			if (videofile.profile == Protean::Graphics::VideoProfile::H264)
+			if (videofile.profile == Protean::Graphics::VideoProfile_H264)
 			{
 				str += "Format: H264 (AVC)\n";
-				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VIDEO_DECODE_H264))
+				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_VIDEO_DECODE_H264))
 				{
 					str += "GPU decode: Supported\n";
 				}
@@ -192,10 +192,10 @@ void VideoWindow::SetEntity(Entity entity)
 					str += "GPU decode: Not supported\n";
 				}
 			}
-			else if (videofile.profile == Protean::Graphics::VideoProfile::H265)
+			else if (videofile.profile == Protean::Graphics::VideoProfile_H265)
 			{
 				str += "Format: H265 (HEVC)\n";
-				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VIDEO_DECODE_H265))
+				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability_VIDEO_DECODE_H265))
 				{
 					str += "GPU decode: Supported\n";
 				}

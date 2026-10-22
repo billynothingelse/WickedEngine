@@ -414,7 +414,7 @@ namespace Protean
 				default:
 					break;
 				}
-				material.textures[i].texture_descriptor = device->GetDescriptorIndex(texturemap.GetGPUResource(), SubresourceType::SRV, subresource);
+				material.textures[i].texture_descriptor = device->GetDescriptorIndex(texturemap.GetGPUResource(), SubresourceType_SRV, subresource);
 			}
 			else
 			{
@@ -434,7 +434,7 @@ namespace Protean
 			material.sampler_descriptor = sampler_descriptor;
 		}
 
-		if (shaderType == SHADERTYPE_INTERIORMAPPING && textures[BASECOLORMAP].resource.IsValid() && !has_flag(textures[BASECOLORMAP].resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag::TEXTURECUBE))
+		if (shaderType == SHADERTYPE_INTERIORMAPPING && textures[BASECOLORMAP].resource.IsValid() && !has_flag(textures[BASECOLORMAP].resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag_TEXTURECUBE))
 		{
 			// If the BASECOLORMAP slot is not a cubemap, then this will be invalid for the interior mapping shader:
 			material.textures[BASECOLORMAP].texture_descriptor = -1;
@@ -480,20 +480,20 @@ namespace Protean
 	}
 	Protean::ResourceManager::Flags MaterialComponent::GetTextureSlotResourceFlags(TEXTURESLOT slot)
 	{
-		Protean::ResourceManager::Flags flags = Protean::ResourceManager::Flags::NONE;
+		Protean::ResourceManager::Flags flags = Protean::ResourceManager::Flags_NONE;
 		if (!IsPreferUncompressedTexturesEnabled())
 		{
-			flags |= Protean::ResourceManager::Flags::IMPORT_BLOCK_COMPRESSED;
+			flags |= Protean::ResourceManager::Flags_IMPORT_BLOCK_COMPRESSED;
 		}
 		if (!IsTextureStreamingDisabled())
 		{
-			flags |= Protean::ResourceManager::Flags::STREAMING;
+			flags |= Protean::ResourceManager::Flags_STREAMING;
 		}
 		switch (slot)
 		{
 		case NORMALMAP:
 		case CLEARCOATNORMALMAP:
-			flags |= Protean::ResourceManager::Flags::IMPORT_NORMALMAP;
+			flags |= Protean::ResourceManager::Flags_IMPORT_NORMALMAP;
 			break;
 		default:
 			break;
@@ -700,20 +700,20 @@ namespace Protean
 		const size_t position_stride = GetFormatStride(position_format);
 
 		GPUBufferDesc bd;
-		if (device->CheckCapability(GraphicsDeviceCapability::CACHE_COHERENT_UMA))
+		if (device->CheckCapability(GraphicsDeviceCapability_CACHE_COHERENT_UMA))
 		{
 			// In UMA mode, it is better to create UPLOAD buffer, this avoids one copy from UPLOAD to DEFAULT
-			bd.usage = Usage::UPLOAD;
+			bd.usage = Usage_UPLOAD;
 		}
 		else
 		{
-			bd.usage = Usage::DEFAULT;
+			bd.usage = Usage_DEFAULT;
 		}
-		bd.bind_flags = BindFlag::VERTEX_BUFFER | BindFlag::INDEX_BUFFER | BindFlag::SHADER_RESOURCE;
-		bd.misc_flags = ResourceMiscFlag::BUFFER_RAW | ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
-		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		bd.bind_flags = BindFlag_VERTEX_BUFFER | BindFlag_INDEX_BUFFER | BindFlag_SHADER_RESOURCE;
+		bd.misc_flags = ResourceMiscFlag_BUFFER_RAW | ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
+		if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 		{
-			bd.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+			bd.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 		}
 		const uint64_t alignment = device->GetMinOffsetAlignment(&bd);
 		bd.size =
@@ -730,7 +730,7 @@ namespace Protean
 			align(uint64_t(vertex_boneindices2.size() * sizeof(Vertex_BON)), alignment)
 			;
 
-		constexpr Format morph_format = Format::R16G16B16A16_FLOAT;
+		constexpr Format morph_format = Format_R16G16B16A16_FLOAT;
 		constexpr size_t morph_stride = GetFormatStride(morph_format);
 		for (MorphTarget& morph : morph_targets)
 		{
@@ -915,7 +915,7 @@ namespace Protean
 			}
 
 			// Create provoking index buffer GPU data:
-			if (GetProvokingIndexFormat() == IndexBufferFormat::UINT32)
+			if (GetProvokingIndexFormat() == IndexBufferFormat_UINT32)
 			{
 				ib_provoke.offset = buffer_offset;
 				ib_provoke.size = provoke.size() * sizeof(uint32_t);
@@ -936,7 +936,7 @@ namespace Protean
 			}
 
 			// Create reorder index buffer GPU data:
-			if (GetIndexFormat() == IndexBufferFormat::UINT32)
+			if (GetIndexFormat() == IndexBufferFormat_UINT32)
 			{
 				ib_reorder.offset = buffer_offset;
 				ib_reorder.size = reorder.size() * sizeof(uint32_t);
@@ -957,7 +957,7 @@ namespace Protean
 			}
 
 			// Create index buffer GPU data:
-			if (GetIndexFormat() == IndexBufferFormat::UINT32)
+			if (GetIndexFormat() == IndexBufferFormat_UINT32)
 			{
 				ib.offset = buffer_offset;
 				ib.size = indices.size() * sizeof(uint32_t);
@@ -1233,66 +1233,66 @@ namespace Protean
 			device->SetName(&generalBuffer, "MeshComponent::generalBuffer");
 		}
 
-		const Format ib_format = GetIndexFormat() == IndexBufferFormat::UINT32 ? Format::R32_UINT : Format::R16_UINT;
+		const Format ib_format = GetIndexFormat() == IndexBufferFormat_UINT32 ? Format_R32_UINT : Format_R16_UINT;
 
 		assert(ib_reorder.IsValid());
-		ib_reorder.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, ib_reorder.offset, ib_reorder.size, &ib_format);
-		ib_reorder.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, ib_reorder.subresource_srv);
+		ib_reorder.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, ib_reorder.offset, ib_reorder.size, &ib_format);
+		ib_reorder.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, ib_reorder.subresource_srv);
 
 		assert(ib.IsValid());
-		ib.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, ib.offset, ib.size, &ib_format);
-		ib.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, ib.subresource_srv);
+		ib.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, ib.offset, ib.size, &ib_format);
+		ib.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, ib.subresource_srv);
 
 		assert(vb_pos_wind.IsValid());
-		vb_pos_wind.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_pos_wind.offset, vb_pos_wind.size, &position_format);
-		vb_pos_wind.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_pos_wind.subresource_srv);
+		vb_pos_wind.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_pos_wind.offset, vb_pos_wind.size, &position_format);
+		vb_pos_wind.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_pos_wind.subresource_srv);
 
 		if (vb_nor.IsValid())
 		{
-			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_nor.offset, vb_nor.size, &Vertex_NOR::FORMAT);
-			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_nor.subresource_srv);
+			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_nor.offset, vb_nor.size, &Vertex_NOR::FORMAT);
+			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_nor.subresource_srv);
 		}
 		if (vb_tan.IsValid())
 		{
-			vb_tan.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_tan.offset, vb_tan.size, &Vertex_TAN::FORMAT);
-			vb_tan.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_tan.subresource_srv);
+			vb_tan.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_tan.offset, vb_tan.size, &Vertex_TAN::FORMAT);
+			vb_tan.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_tan.subresource_srv);
 		}
 		if (vb_uvs.IsValid())
 		{
-			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_uvs.offset, vb_uvs.size, &uv_format);
-			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_uvs.subresource_srv);
+			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_uvs.offset, vb_uvs.size, &uv_format);
+			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_uvs.subresource_srv);
 		}
 		if (vb_atl.IsValid())
 		{
-			vb_atl.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_atl.offset, vb_atl.size, &Vertex_TEX::FORMAT);
-			vb_atl.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_atl.subresource_srv);
+			vb_atl.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_atl.offset, vb_atl.size, &Vertex_TEX::FORMAT);
+			vb_atl.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_atl.subresource_srv);
 		}
 		if (vb_col.IsValid())
 		{
-			vb_col.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_col.offset, vb_col.size, &Vertex_COL::FORMAT);
-			vb_col.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_col.subresource_srv);
+			vb_col.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_col.offset, vb_col.size, &Vertex_COL::FORMAT);
+			vb_col.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_col.subresource_srv);
 		}
 		if (vb_bon.IsValid())
 		{
-			vb_bon.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_bon.offset, vb_bon.size);
-			vb_bon.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_bon.subresource_srv);
+			vb_bon.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_bon.offset, vb_bon.size);
+			vb_bon.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_bon.subresource_srv);
 		}
 		if (vb_mor.IsValid())
 		{
-			vb_mor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_mor.offset, vb_mor.size, &morph_format);
-			vb_mor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_mor.subresource_srv);
+			vb_mor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_mor.offset, vb_mor.size, &morph_format);
+			vb_mor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_mor.subresource_srv);
 		}
 		if (vb_clu.IsValid())
 		{
 			static constexpr uint32_t cluster_stride = sizeof(ShaderCluster);
-			vb_clu.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_clu.offset, vb_clu.size, nullptr, &cluster_stride);
-			vb_clu.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_clu.subresource_srv);
+			vb_clu.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_clu.offset, vb_clu.size, nullptr, &cluster_stride);
+			vb_clu.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_clu.subresource_srv);
 		}
 		if (vb_bou.IsValid())
 		{
 			static constexpr uint32_t cluster_stride = sizeof(ShaderClusterBounds);
-			vb_bou.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_bou.offset, vb_bou.size, nullptr, &cluster_stride);
-			vb_bou.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_bou.subresource_srv);
+			vb_bou.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_bou.offset, vb_bou.size, nullptr, &cluster_stride);
+			vb_bou.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_bou.subresource_srv);
 		}
 
 		if (!vertex_boneindices.empty() || !morph_targets.empty())
@@ -1305,12 +1305,12 @@ namespace Protean
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		GPUBufferDesc desc;
-		desc.usage = Usage::DEFAULT;
-		desc.bind_flags = BindFlag::VERTEX_BUFFER | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-		desc.misc_flags = ResourceMiscFlag::BUFFER_RAW | ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
-		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		desc.usage = Usage_DEFAULT;
+		desc.bind_flags = BindFlag_VERTEX_BUFFER | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+		desc.misc_flags = ResourceMiscFlag_BUFFER_RAW | ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
+		if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 		{
-			desc.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+			desc.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 		}
 
 		const uint64_t alignment = device->GetMinOffsetAlignment(&desc) * sizeof(Vertex_POS32); // additional alignment for RGB32F
@@ -1330,28 +1330,28 @@ namespace Protean
 		so_pos.offset = buffer_offset;
 		so_pos.size = vertex_positions.size() * sizeof(Vertex_POS32W);
 		buffer_offset += align(so_pos.size, alignment);
-		so_pos.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType::SRV, so_pos.offset, so_pos.size, &Vertex_POS32W::FORMAT);
-		so_pos.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType::UAV, so_pos.offset, so_pos.size, &Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
-		so_pos.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::SRV, so_pos.subresource_srv);
-		so_pos.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::UAV, so_pos.subresource_uav);
+		so_pos.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType_SRV, so_pos.offset, so_pos.size, &Vertex_POS32W::FORMAT);
+		so_pos.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType_UAV, so_pos.offset, so_pos.size, &Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
+		so_pos.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_SRV, so_pos.subresource_srv);
+		so_pos.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_UAV, so_pos.subresource_uav);
 
 		so_pre.offset = buffer_offset;
 		so_pre.size = so_pos.size;
 		buffer_offset += align(so_pre.size, alignment);
-		so_pre.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType::SRV, so_pre.offset, so_pre.size, &Vertex_POS32W::FORMAT);
-		so_pre.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType::UAV, so_pre.offset, so_pre.size, &Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
-		so_pre.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::SRV, so_pre.subresource_srv);
-		so_pre.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::UAV, so_pre.subresource_uav);
+		so_pre.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType_SRV, so_pre.offset, so_pre.size, &Vertex_POS32W::FORMAT);
+		so_pre.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType_UAV, so_pre.offset, so_pre.size, &Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
+		so_pre.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_SRV, so_pre.subresource_srv);
+		so_pre.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_UAV, so_pre.subresource_uav);
 
 		if (vb_nor.IsValid())
 		{
 			so_nor.offset = buffer_offset;
 			so_nor.size = vb_nor.size;
 			buffer_offset += align(so_nor.size, alignment);
-			so_nor.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType::SRV, so_nor.offset, so_nor.size, &Vertex_NOR::FORMAT);
-			so_nor.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType::UAV, so_nor.offset, so_nor.size, &Vertex_NOR::FORMAT);
-			so_nor.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::SRV, so_nor.subresource_srv);
-			so_nor.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::UAV, so_nor.subresource_uav);
+			so_nor.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType_SRV, so_nor.offset, so_nor.size, &Vertex_NOR::FORMAT);
+			so_nor.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType_UAV, so_nor.offset, so_nor.size, &Vertex_NOR::FORMAT);
+			so_nor.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_SRV, so_nor.subresource_srv);
+			so_nor.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_UAV, so_nor.subresource_uav);
 		}
 
 		if (vb_tan.IsValid())
@@ -1359,17 +1359,17 @@ namespace Protean
 			so_tan.offset = buffer_offset;
 			so_tan.size = vb_tan.size;
 			buffer_offset += align(so_tan.size, alignment);
-			so_tan.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType::SRV, so_tan.offset, so_tan.size, &Vertex_TAN::FORMAT);
-			so_tan.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType::UAV, so_tan.offset, so_tan.size, &Vertex_TAN::FORMAT);
-			so_tan.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::SRV, so_tan.subresource_srv);
-			so_tan.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType::UAV, so_tan.subresource_uav);
+			so_tan.subresource_srv = device->CreateSubresource(&streamoutBuffer, SubresourceType_SRV, so_tan.offset, so_tan.size, &Vertex_TAN::FORMAT);
+			so_tan.subresource_uav = device->CreateSubresource(&streamoutBuffer, SubresourceType_UAV, so_tan.offset, so_tan.size, &Vertex_TAN::FORMAT);
+			so_tan.descriptor_srv = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_SRV, so_tan.subresource_srv);
+			so_tan.descriptor_uav = device->GetDescriptorIndex(&streamoutBuffer, SubresourceType_UAV, so_tan.subresource_uav);
 		}
 	}
 	void MeshComponent::CreateRaytracingRenderData()
 	{
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		if (!device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		if (!device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 			return;
 
 		BLAS_state = MeshComponent::BLAS_STATE_NEEDS_REBUILD;
@@ -1379,7 +1379,7 @@ namespace Protean
 		for (uint32_t lod = 0; lod < lod_count; ++lod)
 		{
 			RaytracingAccelerationStructureDesc desc;
-			desc.type = RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL;
+			desc.type = RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL;
 
 			if (streamoutBuffer.IsValid())
 			{
@@ -1399,7 +1399,7 @@ namespace Protean
 				const MeshComponent::MeshSubset& subset = subsets[subsetIndex];
 				desc.bottom_level.geometries.emplace_back();
 				auto& geometry = desc.bottom_level.geometries.back();
-				geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES;
+				geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES;
 				geometry.triangles.vertex_buffer = generalBuffer;
 				geometry.triangles.vertex_byte_offset = vb_pos_wind.offset;
 				geometry.triangles.index_buffer = generalBuffer;
@@ -1409,12 +1409,12 @@ namespace Protean
 				geometry.triangles.vertex_count = (uint32_t)vertex_positions.size();
 				if (so_pos.IsValid())
 				{
-					geometry.triangles.vertex_format = Format::R32G32B32_FLOAT;
+					geometry.triangles.vertex_format = Format_R32G32B32_FLOAT;
 					geometry.triangles.vertex_stride = sizeof(Vertex_POS32W);
 				}
 				else
 				{
-					geometry.triangles.vertex_format = position_format == Format::R32G32B32A32_FLOAT ? Format::R32G32B32_FLOAT : position_format;
+					geometry.triangles.vertex_format = position_format == Format_R32G32B32A32_FLOAT ? Format_R32G32B32_FLOAT : position_format;
 					geometry.triangles.vertex_stride = GetFormatStride(position_format);
 				}
 			}
@@ -2026,7 +2026,7 @@ namespace Protean
 	void ObjectComponent::SaveLightmap()
 	{
 		lightmap_render = {};
-		if (lightmap.IsValid() && has_flag(lightmap.desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (lightmap.IsValid() && has_flag(lightmap.desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			SetLightmapRenderRequest(false);
 
@@ -2103,16 +2103,16 @@ namespace Protean
 			}
 
 			lightmapTextureData = std::move(packed_data);
-			lightmap.desc.format = Format::R11G11B10_FLOAT;
-			lightmap.desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			lightmap.desc.format = Format_R11G11B10_FLOAT;
+			lightmap.desc.bind_flags = BindFlag_SHADER_RESOURCE;
 		}
 		else
 		{
 			// BC6 compress on GPU:
 			Protean::TextureHelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
 			TextureDesc desc = lightmap.desc;
-			desc.format = Format::BC6H_UF16;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.format = Format_BC6H_UF16;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 			Texture bc6tex;
 			GraphicsDevice* device = GetDevice();
 			device->CreateTexture(&desc, nullptr, &bc6tex);
@@ -2136,7 +2136,7 @@ namespace Protean
 		if (!vertex_ao.empty())
 		{
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 			desc.size = sizeof(Vertex_AO) * vertex_ao.size();
 			desc.format = Vertex_AO::FORMAT;
 
@@ -2148,7 +2148,7 @@ namespace Protean
 			assert(success);
 			device->SetName(&vb_ao, "ObjectComponent::vb_ao");
 
-			vb_ao_srv = device->GetDescriptorIndex(&vb_ao, SubresourceType::SRV);
+			vb_ao_srv = device->GetDescriptorIndex(&vb_ao, SubresourceType_SRV);
 		}
 	}
 
@@ -2176,13 +2176,13 @@ namespace Protean
 		desc.array_size = 6;
 		desc.height = resolution;
 		desc.width = resolution;
-		desc.usage = Usage::DEFAULT;
-		desc.format = Format::BC6H_UF16;
+		desc.usage = Usage_DEFAULT;
+		desc.format = Format_BC6H_UF16;
 		desc.sample_count = 1; // Note that this texture is always non-MSAA, even if probe is rendered as MSAA, because this contains resolved result
-		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE;
 		desc.mip_levels = GetMipCount(resolution, resolution, 1, 16);
-		desc.misc_flags = ResourceMiscFlag::TEXTURECUBE;
-		desc.layout = ResourceState::SHADER_RESOURCE;
+		desc.misc_flags = ResourceMiscFlag_TEXTURECUBE;
+		desc.layout = ResourceState_SHADER_RESOURCE;
 		device->CreateTextureZeroed(&desc, &texture);
 		device->SetName(&texture, "EnvironmentProbeComponent::texture");
 		subresource = -1;
@@ -2206,57 +2206,57 @@ namespace Protean
 	{
 		switch (path)
 		{
-		case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
-			return PathDataType::Float3;
-		case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
-			return PathDataType::Float4;
-		case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
-			return PathDataType::Float3;
-		case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
-			return PathDataType::Weights;
+		case Protean::AnimationComponent::AnimationChannel::Path_TRANSLATION:
+			return PathDataType_Float3;
+		case Protean::AnimationComponent::AnimationChannel::Path_ROTATION:
+			return PathDataType_Float4;
+		case Protean::AnimationComponent::AnimationChannel::Path_SCALE:
+			return PathDataType_Float3;
+		case Protean::AnimationComponent::AnimationChannel::Path_WEIGHTS:
+			return PathDataType_Weights;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
-			return PathDataType::Float3;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
-			return PathDataType::Float;
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_COLOR:
+			return PathDataType_Float3;
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_RANGE:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE:
+			return PathDataType_Float;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
-			return PathDataType::Event;
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
-			return PathDataType::Float;
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_STOP:
+			return PathDataType_Event;
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_VOLUME:
+			return PathDataType_Float;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
-			return PathDataType::Float;
+		case Protean::AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT:
+			return PathDataType_Float;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
-			return PathDataType::Float;
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
-			return PathDataType::Float2;
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOV:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE:
+			return PathDataType_Float;
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE:
+			return PathDataType_Float2;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
-		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
-			return PathDataType::Event;
+		case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_STOP:
+			return PathDataType_Event;
 
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
-			return PathDataType::Float4;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
-			return PathDataType::Float;
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD:
+			return PathDataType_Float4;
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS:
+			return PathDataType_Float;
 
 		default:
 			assert(0);
 			break;
 		}
-		return PathDataType::Event;
+		return PathDataType_Event;
 	}
 
 	void SoftBodyPhysicsComponent::CreateFromMesh(MeshComponent& mesh)
@@ -2678,37 +2678,37 @@ namespace Protean
 
 	bool HumanoidComponent::IsValid() const
 	{
-		if (bones[size_t(HumanoidBone::Hips)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_Hips)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::Spine)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_Spine)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::Head)] == INVALID_ENTITY)
-			return false;
-
-		if (bones[size_t(HumanoidBone::LeftUpperLeg)] == INVALID_ENTITY)
-			return false;
-		if (bones[size_t(HumanoidBone::LeftLowerLeg)] == INVALID_ENTITY)
-			return false;
-		if (bones[size_t(HumanoidBone::LeftFoot)] == INVALID_ENTITY)
-			return false;
-		if (bones[size_t(HumanoidBone::RightUpperLeg)] == INVALID_ENTITY)
-			return false;
-		if (bones[size_t(HumanoidBone::RightLowerLeg)] == INVALID_ENTITY)
-			return false;
-		if (bones[size_t(HumanoidBone::RightFoot)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_Head)] == INVALID_ENTITY)
 			return false;
 
-		if (bones[size_t(HumanoidBone::LeftUpperArm)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_LeftUpperLeg)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::LeftLowerArm)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_LeftLowerLeg)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::LeftHand)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_LeftFoot)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::RightUpperArm)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_RightUpperLeg)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::RightLowerArm)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_RightLowerLeg)] == INVALID_ENTITY)
 			return false;
-		if (bones[size_t(HumanoidBone::RightHand)] == INVALID_ENTITY)
+		if (bones[size_t(HumanoidBone_RightFoot)] == INVALID_ENTITY)
+			return false;
+
+		if (bones[size_t(HumanoidBone_LeftUpperArm)] == INVALID_ENTITY)
+			return false;
+		if (bones[size_t(HumanoidBone_LeftLowerArm)] == INVALID_ENTITY)
+			return false;
+		if (bones[size_t(HumanoidBone_LeftHand)] == INVALID_ENTITY)
+			return false;
+		if (bones[size_t(HumanoidBone_RightUpperArm)] == INVALID_ENTITY)
+			return false;
+		if (bones[size_t(HumanoidBone_RightLowerArm)] == INVALID_ENTITY)
+			return false;
+		if (bones[size_t(HumanoidBone_RightHand)] == INVALID_ENTITY)
 			return false;
 
 		return true;

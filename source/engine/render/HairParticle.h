@@ -114,7 +114,7 @@ namespace Protean
 		Protean::vector<uint32_t> indices; // it is dependent on vertex_lengths and contains triangles with non-zero lengths
 		uint32_t layerMask = ~0u;
 		mutable bool regenerate_frame = true;
-		Protean::Graphics::Format position_format = Protean::Graphics::Format::R16G16B16A16_UNORM;
+		Protean::Graphics::Format position_format = Protean::Graphics::Format_R16G16B16A16_UNORM;
 		mutable bool must_rebuild_blas = true;
 		mutable bool gpu_initialized = false;
 		// Cached constant buffer last uploaded to the GPU, used to skip

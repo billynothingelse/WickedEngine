@@ -5,7 +5,7 @@ using namespace Protean;
 void MetadataWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_METADATA " Metadata", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_METADATA " Metadata", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 240));
 
 	closeButton.SetTooltip("Delete MetadataComponent");
@@ -37,14 +37,14 @@ void MetadataWindow::Create(EditorComponent* _editor)
 	};
 
 	presetCombo.Create("Preset: ");
-	presetCombo.AddItem("Custom", (uint64_t)MetadataComponent::Preset::Custom);
-	presetCombo.AddItem("Waypoint", (uint64_t)MetadataComponent::Preset::Waypoint);
-	presetCombo.AddItem("Player", (uint64_t)MetadataComponent::Preset::Player);
-	presetCombo.AddItem("Enemy", (uint64_t)MetadataComponent::Preset::Enemy);
-	presetCombo.AddItem("Npc", (uint64_t)MetadataComponent::Preset::NPC);
-	presetCombo.AddItem("Pickup", (uint64_t)MetadataComponent::Preset::Pickup);
-	presetCombo.AddItem("Vehicle", (uint64_t)MetadataComponent::Preset::Vehicle);
-	presetCombo.AddItem("Point of interest", (uint64_t)MetadataComponent::Preset::PointOfInterest);
+	presetCombo.AddItem("Custom", (uint64_t)MetadataComponent::Preset_Custom);
+	presetCombo.AddItem("Waypoint", (uint64_t)MetadataComponent::Preset_Waypoint);
+	presetCombo.AddItem("Player", (uint64_t)MetadataComponent::Preset_Player);
+	presetCombo.AddItem("Enemy", (uint64_t)MetadataComponent::Preset_Enemy);
+	presetCombo.AddItem("Npc", (uint64_t)MetadataComponent::Preset_NPC);
+	presetCombo.AddItem("Pickup", (uint64_t)MetadataComponent::Preset_Pickup);
+	presetCombo.AddItem("Vehicle", (uint64_t)MetadataComponent::Preset_Vehicle);
+	presetCombo.AddItem("Point of interest", (uint64_t)MetadataComponent::Preset_PointOfInterest);
 	presetCombo.OnSelect(forEachSelected([] (auto metadata, auto args) {
 		metadata->preset = (MetadataComponent::Preset)args.userdata;
 	}));

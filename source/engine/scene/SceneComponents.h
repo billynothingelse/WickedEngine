@@ -207,7 +207,7 @@ namespace Protean
 		float clearcoatRoughness = 0;
 
 		uint8_t userStencilRef = 0;
-		Protean::Graphics::ShadingRate shadingRate = Protean::Graphics::ShadingRate::RATE_1X1;
+		Protean::Graphics::ShadingRate shadingRate = Protean::Graphics::ShadingRate_RATE_1X1;
 
 		XMFLOAT2 texAnimDirection = XMFLOAT2(0, 0);
 		float texAnimFrameRate = 0.0f;
@@ -456,19 +456,17 @@ namespace Protean
 		// Vehicle physics will be enabled when Vehicle.type != None
 		struct Vehicle
 		{
-			enum class Type
-			{
-				None,
-				Car,
-				Motorcycle,
-			} type = Type::None;
+			enum Type {
+				Type_None,
+				Type_Car,
+				Type_Motorcycle,
+			} type = Type_None;
 
-			enum class CollisionMode
-			{
-				Ray,
-				Sphere,
-				Cylinder,
-			} collision_mode = CollisionMode::Ray;
+			enum CollisionMode {
+				CollisionMode_Ray,
+				CollisionMode_Sphere,
+				CollisionMode_Cylinder,
+			} collision_mode = CollisionMode_Ray;
 
 			float chassis_half_width = 0.9f;
 			float chassis_half_height = 0.2f;
@@ -529,9 +527,9 @@ namespace Protean
 		constexpr void SetKinematic(bool value) { set_flag(_flags, KINEMATIC, value); }
 		constexpr void SetStartDeactivated(bool value) { set_flag(_flags, START_DEACTIVATED, value); }
 
-		constexpr bool IsVehicle() const { return vehicle.type != Vehicle::Type::None; }
-		constexpr bool IsCar() const { return vehicle.type == Vehicle::Type::Car; }
-		constexpr bool IsMotorcycle() const { return vehicle.type == Vehicle::Type::Motorcycle; }
+		constexpr bool IsVehicle() const { return vehicle.type != Vehicle::Type_None; }
+		constexpr bool IsCar() const { return vehicle.type == Vehicle::Type_Car; }
+		constexpr bool IsMotorcycle() const { return vehicle.type == Vehicle::Type_Motorcycle; }
 		constexpr bool IsDisableDeactivation() const { return _flags & DISABLE_DEACTIVATION; }
 		constexpr bool IsKinematic() const { return _flags & KINEMATIC; }
 		constexpr bool IsStartDeactivated() const { return _flags & START_DEACTIVATED; }
@@ -565,17 +563,16 @@ namespace Protean
 		//	The constraints are created in world space from the current TransformComponent orientation
 		//	To issue recreation of the constraint, reset the physicsobject pointer of this structure
 		//	To only refresh cosntraint settings without recreating the constraint, use SetRefreshParametersNeeded(true)
-		enum class Type
-		{
-			Fixed,		// fixed in place completely
-			Point,		// fixed to a point but can rotate around it
-			Distance,	// point constraint within specified distance
-			Hinge,		// rotation around a point on the UP axis of the contraint transform
-			Cone,		// constrain to a cone shape specified by the cone angle (cone axis: UP)
-			SixDOF,		// manual specification of axes movement and rotation limits
-			SwingTwist,	// cone (UP axis) + rotational limits
-			Slider,		// constrain on the RIGHT axis between limits
-		} type = Type::Fixed;
+		enum Type {
+			Type_Fixed,		// fixed in place completely
+			Type_Point,		// fixed to a point but can rotate around it
+			Type_Distance,	// point constraint within specified distance
+			Type_Hinge,		// rotation around a point on the UP axis of the contraint transform
+			Type_Cone,		// constrain to a cone shape specified by the cone angle (cone axis: UP)
+			Type_SixDOF,		// manual specification of axes movement and rotation limits
+			Type_SwingTwist,	// cone (UP axis) + rotational limits
+			Type_Slider,		// constrain on the RIGHT axis between limits
+		} type = Type_Fixed;
 
 		Protean::Entity bodyA = Protean::INVALID_ENTITY;
 		Protean::Entity bodyB = Protean::INVALID_ENTITY;
@@ -816,10 +813,10 @@ namespace Protean
 		constexpr bool IsSkinned() const { return armatureID != Protean::INVALID_ENTITY; }
 
 		inline Protean::Graphics::IndexBufferFormat GetIndexFormat() const { return Protean::Graphics::GetIndexBufferFormat((uint32_t)vertex_positions.size()); }
-		inline size_t GetIndexStride() const { return GetIndexFormat() == Protean::Graphics::IndexBufferFormat::UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
+		inline size_t GetIndexStride() const { return GetIndexFormat() == Protean::Graphics::IndexBufferFormat_UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
 
 		inline Protean::Graphics::IndexBufferFormat GetProvokingIndexFormat() const { return Protean::Graphics::GetIndexBufferFormat((uint32_t)indices.size()); }
-		inline size_t GetProvokingIndexStride() const { return GetProvokingIndexFormat() == Protean::Graphics::IndexBufferFormat::UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
+		inline size_t GetProvokingIndexStride() const { return GetProvokingIndexFormat() == Protean::Graphics::IndexBufferFormat_UINT32 ? sizeof(uint32_t) : sizeof(uint16_t); }
 
 		uint32_t GetLODCount() const { return subsets_per_lod == 0 ? 1 : ((uint32_t)subsets.size() / subsets_per_lod); }
 		void GetLODSubsetRange(uint32_t lod, uint32_t& first_subset, uint32_t& last_subset) const
@@ -927,7 +924,7 @@ namespace Protean
 			{
 				return uint8_t((float(w) / 65535.0f) * 255);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R16G16B16A16_UNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R16G16B16A16_UNORM;
 		};
 		struct Vertex_POS32
 		{
@@ -949,7 +946,7 @@ namespace Protean
 			{
 				return XMFLOAT3(x, y, z);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R32G32B32_FLOAT;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R32G32B32_FLOAT;
 		};
 		struct Vertex_POS32W
 		{
@@ -977,7 +974,7 @@ namespace Protean
 			{
 				return uint8_t(w * 255);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R32G32B32A32_FLOAT;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R32G32B32A32_FLOAT;
 		};
 		Protean::Graphics::Format position_format = Vertex_POS16::FORMAT; // CreateRenderData() will choose the appropriate format
 
@@ -991,7 +988,7 @@ namespace Protean
 				x = uint16_t(Protean::Math::InverseLerp(uv_range_min.x, uv_range_max.x, uv.x) * 65535.0f);
 				y = uint16_t(Protean::Math::InverseLerp(uv_range_min.y, uv_range_max.y, uv.y) * 65535.0f);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R16G16_UNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R16G16_UNORM;
 		};
 		struct Vertex_TEX32
 		{
@@ -1003,19 +1000,19 @@ namespace Protean
 				x = Protean::Math::InverseLerp(uv_range_min.x, uv_range_max.x, uv.x);
 				y = Protean::Math::InverseLerp(uv_range_min.y, uv_range_max.y, uv.y);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R32G32_FLOAT;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R32G32_FLOAT;
 		};
 		struct Vertex_UVS
 		{
 			Vertex_TEX uv0;
 			Vertex_TEX uv1;
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R16G16B16A16_UNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R16G16B16A16_UNORM;
 		};
 		struct Vertex_UVS32
 		{
 			Vertex_TEX32 uv0;
 			Vertex_TEX32 uv1;
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R32G32B32A32_FLOAT;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R32G32B32A32_FLOAT;
 		};
 		struct Vertex_BON
 		{
@@ -1049,7 +1046,7 @@ namespace Protean
 		struct Vertex_COL
 		{
 			uint32_t color = 0;
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R8G8B8A8_UNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R8G8B8A8_UNORM;
 		};
 		struct Vertex_NOR
 		{
@@ -1087,7 +1084,7 @@ namespace Protean
 					0
 				);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R8G8B8A8_SNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R8G8B8A8_SNORM;
 		};
 		struct Vertex_TAN
 		{
@@ -1118,7 +1115,7 @@ namespace Protean
 					float(w) / 127.5f
 				);
 			}
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R8G8B8A8_SNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R8G8B8A8_SNORM;
 		};
 
 	};
@@ -1264,7 +1261,7 @@ namespace Protean
 		struct Vertex_AO
 		{
 			uint8_t value = 0;
-			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format::R8_UNORM;
+			static constexpr Protean::Graphics::Format FORMAT = Protean::Graphics::Format_R8_UNORM;
 		};
 	};
 
@@ -1636,11 +1633,10 @@ namespace Protean
 		};
 		uint32_t _flags = EMPTY;
 
-		enum class Type
-		{
-			Point,
-			Plane,
-		} type = Type::Point;
+		enum Type {
+			Type_Point,
+			Type_Plane,
+		} type = Type_Point;
 
 		float gravity = 0; // negative = deflector, positive = attractor
 		float range = 0; // affection range
@@ -1736,65 +1732,63 @@ namespace Protean
 			int samplerIndex = -1;
 			int retargetIndex = -1;
 
-			enum class Path
-			{
-				TRANSLATION,
-				ROTATION,
-				SCALE,
-				WEIGHTS,
+			enum Path {
+				Path_TRANSLATION,
+				Path_ROTATION,
+				Path_SCALE,
+				Path_WEIGHTS,
 
-				LIGHT_COLOR,
-				LIGHT_INTENSITY,
-				LIGHT_RANGE,
-				LIGHT_INNERCONE,
-				LIGHT_OUTERCONE,
+				Path_LIGHT_COLOR,
+				Path_LIGHT_INTENSITY,
+				Path_LIGHT_RANGE,
+				Path_LIGHT_INNERCONE,
+				Path_LIGHT_OUTERCONE,
 				// additional light paths can go here...
-				_LIGHT_RANGE_END = LIGHT_COLOR + 1000,
+				Path__LIGHT_RANGE_END = Path_LIGHT_COLOR + 1000,
 
-				SOUND_PLAY,
-				SOUND_STOP,
-				SOUND_VOLUME,
+				Path_SOUND_PLAY,
+				Path_SOUND_STOP,
+				Path_SOUND_VOLUME,
 				// additional sound paths can go here...
-				_SOUND_RANGE_END = SOUND_PLAY + 1000,
+				Path__SOUND_RANGE_END = Path_SOUND_PLAY + 1000,
 
-				EMITTER_EMITCOUNT,
+				Path_EMITTER_EMITCOUNT,
 				// additional emitter paths can go here...
-				_EMITTER_RANGE_END = EMITTER_EMITCOUNT + 1000,
+				Path__EMITTER_RANGE_END = Path_EMITTER_EMITCOUNT + 1000,
 
-				CAMERA_FOV,
-				CAMERA_FOCAL_LENGTH,
-				CAMERA_APERTURE_SIZE,
-				CAMERA_APERTURE_SHAPE,
+				Path_CAMERA_FOV,
+				Path_CAMERA_FOCAL_LENGTH,
+				Path_CAMERA_APERTURE_SIZE,
+				Path_CAMERA_APERTURE_SHAPE,
 				// additional camera paths can go here...
-				_CAMERA_RANGE_END = CAMERA_FOV + 1000,
+				Path__CAMERA_RANGE_END = Path_CAMERA_FOV + 1000,
 
-				SCRIPT_PLAY,
-				SCRIPT_STOP,
+				Path_SCRIPT_PLAY,
+				Path_SCRIPT_STOP,
 				// additional script paths can go here...
-				_SCRIPT_RANGE_END = SCRIPT_PLAY + 1000,
+				Path__SCRIPT_RANGE_END = Path_SCRIPT_PLAY + 1000,
 
-				MATERIAL_COLOR,
-				MATERIAL_EMISSIVE,
-				MATERIAL_ROUGHNESS,
-				MATERIAL_METALNESS,
-				MATERIAL_REFLECTANCE,
-				MATERIAL_TEXMULADD,
+				Path_MATERIAL_COLOR,
+				Path_MATERIAL_EMISSIVE,
+				Path_MATERIAL_ROUGHNESS,
+				Path_MATERIAL_METALNESS,
+				Path_MATERIAL_REFLECTANCE,
+				Path_MATERIAL_TEXMULADD,
 				// additional material paths can go here...
-				_MATERIAL_RANGE_END = MATERIAL_COLOR + 1000,
+				Path__MATERIAL_RANGE_END = Path_MATERIAL_COLOR + 1000,
 
-				UNKNOWN,
-			} path = Path::UNKNOWN;
+				Path_UNKNOWN,
+			} path = Path_UNKNOWN;
 
-			enum class PathDataType
-			{
-				Event,
-				Float,
-				Float2,
-				Float3,
-				Float4,
-				Weights,
+			enum PathDataType {
+				PathDataType_Event,
+				PathDataType_Float,
+				PathDataType_Float2,
+				PathDataType_Float3,
+				PathDataType_Float4,
+				PathDataType_Weights,
 
-				Count,
+				PathDataType_Count,
 			};
 			PathDataType GetPathDataType() const;
 
@@ -2106,11 +2100,10 @@ namespace Protean
 		constexpr bool IsGPUEnabled() const { return _flags & GPU; }
 		constexpr bool IsCapsuleShadowEnabled() const { return _flags & CAPSULE_SHADOW; }
 
-		enum class Shape
-		{
-			Sphere,
-			Capsule,
-			Plane,
+		enum Shape {
+			Shape_Sphere,
+			Shape_Capsule,
+			Shape_Plane,
 		};
 		Shape shape;
 
@@ -2173,51 +2166,49 @@ namespace Protean
 
 		// Preset expressions can have common behaviours assigned:
 		//	https://github.com/vrm-c/vrm-specification/blob/bd205a6c3839993f2729e4e7c3a74af89877cfce/specification/VRMC_vrm-1.0-beta/expressions.md#preset-expressions
-		enum class Preset
-		{
+		enum Preset {
 			// Emotions:
-			Happy,		// Changed from joy
-			Angry,		// anger
-			Sad,		// Changed from sorrow
-			Relaxed,	// Comfortable. Changed from fun
-			Surprised,	// surprised. Added new in VRM 1.0
+			Preset_Happy,		// Changed from joy
+			Preset_Angry,		// anger
+			Preset_Sad,		// Changed from sorrow
+			Preset_Relaxed,	// Comfortable. Changed from fun
+			Preset_Surprised,	// surprised. Added new in VRM 1.0
 
 			// Lip sync procedural:
 			//	Procedural: A value that can be automatically generated by the system.
 			//	- Analyze microphone input, generate from text, etc.
-			Aa,			// aa
-			Ih,			// i
-			Ou,			// u
-			Ee,			// eh
-			Oh,			// oh
+			Preset_Aa,			// aa
+			Preset_Ih,			// i
+			Preset_Ou,			// u
+			Preset_Ee,			// eh
+			Preset_Oh,			// oh
 
 			// Blink procedural:
 			//	Procedural: A value that can be automatically generated by the system.
 			//	- Randomly blink, etc.
-			Blink,		// close both eyelids
-			BlinkLeft,	// Close the left eyelid
-			BlinkRight,	// Close right eyelid
+			Preset_Blink,		// close both eyelids
+			Preset_BlinkLeft,	// Close the left eyelid
+			Preset_BlinkRight,	// Close right eyelid
 
 			// Gaze procedural:
 			//	Procedural: A value that can be automatically generated by the system.
 			//	- The VRM LookAt will generate a value for the gaze point from time to time (see LookAt Expression Type).
-			LookUp,		// For models where the line of sight moves with Expression instead of bone. See eye control.
-			LookDown,	// For models where the line of sight moves with Expression instead of bone. See eye control.
-			LookLeft,	// For models whose line of sight moves with Expression instead of bone. See eye control.
-			LookRight,	// For models where the line of sight moves with Expression instead of bone. See eye control.
+			Preset_LookUp,		// For models where the line of sight moves with Expression instead of bone. See eye control.
+			Preset_LookDown,	// For models where the line of sight moves with Expression instead of bone. See eye control.
+			Preset_LookLeft,	// For models whose line of sight moves with Expression instead of bone. See eye control.
+			Preset_LookRight,	// For models where the line of sight moves with Expression instead of bone. See eye control.
 
 			// Other:
-			Neutral,	// left for backwards compatibility.
+			Preset_Neutral,	// left for backwards compatibility.
 
-			Count,
+			Preset_Count,
 		};
-		int presets[size_t(Preset::Count)] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+		int presets[size_t(Preset_Count)] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-		enum class Override
-		{
-			None,
-			Block,
-			Blend,
+		enum Override {
+			Override_None,
+			Override_Block,
+			Override_Blend,
 		};
 
 		float blink_frequency = 0.3f;	// number of blinks per second
@@ -2239,10 +2230,10 @@ namespace Protean
 			std::string name;
 			float weight = 0;
 
-			Preset preset = Preset::Count;
-			Override override_mouth = Override::None;
-			Override override_blink = Override::None;
-			Override override_look = Override::None;
+			Preset preset = Preset_Count;
+			Override override_mouth = Override_None;
+			Override override_blink = Override_None;
+			Override override_look = Override_None;
 
 			struct MorphTargetBinding
 			{
@@ -2279,7 +2270,7 @@ namespace Protean
 		float blink_timer = 0;
 		float look_timer = 0;
 		float look_weights[4] = {};
-		Preset talking_phoneme = Preset::Aa;
+		Preset talking_phoneme = Preset_Aa;
 		float talking_weight_prev_prev = 0;
 		float talking_weight_prev = 0;
 
@@ -2301,76 +2292,75 @@ namespace Protean
 		uint32_t _flags = LOOKAT;
 
 		// https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0-beta/humanoid.md#list-of-humanoid-bones
-		enum class HumanoidBone
-		{
+		enum HumanoidBone {
 			// Torso:
-			Hips,			// Required
-			Spine,			// Required
-			Chest,
-			UpperChest,
-			Neck,
+			HumanoidBone_Hips,			// Required
+			HumanoidBone_Spine,			// Required
+			HumanoidBone_Chest,
+			HumanoidBone_UpperChest,
+			HumanoidBone_Neck,
 
 			// Head:
-			Head,			// Required
-			LeftEye,
-			RightEye,
-			Jaw,
+			HumanoidBone_Head,			// Required
+			HumanoidBone_LeftEye,
+			HumanoidBone_RightEye,
+			HumanoidBone_Jaw,
 
 			// Leg:
-			LeftUpperLeg,	// Required
-			LeftLowerLeg,	// Required
-			LeftFoot,		// Required
-			LeftToes,
-			RightUpperLeg,	// Required
-			RightLowerLeg,	// Required
-			RightFoot,		// Required
-			RightToes,
+			HumanoidBone_LeftUpperLeg,	// Required
+			HumanoidBone_LeftLowerLeg,	// Required
+			HumanoidBone_LeftFoot,		// Required
+			HumanoidBone_LeftToes,
+			HumanoidBone_RightUpperLeg,	// Required
+			HumanoidBone_RightLowerLeg,	// Required
+			HumanoidBone_RightFoot,		// Required
+			HumanoidBone_RightToes,
 
 			// Arm:
-			LeftShoulder,
-			LeftUpperArm,	// Required
-			LeftLowerArm,	// Required
-			LeftHand,		// Required
-			RightShoulder,
-			RightUpperArm,	// Required
-			RightLowerArm,	// Required
-			RightHand,		// Required
+			HumanoidBone_LeftShoulder,
+			HumanoidBone_LeftUpperArm,	// Required
+			HumanoidBone_LeftLowerArm,	// Required
+			HumanoidBone_LeftHand,		// Required
+			HumanoidBone_RightShoulder,
+			HumanoidBone_RightUpperArm,	// Required
+			HumanoidBone_RightLowerArm,	// Required
+			HumanoidBone_RightHand,		// Required
 
 			// Finger:
-			LeftThumbMetacarpal,
-			LeftThumbProximal,
-			LeftThumbDistal,
-			LeftIndexProximal,
-			LeftIndexIntermediate,
-			LeftIndexDistal,
-			LeftMiddleProximal,
-			LeftMiddleIntermediate,
-			LeftMiddleDistal,
-			LeftRingProximal,
-			LeftRingIntermediate,
-			LeftRingDistal,
-			LeftLittleProximal,
-			LeftLittleIntermediate,
-			LeftLittleDistal,
-			RightThumbMetacarpal,
-			RightThumbProximal,
-			RightThumbDistal,
-			RightIndexIntermediate,
-			RightIndexDistal,
-			RightIndexProximal,
-			RightMiddleProximal,
-			RightMiddleIntermediate,
-			RightMiddleDistal,
-			RightRingProximal,
-			RightRingIntermediate,
-			RightRingDistal,
-			RightLittleProximal,
-			RightLittleIntermediate,
-			RightLittleDistal,
+			HumanoidBone_LeftThumbMetacarpal,
+			HumanoidBone_LeftThumbProximal,
+			HumanoidBone_LeftThumbDistal,
+			HumanoidBone_LeftIndexProximal,
+			HumanoidBone_LeftIndexIntermediate,
+			HumanoidBone_LeftIndexDistal,
+			HumanoidBone_LeftMiddleProximal,
+			HumanoidBone_LeftMiddleIntermediate,
+			HumanoidBone_LeftMiddleDistal,
+			HumanoidBone_LeftRingProximal,
+			HumanoidBone_LeftRingIntermediate,
+			HumanoidBone_LeftRingDistal,
+			HumanoidBone_LeftLittleProximal,
+			HumanoidBone_LeftLittleIntermediate,
+			HumanoidBone_LeftLittleDistal,
+			HumanoidBone_RightThumbMetacarpal,
+			HumanoidBone_RightThumbProximal,
+			HumanoidBone_RightThumbDistal,
+			HumanoidBone_RightIndexIntermediate,
+			HumanoidBone_RightIndexDistal,
+			HumanoidBone_RightIndexProximal,
+			HumanoidBone_RightMiddleProximal,
+			HumanoidBone_RightMiddleIntermediate,
+			HumanoidBone_RightMiddleDistal,
+			HumanoidBone_RightRingProximal,
+			HumanoidBone_RightRingIntermediate,
+			HumanoidBone_RightRingDistal,
+			HumanoidBone_RightLittleProximal,
+			HumanoidBone_RightLittleIntermediate,
+			HumanoidBone_RightLittleDistal,
 
-			Count
+			HumanoidBone_Count
 		};
-		Protean::Entity bones[size_t(HumanoidBone::Count)] = {};
+		Protean::Entity bones[size_t(HumanoidBone_Count)] = {};
 
 		constexpr bool IsLookAtEnabled() const { return _flags & LOOKAT; }
 		constexpr bool IsRagdollPhysicsEnabled() const { return _flags & RAGDOLL_PHYSICS; }
@@ -2432,18 +2422,17 @@ namespace Protean
 		};
 		uint32_t _flags = NONE;
 
-		enum class Preset
-		{
-			Custom,
-			Waypoint,
-			Player,
-			Enemy,
-			NPC,
-			Pickup,
-			Vehicle,
-			PointOfInterest,
+		enum Preset {
+			Preset_Custom,
+			Preset_Waypoint,
+			Preset_Player,
+			Preset_Enemy,
+			Preset_NPC,
+			Preset_Pickup,
+			Preset_Vehicle,
+			Preset_PointOfInterest,
 		};
-		Preset preset = Preset::Custom;
+		Preset preset = Preset_Custom;
 
 		// Ordered collection of values, but also accelerated lookup by string
 		template<typename T>

@@ -19,10 +19,10 @@ namespace SoundWindow_Internal
 		desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 		desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_WIRE_SMOOTH);
 		desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-		desc.pt = PrimitiveTopology::LINESTRIP;
+		desc.pt = PrimitiveTopology_LINESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pso_linestrip);
 
-		desc.pt = PrimitiveTopology::LINELIST;
+		desc.pt = PrimitiveTopology_LINELIST;
 		success = device->CreatePipelineState(&desc, &pso_linelist);
 		assert(success);
 	}
@@ -32,7 +32,7 @@ using namespace SoundWindow_Internal;
 void SoundWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_SOUND " Sound", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SOUND " Sound", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(440, 400));
 
 	closeButton.SetTooltip("Delete SoundComponent");

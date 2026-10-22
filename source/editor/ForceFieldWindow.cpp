@@ -5,7 +5,7 @@ using namespace Protean;
 void ForceFieldWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_FORCE " Force Field", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_FORCE " Force Field", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 120));
 
 	closeButton.SetTooltip("Delete ForceFieldComponent");
@@ -41,10 +41,10 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 			switch (args.iValue)
 			{
 			case 0:
-				force->type = ForceFieldComponent::Type::Point;
+				force->type = ForceFieldComponent::Type_Point;
 				break;
 			case 1:
-				force->type = ForceFieldComponent::Type::Plane;
+				force->type = ForceFieldComponent::Type_Plane;
 				break;
 			default:
 				assert(0); // error
@@ -52,8 +52,8 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 			}
 		}
 	});
-	typeComboBox.AddItem("Point", (uint64_t)ForceFieldComponent::Type::Point);
-	typeComboBox.AddItem("Plane", (uint64_t)ForceFieldComponent::Type::Plane);
+	typeComboBox.AddItem("Point", (uint64_t)ForceFieldComponent::Type_Point);
+	typeComboBox.AddItem("Plane", (uint64_t)ForceFieldComponent::Type_Plane);
 	typeComboBox.SetEnabled(false);
 	typeComboBox.SetTooltip("Choose the force field type.");
 	AddWidget(&typeComboBox);

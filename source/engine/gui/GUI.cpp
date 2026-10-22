@@ -43,7 +43,7 @@ namespace Protean::Gui
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
-			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+			desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 			Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &PSO_colored);
 		}
 	};
@@ -629,11 +629,11 @@ namespace Protean::Gui
 		Protean::Localization& section = localization.GetSection(GetName());
 		section.SetSectionHint(GetWidgetTypeName());
 
-		if (has_flag(localization_enabled, LocalizationEnabled::Text) && !font.GetText().empty())
+		if (has_flag(localization_enabled, LocalizationEnabled_Text) && !font.GetText().empty())
 		{
 			section.Add(LOCALIZATION_ID_TEXT, font.GetTextA().c_str(), "text");
 		}
-		if (has_flag(localization_enabled, LocalizationEnabled::Tooltip) && !tooltipFont.GetText().empty())
+		if (has_flag(localization_enabled, LocalizationEnabled_Tooltip) && !tooltipFont.GetText().empty())
 		{
 			section.Add(LOCALIZATION_ID_TOOLTIP, tooltipFont.GetTextA().c_str(), "tooltip");
 		}
@@ -644,7 +644,7 @@ namespace Protean::Gui
 		if (section == nullptr)
 			return;
 
-		if (has_flag(localization_enabled, LocalizationEnabled::Text))
+		if (has_flag(localization_enabled, LocalizationEnabled_Text))
 		{
 			const char* localized_text = section->Get(LOCALIZATION_ID_TEXT);
 			if (localized_text != nullptr)
@@ -652,7 +652,7 @@ namespace Protean::Gui
 				SetText(localized_text);
 			}
 		}
-		if (has_flag(localization_enabled, LocalizationEnabled::Tooltip))
+		if (has_flag(localization_enabled, LocalizationEnabled_Tooltip))
 		{
 			const char* localized_tooltip = section->Get(LOCALIZATION_ID_TOOLTIP);
 			if (localized_tooltip != nullptr)
@@ -1046,7 +1046,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1127,7 +1127,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[IDLE].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1339,7 +1339,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites_knob[scrollbar_state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1565,7 +1565,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1740,7 +1740,7 @@ namespace Protean::Gui
 		font_description.params = font.params;
 		font_description.params.h_align = Protean::Font::WIFALIGN_RIGHT;
 
-		SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip); // disable localization of text because that can come from user input and musn't be overwritten!
+		SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip); // disable localization of text because that can come from user input and musn't be overwritten!
 	}
 	void TextInputField::SetValue(const std::string& newValue)
 	{
@@ -2046,7 +2046,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -2316,7 +2316,7 @@ namespace Protean::Gui
 		SetSize(XMFLOAT2(200, 20));
 
 		valueInputField.Create(name + "_endInputField");
-		valueInputField.SetLocalizationEnabled(LocalizationEnabled::None);
+		valueInputField.SetLocalizationEnabled(LocalizationEnabled_None);
 		valueInputField.SetShadowRadius(0);
 		valueInputField.SetTooltip("Enter number to modify value even outside slider limits. Arithmetic expressions are supported (e.g. 10 * 2, 1 + 0.5). Other inputs:\n - reset : reset slider to initial state.\n - FLT_MAX : float max value\n - -FLT_MAX : negative float max value.");
 		valueInputField.SetValue(end);
@@ -2505,7 +2505,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x = scale.x;
@@ -2691,7 +2691,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -3165,7 +3165,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x = scale.x;
@@ -3223,7 +3223,7 @@ namespace Protean::Gui
 				Protean::Math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
 
 				GPUBufferDesc desc;
-				desc.bind_flags = BindFlag::VERTEX_BUFFER;
+				desc.bind_flags = BindFlag_VERTEX_BUFFER;
 				desc.size = sizeof(vertices);
 				device->CreateBuffer(&desc, &vertices, &vb_triangle);
 			}
@@ -3518,7 +3518,7 @@ namespace Protean::Gui
 	void ComboBox::ExportLocalization(Protean::Localization& localization) const
 	{
 		Widget::ExportLocalization(localization);
-		if (has_flag(localization_enabled, LocalizationEnabled::Items))
+		if (has_flag(localization_enabled, LocalizationEnabled_Items))
 		{
 			Protean::Localization& section = localization.GetSection(GetName()).GetSection("items");
 			for (size_t i = 0; i < items.size(); ++i)
@@ -3530,7 +3530,7 @@ namespace Protean::Gui
 	void ComboBox::ImportLocalization(const Protean::Localization& localization)
 	{
 		Widget::ImportLocalization(localization);
-		if (has_flag(localization_enabled, LocalizationEnabled::Items))
+		if (has_flag(localization_enabled, LocalizationEnabled_Items))
 		{
 			const Protean::Localization* section = localization.CheckSection(GetName());
 			if (section == nullptr)
@@ -3569,14 +3569,14 @@ namespace Protean::Gui
 			sprites[i].params.color = sprites[IDLE].params.color;
 		}
 
-		if (!has_flag(window_controls, WindowControls::DISABLE_TITLE_BAR))
+		if (!has_flag(window_controls, WindowControls_DISABLE_TITLE_BAR))
 		{
 			// Add title bar controls
-			if (has_flag(window_controls, WindowControls::MOVE))
+			if (has_flag(window_controls, WindowControls_MOVE))
 			{
 				// Add a grabber onto the title bar
 				moveDragger.Create(name);
-				moveDragger.SetLocalizationEnabled(LocalizationEnabled::None);
+				moveDragger.SetLocalizationEnabled(LocalizationEnabled_None);
 				moveDragger.SetShadowRadius(0);
 				moveDragger.SetText(name);
 				moveDragger.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
@@ -3586,15 +3586,15 @@ namespace Protean::Gui
 					this->Translate(XMFLOAT3(args.deltaPos.x, args.deltaPos.y, 0));
 					this->AttachTo(saved_parent);
 					});
-				AddWidget(&moveDragger, AttachmentOptions::NONE);
+				AddWidget(&moveDragger, AttachmentOptions_NONE);
 				has_titlebar = true;
 			}
 
-			if (has_flag(window_controls, WindowControls::CLOSE))
+			if (has_flag(window_controls, WindowControls_CLOSE))
 			{
 				// Add close button to the top left corner
 				closeButton.Create(name + "_close_button");
-				closeButton.SetLocalizationEnabled(LocalizationEnabled::None);
+				closeButton.SetLocalizationEnabled(LocalizationEnabled_None);
 				closeButton.SetShadowRadius(0);
 				closeButton.SetText("x");
 				closeButton.OnClick([this](const EventArgs& args) {
@@ -3605,15 +3605,15 @@ namespace Protean::Gui
 					}
 					});
 				closeButton.SetTooltip("Close window");
-				AddWidget(&closeButton, AttachmentOptions::NONE);
+				AddWidget(&closeButton, AttachmentOptions_NONE);
 				has_titlebar = true;
 			}
 
-			if (has_flag(window_controls, WindowControls::COLLAPSE))
+			if (has_flag(window_controls, WindowControls_COLLAPSE))
 			{
 				// Add minimize button to the top left corner
 				collapseButton.Create(name + "_collapse_button");
-				collapseButton.SetLocalizationEnabled(LocalizationEnabled::None);
+				collapseButton.SetLocalizationEnabled(LocalizationEnabled_None);
 				collapseButton.SetShadowRadius(0);
 				collapseButton.SetText("-");
 				collapseButton.OnClick([this](const EventArgs& args) {
@@ -3624,21 +3624,21 @@ namespace Protean::Gui
 					}
 					});
 				collapseButton.SetTooltip("Collapse/Expand window");
-				AddWidget(&collapseButton, AttachmentOptions::NONE);
+				AddWidget(&collapseButton, AttachmentOptions_NONE);
 				has_titlebar = true;
 			}
 
-			if (!has_flag(window_controls, WindowControls::MOVE) && !name.empty())
+			if (!has_flag(window_controls, WindowControls_MOVE) && !name.empty())
 			{
 				// Simple title bar
 				label.Create(name);
-				label.SetLocalizationEnabled(LocalizationEnabled::None);
+				label.SetLocalizationEnabled(LocalizationEnabled_None);
 				label.SetShadowRadius(0);
 				label.SetText(name);
 				label.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
 				label.scrollbar.SetEnabled(false);
 				label.SetWrapEnabled(false);
-				AddWidget(&label, AttachmentOptions::NONE);
+				AddWidget(&label, AttachmentOptions_NONE);
 				has_titlebar = true;
 			}
 		}
@@ -3679,7 +3679,7 @@ namespace Protean::Gui
 		{
 			widget->SetVisible(false);
 		}
-		if (has_flag(options, AttachmentOptions::SCROLLABLE))
+		if (has_flag(options, AttachmentOptions_SCROLLABLE))
 		{
 			widget->AttachTo(&scrollable_area);
 		}
@@ -3727,37 +3727,37 @@ namespace Protean::Gui
 			Hitbox2D toprighthitbox;
 			Hitbox2D bottomrighthitbox;
 			Hitbox2D bottomlefthitbox;
-			if (has_flag(controls, WindowControls::RESIZE_LEFT))
+			if (has_flag(controls, WindowControls_RESIZE_LEFT))
 			{
 				lefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y), XMFLOAT2(resizehitboxwidth, vscale));
 			}
-			if (has_flag(controls, WindowControls::RESIZE_RIGHT))
+			if (has_flag(controls, WindowControls_RESIZE_RIGHT))
 			{
 				righthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x, translation.y), XMFLOAT2(resizehitboxwidth, vscale));
 			}
 			if (!IsCollapsed())
 			{
-				if (has_flag(controls, WindowControls::RESIZE_TOP))
+				if (has_flag(controls, WindowControls_RESIZE_TOP))
 				{
 					tophitbox = Hitbox2D(XMFLOAT2(translation.x, translation.y - resizehitboxwidth), XMFLOAT2(scale.x, resizehitboxwidth));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOM))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOM))
 				{
 					bottomhitbox = Hitbox2D(XMFLOAT2(translation.x, translation.y + vscale), XMFLOAT2(scale.x, resizehitboxwidth));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_TOPLEFT))
+				if (has_flag(controls, WindowControls_RESIZE_TOPLEFT))
 				{
 					toplefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_TOPRIGHT))
+				if (has_flag(controls, WindowControls_RESIZE_TOPRIGHT))
 				{
 					toprighthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x - resizehitboxwidth, translation.y - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOMRIGHT))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOMRIGHT))
 				{
 					bottomrighthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x - resizehitboxwidth, translation.y + vscale - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOMLEFT))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOMLEFT))
 				{
 					bottomlefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y + vscale - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
@@ -4022,7 +4022,7 @@ namespace Protean::Gui
 			}
 		}
 
-		if (has_flag(controls, WindowControls::FIT_ALL_WIDGETS_VERTICAL))
+		if (has_flag(controls, WindowControls_FIT_ALL_WIDGETS_VERTICAL))
 		{
 			if (!IsCollapsed())
 			{
@@ -4203,7 +4203,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -4249,37 +4249,37 @@ namespace Protean::Gui
 			Hitbox2D toprighthitbox;
 			Hitbox2D bottomrighthitbox;
 			Hitbox2D bottomlefthitbox;
-			if (has_flag(controls, WindowControls::RESIZE_LEFT))
+			if (has_flag(controls, WindowControls_RESIZE_LEFT))
 			{
 				lefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y), XMFLOAT2(resizehitboxwidth, vscale));
 			}
-			if (has_flag(controls, WindowControls::RESIZE_RIGHT))
+			if (has_flag(controls, WindowControls_RESIZE_RIGHT))
 			{
 				righthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x, translation.y), XMFLOAT2(resizehitboxwidth, vscale));
 			}
 			if (!IsCollapsed())
 			{
-				if (has_flag(controls, WindowControls::RESIZE_TOP))
+				if (has_flag(controls, WindowControls_RESIZE_TOP))
 				{
 					tophitbox = Hitbox2D(XMFLOAT2(translation.x, translation.y - resizehitboxwidth), XMFLOAT2(scale.x, resizehitboxwidth));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOM))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOM))
 				{
 					bottomhitbox = Hitbox2D(XMFLOAT2(translation.x, translation.y + vscale), XMFLOAT2(scale.x, resizehitboxwidth));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_TOPLEFT))
+				if (has_flag(controls, WindowControls_RESIZE_TOPLEFT))
 				{
 					toplefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_TOPRIGHT))
+				if (has_flag(controls, WindowControls_RESIZE_TOPRIGHT))
 				{
 					toprighthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x - resizehitboxwidth, translation.y - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOMRIGHT))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOMRIGHT))
 				{
 					bottomrighthitbox = Hitbox2D(XMFLOAT2(translation.x + scale.x - resizehitboxwidth, translation.y + vscale - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
-				if (has_flag(controls, WindowControls::RESIZE_BOTTOMLEFT))
+				if (has_flag(controls, WindowControls_RESIZE_BOTTOMLEFT))
 				{
 					bottomlefthitbox = Hitbox2D(XMFLOAT2(translation.x - resizehitboxwidth, translation.y + vscale - resizehitboxwidth), XMFLOAT2(resizehitboxwidth * 2, resizehitboxwidth * 2));
 				}
@@ -4713,7 +4713,7 @@ namespace Protean::Gui
 	void Window::ExportLocalization(Protean::Localization& localization) const
 	{
 		Widget::ExportLocalization(localization);
-		if (has_flag(localization_enabled, LocalizationEnabled::Children))
+		if (has_flag(localization_enabled, LocalizationEnabled_Children))
 		{
 			Protean::Localization& section = localization.GetSection(GetName());
 			for (auto& widget : widgets)
@@ -4725,7 +4725,7 @@ namespace Protean::Gui
 	void Window::ImportLocalization(const Protean::Localization& localization)
 	{
 		Widget::ImportLocalization(localization);
-		if (has_flag(localization_enabled, LocalizationEnabled::Children))
+		if (has_flag(localization_enabled, LocalizationEnabled_Children))
 		{
 			const Protean::Localization* section = localization.CheckSection(GetName());
 			if (section == nullptr)
@@ -4870,7 +4870,7 @@ namespace Protean::Gui
 		float step = 20;
 
 		text_R.Create("R");
-		text_R.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_R.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_R.SetPos(XMFLOAT2(x, y += step));
 		text_R.SetSize(XMFLOAT2(40, 18));
 		text_R.SetText("");
@@ -4885,7 +4885,7 @@ namespace Protean::Gui
 		AddWidget(&text_R);
 
 		text_G.Create("G");
-		text_G.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_G.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_G.SetPos(XMFLOAT2(x, y += step));
 		text_G.SetSize(XMFLOAT2(40, 18));
 		text_G.SetText("");
@@ -4900,7 +4900,7 @@ namespace Protean::Gui
 		AddWidget(&text_G);
 
 		text_B.Create("B");
-		text_B.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_B.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_B.SetPos(XMFLOAT2(x, y += step));
 		text_B.SetSize(XMFLOAT2(40, 18));
 		text_B.SetText("");
@@ -4916,7 +4916,7 @@ namespace Protean::Gui
 
 
 		text_H.Create("H");
-		text_H.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_H.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_H.SetPos(XMFLOAT2(x, y += step));
 		text_H.SetSize(XMFLOAT2(40, 18));
 		text_H.SetText("");
@@ -4929,7 +4929,7 @@ namespace Protean::Gui
 		AddWidget(&text_H);
 
 		text_S.Create("S");
-		text_S.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_S.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_S.SetPos(XMFLOAT2(x, y += step));
 		text_S.SetSize(XMFLOAT2(40, 18));
 		text_S.SetText("");
@@ -4942,7 +4942,7 @@ namespace Protean::Gui
 		AddWidget(&text_S);
 
 		text_V.Create("V");
-		text_V.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_V.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_V.SetPos(XMFLOAT2(x, y += step));
 		text_V.SetSize(XMFLOAT2(40, 18));
 		text_V.SetText("");
@@ -4955,7 +4955,7 @@ namespace Protean::Gui
 		AddWidget(&text_V);
 
 		text_hex.Create("Hex");
-		text_hex.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		text_hex.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		text_hex.SetPos(XMFLOAT2(x, y += step));
 		text_hex.SetSize(XMFLOAT2(80, 18));
 		text_hex.SetText("");
@@ -4970,7 +4970,7 @@ namespace Protean::Gui
 		AddWidget(&text_hex);
 
 		alphaSlider.Create(0, 255, 255, 255, "");
-		alphaSlider.SetLocalizationEnabled(LocalizationEnabled::Tooltip);
+		alphaSlider.SetLocalizationEnabled(LocalizationEnabled_Tooltip);
 		alphaSlider.SetPos(XMFLOAT2(20, y));
 		alphaSlider.SetSize(XMFLOAT2(150, 18));
 		alphaSlider.SetText("A: ");
@@ -5216,7 +5216,7 @@ namespace Protean::Gui
 				}
 
 				GPUBufferDesc desc;
-				desc.bind_flags = BindFlag::VERTEX_BUFFER;
+				desc.bind_flags = BindFlag_VERTEX_BUFFER;
 				desc.size = vertices.size() * sizeof(Vertex);
 				desc.stride = 0;
 				device->CreateBuffer(&desc, vertices.data(), &vb_hue);
@@ -5238,7 +5238,7 @@ namespace Protean::Gui
 				}
 
 				GPUBufferDesc desc;
-				desc.bind_flags = BindFlag::VERTEX_BUFFER;
+				desc.bind_flags = BindFlag_VERTEX_BUFFER;
 				desc.size = vertices.size() * sizeof(Vertex);
 				desc.stride = 0;
 				device->CreateBuffer(&desc, vertices.data(), &vb_picker_saturation);
@@ -5274,7 +5274,7 @@ namespace Protean::Gui
 				};
 
 				GPUBufferDesc desc;
-				desc.bind_flags = BindFlag::VERTEX_BUFFER;
+				desc.bind_flags = BindFlag_VERTEX_BUFFER;
 				desc.size = sizeof(vertices);
 				desc.stride = 0;
 				device->CreateBuffer(&desc, vertices, &vb_picker_hue);
@@ -5290,7 +5290,7 @@ namespace Protean::Gui
 				};
 
 				GPUBufferDesc desc;
-				desc.bind_flags = BindFlag::VERTEX_BUFFER;
+				desc.bind_flags = BindFlag_VERTEX_BUFFER;
 				desc.size = sizeof(vertices);
 				device->CreateBuffer(&desc, vertices, &vb_preview);
 			}
@@ -6074,7 +6074,7 @@ namespace Protean::Gui
 		if (shadow > 0)
 		{
 			Protean::Image::Params fx = sprites[state].params;
-			fx.gradient = Protean::Image::Params::Gradient::None;
+			fx.gradient = Protean::Image::Params::Gradient_None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -6180,7 +6180,7 @@ namespace Protean::Gui
 			Protean::Math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
 
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::VERTEX_BUFFER;
+			desc.bind_flags = BindFlag_VERTEX_BUFFER;
 			desc.size = sizeof(vertices);
 			device->CreateBuffer(&desc, vertices, &vb_triangle);
 		}

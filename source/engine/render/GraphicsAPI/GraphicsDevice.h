@@ -75,14 +75,14 @@ namespace Protean::Graphics
 		size_t TOPLEVEL_ACCELERATION_STRUCTURE_INSTANCE_SIZE = 0;
 		uint64_t TIMESTAMP_FREQUENCY = 0;
 		uint64_t VIDEO_DECODE_BITSTREAM_ALIGNMENT = 1u;
-		GraphicsDeviceCapability capabilities = GraphicsDeviceCapability::NONE;
+		GraphicsDeviceCapability capabilities = GraphicsDeviceCapability_NONE;
 		uint32_t VARIABLE_RATE_SHADING_TILE_SIZE = 0;
 		uint32_t vendorId = 0;
 		uint32_t deviceId = 0;
 		std::string adapterName;
 		std::string driverDescription;
-		ValidationMode validationMode = ValidationMode::Disabled;
-		AdapterType adapterType = AdapterType::Other;
+		ValidationMode validationMode = ValidationMode_Disabled;
+		AdapterType adapterType = AdapterType_Other;
 
 	public:
 		virtual ~GraphicsDevice() = default;
@@ -147,7 +147,7 @@ namespace Protean::Graphics
 		constexpr uint32_t GetBufferIndex() const { return GetFrameCount() % GetBufferCount(); }
 
 		// Returns whether the graphics debug layer is enabled. It can be enabled when creating the device.
-		constexpr bool IsDebugDevice() const { return validationMode != ValidationMode::Disabled; }
+		constexpr bool IsDebugDevice() const { return validationMode != ValidationMode_Disabled; }
 
 		// Get GPU-specific metrics:
 		constexpr size_t GetShaderIdentifierSize() const { return SHADER_IDENTIFIER_SIZE; }
@@ -214,8 +214,8 @@ namespace Protean::Graphics
 		//	On some platform like PS5 this can be implemented by waiting exactly at the wait insertion point within the command lists which is more precise
 		virtual void WaitCommandList(CommandList cmd, CommandList wait_for) = 0;
 		virtual void RenderPassBegin(const SwapChain* swapchain, CommandList cmd) = 0;
-		virtual void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) = 0;
-		virtual void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, const GPUQueryHeap* occlusionqueries, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) { RenderPassBegin(images,image_count,cmd,flags); }
+		virtual void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) = 0;
+		virtual void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, const GPUQueryHeap* occlusionqueries, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) { RenderPassBegin(images,image_count,cmd,flags); }
 		virtual void RenderPassEnd(CommandList cmd) = 0;
 		virtual void BindScissorRects(uint32_t numRects, const Rect* rects, CommandList cmd) = 0;
 		virtual void BindViewports(uint32_t NumViewports, const Viewport* pViewports, CommandList cmd) = 0;
@@ -248,7 +248,7 @@ namespace Protean::Graphics
 		virtual void DispatchMeshIndirectCount(const GPUBuffer* args, uint64_t args_offset, const GPUBuffer* count, uint64_t count_offset, uint32_t max_count, CommandList cmd) {}
 		virtual void CopyResource(const GPUResource* pDst, const GPUResource* pSrc, CommandList cmd) = 0;
 		virtual void CopyBuffer(const GPUBuffer* pDst, uint64_t dst_offset, const GPUBuffer* pSrc, uint64_t src_offset, uint64_t size, CommandList cmd) = 0;
-		virtual void CopyTexture(const Texture* dst, uint32_t dstX, uint32_t dstY, uint32_t dstZ, uint32_t dstMip, uint32_t dstSlice, const Texture* src, uint32_t srcMip, uint32_t srcSlice, CommandList cmd, const Box* srcbox = nullptr, ImageAspect dst_aspect = ImageAspect::COLOR, ImageAspect src_aspect = ImageAspect::COLOR) = 0;
+		virtual void CopyTexture(const Texture* dst, uint32_t dstX, uint32_t dstY, uint32_t dstZ, uint32_t dstMip, uint32_t dstSlice, const Texture* src, uint32_t srcMip, uint32_t srcSlice, CommandList cmd, const Box* srcbox = nullptr, ImageAspect dst_aspect = ImageAspect_COLOR, ImageAspect src_aspect = ImageAspect_COLOR) = 0;
 		virtual void QueryBegin(const GPUQueryHeap *heap, uint32_t index, CommandList cmd) = 0;
 		virtual void QueryEnd(const GPUQueryHeap *heap, uint32_t index, CommandList cmd) = 0;
 		virtual void QueryResolve(const GPUQueryHeap* heap, uint32_t index, uint32_t count, const GPUBuffer* dest, uint64_t dest_offset, CommandList cmd) = 0;
@@ -364,12 +364,12 @@ namespace Protean::Graphics
 			if (dataSize > free_space)
 			{
 				GPUBufferDesc desc;
-				desc.usage = Usage::UPLOAD;
-				desc.bind_flags = BindFlag::CONSTANT_BUFFER | BindFlag::VERTEX_BUFFER | BindFlag::INDEX_BUFFER | BindFlag::SHADER_RESOURCE;
-				desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
-				if (CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+				desc.usage = Usage_UPLOAD;
+				desc.bind_flags = BindFlag_CONSTANT_BUFFER | BindFlag_VERTEX_BUFFER | BindFlag_INDEX_BUFFER | BindFlag_SHADER_RESOURCE;
+				desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
+				if (CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 				{
-					desc.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+					desc.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 				}
 				allocator.alignment = GetMinOffsetAlignment(&desc);
 				desc.size = align((allocator.buffer.desc.size + dataSize) * 2, allocator.alignment);
@@ -388,7 +388,7 @@ namespace Protean::Graphics
 			return allocation;
 		}
 
-		// Updates a Usage::DEFAULT buffer data
+		// Updates a Usage_DEFAULT buffer data
 		//	Since it uses a GPU Copy operation, appropriate synchronization is expected
 		//	And it cannot be used inside a RenderPass
 		void UpdateBuffer(const GPUBuffer* buffer, const void* data, CommandList cmd, uint64_t size = ~0, uint64_t offset = 0)
@@ -418,7 +418,7 @@ namespace Protean::Graphics
 		void RenderPassBegin(const Texture* rendertarget, CommandList cmd, bool clear = true)
 		{
 			RenderPassImage rp[] = {
-				RenderPassImage::RenderTarget(rendertarget, clear ? RenderPassImage::LoadOp::CLEAR : RenderPassImage::LoadOp::LOAD),
+				RenderPassImage::RenderTarget(rendertarget, clear ? RenderPassImage::LoadOp_CLEAR : RenderPassImage::LoadOp_LOAD),
 			};
 			RenderPassBegin(rp, arraysize(rp), cmd);
 		}
@@ -429,9 +429,9 @@ namespace Protean::Graphics
 			for (uint32_t i = 0; i < texture.desc.mip_levels; ++i)
 			{
 				int subresource_index;
-				subresource_index = CreateSubresource(&texture, SubresourceType::SRV, 0, 1, i, 1);
+				subresource_index = CreateSubresource(&texture, SubresourceType_SRV, 0, 1, i, 1);
 				assert(subresource_index == i);
-				subresource_index = CreateSubresource(&texture, SubresourceType::UAV, 0, 1, i, 1);
+				subresource_index = CreateSubresource(&texture, SubresourceType_UAV, 0, 1, i, 1);
 				assert(subresource_index == i);
 			}
 		}
@@ -456,7 +456,7 @@ namespace Protean::Graphics
 			// Add a single texture into the heap, return its offset
 			uint64_t Add(const TextureDesc* desc)
 			{
-				rt_ds |= has_flag(desc->bind_flags, BindFlag::RENDER_TARGET) | has_flag(desc->bind_flags, BindFlag::DEPTH_STENCIL);
+				rt_ds |= has_flag(desc->bind_flags, BindFlag_RENDER_TARGET) | has_flag(desc->bind_flags, BindFlag_DEPTH_STENCIL);
 				SizeAlignment sizealign = device->GetDeviceTextureMemoryRequirements(desc);
 				size = align(size, sizealign.alignment);
 				alignment = std::max(alignment, sizealign.alignment);
@@ -472,7 +472,7 @@ namespace Protean::Graphics
 				uint64_t batch_alignment = 0;
 				for (const TextureDesc* desc : descs)
 				{
-					rt_ds |= has_flag(desc->bind_flags, BindFlag::RENDER_TARGET) | has_flag(desc->bind_flags, BindFlag::DEPTH_STENCIL);
+					rt_ds |= has_flag(desc->bind_flags, BindFlag_RENDER_TARGET) | has_flag(desc->bind_flags, BindFlag_DEPTH_STENCIL);
 					SizeAlignment sizealign = device->GetDeviceTextureMemoryRequirements(desc);
 					batch_size = std::max(batch_size, sizealign.size);
 					batch_alignment = std::max(batch_alignment, sizealign.alignment);
@@ -489,10 +489,10 @@ namespace Protean::Graphics
 			{
 				GPUBuffer heap;
 				GPUBufferDesc bd;
-				bd.usage = Usage::DEFAULT;
+				bd.usage = Usage_DEFAULT;
 				bd.size = size;
 				bd.alignment = (uint32_t)alignment;
-				bd.misc_flags = rt_ds ? ResourceMiscFlag::ALIASING_TEXTURE_RT_DS : ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS;
+				bd.misc_flags = rt_ds ? ResourceMiscFlag_ALIASING_TEXTURE_RT_DS : ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS;
 				device->CreateBuffer(&bd, nullptr, &heap);
 				return heap;
 			}
@@ -518,9 +518,9 @@ namespace Protean::Graphics
 		void RenderPassBegin(const RenderPass* renderpass, CommandList cmd)
 		{
 			RenderPassFlags flags = {};
-			if (has_flag(renderpass->desc.flags, RenderPassDesc::Flags::ALLOW_UAV_WRITES))
+			if (has_flag(renderpass->desc.flags, RenderPassDesc::Flags_ALLOW_UAV_WRITES))
 			{
-				flags |= RenderPassFlags::ALLOW_UAV_WRITES;
+				flags |= RenderPassFlags_ALLOW_UAV_WRITES;
 			}
 			RenderPassImage rp[32] = {};
 			for (size_t i = 0; i < renderpass->desc.attachments.size(); ++i)

@@ -62,19 +62,19 @@ namespace D3D12Internal
 	{
 		uint32_t _flag = 0;
 
-		if (value == ColorWrite::ENABLE_ALL)
+		if (value == ColorWrite_ENABLE_ALL)
 		{
 			return D3D12_COLOR_WRITE_ENABLE_ALL;
 		}
 		else
 		{
-			if (has_flag(value, ColorWrite::ENABLE_RED))
+			if (has_flag(value, ColorWrite_ENABLE_RED))
 				_flag |= D3D12_COLOR_WRITE_ENABLE_RED;
-			if (has_flag(value, ColorWrite::ENABLE_GREEN))
+			if (has_flag(value, ColorWrite_ENABLE_GREEN))
 				_flag |= D3D12_COLOR_WRITE_ENABLE_GREEN;
-			if (has_flag(value, ColorWrite::ENABLE_BLUE))
+			if (has_flag(value, ColorWrite_ENABLE_BLUE))
 				_flag |= D3D12_COLOR_WRITE_ENABLE_BLUE;
-			if (has_flag(value, ColorWrite::ENABLE_ALPHA))
+			if (has_flag(value, ColorWrite_ENABLE_ALPHA))
 				_flag |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
 		}
 
@@ -87,47 +87,47 @@ namespace D3D12Internal
 		// MISSING STATE: UNDEFINED
 		//	UNDEFINED state will be handled by DiscardResource() operation
 
-		if (has_flag(value, ResourceState::SHADER_RESOURCE))
+		if (has_flag(value, ResourceState_SHADER_RESOURCE))
 			ret |= D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-		if (has_flag(value, ResourceState::SHADER_RESOURCE_COMPUTE))
+		if (has_flag(value, ResourceState_SHADER_RESOURCE_COMPUTE))
 			ret |= D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-		if (has_flag(value, ResourceState::UNORDERED_ACCESS))
+		if (has_flag(value, ResourceState_UNORDERED_ACCESS))
 			ret |= D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-		if (has_flag(value, ResourceState::COPY_SRC))
+		if (has_flag(value, ResourceState_COPY_SRC))
 			ret |= D3D12_RESOURCE_STATE_COPY_SOURCE;
-		if (has_flag(value, ResourceState::COPY_DST))
+		if (has_flag(value, ResourceState_COPY_DST))
 			ret |= D3D12_RESOURCE_STATE_COPY_DEST;
 
-		if (has_flag(value, ResourceState::RENDERTARGET))
+		if (has_flag(value, ResourceState_RENDERTARGET))
 			ret |= D3D12_RESOURCE_STATE_RENDER_TARGET;
-		if (has_flag(value, ResourceState::DEPTHSTENCIL))
+		if (has_flag(value, ResourceState_DEPTHSTENCIL))
 			ret |= D3D12_RESOURCE_STATE_DEPTH_WRITE;
-		if (has_flag(value, ResourceState::DEPTHSTENCIL_READONLY))
+		if (has_flag(value, ResourceState_DEPTHSTENCIL_READONLY))
 			ret |= D3D12_RESOURCE_STATE_DEPTH_READ;
-		if (has_flag(value, ResourceState::SHADING_RATE_SOURCE))
+		if (has_flag(value, ResourceState_SHADING_RATE_SOURCE))
 			ret |= D3D12_RESOURCE_STATE_SHADING_RATE_SOURCE;
 
-		if (has_flag(value, ResourceState::VERTEX_BUFFER))
+		if (has_flag(value, ResourceState_VERTEX_BUFFER))
 			ret |= D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-		if (has_flag(value, ResourceState::INDEX_BUFFER))
+		if (has_flag(value, ResourceState_INDEX_BUFFER))
 			ret |= D3D12_RESOURCE_STATE_INDEX_BUFFER;
-		if (has_flag(value, ResourceState::CONSTANT_BUFFER))
+		if (has_flag(value, ResourceState_CONSTANT_BUFFER))
 			ret |= D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-		if (has_flag(value, ResourceState::INDIRECT_ARGUMENT))
+		if (has_flag(value, ResourceState_INDIRECT_ARGUMENT))
 			ret |= D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-		if (has_flag(value, ResourceState::RAYTRACING_ACCELERATION_STRUCTURE))
+		if (has_flag(value, ResourceState_RAYTRACING_ACCELERATION_STRUCTURE))
 			ret |= D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE;
-		if (has_flag(value, ResourceState::PREDICATION))
+		if (has_flag(value, ResourceState_PREDICATION))
 			ret |= D3D12_RESOURCE_STATE_PREDICATION;
 
-		if (has_flag(value, ResourceState::VIDEO_DECODE_SRC))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_SRC))
 			ret |= D3D12_RESOURCE_STATE_VIDEO_DECODE_READ;
-		if (has_flag(value, ResourceState::VIDEO_DECODE_DST))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_DST))
 			ret |= D3D12_RESOURCE_STATE_VIDEO_DECODE_WRITE;
-		if (has_flag(value, ResourceState::VIDEO_DECODE_DPB))
+		if (has_flag(value, ResourceState_VIDEO_DECODE_DPB))
 			ret |= D3D12_RESOURCE_STATE_VIDEO_DECODE_WRITE;
 
-		if (has_flag(value, ResourceState::SWAPCHAIN))
+		if (has_flag(value, ResourceState_SWAPCHAIN))
 			ret |= D3D12_RESOURCE_STATE_PRESENT;
 
 		return ret;
@@ -136,112 +136,112 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case Filter::MIN_MAG_MIP_POINT:
+		case Filter_MIN_MAG_MIP_POINT:
 			return D3D12_FILTER_MIN_MAG_MIP_POINT;
 			break;
-		case Filter::MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MIN_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MIN_POINT_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR;
 			break;
-		case Filter::MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MIN_LINEAR_MAG_MIP_POINT:
 			return D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT;
 			break;
-		case Filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MIN_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MIN_MAG_MIP_LINEAR:
+		case Filter_MIN_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 			break;
-		case Filter::ANISOTROPIC:
+		case Filter_ANISOTROPIC:
 			return D3D12_FILTER_ANISOTROPIC;
 			break;
-		case Filter::COMPARISON_MIN_MAG_MIP_POINT:
+		case Filter_COMPARISON_MIN_MAG_MIP_POINT:
 			return D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 			break;
-		case Filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
 			return D3D12_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
 			break;
-		case Filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
 			return D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
 			break;
-		case Filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::COMPARISON_MIN_MAG_MIP_LINEAR:
+		case Filter_COMPARISON_MIN_MAG_MIP_LINEAR:
 			return D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 			break;
-		case Filter::COMPARISON_ANISOTROPIC:
+		case Filter_COMPARISON_ANISOTROPIC:
 			return D3D12_FILTER_COMPARISON_ANISOTROPIC;
 			break;
-		case Filter::MINIMUM_MIN_MAG_MIP_POINT:
+		case Filter_MINIMUM_MIN_MAG_MIP_POINT:
 			return D3D12_FILTER_MINIMUM_MIN_MAG_MIP_POINT;
 			break;
-		case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MINIMUM_MIN_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR;
 			break;
-		case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
 			return D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_MIP_POINT;
 			break;
-		case Filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MINIMUM_MIN_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MINIMUM_MIN_MAG_MIP_LINEAR:
+		case Filter_MINIMUM_MIN_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MINIMUM_MIN_MAG_MIP_LINEAR;
 			break;
-		case Filter::MINIMUM_ANISOTROPIC:
+		case Filter_MINIMUM_ANISOTROPIC:
 			return D3D12_FILTER_MINIMUM_ANISOTROPIC;
 			break;
-		case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
+		case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
 			return D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_POINT;
 			break;
-		case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+		case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR;
 			break;
-		case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+		case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
 			return D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT;
 			break;
-		case Filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 			return D3D12_FILTER_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			break;
-		case Filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
+		case Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
 			return D3D12_FILTER_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT;
 			break;
-		case Filter::MAXIMUM_MIN_MAG_MIP_LINEAR:
+		case Filter_MAXIMUM_MIN_MAG_MIP_LINEAR:
 			return D3D12_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR;
 			break;
-		case Filter::MAXIMUM_ANISOTROPIC:
+		case Filter_MAXIMUM_ANISOTROPIC:
 			return D3D12_FILTER_MAXIMUM_ANISOTROPIC;
 			break;
 		default:
@@ -253,17 +253,17 @@ namespace D3D12Internal
 	{
 		switch (topology)
 		{
-			case PrimitiveTopology::POINTLIST:
+			case PrimitiveTopology_POINTLIST:
 				return D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-			case PrimitiveTopology::LINELIST:
+			case PrimitiveTopology_LINELIST:
 				return D3D_PRIMITIVE_TOPOLOGY_LINELIST;
-			case PrimitiveTopology::LINESTRIP:
+			case PrimitiveTopology_LINESTRIP:
 				return D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
-			case PrimitiveTopology::TRIANGLELIST:
+			case PrimitiveTopology_TRIANGLELIST:
 				return D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			case PrimitiveTopology::TRIANGLESTRIP:
+			case PrimitiveTopology_TRIANGLESTRIP:
 				return D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-			case PrimitiveTopology::PATCHLIST:
+			case PrimitiveTopology_PATCHLIST:
 				if (controlPoints == 0 || controlPoints > 32)
 				{
 					assert(false && "Invalid PatchList control points");
@@ -278,15 +278,15 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case TextureAddressMode::WRAP:
+		case TextureAddressMode_WRAP:
 			return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		case TextureAddressMode::MIRROR:
+		case TextureAddressMode_MIRROR:
 			return D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
-		case TextureAddressMode::CLAMP:
+		case TextureAddressMode_CLAMP:
 			return D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		case TextureAddressMode::BORDER:
+		case TextureAddressMode_BORDER:
 			return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-		case TextureAddressMode::MIRROR_ONCE:
+		case TextureAddressMode_MIRROR_ONCE:
 			return D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
 		default:
 			return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -296,11 +296,11 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case SamplerBorderColor::TRANSPARENT_BLACK:
+		case SamplerBorderColor_TRANSPARENT_BLACK:
 			return D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-		case SamplerBorderColor::OPAQUE_BLACK:
+		case SamplerBorderColor_OPAQUE_BLACK:
 			return D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-		case SamplerBorderColor::OPAQUE_WHITE:
+		case SamplerBorderColor_OPAQUE_WHITE:
 			return D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
 		default:
 			return D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
@@ -310,28 +310,28 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case ComparisonFunc::NEVER:
+		case ComparisonFunc_NEVER:
 			return D3D12_COMPARISON_FUNC_NEVER;
 			break;
-		case ComparisonFunc::LESS:
+		case ComparisonFunc_LESS:
 			return D3D12_COMPARISON_FUNC_LESS;
 			break;
-		case ComparisonFunc::EQUAL:
+		case ComparisonFunc_EQUAL:
 			return D3D12_COMPARISON_FUNC_EQUAL;
 			break;
-		case ComparisonFunc::LESS_EQUAL:
+		case ComparisonFunc_LESS_EQUAL:
 			return D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			break;
-		case ComparisonFunc::GREATER:
+		case ComparisonFunc_GREATER:
 			return D3D12_COMPARISON_FUNC_GREATER;
 			break;
-		case ComparisonFunc::NOT_EQUAL:
+		case ComparisonFunc_NOT_EQUAL:
 			return D3D12_COMPARISON_FUNC_NOT_EQUAL;
 			break;
-		case ComparisonFunc::GREATER_EQUAL:
+		case ComparisonFunc_GREATER_EQUAL:
 			return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
 			break;
-		case ComparisonFunc::ALWAYS:
+		case ComparisonFunc_ALWAYS:
 			return D3D12_COMPARISON_FUNC_ALWAYS;
 			break;
 		default:
@@ -343,10 +343,10 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case FillMode::WIREFRAME:
+		case FillMode_WIREFRAME:
 			return D3D12_FILL_MODE_WIREFRAME;
 			break;
-		case FillMode::SOLID:
+		case FillMode_SOLID:
 			return D3D12_FILL_MODE_SOLID;
 			break;
 		default:
@@ -358,13 +358,13 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case CullMode::NONE:
+		case CullMode_NONE:
 			return D3D12_CULL_MODE_NONE;
 			break;
-		case CullMode::FRONT:
+		case CullMode_FRONT:
 			return D3D12_CULL_MODE_FRONT;
 			break;
-		case CullMode::BACK:
+		case CullMode_BACK:
 			return D3D12_CULL_MODE_BACK;
 			break;
 		default:
@@ -376,10 +376,10 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case DepthWriteMask::ZERO:
+		case DepthWriteMask_ZERO:
 			return D3D12_DEPTH_WRITE_MASK_ZERO;
 			break;
-		case DepthWriteMask::ALL:
+		case DepthWriteMask_ALL:
 			return D3D12_DEPTH_WRITE_MASK_ALL;
 			break;
 		default:
@@ -391,28 +391,28 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case StencilOp::KEEP:
+		case StencilOp_KEEP:
 			return D3D12_STENCIL_OP_KEEP;
 			break;
-		case StencilOp::ZERO:
+		case StencilOp_ZERO:
 			return D3D12_STENCIL_OP_ZERO;
 			break;
-		case StencilOp::REPLACE:
+		case StencilOp_REPLACE:
 			return D3D12_STENCIL_OP_REPLACE;
 			break;
-		case StencilOp::INCR_SAT:
+		case StencilOp_INCR_SAT:
 			return D3D12_STENCIL_OP_INCR_SAT;
 			break;
-		case StencilOp::DECR_SAT:
+		case StencilOp_DECR_SAT:
 			return D3D12_STENCIL_OP_DECR_SAT;
 			break;
-		case StencilOp::INVERT:
+		case StencilOp_INVERT:
 			return D3D12_STENCIL_OP_INVERT;
 			break;
-		case StencilOp::INCR:
+		case StencilOp_INCR:
 			return D3D12_STENCIL_OP_INCR;
 			break;
-		case StencilOp::DECR:
+		case StencilOp_DECR:
 			return D3D12_STENCIL_OP_DECR;
 			break;
 		default:
@@ -424,39 +424,39 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case Blend::ZERO:
+		case Blend_ZERO:
 			return D3D12_BLEND_ZERO;
-		case Blend::ONE:
+		case Blend_ONE:
 			return D3D12_BLEND_ONE;
-		case Blend::SRC_COLOR:
+		case Blend_SRC_COLOR:
 			return D3D12_BLEND_SRC_COLOR;
-		case Blend::INV_SRC_COLOR:
+		case Blend_INV_SRC_COLOR:
 			return D3D12_BLEND_INV_SRC_COLOR;
-		case Blend::SRC_ALPHA:
+		case Blend_SRC_ALPHA:
 			return D3D12_BLEND_SRC_ALPHA;
-		case Blend::INV_SRC_ALPHA:
+		case Blend_INV_SRC_ALPHA:
 			return D3D12_BLEND_INV_SRC_ALPHA;
-		case Blend::DEST_ALPHA:
+		case Blend_DEST_ALPHA:
 			return D3D12_BLEND_DEST_ALPHA;
-		case Blend::INV_DEST_ALPHA:
+		case Blend_INV_DEST_ALPHA:
 			return D3D12_BLEND_INV_DEST_ALPHA;
-		case Blend::DEST_COLOR:
+		case Blend_DEST_COLOR:
 			return D3D12_BLEND_DEST_COLOR;
-		case Blend::INV_DEST_COLOR:
+		case Blend_INV_DEST_COLOR:
 			return D3D12_BLEND_INV_DEST_COLOR;
-		case Blend::SRC_ALPHA_SAT:
+		case Blend_SRC_ALPHA_SAT:
 			return D3D12_BLEND_SRC_ALPHA_SAT;
-		case Blend::BLEND_FACTOR:
+		case Blend_BLEND_FACTOR:
 			return D3D12_BLEND_BLEND_FACTOR;
-		case Blend::INV_BLEND_FACTOR:
+		case Blend_INV_BLEND_FACTOR:
 			return D3D12_BLEND_INV_BLEND_FACTOR;
-		case Blend::SRC1_COLOR:
+		case Blend_SRC1_COLOR:
 			return D3D12_BLEND_SRC1_COLOR;
-		case Blend::INV_SRC1_COLOR:
+		case Blend_INV_SRC1_COLOR:
 			return D3D12_BLEND_INV_SRC1_COLOR;
-		case Blend::SRC1_ALPHA:
+		case Blend_SRC1_ALPHA:
 			return D3D12_BLEND_SRC1_ALPHA;
-		case Blend::INV_SRC1_ALPHA:
+		case Blend_INV_SRC1_ALPHA:
 			return D3D12_BLEND_INV_SRC1_ALPHA;
 		default:
 			return D3D12_BLEND_ZERO;
@@ -466,17 +466,17 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-			case Blend::SRC_COLOR:
+			case Blend_SRC_COLOR:
 				return D3D12_BLEND_SRC_ALPHA;
-			case Blend::INV_SRC_COLOR:
+			case Blend_INV_SRC_COLOR:
 				return D3D12_BLEND_INV_SRC_ALPHA;
-			case Blend::DEST_COLOR:
+			case Blend_DEST_COLOR:
 				return D3D12_BLEND_DEST_ALPHA;
-			case Blend::INV_DEST_COLOR:
+			case Blend_INV_DEST_COLOR:
 				return D3D12_BLEND_INV_DEST_ALPHA;
-			case Blend::SRC1_COLOR:
+			case Blend_SRC1_COLOR:
 				return D3D12_BLEND_SRC1_ALPHA;
-			case Blend::INV_SRC1_COLOR:
+			case Blend_INV_SRC1_COLOR:
 				return D3D12_BLEND_INV_SRC1_ALPHA;
 			default:
 				return _ConvertBlend(value);
@@ -486,15 +486,15 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case BlendOp::ADD:
+		case BlendOp_ADD:
 			return D3D12_BLEND_OP_ADD;
-		case BlendOp::SUBTRACT:
+		case BlendOp_SUBTRACT:
 			return D3D12_BLEND_OP_SUBTRACT;
-		case BlendOp::REV_SUBTRACT:
+		case BlendOp_REV_SUBTRACT:
 			return D3D12_BLEND_OP_REV_SUBTRACT;
-		case BlendOp::MIN:
+		case BlendOp_MIN:
 			return D3D12_BLEND_OP_MIN;
-		case BlendOp::MAX:
+		case BlendOp_MAX:
 			return D3D12_BLEND_OP_MAX;
 		default:
 			return D3D12_BLEND_OP_ADD;
@@ -504,7 +504,7 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case InputClassification::PER_INSTANCE_DATA:
+		case InputClassification_PER_INSTANCE_DATA:
 			return D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
 			break;
 		default:
@@ -515,137 +515,137 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case Format::UNKNOWN:
+		case Format_UNKNOWN:
 			return DXGI_FORMAT_UNKNOWN;
-		case Format::R32G32B32A32_FLOAT:
+		case Format_R32G32B32A32_FLOAT:
 			return DXGI_FORMAT_R32G32B32A32_FLOAT;
-		case Format::R32G32B32A32_UINT:
+		case Format_R32G32B32A32_UINT:
 			return DXGI_FORMAT_R32G32B32A32_UINT;
-		case Format::R32G32B32A32_SINT:
+		case Format_R32G32B32A32_SINT:
 			return DXGI_FORMAT_R32G32B32A32_SINT;
-		case Format::R32G32B32_FLOAT:
+		case Format_R32G32B32_FLOAT:
 			return DXGI_FORMAT_R32G32B32_FLOAT;
-		case Format::R32G32B32_UINT:
+		case Format_R32G32B32_UINT:
 			return DXGI_FORMAT_R32G32B32_UINT;
-		case Format::R32G32B32_SINT:
+		case Format_R32G32B32_SINT:
 			return DXGI_FORMAT_R32G32B32_SINT;
-		case Format::R16G16B16A16_FLOAT:
+		case Format_R16G16B16A16_FLOAT:
 			return DXGI_FORMAT_R16G16B16A16_FLOAT;
-		case Format::R16G16B16A16_UNORM:
+		case Format_R16G16B16A16_UNORM:
 			return DXGI_FORMAT_R16G16B16A16_UNORM;
-		case Format::R16G16B16A16_UINT:
+		case Format_R16G16B16A16_UINT:
 			return DXGI_FORMAT_R16G16B16A16_UINT;
-		case Format::R16G16B16A16_SNORM:
+		case Format_R16G16B16A16_SNORM:
 			return DXGI_FORMAT_R16G16B16A16_SNORM;
-		case Format::R16G16B16A16_SINT:
+		case Format_R16G16B16A16_SINT:
 			return DXGI_FORMAT_R16G16B16A16_SINT;
-		case Format::R32G32_FLOAT:
+		case Format_R32G32_FLOAT:
 			return DXGI_FORMAT_R32G32_FLOAT;
-		case Format::R32G32_UINT:
+		case Format_R32G32_UINT:
 			return DXGI_FORMAT_R32G32_UINT;
-		case Format::R32G32_SINT:
+		case Format_R32G32_SINT:
 			return DXGI_FORMAT_R32G32_SINT;
-		case Format::D32_FLOAT_S8X24_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
 			return DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
-		case Format::R10G10B10A2_UNORM:
+		case Format_R10G10B10A2_UNORM:
 			return DXGI_FORMAT_R10G10B10A2_UNORM;
-		case Format::R10G10B10A2_UINT:
+		case Format_R10G10B10A2_UINT:
 			return DXGI_FORMAT_R10G10B10A2_UINT;
-		case Format::R11G11B10_FLOAT:
+		case Format_R11G11B10_FLOAT:
 			return DXGI_FORMAT_R11G11B10_FLOAT;
-		case Format::R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM:
 			return DXGI_FORMAT_R8G8B8A8_UNORM;
-		case Format::R8G8B8A8_UNORM_SRGB:
+		case Format_R8G8B8A8_UNORM_SRGB:
 			return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-		case Format::R8G8B8A8_UINT:
+		case Format_R8G8B8A8_UINT:
 			return DXGI_FORMAT_R8G8B8A8_UINT;
-		case Format::R8G8B8A8_SNORM:
+		case Format_R8G8B8A8_SNORM:
 			return DXGI_FORMAT_R8G8B8A8_SNORM;
-		case Format::R8G8B8A8_SINT:
+		case Format_R8G8B8A8_SINT:
 			return DXGI_FORMAT_R8G8B8A8_SINT;
-		case Format::R16G16_FLOAT:
+		case Format_R16G16_FLOAT:
 			return DXGI_FORMAT_R16G16_FLOAT;
-		case Format::R16G16_UNORM:
+		case Format_R16G16_UNORM:
 			return DXGI_FORMAT_R16G16_UNORM;
-		case Format::R16G16_UINT:
+		case Format_R16G16_UINT:
 			return DXGI_FORMAT_R16G16_UINT;
-		case Format::R16G16_SNORM:
+		case Format_R16G16_SNORM:
 			return DXGI_FORMAT_R16G16_SNORM;
-		case Format::R16G16_SINT:
+		case Format_R16G16_SINT:
 			return DXGI_FORMAT_R16G16_SINT;
-		case Format::D32_FLOAT:
+		case Format_D32_FLOAT:
 			return DXGI_FORMAT_D32_FLOAT;
-		case Format::R32_FLOAT:
+		case Format_R32_FLOAT:
 			return DXGI_FORMAT_R32_FLOAT;
-		case Format::R32_UINT:
+		case Format_R32_UINT:
 			return DXGI_FORMAT_R32_UINT;
-		case Format::R32_SINT:
+		case Format_R32_SINT:
 			return DXGI_FORMAT_R32_SINT;
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return DXGI_FORMAT_D24_UNORM_S8_UINT;
-		case Format::R9G9B9E5_SHAREDEXP:
+		case Format_R9G9B9E5_SHAREDEXP:
 			return DXGI_FORMAT_R9G9B9E5_SHAREDEXP;
-		case Format::R8G8_UNORM:
+		case Format_R8G8_UNORM:
 			return DXGI_FORMAT_R8G8_UNORM;
-		case Format::R8G8_UINT:
+		case Format_R8G8_UINT:
 			return DXGI_FORMAT_R8G8_UINT;
-		case Format::R8G8_SNORM:
+		case Format_R8G8_SNORM:
 			return DXGI_FORMAT_R8G8_SNORM;
-		case Format::R8G8_SINT:
+		case Format_R8G8_SINT:
 			return DXGI_FORMAT_R8G8_SINT;
-		case Format::R16_FLOAT:
+		case Format_R16_FLOAT:
 			return DXGI_FORMAT_R16_FLOAT;
-		case Format::D16_UNORM:
+		case Format_D16_UNORM:
 			return DXGI_FORMAT_D16_UNORM;
-		case Format::R16_UNORM:
+		case Format_R16_UNORM:
 			return DXGI_FORMAT_R16_UNORM;
-		case Format::R16_UINT:
+		case Format_R16_UINT:
 			return DXGI_FORMAT_R16_UINT;
-		case Format::R16_SNORM:
+		case Format_R16_SNORM:
 			return DXGI_FORMAT_R16_SNORM;
-		case Format::R16_SINT:
+		case Format_R16_SINT:
 			return DXGI_FORMAT_R16_SINT;
-		case Format::R8_UNORM:
+		case Format_R8_UNORM:
 			return DXGI_FORMAT_R8_UNORM;
-		case Format::R8_UINT:
+		case Format_R8_UINT:
 			return DXGI_FORMAT_R8_UINT;
-		case Format::R8_SNORM:
+		case Format_R8_SNORM:
 			return DXGI_FORMAT_R8_SNORM;
-		case Format::R8_SINT:
+		case Format_R8_SINT:
 			return DXGI_FORMAT_R8_SINT;
-		case Format::BC1_UNORM:
+		case Format_BC1_UNORM:
 			return DXGI_FORMAT_BC1_UNORM;
-		case Format::BC1_UNORM_SRGB:
+		case Format_BC1_UNORM_SRGB:
 			return DXGI_FORMAT_BC1_UNORM_SRGB;
-		case Format::BC2_UNORM:
+		case Format_BC2_UNORM:
 			return DXGI_FORMAT_BC2_UNORM;
-		case Format::BC2_UNORM_SRGB:
+		case Format_BC2_UNORM_SRGB:
 			return DXGI_FORMAT_BC2_UNORM_SRGB;
-		case Format::BC3_UNORM:
+		case Format_BC3_UNORM:
 			return DXGI_FORMAT_BC3_UNORM;
-		case Format::BC3_UNORM_SRGB:
+		case Format_BC3_UNORM_SRGB:
 			return DXGI_FORMAT_BC3_UNORM_SRGB;
-		case Format::BC4_UNORM:
+		case Format_BC4_UNORM:
 			return DXGI_FORMAT_BC4_UNORM;
-		case Format::BC4_SNORM:
+		case Format_BC4_SNORM:
 			return DXGI_FORMAT_BC4_SNORM;
-		case Format::BC5_UNORM:
+		case Format_BC5_UNORM:
 			return DXGI_FORMAT_BC5_UNORM;
-		case Format::BC5_SNORM:
+		case Format_BC5_SNORM:
 			return DXGI_FORMAT_BC5_SNORM;
-		case Format::B8G8R8A8_UNORM:
+		case Format_B8G8R8A8_UNORM:
 			return DXGI_FORMAT_B8G8R8A8_UNORM;
-		case Format::B8G8R8A8_UNORM_SRGB:
+		case Format_B8G8R8A8_UNORM_SRGB:
 			return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-		case Format::BC6H_UF16:
+		case Format_BC6H_UF16:
 			return DXGI_FORMAT_BC6H_UF16;
-		case Format::BC6H_SF16:
+		case Format_BC6H_SF16:
 			return DXGI_FORMAT_BC6H_SF16;
-		case Format::BC7_UNORM:
+		case Format_BC7_UNORM:
 			return DXGI_FORMAT_BC7_UNORM;
-		case Format::BC7_UNORM_SRGB:
+		case Format_BC7_UNORM_SRGB:
 			return DXGI_FORMAT_BC7_UNORM_SRGB;
-		case Format::NV12:
+		case Format_NV12:
 			return DXGI_FORMAT_NV12;
 		}
 		return DXGI_FORMAT_UNKNOWN;
@@ -783,19 +783,19 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case ShaderStage::MS:
+		case ShaderStage_MS:
 			return D3D12_SHADER_VISIBILITY_MESH;
-		case ShaderStage::AS:
+		case ShaderStage_AS:
 			return D3D12_SHADER_VISIBILITY_AMPLIFICATION;
-		case ShaderStage::VS:
+		case ShaderStage_VS:
 			return D3D12_SHADER_VISIBILITY_VERTEX;
-		case ShaderStage::HS:
+		case ShaderStage_HS:
 			return D3D12_SHADER_VISIBILITY_HULL;
-		case ShaderStage::DS:
+		case ShaderStage_DS:
 			return D3D12_SHADER_VISIBILITY_DOMAIN;
-		case ShaderStage::GS:
+		case ShaderStage_GS:
 			return D3D12_SHADER_VISIBILITY_GEOMETRY;
-		case ShaderStage::PS:
+		case ShaderStage_PS:
 			return D3D12_SHADER_VISIBILITY_PIXEL;
 		default:
 			return D3D12_SHADER_VISIBILITY_ALL;
@@ -806,19 +806,19 @@ namespace D3D12Internal
 	{
 		switch (value)
 		{
-		case ShadingRate::RATE_1X1:
+		case ShadingRate_RATE_1X1:
 			return D3D12_SHADING_RATE_1X1;
-		case ShadingRate::RATE_1X2:
+		case ShadingRate_RATE_1X2:
 			return D3D12_SHADING_RATE_1X2;
-		case ShadingRate::RATE_2X1:
+		case ShadingRate_RATE_2X1:
 			return D3D12_SHADING_RATE_2X1;
-		case ShadingRate::RATE_2X2:
+		case ShadingRate_RATE_2X2:
 			return D3D12_SHADING_RATE_2X2;
-		case ShadingRate::RATE_2X4:
+		case ShadingRate_RATE_2X4:
 			return D3D12_SHADING_RATE_2X4;
-		case ShadingRate::RATE_4X2:
+		case ShadingRate_RATE_4X2:
 			return D3D12_SHADING_RATE_4X2;
-		case ShadingRate::RATE_4X4:
+		case ShadingRate_RATE_4X4:
 			return D3D12_SHADING_RATE_4X4;
 		default:
 			return D3D12_SHADING_RATE_1X1;
@@ -830,15 +830,15 @@ namespace D3D12Internal
 		switch (value)
 		{
 		default:
-		case Protean::Graphics::ImageAspect::COLOR:
+		case Protean::Graphics::ImageAspect_COLOR:
 			return 0;
-		case Protean::Graphics::ImageAspect::DEPTH:
+		case Protean::Graphics::ImageAspect_DEPTH:
 			return 0;
-		case Protean::Graphics::ImageAspect::STENCIL:
+		case Protean::Graphics::ImageAspect_STENCIL:
 			return 1;
-		case Protean::Graphics::ImageAspect::LUMINANCE:
+		case Protean::Graphics::ImageAspect_LUMINANCE:
 			return 0;
-		case Protean::Graphics::ImageAspect::CHROMINANCE:
+		case Protean::Graphics::ImageAspect_CHROMINANCE:
 			return 1;
 		}
 	}
@@ -847,17 +847,17 @@ namespace D3D12Internal
 		switch (value)
 		{
 		default:
-		case Protean::Graphics::ComponentSwizzle::R:
+		case Protean::Graphics::ComponentSwizzle_R:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_0;
-		case Protean::Graphics::ComponentSwizzle::G:
+		case Protean::Graphics::ComponentSwizzle_G:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_1;
-		case Protean::Graphics::ComponentSwizzle::B:
+		case Protean::Graphics::ComponentSwizzle_B:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_2;
-		case Protean::Graphics::ComponentSwizzle::A:
+		case Protean::Graphics::ComponentSwizzle_A:
 			return D3D12_SHADER_COMPONENT_MAPPING_FROM_MEMORY_COMPONENT_3;
-		case Protean::Graphics::ComponentSwizzle::ZERO:
+		case Protean::Graphics::ComponentSwizzle_ZERO:
 			return D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_0;
-		case Protean::Graphics::ComponentSwizzle::ONE:
+		case Protean::Graphics::ComponentSwizzle_ONE:
 			return D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1;
 		}
 	}
@@ -867,7 +867,7 @@ namespace D3D12Internal
 	}
 	constexpr D3D12_RESOURCE_DESC _ConvertTextureDesc(const TextureDesc& desc, bool casting_fully_typed_formats)
 	{
-		bool require_format_casting = has_flag(desc.misc_flags, ResourceMiscFlag::TYPED_FORMAT_CASTING);
+		bool require_format_casting = has_flag(desc.misc_flags, ResourceMiscFlag_TYPED_FORMAT_CASTING);
 
 		D3D12_RESOURCE_DESC resourcedesc = {};
 		resourcedesc.Format = _ConvertFormat(desc.format);
@@ -880,10 +880,10 @@ namespace D3D12Internal
 		resourcedesc.SampleDesc.Quality = 0;
 		resourcedesc.Alignment = 0;
 		resourcedesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-		if (has_flag(desc.bind_flags, BindFlag::DEPTH_STENCIL))
+		if (has_flag(desc.bind_flags, BindFlag_DEPTH_STENCIL))
 		{
 			resourcedesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-			if (has_flag(desc.bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(desc.bind_flags, BindFlag_SHADER_RESOURCE))
 			{
 				require_format_casting = true;
 			}
@@ -892,15 +892,15 @@ namespace D3D12Internal
 				resourcedesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 			}
 		}
-		if (has_flag(desc.bind_flags, BindFlag::RENDER_TARGET))
+		if (has_flag(desc.bind_flags, BindFlag_RENDER_TARGET))
 		{
 			resourcedesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 		}
-		if (has_flag(desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (has_flag(desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			resourcedesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 		}
-		if (!has_flag(desc.bind_flags, BindFlag::DEPTH_STENCIL) && resourcedesc.SampleDesc.Count <= 1)
+		if (!has_flag(desc.bind_flags, BindFlag_DEPTH_STENCIL) && resourcedesc.SampleDesc.Count <= 1)
 		{
 			// The copy and video queues have much stricter requirements to supported resource states, but they support
 			//	implicit promotion from COMMON state. Because user is not allowed to set resource to COMMON state, we use this flag
@@ -909,7 +909,7 @@ namespace D3D12Internal
 		}
 
 #ifndef PLATFORM_XBOX
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY))
 		{
 			resourcedesc.Flags = D3D12_RESOURCE_FLAG_VIDEO_DECODE_REFERENCE_ONLY | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 		}
@@ -917,13 +917,13 @@ namespace D3D12Internal
 
 		switch (desc.type)
 		{
-		case TextureDesc::Type::TEXTURE_1D:
+		case TextureDesc::Type_TEXTURE_1D:
 			resourcedesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE1D;
 			break;
-		case TextureDesc::Type::TEXTURE_2D:
+		case TextureDesc::Type_TEXTURE_2D:
 			resourcedesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 			break;
-		case TextureDesc::Type::TEXTURE_3D:
+		case TextureDesc::Type_TEXTURE_3D:
 			resourcedesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 			resourcedesc.DepthOrArraySize = (UINT16)desc.depth;
 			break;
@@ -932,7 +932,7 @@ namespace D3D12Internal
 			break;
 		}
 
-		if ((!casting_fully_typed_formats && require_format_casting) || has_flag(desc.misc_flags, ResourceMiscFlag::TYPELESS_FORMAT_CASTING))
+		if ((!casting_fully_typed_formats && require_format_casting) || has_flag(desc.misc_flags, ResourceMiscFlag_TYPELESS_FORMAT_CASTING))
 		{
 			resourcedesc.Format = _ConvertFormatToTypeless(resourcedesc.Format);
 		}
@@ -950,139 +950,139 @@ namespace D3D12Internal
 		switch (value)
 		{
 		case DXGI_FORMAT_UNKNOWN:
-			return Format::UNKNOWN;
+			return Format_UNKNOWN;
 		case DXGI_FORMAT_R32G32B32A32_FLOAT:
-			return Format::R32G32B32A32_FLOAT;
+			return Format_R32G32B32A32_FLOAT;
 		case DXGI_FORMAT_R32G32B32A32_UINT:
-			return Format::R32G32B32A32_UINT;
+			return Format_R32G32B32A32_UINT;
 		case DXGI_FORMAT_R32G32B32A32_SINT:
-			return Format::R32G32B32A32_SINT;
+			return Format_R32G32B32A32_SINT;
 		case DXGI_FORMAT_R32G32B32_FLOAT:
-			return Format::R32G32B32_FLOAT;
+			return Format_R32G32B32_FLOAT;
 		case DXGI_FORMAT_R32G32B32_UINT:
-			return Format::R32G32B32_UINT;
+			return Format_R32G32B32_UINT;
 		case DXGI_FORMAT_R32G32B32_SINT:
-			return Format::R32G32B32_SINT;
+			return Format_R32G32B32_SINT;
 		case DXGI_FORMAT_R16G16B16A16_FLOAT:
-			return Format::R16G16B16A16_FLOAT;
+			return Format_R16G16B16A16_FLOAT;
 		case DXGI_FORMAT_R16G16B16A16_UNORM:
-			return Format::R16G16B16A16_UNORM;
+			return Format_R16G16B16A16_UNORM;
 		case DXGI_FORMAT_R16G16B16A16_UINT:
-			return Format::R16G16B16A16_UINT;
+			return Format_R16G16B16A16_UINT;
 		case DXGI_FORMAT_R16G16B16A16_SNORM:
-			return Format::R16G16B16A16_SNORM;
+			return Format_R16G16B16A16_SNORM;
 		case DXGI_FORMAT_R16G16B16A16_SINT:
-			return Format::R16G16B16A16_SINT;
+			return Format_R16G16B16A16_SINT;
 		case DXGI_FORMAT_R32G32_FLOAT:
-			return Format::R32G32_FLOAT;
+			return Format_R32G32_FLOAT;
 		case DXGI_FORMAT_R32G32_UINT:
-			return Format::R32G32_UINT;
+			return Format_R32G32_UINT;
 		case DXGI_FORMAT_R32G32_SINT:
-			return Format::R32G32_SINT;
+			return Format_R32G32_SINT;
 		case DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
-			return Format::D32_FLOAT_S8X24_UINT;
+			return Format_D32_FLOAT_S8X24_UINT;
 		case DXGI_FORMAT_R10G10B10A2_UNORM:
-			return Format::R10G10B10A2_UNORM;
+			return Format_R10G10B10A2_UNORM;
 		case DXGI_FORMAT_R10G10B10A2_UINT:
-			return Format::R10G10B10A2_UINT;
+			return Format_R10G10B10A2_UINT;
 		case DXGI_FORMAT_R11G11B10_FLOAT:
-			return Format::R11G11B10_FLOAT;
+			return Format_R11G11B10_FLOAT;
 		case DXGI_FORMAT_R8G8B8A8_UNORM:
-			return Format::R8G8B8A8_UNORM;
+			return Format_R8G8B8A8_UNORM;
 		case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
-			return Format::R8G8B8A8_UNORM_SRGB;
+			return Format_R8G8B8A8_UNORM_SRGB;
 		case DXGI_FORMAT_R8G8B8A8_UINT:
-			return Format::R8G8B8A8_UINT;
+			return Format_R8G8B8A8_UINT;
 		case DXGI_FORMAT_R8G8B8A8_SNORM:
-			return Format::R8G8B8A8_SNORM;
+			return Format_R8G8B8A8_SNORM;
 		case DXGI_FORMAT_R8G8B8A8_SINT:
-			return Format::R8G8B8A8_SINT;
+			return Format_R8G8B8A8_SINT;
 		case DXGI_FORMAT_R16G16_FLOAT:
-			return Format::R16G16_FLOAT;
+			return Format_R16G16_FLOAT;
 		case DXGI_FORMAT_R16G16_UNORM:
-			return Format::R16G16_UNORM;
+			return Format_R16G16_UNORM;
 		case DXGI_FORMAT_R16G16_UINT:
-			return Format::R16G16_UINT;
+			return Format_R16G16_UINT;
 		case DXGI_FORMAT_R16G16_SNORM:
-			return Format::R16G16_SNORM;
+			return Format_R16G16_SNORM;
 		case DXGI_FORMAT_R16G16_SINT:
-			return Format::R16G16_SINT;
+			return Format_R16G16_SINT;
 		case DXGI_FORMAT_D32_FLOAT:
-			return Format::D32_FLOAT;
+			return Format_D32_FLOAT;
 		case DXGI_FORMAT_R32_FLOAT:
-			return Format::R32_FLOAT;
+			return Format_R32_FLOAT;
 		case DXGI_FORMAT_R32_UINT:
-			return Format::R32_UINT;
+			return Format_R32_UINT;
 		case DXGI_FORMAT_R32_SINT:
-			return Format::R32_SINT;
+			return Format_R32_SINT;
 		case DXGI_FORMAT_D24_UNORM_S8_UINT:
-			return Format::D24_UNORM_S8_UINT;
+			return Format_D24_UNORM_S8_UINT;
 		case DXGI_FORMAT_R9G9B9E5_SHAREDEXP:
-			return Format::R9G9B9E5_SHAREDEXP;
+			return Format_R9G9B9E5_SHAREDEXP;
 		case DXGI_FORMAT_R8G8_UNORM:
-			return Format::R8G8_UNORM;
+			return Format_R8G8_UNORM;
 		case DXGI_FORMAT_R8G8_UINT:
-			return Format::R8G8_UINT;
+			return Format_R8G8_UINT;
 		case DXGI_FORMAT_R8G8_SNORM:
-			return Format::R8G8_SNORM;
+			return Format_R8G8_SNORM;
 		case DXGI_FORMAT_R8G8_SINT:
-			return Format::R8G8_SINT;
+			return Format_R8G8_SINT;
 		case DXGI_FORMAT_R16_FLOAT:
-			return Format::R16_FLOAT;
+			return Format_R16_FLOAT;
 		case DXGI_FORMAT_D16_UNORM:
-			return Format::D16_UNORM;
+			return Format_D16_UNORM;
 		case DXGI_FORMAT_R16_UNORM:
-			return Format::R16_UNORM;
+			return Format_R16_UNORM;
 		case DXGI_FORMAT_R16_UINT:
-			return Format::R16_UINT;
+			return Format_R16_UINT;
 		case DXGI_FORMAT_R16_SNORM:
-			return Format::R16_SNORM;
+			return Format_R16_SNORM;
 		case DXGI_FORMAT_R16_SINT:
-			return Format::R16_SINT;
+			return Format_R16_SINT;
 		case DXGI_FORMAT_R8_UNORM:
-			return Format::R8_UNORM;
+			return Format_R8_UNORM;
 		case DXGI_FORMAT_R8_UINT:
-			return Format::R8_UINT;
+			return Format_R8_UINT;
 		case DXGI_FORMAT_R8_SNORM:
-			return Format::R8_SNORM;
+			return Format_R8_SNORM;
 		case DXGI_FORMAT_R8_SINT:
-			return Format::R8_SINT;
+			return Format_R8_SINT;
 		case DXGI_FORMAT_BC1_UNORM:
-			return Format::BC1_UNORM;
+			return Format_BC1_UNORM;
 		case DXGI_FORMAT_BC1_UNORM_SRGB:
-			return Format::BC1_UNORM_SRGB;
+			return Format_BC1_UNORM_SRGB;
 		case DXGI_FORMAT_BC2_UNORM:
-			return Format::BC2_UNORM;
+			return Format_BC2_UNORM;
 		case DXGI_FORMAT_BC2_UNORM_SRGB:
-			return Format::BC2_UNORM_SRGB;
+			return Format_BC2_UNORM_SRGB;
 		case DXGI_FORMAT_BC3_UNORM:
-			return Format::BC3_UNORM;
+			return Format_BC3_UNORM;
 		case DXGI_FORMAT_BC3_UNORM_SRGB:
-			return Format::BC3_UNORM_SRGB;
+			return Format_BC3_UNORM_SRGB;
 		case DXGI_FORMAT_BC4_UNORM:
-			return Format::BC4_UNORM;
+			return Format_BC4_UNORM;
 		case DXGI_FORMAT_BC4_SNORM:
-			return Format::BC4_SNORM;
+			return Format_BC4_SNORM;
 		case DXGI_FORMAT_BC5_UNORM:
-			return Format::BC5_UNORM;
+			return Format_BC5_UNORM;
 		case DXGI_FORMAT_BC5_SNORM:
-			return Format::BC5_SNORM;
+			return Format_BC5_SNORM;
 		case DXGI_FORMAT_B8G8R8A8_UNORM:
-			return Format::B8G8R8A8_UNORM;
+			return Format_B8G8R8A8_UNORM;
 		case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
-			return Format::B8G8R8A8_UNORM_SRGB;
+			return Format_B8G8R8A8_UNORM_SRGB;
 		case DXGI_FORMAT_BC6H_UF16:
-			return Format::BC6H_UF16;
+			return Format_BC6H_UF16;
 		case DXGI_FORMAT_BC6H_SF16:
-			return Format::BC6H_SF16;
+			return Format_BC6H_SF16;
 		case DXGI_FORMAT_BC7_UNORM:
-			return Format::BC7_UNORM;
+			return Format_BC7_UNORM;
 		case DXGI_FORMAT_BC7_UNORM_SRGB:
-			return Format::BC7_UNORM_SRGB;
+			return Format_BC7_UNORM_SRGB;
 		default:
 			break;
 		}
-		return Format::UNKNOWN;
+		return Format_UNKNOWN;
 	}
 	constexpr TextureDesc _ConvertTextureDesc_Inv(const D3D12_RESOURCE_DESC& desc)
 	{
@@ -1091,16 +1091,16 @@ namespace D3D12Internal
 		switch (desc.Dimension)
 		{
 		case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
-			retVal.type = TextureDesc::Type::TEXTURE_1D;
+			retVal.type = TextureDesc::Type_TEXTURE_1D;
 			retVal.array_size = desc.DepthOrArraySize;
 			break;
 		default:
 		case D3D12_RESOURCE_DIMENSION_TEXTURE2D:
-			retVal.type = TextureDesc::Type::TEXTURE_2D;
+			retVal.type = TextureDesc::Type_TEXTURE_2D;
 			retVal.array_size = desc.DepthOrArraySize;
 			break;
 		case D3D12_RESOURCE_DIMENSION_TEXTURE3D:
-			retVal.type = TextureDesc::Type::TEXTURE_3D;
+			retVal.type = TextureDesc::Type_TEXTURE_3D;
 			retVal.depth = desc.DepthOrArraySize;
 			break;
 		}
@@ -1590,7 +1590,7 @@ namespace D3D12Internal
 		Protean::vector<Protean::Allocator::shared_ptr<Resource_DX12>> textures; // shared_ptr is used because they can be given out by GetBackBuffer()
 
 		Texture dummyTexture;
-		ColorSpace colorSpace = ColorSpace::SRGB;
+		ColorSpace colorSpace = ColorSpace_SRGB;
 
 		inline uint32_t GetBufferIndex() const
 		{
@@ -1739,7 +1739,7 @@ std::mutex queue_locker;
 				GPUBufferDesc uploaddesc;
 				uploaddesc.size = Protean::Math::GetNextPowerOfTwo(staging_size);
 				uploaddesc.size = std::max(uploaddesc.size, uint64_t(65536));
-				uploaddesc.usage = Usage::UPLOAD;
+				uploaddesc.usage = Usage_UPLOAD;
 				bool upload_success = device->CreateBuffer(&uploaddesc, nullptr, &cmd.uploadbuffer);
 				assert(upload_success);
 				device->SetName(&cmd.uploadbuffer, "CopyAllocator::uploadBuffer");
@@ -2268,7 +2268,7 @@ std::mutex queue_locker;
 		}
 
 #ifdef _DEBUG
-		if (validationMode != ValidationMode::Disabled)
+		if (validationMode != ValidationMode_Disabled)
 		{
 			DXGIGetDebugInterface1 = (PFN_DXGI_GET_DEBUG_INTERFACE1)wiGetProcAddress(dxgi, "DXGIGetDebugInterface1");
 			assert(DXGIGetDebugInterface1 != nullptr);
@@ -2305,7 +2305,7 @@ std::mutex queue_locker;
 			Protean::Platform::Exit();
 		}
 
-		if (validationMode != ValidationMode::Disabled)
+		if (validationMode != ValidationMode_Disabled)
 		{
 			// Enable the debug layer.
 			auto D3D12GetDebugInterface = (PFN_D3D12_GET_DEBUG_INTERFACE)wiGetProcAddress(dx12, "D3D12GetDebugInterface");
@@ -2315,7 +2315,7 @@ std::mutex queue_locker;
 				if (SUCCEEDED(D3D12GetDebugInterface(PPV_ARGS(d3dDebug))))
 				{
 					d3dDebug->EnableDebugLayer();
-					if (validationMode == ValidationMode::GPU)
+					if (validationMode == ValidationMode_GPU)
 					{
 						ComPtr<ID3D12Debug1> d3dDebug1;
 						if (SUCCEEDED(d3dDebug.As(&d3dDebug1)))
@@ -2366,7 +2366,7 @@ std::mutex queue_locker;
 		hr = Protean::Graphics::Xbox::CreateDevice(device, dxgiAdapter, validationMode);
 
 #else
-		hr = CreateDXGIFactory2((validationMode != ValidationMode::Disabled) ? DXGI_CREATE_FACTORY_DEBUG : 0u, PPV_ARGS(dxgiFactory));
+		hr = CreateDXGIFactory2((validationMode != ValidationMode_Disabled) ? DXGI_CREATE_FACTORY_DEBUG : 0u, PPV_ARGS(dxgiFactory));
 		if (FAILED(hr))
 		{
 			wilog_messagebox("CreateDXGIFactory2 failed! ERROR: %s", Protean::Helper::GetPlatformErrorString(hr).c_str());
@@ -2403,12 +2403,12 @@ std::mutex queue_locker;
 		{
 			if (queryByPreference)
 			{
-				return dxgiFactory6->EnumAdapterByGpuPreference(index, preference == GPUPreference::Integrated ? DXGI_GPU_PREFERENCE_MINIMUM_POWER : DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(ppAdapter));
+				return dxgiFactory6->EnumAdapterByGpuPreference(index, preference == GPUPreference_Integrated ? DXGI_GPU_PREFERENCE_MINIMUM_POWER : DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(ppAdapter));
 			}
 			return dxgiFactory->EnumAdapters1(index, ppAdapter);
 		};
 
-		const bool vendor_preference = preference > GPUPreference::Integrated;
+		const bool vendor_preference = preference > GPUPreference_Integrated;
 		ComPtr<IDXGIAdapter1> tempAdapter;
 		for (uint32_t i = 0; NextAdapter(i, tempAdapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND; ++i)
 		{
@@ -2423,15 +2423,15 @@ std::mutex queue_locker;
 					continue;
 				}
 
-				if (preference == GPUPreference::AMD)
+				if (preference == GPUPreference_AMD)
 				{
 					vendor_priority = Protean::Helper::toUpper(std::wstring(adapterDesc.Description)).find(L"AMD") != std::wstring::npos;
 				}
-				else if (preference == GPUPreference::Nvidia)
+				else if (preference == GPUPreference_Nvidia)
 				{
 					vendor_priority = Protean::Helper::toUpper(std::wstring(adapterDesc.Description)).find(L"NVIDIA") != std::wstring::npos;
 				}
-				else if (preference == GPUPreference::Intel)
+				else if (preference == GPUPreference_Intel)
 				{
 					vendor_priority = Protean::Helper::toUpper(std::wstring(adapterDesc.Description)).find(L"INTEL") != std::wstring::npos;
 				}
@@ -2473,7 +2473,7 @@ std::mutex queue_locker;
 			Protean::Platform::Exit();
 		}
 
-		if (validationMode != ValidationMode::Disabled)
+		if (validationMode != ValidationMode_Disabled)
 		{
 			// Configure debug device (if active).
 			ComPtr<ID3D12InfoQueue> d3dInfoQueue;
@@ -2494,7 +2494,7 @@ std::mutex queue_locker;
 				enabledSeverities.push_back(D3D12_MESSAGE_SEVERITY_WARNING);
 				enabledSeverities.push_back(D3D12_MESSAGE_SEVERITY_MESSAGE);
 
-				if (validationMode == ValidationMode::Verbose)
+				if (validationMode == ValidationMode_Verbose)
 				{
 					// Verbose only filters
 					enabledSeverities.push_back(D3D12_MESSAGE_SEVERITY_INFO);
@@ -2598,11 +2598,11 @@ std::mutex queue_locker;
 				{
 					if (profile == D3D12_VIDEO_DECODE_PROFILE_H264)
 					{
-						capabilities |= GraphicsDeviceCapability::VIDEO_DECODE_H264;
+						capabilities |= GraphicsDeviceCapability_VIDEO_DECODE_H264;
 					}
 					else if (profile == D3D12_VIDEO_DECODE_PROFILE_HEVC_MAIN)
 					{
-						//capabilities |= GraphicsDeviceCapability::VIDEO_DECODE_H265; //TODO
+						//capabilities |= GraphicsDeviceCapability_VIDEO_DECODE_H265; //TODO
 					}
 				}
 			}
@@ -2710,33 +2710,33 @@ std::mutex queue_locker;
 
 		// Query features:
 
-		capabilities |= GraphicsDeviceCapability::TESSELLATION;
-		capabilities |= GraphicsDeviceCapability::PREDICATION;
-		capabilities |= GraphicsDeviceCapability::DEPTH_RESOLVE_MIN_MAX;
-		capabilities |= GraphicsDeviceCapability::STENCIL_RESOLVE_MIN_MAX;
+		capabilities |= GraphicsDeviceCapability_TESSELLATION;
+		capabilities |= GraphicsDeviceCapability_PREDICATION;
+		capabilities |= GraphicsDeviceCapability_DEPTH_RESOLVE_MIN_MAX;
+		capabilities |= GraphicsDeviceCapability_STENCIL_RESOLVE_MIN_MAX;
 
 #ifdef PLATFORM_XBOX
 		adapterName = Protean::Graphics::Xbox::GetAdapterName();
-		//capabilities |= GraphicsDeviceCapability::MESH_SHADER; // TODO Mesh shader XBOX
-		capabilities |= GraphicsDeviceCapability::DEPTH_BOUNDS_TEST;
-		capabilities |= GraphicsDeviceCapability::GENERIC_SPARSE_TILE_POOL;
-		capabilities |= GraphicsDeviceCapability::CACHE_COHERENT_UMA;
+		//capabilities |= GraphicsDeviceCapability_MESH_SHADER; // TODO Mesh shader XBOX
+		capabilities |= GraphicsDeviceCapability_DEPTH_BOUNDS_TEST;
+		capabilities |= GraphicsDeviceCapability_GENERIC_SPARSE_TILE_POOL;
+		capabilities |= GraphicsDeviceCapability_CACHE_COHERENT_UMA;
 		casting_fully_typed_formats = false;
 		resource_heap_tier = D3D12_RESOURCE_HEAP_TIER_2;
 		additionalShadingRatesSupported = false;
-		capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING;
-		capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2;
+		capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING;
+		capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2;
 		VARIABLE_RATE_SHADING_TILE_SIZE = 8;
-		capabilities |= GraphicsDeviceCapability::RAYTRACING;
-		capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_R11G11B10_FLOAT;
-		capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_COMMON;
-		capabilities |= GraphicsDeviceCapability::SPARSE_BUFFER;
-		capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE2D;
-		capabilities |= GraphicsDeviceCapability::SPARSE_NULL_MAPPING;
-		capabilities |= GraphicsDeviceCapability::SAMPLER_MINMAX;
-		capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE3D;
-		capabilities |= GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION;
-		capabilities |= GraphicsDeviceCapability::R9G9B9E5_SHAREDEXP_RENDERABLE;
+		capabilities |= GraphicsDeviceCapability_RAYTRACING;
+		capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_R11G11B10_FLOAT;
+		capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_COMMON;
+		capabilities |= GraphicsDeviceCapability_SPARSE_BUFFER;
+		capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE2D;
+		capabilities |= GraphicsDeviceCapability_SPARSE_NULL_MAPPING;
+		capabilities |= GraphicsDeviceCapability_SAMPLER_MINMAX;
+		capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE3D;
+		capabilities |= GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION;
+		capabilities |= GraphicsDeviceCapability_R9G9B9E5_SHAREDEXP_RENDERABLE;
 		VIDEO_DECODE_BITSTREAM_ALIGNMENT = 256; // TODO
 #else
 		// Init feature check (https://devblogs.microsoft.com/directx/introducing-a-new-api-for-checking-feature-support-in-direct3d-12/)
@@ -2773,11 +2773,11 @@ std::mutex queue_locker;
 				// Detect adapter type.
 				if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 				{
-					adapterType = AdapterType::Cpu;
+					adapterType = AdapterType_Cpu;
 				}
 				else
 				{
-					adapterType = features.UMA() ? AdapterType::IntegratedGpu : AdapterType::DiscreteGpu;
+					adapterType = features.UMA() ? AdapterType_IntegratedGpu : AdapterType_DiscreteGpu;
 				}
 			}
 		}
@@ -2789,16 +2789,16 @@ std::mutex queue_locker;
 			error += "Adapter type: ";
 			switch (adapterType)
 			{
-			case Protean::Graphics::AdapterType::IntegratedGpu:
+			case Protean::Graphics::AdapterType_IntegratedGpu:
 				error += "Integrated GPU";
 				break;
-			case Protean::Graphics::AdapterType::DiscreteGpu:
+			case Protean::Graphics::AdapterType_DiscreteGpu:
 				error += "Discrete GPU";
 				break;
-			case Protean::Graphics::AdapterType::VirtualGpu:
+			case Protean::Graphics::AdapterType_VirtualGpu:
 				error += "Virtual GPU";
 				break;
-			case Protean::Graphics::AdapterType::Cpu:
+			case Protean::Graphics::AdapterType_Cpu:
 				error += "CPU";
 				break;
 			default:
@@ -2812,27 +2812,27 @@ std::mutex queue_locker;
 
 		if (features.ConservativeRasterizationTier() >= D3D12_CONSERVATIVE_RASTERIZATION_TIER_1)
 		{
-			capabilities |= GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION;
+			capabilities |= GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION;
 		}
 		if (features.ROVsSupported() == TRUE)
 		{
-			capabilities |= GraphicsDeviceCapability::RASTERIZER_ORDERED_VIEWS;
+			capabilities |= GraphicsDeviceCapability_RASTERIZER_ORDERED_VIEWS;
 		}
 		if (features.TiledResourcesTier() >= D3D12_TILED_RESOURCES_TIER_1)
 		{
-			capabilities |= GraphicsDeviceCapability::SPARSE_BUFFER;
-			capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE2D;
+			capabilities |= GraphicsDeviceCapability_SPARSE_BUFFER;
+			capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE2D;
 
 			if (features.TiledResourcesTier() >= D3D12_TILED_RESOURCES_TIER_2)
 			{
-				capabilities |= GraphicsDeviceCapability::SPARSE_NULL_MAPPING;
+				capabilities |= GraphicsDeviceCapability_SPARSE_NULL_MAPPING;
 
 				// https://docs.microsoft.com/en-us/windows/win32/direct3d11/tiled-resources-texture-sampling-features
-				capabilities |= GraphicsDeviceCapability::SAMPLER_MINMAX;
+				capabilities |= GraphicsDeviceCapability_SAMPLER_MINMAX;
 
 				if (features.TiledResourcesTier() >= D3D12_TILED_RESOURCES_TIER_3)
 				{
-					capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE3D;
+					capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE3D;
 				}
 			}
 		}
@@ -2840,7 +2840,7 @@ std::mutex queue_locker;
 		if (features.TypedUAVLoadAdditionalFormats())
 		{
 			// More info about UAV format load support: https://docs.microsoft.com/en-us/windows/win32/direct3d12/typed-unordered-access-view-loads
-			capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_COMMON;
+			capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_COMMON;
 
 			D3D12_FORMAT_SUPPORT1 formatSupport1 = D3D12_FORMAT_SUPPORT1_NONE;
 			D3D12_FORMAT_SUPPORT2 formatSupport2 = D3D12_FORMAT_SUPPORT2_NONE;
@@ -2848,21 +2848,21 @@ std::mutex queue_locker;
 			hr = features.FormatSupport(DXGI_FORMAT_R11G11B10_FLOAT, formatSupport1, formatSupport2);
 			if (SUCCEEDED(hr) && (formatSupport2 & D3D12_FORMAT_SUPPORT2_UAV_TYPED_LOAD) != 0)
 			{
-				capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_R11G11B10_FLOAT;
+				capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_R11G11B10_FLOAT;
 			}
 		}
 
 		if (features.RaytracingTier() >= D3D12_RAYTRACING_TIER_1_1)
 		{
-			capabilities |= GraphicsDeviceCapability::RAYTRACING;
+			capabilities |= GraphicsDeviceCapability_RAYTRACING;
 		}
 
 		if (features.VariableShadingRateTier() >= D3D12_VARIABLE_SHADING_RATE_TIER_1)
 		{
-			capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING;
+			capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING;
 			if (features.VariableShadingRateTier() >= D3D12_VARIABLE_SHADING_RATE_TIER_2)
 			{
-				capabilities |= GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2;
+				capabilities |= GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2;
 				VARIABLE_RATE_SHADING_TILE_SIZE = features.ShadingRateImageTileSize();
 			}
 		}
@@ -2871,12 +2871,12 @@ std::mutex queue_locker;
 
 		if (features.MeshShaderTier() >= D3D12_MESH_SHADER_TIER_1)
 		{
-			capabilities |= GraphicsDeviceCapability::MESH_SHADER;
+			capabilities |= GraphicsDeviceCapability_MESH_SHADER;
 		}
 
 		if (features.DepthBoundsTestSupported() == TRUE)
 		{
-			capabilities |= GraphicsDeviceCapability::DEPTH_BOUNDS_TEST;
+			capabilities |= GraphicsDeviceCapability_DEPTH_BOUNDS_TEST;
 		}
 
 		if (features.HighestRootSignatureVersion() < D3D_ROOT_SIGNATURE_VERSION_1_1)
@@ -2892,12 +2892,12 @@ std::mutex queue_locker;
 
 		if (resource_heap_tier >= D3D12_RESOURCE_HEAP_TIER_2)
 		{
-			capabilities |= GraphicsDeviceCapability::ALIASING_GENERIC;
+			capabilities |= GraphicsDeviceCapability_ALIASING_GENERIC;
 		}
 
 		if (features.CacheCoherentUMA())
 		{
-			capabilities |= GraphicsDeviceCapability::CACHE_COHERENT_UMA;
+			capabilities |= GraphicsDeviceCapability_CACHE_COHERENT_UMA;
 
 			D3D12MA::POOL_DESC pool_desc = {};
 			pool_desc.HeapProperties.Type = D3D12_HEAP_TYPE_CUSTOM;
@@ -2970,7 +2970,7 @@ std::mutex queue_locker;
 			Protean::Platform::Exit();
 		}
 
-		if (CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+		if (CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 		{
 			D3D12_INDIRECT_ARGUMENT_DESC dispatchMeshArgs[1];
 #ifdef PLATFORM_XBOX
@@ -3247,16 +3247,16 @@ std::mutex queue_locker;
 		// Ensure correct color space:
 		//	https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12HDR/src/D3D12HDR.cpp
 		{
-			internal_state->colorSpace = ColorSpace::SRGB; // reset to SDR, in case anything below fails to set HDR state
+			internal_state->colorSpace = ColorSpace_SRGB; // reset to SDR, in case anything below fails to set HDR state
 			DXGI_COLOR_SPACE_TYPE colorSpace = {};
 
 			switch (desc->format)
 			{
-			case Format::R10G10B10A2_UNORM:
+			case Format_R10G10B10A2_UNORM:
 				// This format is either HDR10 (ST.2084), or SDR (SRGB)
 				colorSpace = hdr ? DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
 				break;
-			case Format::R16G16B16A16_FLOAT:
+			case Format_R16G16B16A16_FLOAT:
 				// This format is HDR (Linear):
 				colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
 				break;
@@ -3278,13 +3278,13 @@ std::mutex queue_locker;
 						{
 						default:
 						case DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709:
-							internal_state->colorSpace = ColorSpace::SRGB;
+							internal_state->colorSpace = ColorSpace_SRGB;
 							break;
 						case DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709:
-							internal_state->colorSpace = ColorSpace::HDR_LINEAR;
+							internal_state->colorSpace = ColorSpace_HDR_LINEAR;
 							break;
 						case DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020:
-							internal_state->colorSpace = ColorSpace::HDR10_ST2084;
+							internal_state->colorSpace = ColorSpace_HDR10_ST2084;
 							break;
 						}
 					}
@@ -3314,7 +3314,7 @@ std::mutex queue_locker;
 		auto internal_state = Protean::Allocator::make_shared<Resource_DX12>();
 		internal_state->allocationhandler = allocationhandler;
 		buffer->internal_state = internal_state;
-		buffer->type = GPUResource::Type::BUFFER;
+		buffer->type = GPUResource::Type_BUFFER;
 		buffer->mapped_data = nullptr;
 		buffer->mapped_size = 0;
 		buffer->desc = *desc;
@@ -3322,7 +3322,7 @@ std::mutex queue_locker;
 		HRESULT hr = E_FAIL;
 
 		UINT64 alignedSize = desc->size;
-		if (has_flag(desc->bind_flags, BindFlag::CONSTANT_BUFFER))
+		if (has_flag(desc->bind_flags, BindFlag_CONSTANT_BUFFER))
 		{
 			alignedSize = align(alignedSize, (UINT64)D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
 		}
@@ -3337,11 +3337,11 @@ std::mutex queue_locker;
 		resourceDesc.DepthOrArraySize = 1;
 		resourceDesc.Alignment = 0;
 		resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-		if (has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 		}
-		if (!has_flag(desc->bind_flags, BindFlag::SHADER_RESOURCE) && !has_flag(desc->misc_flags, ResourceMiscFlag::RAY_TRACING))
+		if (!has_flag(desc->bind_flags, BindFlag_SHADER_RESOURCE) && !has_flag(desc->misc_flags, ResourceMiscFlag_RAY_TRACING))
 		{
 			resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 		}
@@ -3353,13 +3353,13 @@ std::mutex queue_locker;
 
 		D3D12MA::ALLOCATION_DESC allocationDesc = {};
 		allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
-		if (desc->usage == Usage::READBACK)
+		if (desc->usage == Usage_READBACK)
 		{
 			allocationDesc.HeapType = D3D12_HEAP_TYPE_READBACK;
 			resourceState = D3D12_RESOURCE_STATE_COPY_DEST;
 			resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 		}
-		else if (desc->usage == Usage::UPLOAD)
+		else if (desc->usage == Usage_UPLOAD)
 		{
 			allocationDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
 			resourceState = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -3369,9 +3369,9 @@ std::mutex queue_locker;
 		Protean::Graphics::Xbox::ApplyBufferCreationFlags(*desc, resourceDesc.Flags, allocationDesc.ExtraHeapFlags);
 #endif // PLATFORM_XBOX
 
-		if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+		if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 		{
 			// Aliasing memory pool must not be a committed resource because that uses implicit heap which returns nullptr,
 			//	thus it cannot be offsetted. This is why we create custom allocation here which will never be committed resource
@@ -3386,15 +3386,15 @@ std::mutex queue_locker;
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES;
 			}
@@ -3417,7 +3417,7 @@ std::mutex queue_locker;
 				));
 			}
 		}
-		else if (has_flag(desc->misc_flags, ResourceMiscFlag::SPARSE))
+		else if (has_flag(desc->misc_flags, ResourceMiscFlag_SPARSE))
 		{
 			hr = dx12_check(device->CreateReservedResource(
 				&resourceDesc,
@@ -3465,12 +3465,12 @@ std::mutex queue_locker;
 			internal_state->gpu_address = internal_state->resource->GetGPUVirtualAddress();
 		}
 
-		if (desc->usage == Usage::READBACK)
+		if (desc->usage == Usage_READBACK)
 		{
 			hr = dx12_check(internal_state->resource->Map(0, nullptr, &buffer->mapped_data));
 			buffer->mapped_size = static_cast<uint32_t>(desc->size);
 		}
-		else if (desc->usage == Usage::UPLOAD)
+		else if (desc->usage == Usage_UPLOAD)
 		{
 			D3D12_RANGE read_range = {};
 			hr = dx12_check(internal_state->resource->Map(0, &read_range, &buffer->mapped_data));
@@ -3482,7 +3482,7 @@ std::mutex queue_locker;
 		{
 			CopyAllocator::CopyCMD cmd;
 			void* mapped_data = nullptr;
-			if (desc->usage == Usage::UPLOAD)
+			if (desc->usage == Usage_UPLOAD)
 			{
 				mapped_data = buffer->mapped_data;
 			}
@@ -3509,23 +3509,23 @@ std::mutex queue_locker;
 
 
 		// Create resource views if needed
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(desc->bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(desc->bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(buffer, SubresourceType::SRV, 0);
+				CreateSubresource(buffer, SubresourceType_SRV, 0);
 			}
-			if (has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(buffer, SubresourceType::UAV, 0);
+				CreateSubresource(buffer, SubresourceType_UAV, 0);
 			}
 		}
 
 		if (
-			has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS) &&
+			has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS) &&
 			(
-				!has_flag(desc->misc_flags, ResourceMiscFlag::BUFFER_RAW) ||
-				has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS)
+				!has_flag(desc->misc_flags, ResourceMiscFlag_BUFFER_RAW) ||
+				has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS)
 			)
 		)
 		{
@@ -3545,7 +3545,7 @@ std::mutex queue_locker;
 		auto internal_state = Protean::Allocator::make_shared<Resource_DX12>();
 		internal_state->allocationhandler = allocationhandler;
 		texture->internal_state = internal_state;
-		texture->type = GPUResource::Type::TEXTURE;
+		texture->type = GPUResource::Type_TEXTURE;
 		texture->mapped_data = nullptr;
 		texture->mapped_size = 0;
 		texture->mapped_subresources = nullptr;
@@ -3563,8 +3563,8 @@ std::mutex queue_locker;
 		D3D12_RESOURCE_DESC resourcedesc = _ConvertTextureDesc(texture->desc, casting_fully_typed_formats);
 
 		if (
-			has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE) ||
-			has_flag(texture->desc.misc_flags, ResourceMiscFlag::VIDEO_DECODE_DPB_ONLY)
+			has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE) ||
+			has_flag(texture->desc.misc_flags, ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY)
 			)
 		{
 			// Nvidia GPU will crash if placed resource is used for video decode operation!
@@ -3579,7 +3579,7 @@ std::mutex queue_locker;
 		optimizedClearValue.DepthStencil.Depth = texture->desc.clear.depth_stencil.depth;
 		optimizedClearValue.DepthStencil.Stencil = texture->desc.clear.depth_stencil.stencil;
 		optimizedClearValue.Format = _ConvertFormat(texture->desc.format); // _ConvertFormat again because _ConvertTextureDesc might change it to _TYPELESS
-		const bool useClearValue = has_flag(desc->bind_flags, BindFlag::RENDER_TARGET) || has_flag(desc->bind_flags, BindFlag::DEPTH_STENCIL);
+		const bool useClearValue = has_flag(desc->bind_flags, BindFlag_RENDER_TARGET) || has_flag(desc->bind_flags, BindFlag_DEPTH_STENCIL);
 
 		D3D12_RESOURCE_STATES resourceState = _ParseResourceState(texture->desc.layout);
 
@@ -3603,7 +3603,7 @@ std::mutex queue_locker;
 			&internal_state->total_size
 		);
 
-		if (texture->desc.usage == Usage::READBACK || texture->desc.usage == Usage::UPLOAD)
+		if (texture->desc.usage == Usage_READBACK || texture->desc.usage == Usage_UPLOAD)
 		{
 			resourcedesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 			resourcedesc.Width = internal_state->total_size;
@@ -3614,12 +3614,12 @@ std::mutex queue_locker;
 			resourcedesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 			resourcedesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-			if (texture->desc.usage == Usage::READBACK)
+			if (texture->desc.usage == Usage_READBACK)
 			{
 				allocationDesc.HeapType = D3D12_HEAP_TYPE_READBACK;
 				resourceState = D3D12_RESOURCE_STATE_COPY_DEST;
 			}
-			else if(texture->desc.usage == Usage::UPLOAD)
+			else if(texture->desc.usage == Usage_UPLOAD)
 			{
 				allocationDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
 				resourceState = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -3630,7 +3630,7 @@ std::mutex queue_locker;
 		if (
 			initial_data != nullptr &&
 			allocationDesc.HeapType == D3D12_HEAP_TYPE_DEFAULT &&
-			CheckCapability(GraphicsDeviceCapability::CACHE_COHERENT_UMA)
+			CheckCapability(GraphicsDeviceCapability_CACHE_COHERENT_UMA)
 			)
 		{
 			// UMA: custom pool is like DEFAULT heap + CPU Write Combine
@@ -3639,9 +3639,9 @@ std::mutex queue_locker;
 		}
 #endif // PLATFORM_XBOX
 
-		if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) ||
-			has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+		if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) ||
+			has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 		{
 			// Aliasing memory pool must not be a committed resource because that uses implicit heap which returns nullptr,
 			//	thus it cannot be offsetted. This is why we create custom allocation here which will never be committed resource
@@ -3656,15 +3656,15 @@ std::mutex queue_locker;
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES;
 			}
-			else if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			else if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				allocationDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES;
 			}
@@ -3684,7 +3684,7 @@ std::mutex queue_locker;
 				PPV_ARGS(internal_state->resource)
 			));
 		}
-		else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SPARSE))
+		else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SPARSE))
 		{
 			resourcedesc.Layout = D3D12_TEXTURE_LAYOUT_64KB_UNDEFINED_SWIZZLE;
 			hr = dx12_check(device->CreateReservedResource(
@@ -3723,7 +3723,7 @@ std::mutex queue_locker;
 		}
 		else
 		{
-			if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SHARED))
+			if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SHARED))
 			{
 				// Dedicated memory
 				allocationDesc.Flags = D3D12MA::ALLOCATION_FLAG_COMMITTED;
@@ -3758,16 +3758,16 @@ std::mutex queue_locker;
 			}
 		}
 
-		if (texture->desc.usage == Usage::READBACK)
+		if (texture->desc.usage == Usage_READBACK)
 		{
 			hr = dx12_check(internal_state->resource->Map(0, nullptr, &texture->mapped_data));
 		}
-		else if(texture->desc.usage == Usage::UPLOAD)
+		else if(texture->desc.usage == Usage_UPLOAD)
 		{
 			D3D12_RANGE read_range = {};
 			hr = dx12_check(internal_state->resource->Map(0, &read_range, &texture->mapped_data));
 		}
-		else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::SHARED))
+		else if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_SHARED))
 		{
 			hr = dx12_check(allocationhandler->device->CreateSharedHandle(
 				internal_state->resource.Get(),
@@ -3861,23 +3861,23 @@ std::mutex queue_locker;
 			}
 		}
 
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(texture->desc.bind_flags, BindFlag::RENDER_TARGET))
+			if (has_flag(texture->desc.bind_flags, BindFlag_RENDER_TARGET))
 			{
-				CreateSubresource(texture, SubresourceType::RTV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_RTV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::DEPTH_STENCIL))
+			if (has_flag(texture->desc.bind_flags, BindFlag_DEPTH_STENCIL))
 			{
-				CreateSubresource(texture, SubresourceType::DSV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_DSV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(texture->desc.bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(texture, SubresourceType::SRV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_SRV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(texture->desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(texture, SubresourceType::UAV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_UAV, 0, -1, 0, -1);
 			}
 		}
 
@@ -3916,14 +3916,14 @@ std::mutex queue_locker;
 			}
 		}
 
-		if (stage == ShaderStage::CS || stage == ShaderStage::LIB)
+		if (stage == ShaderStage_CS || stage == ShaderStage_LIB)
 		{
 			assert(internal_state->rootSignature != nullptr);
 			assert(internal_state->rootsig_desc != nullptr);
 			internal_state->rootsig_optimizer.init(*internal_state->rootsig_desc);
 		}
 
-		if (stage == ShaderStage::CS)
+		if (stage == ShaderStage_CS)
 		{
 			struct PSO_STREAM
 			{
@@ -3941,7 +3941,7 @@ std::mutex queue_locker;
 			hr = dx12_check(device->CreatePipelineState(&streamDesc, PPV_ARGS(internal_state->resource)));
 		}
 
-		if (stage == ShaderStage::VS)
+		if (stage == ShaderStage_VS)
 		{
 			std::scoped_lock lck(multidraw_signature_locker);
 			MultiDrawSignature& cached = multidraw_signatures[internal_state->rootSignature.Get()];
@@ -3982,7 +3982,7 @@ std::mutex queue_locker;
 				dx12_check(device->CreateCommandSignature(&cmd_desc, internal_state->rootSignature.Get(), PPV_ARGS(internal_state->drawIndexedInstancedIndirectCountCommandSignature)));
 			}
 		}
-		else if (stage == ShaderStage::MS)
+		else if (stage == ShaderStage_MS)
 		{
 			std::scoped_lock lck(multidraw_signature_locker);
 			MultiDrawSignature& cached = multidraw_signatures[internal_state->rootSignature.Get()];
@@ -4029,14 +4029,14 @@ std::mutex queue_locker;
 		samplerdesc.ComparisonFunc = _ConvertComparisonFunc(desc->comparison_func);
 		switch (desc->border_color)
 		{
-		case SamplerBorderColor::OPAQUE_BLACK:
+		case SamplerBorderColor_OPAQUE_BLACK:
 			samplerdesc.BorderColor[0] = 0.0f;
 			samplerdesc.BorderColor[1] = 0.0f;
 			samplerdesc.BorderColor[2] = 0.0f;
 			samplerdesc.BorderColor[3] = 1.0f;
 			break;
 
-		case SamplerBorderColor::OPAQUE_WHITE:
+		case SamplerBorderColor_OPAQUE_WHITE:
 			samplerdesc.BorderColor[0] = 1.0f;
 			samplerdesc.BorderColor[1] = 1.0f;
 			samplerdesc.BorderColor[2] = 1.0f;
@@ -4072,11 +4072,11 @@ std::mutex queue_locker;
 		switch (desc->type)
 		{
 		default:
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			queryheapdesc.Type = D3D12_QUERY_HEAP_TYPE_TIMESTAMP;
 			break;
-		case GpuQueryType::OCCLUSION:
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION:
+		case GpuQueryType_OCCLUSION_BINARY:
 			queryheapdesc.Type = D3D12_QUERY_HEAP_TYPE_OCCLUSION;
 			break;
 		}
@@ -4201,7 +4201,7 @@ std::mutex queue_locker;
 		rs.DepthClipEnable = rs_desc.depth_clip_enable;
 		rs.MultisampleEnable = rs_desc.multisample_enable;
 		rs.AntialiasedLineEnable = rs_desc.antialiased_line_enable;
-		rs.ConservativeRaster = ((CheckCapability(GraphicsDeviceCapability::CONSERVATIVE_RASTERIZATION) && rs_desc.conservative_rasterization_enable) ? D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF);
+		rs.ConservativeRaster = ((CheckCapability(GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION) && rs_desc.conservative_rasterization_enable) ? D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF);
 		rs.ForcedSampleCount = rs_desc.forced_sample_count;
 		stream.stream1.RS = rs;
 
@@ -4220,7 +4220,7 @@ std::mutex queue_locker;
 		dss.BackFace.StencilFailOp = _ConvertStencilOp(dss_desc.back_face.stencil_fail_op);
 		dss.BackFace.StencilFunc = _ConvertComparisonFunc(dss_desc.back_face.stencil_func);
 		dss.BackFace.StencilPassOp = _ConvertStencilOp(dss_desc.back_face.stencil_pass_op);
-		if (CheckCapability(GraphicsDeviceCapability::DEPTH_BOUNDS_TEST))
+		if (CheckCapability(GraphicsDeviceCapability_DEPTH_BOUNDS_TEST))
 		{
 			dss.DepthBoundsTestEnable = dss_desc.depth_bounds_test_enable;
 		}
@@ -4276,18 +4276,18 @@ std::mutex queue_locker;
 		internal_state->primitiveTopology = _ConvertPrimitiveTopology(desc->pt, desc->patch_control_points);
 		switch (pso->desc.pt)
 		{
-		case PrimitiveTopology::POINTLIST:
+		case PrimitiveTopology_POINTLIST:
 			stream.stream1.PT = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 			break;
-		case PrimitiveTopology::LINELIST:
-		case PrimitiveTopology::LINESTRIP:
+		case PrimitiveTopology_LINELIST:
+		case PrimitiveTopology_LINESTRIP:
 			stream.stream1.PT = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 			break;
-		case PrimitiveTopology::TRIANGLELIST:
-		case PrimitiveTopology::TRIANGLESTRIP:
+		case PrimitiveTopology_TRIANGLELIST:
+		case PrimitiveTopology_TRIANGLESTRIP:
 			stream.stream1.PT = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 			break;
-		case PrimitiveTopology::PATCHLIST:
+		case PrimitiveTopology_PATCHLIST:
 			stream.stream1.PT = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 			break;
 		default:
@@ -4317,7 +4317,7 @@ std::mutex queue_locker;
 			D3D12_PIPELINE_STATE_STREAM_DESC streamDesc = {};
 			streamDesc.pPipelineStateSubobjectStream = &stream;
 			streamDesc.SizeInBytes = sizeof(stream.stream1);
-			if (CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+			if (CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 			{
 				streamDesc.SizeInBytes += sizeof(stream.stream2);
 			}
@@ -4332,7 +4332,7 @@ std::mutex queue_locker;
 		auto internal_state = Protean::Allocator::make_shared<BVH_DX12>();
 		internal_state->allocationhandler = allocationhandler;
 		bvh->internal_state = internal_state;
-		bvh->type = GPUResource::Type::RAYTRACING_ACCELERATION_STRUCTURE;
+		bvh->type = GPUResource::Type_RAYTRACING_ACCELERATION_STRUCTURE;
 		bvh->desc = *desc;
 		bvh->size = 0;
 
@@ -4360,7 +4360,7 @@ std::mutex queue_locker;
 
 		switch (desc->type)
 		{
-		case RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL:
 		{
 			internal_state->desc.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL;
 			internal_state->desc.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
@@ -4370,16 +4370,16 @@ std::mutex queue_locker;
 				auto& geometry = internal_state->geometries.emplace_back();
 				geometry = {};
 
-				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES)
+				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES)
 				{
 					geometry.Type = D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES;
 					geometry.Triangles.VertexBuffer.StartAddress = to_internal(&x.triangles.vertex_buffer)->gpu_address + (D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.vertex_byte_offset;
 					geometry.Triangles.VertexBuffer.StrideInBytes = (UINT64)x.triangles.vertex_stride;
 					geometry.Triangles.VertexCount = x.triangles.vertex_count;
 					geometry.Triangles.VertexFormat = _ConvertFormat(x.triangles.vertex_format);
-					geometry.Triangles.IndexFormat = (x.triangles.index_format == IndexBufferFormat::UINT16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT);
+					geometry.Triangles.IndexFormat = (x.triangles.index_format == IndexBufferFormat_UINT16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT);
 					geometry.Triangles.IndexBuffer = to_internal(&x.triangles.index_buffer)->gpu_address +
-						(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat::UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
+						(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat_UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
 					geometry.Triangles.IndexCount = x.triangles.index_count;
 
 					if (x.flags & RaytracingAccelerationStructureDesc::BottomLevel::Geometry::FLAG_USE_TRANSFORM)
@@ -4388,7 +4388,7 @@ std::mutex queue_locker;
 							(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.transform_3x4_buffer_offset;
 					}
 				}
-				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::PROCEDURAL_AABBS)
+				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_PROCEDURAL_AABBS)
 				{
 					geometry.Type = D3D12_RAYTRACING_GEOMETRY_TYPE_PROCEDURAL_PRIMITIVE_AABBS;
 					geometry.AABBs.AABBs.StartAddress = to_internal(&x.aabbs.aabb_buffer)->gpu_address +
@@ -4402,7 +4402,7 @@ std::mutex queue_locker;
 			internal_state->desc.NumDescs = (UINT)internal_state->geometries.size();
 		}
 		break;
-		case RaytracingAccelerationStructureDesc::Type::TOPLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_TOPLEVEL:
 		{
 			internal_state->desc.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL;
 			internal_state->desc.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
@@ -4455,7 +4455,7 @@ std::mutex queue_locker;
 		srv_desc.ViewDimension = D3D12_SRV_DIMENSION_RAYTRACING_ACCELERATION_STRUCTURE;
 		srv_desc.RaytracingAccelerationStructure.Location = internal_state->gpu_address;
 
-		if (desc->type == RaytracingAccelerationStructureDesc::Type::TOPLEVEL)
+		if (desc->type == RaytracingAccelerationStructureDesc::Type_TOPLEVEL)
 		{
 			internal_state->srv.init(this, srv_desc, nullptr);
 		}
@@ -4535,7 +4535,7 @@ std::mutex queue_locker;
 		{
 			Protean::Helper::StringConvert(x.name, internal_state->group_strings.emplace_back());
 
-			if (x.type == ShaderHitGroup::Type::GENERAL)
+			if (x.type == ShaderHitGroup::Type_GENERAL)
 				continue;
 			auto& subobject = subobjects.emplace_back();
 			subobject = {};
@@ -4545,10 +4545,10 @@ std::mutex queue_locker;
 			switch (x.type)
 			{
 			default:
-			case ShaderHitGroup::Type::TRIANGLES:
+			case ShaderHitGroup::Type_TRIANGLES:
 				hitgroup_desc.Type = D3D12_HIT_GROUP_TYPE_TRIANGLES;
 				break;
-			case ShaderHitGroup::Type::PROCEDURAL:
+			case ShaderHitGroup::Type_PROCEDURAL:
 				hitgroup_desc.Type = D3D12_HIT_GROUP_TYPE_PROCEDURAL_PRIMITIVE;
 				break;
 			}
@@ -4588,14 +4588,14 @@ std::mutex queue_locker;
 		D3D12_VIDEO_DECODER_DESC decoder_desc = {};
 		switch (desc->profile)
 		{
-		case VideoProfile::H264:
-			if (!CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H264))
+		case VideoProfile_H264:
+			if (!CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H264))
 				return false;
 			decoder_desc.Configuration.DecodeProfile = D3D12_VIDEO_DECODE_PROFILE_H264;
 			decoder_desc.Configuration.InterlaceType = D3D12_VIDEO_FRAME_CODED_INTERLACE_TYPE_NONE;
 			break;
-		case VideoProfile::H265:
-			if (!CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H265))
+		case VideoProfile_H265:
+			if (!CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H265))
 				return false;
 			decoder_desc.Configuration.DecodeProfile = D3D12_VIDEO_DECODE_PROFILE_HEVC_MAIN;
 			decoder_desc.Configuration.InterlaceType = D3D12_VIDEO_FRAME_CODED_INTERLACE_TYPE_NONE;
@@ -4640,15 +4640,15 @@ std::mutex queue_locker;
 		video_decoder->support = {};
 		if (video_decode_support.ConfigurationFlags & D3D12_VIDEO_DECODE_CONFIGURATION_FLAG_REFERENCE_ONLY_ALLOCATIONS_REQUIRED)
 		{
-			video_decoder->support |= VideoDecoderSupportFlags::DPB_AND_OUTPUT_DISTINCT;
+			video_decoder->support |= VideoDecoderSupportFlags_DPB_AND_OUTPUT_DISTINCT;
 		}
 		else
 		{
-			video_decoder->support |= VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE;
+			video_decoder->support |= VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE;
 		}
 		if (video_decode_support.DecodeTier >= D3D12_VIDEO_DECODE_TIER_2)
 		{
-			video_decoder->support |= VideoDecoderSupportFlags::DPB_INDIVIDUAL_TEXTURES_SUPPORTED;
+			video_decoder->support |= VideoDecoderSupportFlags_DPB_INDIVIDUAL_TEXTURES_SUPPORTED;
 		}
 
 		auto internal_state = Protean::Allocator::make_shared<VideoDecoder_DX12>();
@@ -4699,7 +4699,7 @@ std::mutex queue_locker;
 
 		switch (type)
 		{
-		case SubresourceType::SRV:
+		case SubresourceType_SRV:
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
 			srv_desc.Shader4ComponentMapping = _ConvertSwizzle(swizzle == nullptr ? texture->desc.swizzle : *swizzle);
@@ -4707,19 +4707,19 @@ std::mutex queue_locker;
 			// Try to resolve resource format:
 			switch (format)
 			{
-			case Format::D16_UNORM:
+			case Format_D16_UNORM:
 				srv_desc.Format = DXGI_FORMAT_R16_UNORM;
 				break;
-			case Format::D32_FLOAT:
+			case Format_D32_FLOAT:
 				srv_desc.Format = DXGI_FORMAT_R32_FLOAT;
 				break;
-			case Format::D24_UNORM_S8_UINT:
+			case Format_D24_UNORM_S8_UINT:
 				srv_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 				break;
-			case Format::D32_FLOAT_S8X24_UINT:
+			case Format_D32_FLOAT_S8X24_UINT:
 				srv_desc.Format = DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
 				break;
-			case Format::NV12:
+			case Format_NV12:
 				srv_desc.Format = DXGI_FORMAT_R8_UNORM;
 				break;
 			default:
@@ -4727,7 +4727,7 @@ std::mutex queue_locker;
 				break;
 			}
 
-			if (texture->desc.type == TextureDesc::Type::TEXTURE_1D)
+			if (texture->desc.type == TextureDesc::Type_TEXTURE_1D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4744,11 +4744,11 @@ std::mutex queue_locker;
 					srv_desc.Texture1D.MipLevels = mipCount;
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_2D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_2D)
 			{
 				if (texture->desc.array_size > 1)
 				{
-					if (has_flag(texture->desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+					if (has_flag(texture->desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 					{
 						if (texture->desc.array_size > 6)
 						{
@@ -4803,7 +4803,7 @@ std::mutex queue_locker;
 					}
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_3D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_3D)
 			{
 				srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
 				srv_desc.Texture3D.MostDetailedMip = firstMip;
@@ -4827,12 +4827,12 @@ std::mutex queue_locker;
 			return int(internal_state->subresources_srv.size() - 1);
 		}
 		break;
-		case SubresourceType::UAV:
+		case SubresourceType_UAV:
 		{
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uav_desc = {};
 			uav_desc.Format = _ConvertFormat(format);
 
-			if (texture->desc.type == TextureDesc::Type::TEXTURE_1D)
+			if (texture->desc.type == TextureDesc::Type_TEXTURE_1D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4847,7 +4847,7 @@ std::mutex queue_locker;
 					uav_desc.Texture1D.MipSlice = firstMip;
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_2D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_2D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4862,7 +4862,7 @@ std::mutex queue_locker;
 					uav_desc.Texture2D.MipSlice = firstMip;
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_3D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_3D)
 			{
 				uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
 				uav_desc.Texture3D.MipSlice = firstMip;
@@ -4886,12 +4886,12 @@ std::mutex queue_locker;
 			return int(internal_state->subresources_uav.size() - 1);
 		}
 		break;
-		case SubresourceType::RTV:
+		case SubresourceType_RTV:
 		{
 			D3D12_RENDER_TARGET_VIEW_DESC rtv_desc = {};
 			rtv_desc.Format = _ConvertFormat(format);
 
-			if (texture->desc.type == TextureDesc::Type::TEXTURE_1D)
+			if (texture->desc.type == TextureDesc::Type_TEXTURE_1D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4906,7 +4906,7 @@ std::mutex queue_locker;
 					rtv_desc.Texture1D.MipSlice = firstMip;
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_2D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_2D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4937,7 +4937,7 @@ std::mutex queue_locker;
 					}
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_3D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_3D)
 			{
 				rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE3D;
 				rtv_desc.Texture3D.MipSlice = firstMip;
@@ -4961,12 +4961,12 @@ std::mutex queue_locker;
 			return int(internal_state->subresources_rtv.size() - 1);
 		}
 		break;
-		case SubresourceType::DSV:
+		case SubresourceType_DSV:
 		{
 			D3D12_DEPTH_STENCIL_VIEW_DESC dsv_desc = {};
 			dsv_desc.Format = _ConvertFormat(format);
 
-			if (texture->desc.type == TextureDesc::Type::TEXTURE_1D)
+			if (texture->desc.type == TextureDesc::Type_TEXTURE_1D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -4981,7 +4981,7 @@ std::mutex queue_locker;
 					dsv_desc.Texture1D.MipSlice = firstMip;
 				}
 			}
-			else if (texture->desc.type == TextureDesc::Type::TEXTURE_2D)
+			else if (texture->desc.type == TextureDesc::Type_TEXTURE_2D)
 			{
 				if (texture->desc.array_size > 1)
 				{
@@ -5044,7 +5044,7 @@ std::mutex queue_locker;
 		{
 			format = *format_change;
 		}
-		if (type == SubresourceType::UAV)
+		if (type == SubresourceType_UAV)
 		{
 			// RW resource can't be SRGB
 			format = GetFormatNonSRGB(format);
@@ -5053,14 +5053,14 @@ std::mutex queue_locker;
 		switch (type)
 		{
 
-		case SubresourceType::SRV:
+		case SubresourceType_SRV:
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
 			srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-			if (format == Format::UNKNOWN)
+			if (format == Format_UNKNOWN)
 			{
-				if (has_flag(desc.misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr))
+				if (has_flag(desc.misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr))
 				{
 					// This is a Structured Buffer
 					uint32_t stride = desc.stride;
@@ -5078,7 +5078,7 @@ std::mutex queue_locker;
 				else
 				{
 					// This is a Raw Buffer
-					assert(has_flag(desc.misc_flags, ResourceMiscFlag::BUFFER_RAW));
+					assert(has_flag(desc.misc_flags, ResourceMiscFlag_BUFFER_RAW));
 					srv_desc.Format = DXGI_FORMAT_R32_TYPELESS;
 					srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 					srv_desc.Buffer.FirstElement = UINT(offset / sizeof(uint32_t));
@@ -5109,15 +5109,15 @@ std::mutex queue_locker;
 			return int(internal_state->subresources_srv.size() - 1);
 		}
 		break;
-		case SubresourceType::UAV:
+		case SubresourceType_UAV:
 		{
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uav_desc = {};
 			uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 			uav_desc.Buffer.FirstElement = 0;
 
-			if (format == Format::UNKNOWN)
+			if (format == Format_UNKNOWN)
 			{
-				if (has_flag(desc.misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr))
+				if (has_flag(desc.misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr))
 				{
 					// This is a Structured Buffer
 					uint32_t stride = desc.stride;
@@ -5134,7 +5134,7 @@ std::mutex queue_locker;
 				else
 				{
 					// This is a Raw Buffer
-					assert(has_flag(desc.misc_flags, ResourceMiscFlag::BUFFER_RAW));
+					assert(has_flag(desc.misc_flags, ResourceMiscFlag_BUFFER_RAW));
 					uav_desc.Format = DXGI_FORMAT_R32_TYPELESS;
 					uav_desc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_RAW;
 					uav_desc.Buffer.FirstElement = UINT(offset / sizeof(uint32_t));
@@ -5188,7 +5188,7 @@ std::mutex queue_locker;
 		switch (type)
 		{
 		default:
-		case SubresourceType::SRV:
+		case SubresourceType_SRV:
 			if (subresource < 0)
 			{
 				return internal_state->srv.index;
@@ -5200,7 +5200,7 @@ std::mutex queue_locker;
 				return internal_state->subresources_srv[subresource].index;
 			}
 			break;
-		case SubresourceType::UAV:
+		case SubresourceType_UAV:
 			if (subresource < 0)
 			{
 				return internal_state->uav.index;
@@ -5799,7 +5799,7 @@ std::mutex queue_locker;
 
 		if (!log.empty())
 		{
-			Protean::Backlog::post(log, Protean::Backlog::LogLevel::Error);
+			Protean::Backlog::post(log, Protean::Backlog::LogLevel_Error);
 		}
 
 		std::string message = "D3D12: device removed, cause: ";
@@ -5862,11 +5862,11 @@ std::mutex queue_locker;
 		);
 
 		Texture result;
-		result.type = GPUResource::Type::TEXTURE;
+		result.type = GPUResource::Type_TEXTURE;
 		result.internal_state = internal_state;
 		result.desc = _ConvertTextureDesc_Inv(resourcedesc);
-		result.desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET;
-		result.desc.layout = ResourceState::SWAPCHAIN;
+		result.desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET;
+		result.desc.layout = ResourceState_SWAPCHAIN;
 		return result;
 	}
 
@@ -5963,10 +5963,10 @@ std::mutex queue_locker;
 				switch (in_flags)
 				{
 				default:
-				case TileRangeFlags::None:
+				case TileRangeFlags_None:
 					out_flags = D3D12_TILE_RANGE_FLAG_NONE;
 					break;
-				case TileRangeFlags::Null:
+				case TileRangeFlags_Null:
 					out_flags = D3D12_TILE_RANGE_FLAG_NULL;
 					break;
 				}
@@ -6126,13 +6126,13 @@ std::mutex queue_locker;
 			switch (image.loadop)
 			{
 			default:
-			case RenderPassImage::LoadOp::LOAD:
+			case RenderPassImage::LoadOp_LOAD:
 				beginning_access_type = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE;
 				break;
-			case RenderPassImage::LoadOp::CLEAR:
+			case RenderPassImage::LoadOp_CLEAR:
 				beginning_access_type = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR;
 				break;
-			case RenderPassImage::LoadOp::DONTCARE:
+			case RenderPassImage::LoadOp_DONTCARE:
 				beginning_access_type = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_DISCARD;
 				break;
 			}
@@ -6141,10 +6141,10 @@ std::mutex queue_locker;
 			switch (image.storeop)
 			{
 			default:
-			case RenderPassImage::StoreOp::STORE:
+			case RenderPassImage::StoreOp_STORE:
 				ending_access_type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE;
 				break;
-			case RenderPassImage::StoreOp::DONTCARE:
+			case RenderPassImage::StoreOp_DONTCARE:
 				ending_access_type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_DISCARD;
 				break;
 			}
@@ -6153,7 +6153,7 @@ std::mutex queue_locker;
 
 			switch (image.type)
 			{
-			case RenderPassImage::Type::RENDERTARGET:
+			case RenderPassImage::Type_RENDERTARGET:
 			{
 				descriptor = subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[subresource];
 				ResolveSourceInfo& resolve_src_info = RT_resolve_src_infos[rt_count];
@@ -6177,7 +6177,7 @@ std::mutex queue_locker;
 			}
 			break;
 
-			case RenderPassImage::Type::RESOLVE:
+			case RenderPassImage::Type_RESOLVE:
 			{
 				descriptor = subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[subresource];
 				ResolveSourceInfo& resolve_src_info = RT_resolve_src_infos[rt_resolve_count];
@@ -6210,7 +6210,7 @@ std::mutex queue_locker;
 			}
 			break;
 
-			case RenderPassImage::Type::DEPTH_STENCIL:
+			case RenderPassImage::Type_DEPTH_STENCIL:
 			{
 				descriptor = subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[subresource];
 				DSV.cpuDescriptor = descriptor.handle;
@@ -6242,7 +6242,7 @@ std::mutex queue_locker;
 			}
 			break;
 
-			case RenderPassImage::Type::RESOLVE_DEPTH:
+			case RenderPassImage::Type_RESOLVE_DEPTH:
 			{
 				descriptor = subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[subresource];
 				DSV.DepthEndingAccess.Type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE;
@@ -6250,10 +6250,10 @@ std::mutex queue_locker;
 				switch (image.depth_resolve_mode)
 				{
 				default:
-				case RenderPassImage::DepthResolveMode::Min:
+				case RenderPassImage::DepthResolveMode_Min:
 					DSV.DepthEndingAccess.Resolve.ResolveMode = D3D12_RESOLVE_MODE_MIN;
 					break;
-				case RenderPassImage::DepthResolveMode::Max:
+				case RenderPassImage::DepthResolveMode_Max:
 					DSV.DepthEndingAccess.Resolve.ResolveMode = D3D12_RESOLVE_MODE_MAX;
 					break;
 				}
@@ -6285,7 +6285,7 @@ std::mutex queue_locker;
 			}
 			break;
 
-			case RenderPassImage::Type::SHADING_RATE_SOURCE:
+			case RenderPassImage::Type_SHADING_RATE_SOURCE:
 				commandlist.shading_rate_image = internal_state->resource.Get(); // will be set after barriers
 				break;
 
@@ -6298,7 +6298,7 @@ std::mutex queue_locker;
 			{
 				D3D12_RESOURCE_STATES before = _ParseResourceState(image.layout_before);
 				D3D12_RESOURCE_STATES after = _ParseResourceState(image.layout);
-				if (image.type == RenderPassImage::Type::RESOLVE || image.type == RenderPassImage::Type::RESOLVE_DEPTH)
+				if (image.type == RenderPassImage::Type_RESOLVE || image.type == RenderPassImage::Type_RESOLVE_DEPTH)
 				{
 					after = D3D12_RESOURCE_STATE_RESOLVE_DEST;
 				}
@@ -6336,7 +6336,7 @@ std::mutex queue_locker;
 			{
 				D3D12_RESOURCE_STATES before = _ParseResourceState(image.layout);
 				D3D12_RESOURCE_STATES after = _ParseResourceState(image.layout_after);
-				if (image.type == RenderPassImage::Type::RESOLVE || image.type == RenderPassImage::Type::RESOLVE_DEPTH)
+				if (image.type == RenderPassImage::Type_RESOLVE || image.type == RenderPassImage::Type_RESOLVE_DEPTH)
 				{
 					before = D3D12_RESOURCE_STATE_RESOLVE_DEST;
 				}
@@ -6431,15 +6431,15 @@ std::mutex queue_locker;
 
 #else
 		D3D12_RENDER_PASS_FLAGS FLAGS = D3D12_RENDER_PASS_FLAG_NONE;
-		if (has_flag(flags, RenderPassFlags::ALLOW_UAV_WRITES))
+		if (has_flag(flags, RenderPassFlags_ALLOW_UAV_WRITES))
 		{
 			FLAGS |= D3D12_RENDER_PASS_FLAG_ALLOW_UAV_WRITES;
 		}
-		if (has_flag(flags, RenderPassFlags::SUSPENDING))
+		if (has_flag(flags, RenderPassFlags_SUSPENDING))
 		{
 			FLAGS |= D3D12_RENDER_PASS_FLAG_SUSPENDING_PASS;
 		}
-		if (has_flag(flags, RenderPassFlags::RESUMING))
+		if (has_flag(flags, RenderPassFlags_RESUMING))
 		{
 			FLAGS |= D3D12_RENDER_PASS_FLAG_RESUMING_PASS;
 		}
@@ -6735,7 +6735,7 @@ std::mutex queue_locker;
 			auto internal_state = to_internal(indexBuffer);
 
 			res.BufferLocation = internal_state->gpu_address + (D3D12_GPU_VIRTUAL_ADDRESS)offset;
-			res.Format = (format == IndexBufferFormat::UINT16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT);
+			res.Format = (format == IndexBufferFormat_UINT16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT);
 			res.SizeInBytes = (UINT)(indexBuffer->desc.size - offset);
 		}
 		CommandList_DX12& commandlist = GetCommandList(cmd);
@@ -6759,7 +6759,7 @@ std::mutex queue_locker;
 	void GraphicsDevice_DX12::BindShadingRate(ShadingRate rate, CommandList cmd)
 	{
 		CommandList_DX12& commandlist = GetCommandList(cmd);
-		if (CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING) && commandlist.prev_shadingrate != rate)
+		if (CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING) && commandlist.prev_shadingrate != rate)
 		{
 			commandlist.prev_shadingrate = rate;
 
@@ -6834,7 +6834,7 @@ std::mutex queue_locker;
 		commandlist.active_pso = nullptr;
 		commandlist.active_rt = nullptr;
 
-		assert(cs->stage == ShaderStage::CS || cs->stage == ShaderStage::LIB);
+		assert(cs->stage == ShaderStage_CS || cs->stage == ShaderStage_LIB);
 
 		commandlist.prev_pipeline_hash = {};
 
@@ -6842,7 +6842,7 @@ std::mutex queue_locker;
 
 		auto internal_state = to_internal(cs);
 
-		if (cs->stage == ShaderStage::CS)
+		if (cs->stage == ShaderStage_CS)
 		{
 			commandlist.GetGraphicsCommandList()->SetPipelineState(internal_state->resource.Get());
 		}
@@ -6859,7 +6859,7 @@ std::mutex queue_locker;
 	}
 	void GraphicsDevice_DX12::BindDepthBounds(float min_bounds, float max_bounds, CommandList cmd)
 	{
-		if (CheckCapability(GraphicsDeviceCapability::DEPTH_BOUNDS_TEST))
+		if (CheckCapability(GraphicsDeviceCapability_DEPTH_BOUNDS_TEST))
 		{
 			CommandList_DX12& commandlist = GetCommandList(cmd);
 			commandlist.GetGraphicsCommandListLatest()->OMSetDepthBounds(min_bounds, max_bounds);
@@ -6967,7 +6967,7 @@ std::mutex queue_locker;
 			const TextureDesc& src_desc = ((const Texture*)pSrc)->GetDesc();
 			const TextureDesc& dst_desc = ((const Texture*)pDst)->GetDesc();
 
-			if (src_desc.usage == Usage::UPLOAD && dst_desc.usage == Usage::DEFAULT)
+			if (src_desc.usage == Usage_UPLOAD && dst_desc.usage == Usage_DEFAULT)
 			{
 				// CPU (buffer) -> GPU (texture)
 				const uint32_t planes = GetFormatPlaneCount(dst_desc.format); // dst plane count!
@@ -6985,7 +6985,7 @@ std::mutex queue_locker;
 					}
 				}
 			}
-			else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::READBACK)
+			else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_READBACK)
 			{
 				// GPU (texture) -> CPU (buffer)
 				const uint32_t planes = GetFormatPlaneCount(src_desc.format); // src plane count!
@@ -7037,19 +7037,19 @@ std::mutex queue_locker;
 
 		CD3DX12_TEXTURE_COPY_LOCATION src_location;
 		CD3DX12_TEXTURE_COPY_LOCATION dst_location;
-		if (src_desc.usage == Usage::UPLOAD && dst_desc.usage == Usage::DEFAULT)
+		if (src_desc.usage == Usage_UPLOAD && dst_desc.usage == Usage_DEFAULT)
 		{
 			// CPU (buffer) -> GPU (texture)
 			src_location = CD3DX12_TEXTURE_COPY_LOCATION(src_internal->resource.Get(), src_internal->footprints[src_subresource]);
 			dst_location = CD3DX12_TEXTURE_COPY_LOCATION(dst_internal->resource.Get(), dst_subresource);
 		}
-		else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::READBACK)
+		else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_READBACK)
 		{
 			// GPU (texture) -> CPU (buffer)
 			src_location = CD3DX12_TEXTURE_COPY_LOCATION(src_internal->resource.Get(), src_subresource);
 			dst_location = CD3DX12_TEXTURE_COPY_LOCATION(dst_internal->resource.Get(), dst_internal->footprints[dst_subresource]);
 		}
-		else if (src_desc.usage == Usage::DEFAULT && dst_desc.usage == Usage::DEFAULT)
+		else if (src_desc.usage == Usage_DEFAULT && dst_desc.usage == Usage_DEFAULT)
 		{
 			// GPU (texture) -> GPU (texture)
 			src_location = CD3DX12_TEXTURE_COPY_LOCATION(src_internal->resource.Get(), src_subresource);
@@ -7099,21 +7099,21 @@ std::mutex queue_locker;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			commandlist.GetGraphicsCommandList()->BeginQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_TIMESTAMP,
 				index
 			);
 			break;
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION_BINARY:
 			commandlist.GetGraphicsCommandList()->BeginQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_BINARY_OCCLUSION,
 				index
 			);
 			break;
-		case GpuQueryType::OCCLUSION:
+		case GpuQueryType_OCCLUSION:
 			commandlist.GetGraphicsCommandList()->BeginQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_OCCLUSION,
@@ -7129,21 +7129,21 @@ std::mutex queue_locker;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			commandlist.GetGraphicsCommandList()->EndQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_TIMESTAMP,
 				index
 			);
 			break;
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION_BINARY:
 			commandlist.GetGraphicsCommandList()->EndQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_BINARY_OCCLUSION,
 				index
 			);
 			break;
-		case GpuQueryType::OCCLUSION:
+		case GpuQueryType_OCCLUSION:
 			commandlist.GetGraphicsCommandList()->EndQuery(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_OCCLUSION,
@@ -7161,7 +7161,7 @@ std::mutex queue_locker;
 
 		switch (heap->desc.type)
 		{
-		case GpuQueryType::TIMESTAMP:
+		case GpuQueryType_TIMESTAMP:
 			commandlist.GetGraphicsCommandList()->ResolveQueryData(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_TIMESTAMP,
@@ -7171,7 +7171,7 @@ std::mutex queue_locker;
 				dest_offset
 			);
 			break;
-		case GpuQueryType::OCCLUSION_BINARY:
+		case GpuQueryType_OCCLUSION_BINARY:
 			commandlist.GetGraphicsCommandList()->ResolveQueryData(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_BINARY_OCCLUSION,
@@ -7181,7 +7181,7 @@ std::mutex queue_locker;
 				dest_offset
 			);
 			break;
-		case GpuQueryType::OCCLUSION:
+		case GpuQueryType_OCCLUSION:
 			commandlist.GetGraphicsCommandList()->ResolveQueryData(
 				internal_state->heap.Get(),
 				D3D12_QUERY_TYPE_OCCLUSION,
@@ -7203,9 +7203,9 @@ std::mutex queue_locker;
 		{
 			const GPUBarrier& barrier = barriers[i];
 
-			if (barrier.type == GPUBarrier::Type::IMAGE && (barrier.image.texture == nullptr || !barrier.image.texture->IsValid()))
+			if (barrier.type == GPUBarrier::Type_IMAGE && (barrier.image.texture == nullptr || !barrier.image.texture->IsValid()))
 				continue;
-			if (barrier.type == GPUBarrier::Type::BUFFER && (barrier.buffer.buffer == nullptr || !barrier.buffer.buffer->IsValid()))
+			if (barrier.type == GPUBarrier::Type_BUFFER && (barrier.buffer.buffer == nullptr || !barrier.buffer.buffer->IsValid()))
 				continue;
 
 			D3D12_RESOURCE_BARRIER barrierdesc = {};
@@ -7213,14 +7213,14 @@ std::mutex queue_locker;
 			switch (barrier.type)
 			{
 			default:
-			case GPUBarrier::Type::MEMORY:
+			case GPUBarrier::Type_MEMORY:
 			{
 				barrierdesc.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 				barrierdesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 				barrierdesc.UAV.pResource = barrier.memory.resource == nullptr ? nullptr : to_internal(barrier.memory.resource)->resource.Get();
 			}
 			break;
-			case GPUBarrier::Type::IMAGE:
+			case GPUBarrier::Type_IMAGE:
 			{
 				auto internal_state = to_internal(barrier.image.texture);
 				barrierdesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -7244,7 +7244,7 @@ std::mutex queue_locker;
 					barrierdesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 				}
 
-				if (barrier.image.layout_before == ResourceState::UNDEFINED)
+				if (barrier.image.layout_before == ResourceState_UNDEFINED)
 				{
 					CommandList_DX12::Discard& discard = commandlist.discards.emplace_back();
 					discard.resource = internal_state->resource.Get();
@@ -7267,7 +7267,7 @@ std::mutex queue_locker;
 				}
 			}
 			break;
-			case GPUBarrier::Type::BUFFER:
+			case GPUBarrier::Type_BUFFER:
 			{
 				auto internal_state = to_internal(barrier.buffer.buffer);
 				barrierdesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -7277,14 +7277,14 @@ std::mutex queue_locker;
 				barrierdesc.Transition.StateAfter = _ParseResourceState(barrier.buffer.state_after);
 				barrierdesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
-				if (barrier.buffer.state_before == ResourceState::UNDEFINED)
+				if (barrier.buffer.state_before == ResourceState_UNDEFINED)
 				{
 					CommandList_DX12::Discard& discard = commandlist.discards.emplace_back();
 					discard.resource = internal_state->resource.Get();
 				}
 			}
 			break;
-			case GPUBarrier::Type::ALIASING:
+			case GPUBarrier::Type_ALIASING:
 			{
 				barrierdesc.Type = D3D12_RESOURCE_BARRIER_TYPE_ALIASING;
 				barrierdesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -7379,7 +7379,7 @@ std::mutex queue_locker;
 		// The real GPU addresses get filled here:
 		switch (dst->desc.type)
 		{
-		case RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL:
 		{
 			size_t i = 0;
 			for (auto& x : dst->desc.bottom_level.geometries)
@@ -7394,12 +7394,12 @@ std::mutex queue_locker;
 					geometry.Flags |= D3D12_RAYTRACING_GEOMETRY_FLAG_NO_DUPLICATE_ANYHIT_INVOCATION;
 				}
 
-				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES)
+				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES)
 				{
 					geometry.Triangles.VertexBuffer.StartAddress = to_internal(&x.triangles.vertex_buffer)->gpu_address +
 						(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.vertex_byte_offset;
 					geometry.Triangles.IndexBuffer = to_internal(&x.triangles.index_buffer)->gpu_address +
-						(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat::UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
+						(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.index_offset * (x.triangles.index_format == IndexBufferFormat_UINT16 ? sizeof(uint16_t) : sizeof(uint32_t));
 
 					if (x.flags & RaytracingAccelerationStructureDesc::BottomLevel::Geometry::FLAG_USE_TRANSFORM)
 					{
@@ -7407,7 +7407,7 @@ std::mutex queue_locker;
 							(D3D12_GPU_VIRTUAL_ADDRESS)x.triangles.transform_3x4_buffer_offset;
 					}
 				}
-				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::PROCEDURAL_AABBS)
+				else if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_PROCEDURAL_AABBS)
 				{
 					geometry.AABBs.AABBs.StartAddress = to_internal(&x.aabbs.aabb_buffer)->gpu_address +
 						(D3D12_GPU_VIRTUAL_ADDRESS)x.aabbs.offset;
@@ -7415,7 +7415,7 @@ std::mutex queue_locker;
 			}
 		}
 		break;
-		case RaytracingAccelerationStructureDesc::Type::TOPLEVEL:
+		case RaytracingAccelerationStructureDesc::Type_TOPLEVEL:
 		{
 			desc.Inputs.InstanceDescs = to_internal(&dst->desc.top_level.instance_buffer)->gpu_address +
 				(D3D12_GPU_VIRTUAL_ADDRESS)dst->desc.top_level.offset;
@@ -7547,10 +7547,10 @@ std::mutex queue_locker;
 		switch (op)
 		{
 		default:
-		case PredicationOp::EQUAL_ZERO:
+		case PredicationOp_EQUAL_ZERO:
 			operation = D3D12_PREDICATION_OP_EQUAL_ZERO;
 			break;
-		case PredicationOp::NOT_EQUAL_ZERO:
+		case PredicationOp_NOT_EQUAL_ZERO:
 			operation = D3D12_PREDICATION_OP_NOT_EQUAL_ZERO;
 			break;
 		}
@@ -7666,7 +7666,7 @@ std::mutex queue_locker;
 		input.CompressedBitstream.Size = op->stream_size;
 		input.pHeap = decoder_internal->decoder_heap.Get();
 
-		if (video_decoder->desc.profile == VideoProfile::H264)
+		if (video_decoder->desc.profile == VideoProfile_H264)
 		{
 			const h264::SliceHeader* slice_header = (const h264::SliceHeader*)op->slice_header;
 			const h264::PPS* pps = (const h264::PPS*)op->pps;
@@ -7682,7 +7682,7 @@ std::mutex queue_locker;
 			//	Also: https://github.com/mofo7777/H264Dxva2Decoder
 			pic_params_h264.wFrameWidthInMbsMinus1 = sps->pic_width_in_mbs_minus1;
 			pic_params_h264.wFrameHeightInMbsMinus1 = sps->pic_height_in_map_units_minus1;
-			pic_params_h264.IntraPicFlag = op->frame_type == VideoFrameType::Intra ? 1 : 0;
+			pic_params_h264.IntraPicFlag = op->frame_type == VideoFrameType_Intra ? 1 : 0;
 			pic_params_h264.MbaffFrameFlag = 0 /*sps->mb_adaptive_frame_field_flag && !slice_header->field_pic_flag*/;
 			pic_params_h264.field_pic_flag = 0 /*slice_header->field_pic_flag*/; // 0 = full frame (top and bottom field)
 			//pic_params_h264.bottom_field_flag = 0; // missing??
@@ -7832,7 +7832,7 @@ std::mutex queue_locker;
 				&input
 			);
 		}
-		else if (video_decoder->desc.profile == VideoProfile::H265)
+		else if (video_decoder->desc.profile == VideoProfile_H265)
 		{
 			assert(0); // TODO
 		}

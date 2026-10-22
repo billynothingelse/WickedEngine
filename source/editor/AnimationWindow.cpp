@@ -5,7 +5,7 @@ using namespace Protean;
 void AnimationWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_ANIMATION " Animation", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_ANIMATION " Animation", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(520, 540));
 
 	closeButton.SetTooltip("Delete AnimationComponent");
@@ -330,25 +330,25 @@ void AnimationWindow::Create(EditorComponent* _editor)
 
 						switch (path_data_type)
 						{
-						case AnimationComponent::AnimationChannel::PathDataType::Float:
+						case AnimationComponent::AnimationChannel::PathDataType_Float:
 						{
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst]);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::PathDataType::Float2:
+						case AnimationComponent::AnimationChannel::PathDataType_Float2:
 						{
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 2 + 0]);
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 2 + 1]);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::PathDataType::Float3:
+						case AnimationComponent::AnimationChannel::PathDataType_Float3:
 						{
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 3 + 0]);
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 3 + 1]);
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 3 + 2]);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::PathDataType::Float4:
+						case AnimationComponent::AnimationChannel::PathDataType_Float4:
 						{
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 4 + 0]);
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 4 + 1]);
@@ -356,7 +356,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 							animation_data->keyframe_data.push_back(animation_data->keyframe_data[keyFirst * 4 + 3]);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::PathDataType::Weights:
+						case AnimationComponent::AnimationChannel::PathDataType_Weights:
 						{
 							const MeshComponent* mesh = scene.meshes.GetComponent(channel.target);
 							if (mesh == nullptr && scene.objects.Contains(channel.target))
@@ -391,84 +391,84 @@ void AnimationWindow::Create(EditorComponent* _editor)
 				{
 				default:
 				case 0:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::TRANSLATION);
-					paths.push_back(AnimationComponent::AnimationChannel::Path::ROTATION);
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SCALE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_TRANSLATION);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_ROTATION);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SCALE);
 					break;
 				case 1:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::TRANSLATION);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_TRANSLATION);
 					break;
 				case 2:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::ROTATION);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_ROTATION);
 					break;
 				case 3:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SCALE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SCALE);
 					break;
 				case 4:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::WEIGHTS);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_WEIGHTS);
 					break;
 				case 5:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::LIGHT_COLOR);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_LIGHT_COLOR);
 					break;
 				case 6:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY);
 					break;
 				case 7:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::LIGHT_RANGE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_LIGHT_RANGE);
 					break;
 				case 8:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE);
 					break;
 				case 9:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE);
 					break;
 				case 10:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SOUND_PLAY);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SOUND_PLAY);
 					break;
 				case 11:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SOUND_STOP);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SOUND_STOP);
 					break;
 				case 12:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SOUND_VOLUME);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SOUND_VOLUME);
 					break;
 				case 13:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT);
 					break;
 				case 14:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::CAMERA_FOV);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_CAMERA_FOV);
 					break;
 				case 15:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH);
 					break;
 				case 16:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE);
 					break;
 				case 17:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE);
 					break;
 				case 18:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY);
 					break;
 				case 19:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::SCRIPT_STOP);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_SCRIPT_STOP);
 					break;
 				case 20:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR);
 					break;
 				case 21:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE);
 					break;
 				case 22:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS);
 					break;
 				case 23:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS);
 					break;
 				case 24:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE);
 					break;
 				case 25:
-					paths.push_back(AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD);
+					paths.push_back(AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD);
 					break;
 				}
 
@@ -509,7 +509,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 
 							switch (channel.path)
 							{
-							case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+							case Protean::AnimationComponent::AnimationChannel::Path_TRANSLATION:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -525,7 +525,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
+							case Protean::AnimationComponent::AnimationChannel::Path_ROTATION:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -542,7 +542,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
+							case Protean::AnimationComponent::AnimationChannel::Path_SCALE:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -558,7 +558,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+							case Protean::AnimationComponent::AnimationChannel::Path_WEIGHTS:
 							{
 								const MeshComponent* mesh = scene.meshes.GetComponent(channel.target);
 								if (mesh == nullptr && scene.objects.Contains(selected.entity))
@@ -582,7 +582,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+							case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_COLOR:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -598,7 +598,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+							case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -612,7 +612,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+							case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_RANGE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -626,7 +626,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+							case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -640,7 +640,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+							case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -654,8 +654,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
-							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+							case Protean::AnimationComponent::AnimationChannel::Path_SOUND_PLAY:
+							case Protean::AnimationComponent::AnimationChannel::Path_SOUND_STOP:
 							{
 								const SoundComponent* sound = scene.sounds.GetComponent(channel.target);
 								if (sound != nullptr)
@@ -669,7 +669,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+							case Protean::AnimationComponent::AnimationChannel::Path_SOUND_VOLUME:
 							{
 								const SoundComponent* sound = scene.sounds.GetComponent(channel.target);
 								if (sound != nullptr)
@@ -683,7 +683,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+							case Protean::AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT:
 							{
 								const Protean::EmittedParticleSystem* emitter = scene.emitters.GetComponent(channel.target);
 								if (emitter != nullptr)
@@ -697,7 +697,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+							case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOV:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -711,7 +711,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+							case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -725,7 +725,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+							case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -739,7 +739,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+							case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -754,8 +754,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
-							case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+							case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY:
+							case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_STOP:
 							{
 								const ScriptComponent* script = scene.scripts.GetComponent(channel.target);
 								if (script != nullptr)
@@ -769,7 +769,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -786,7 +786,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -803,7 +803,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -817,7 +817,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -831,7 +831,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -845,7 +845,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+							case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -920,26 +920,26 @@ void AnimationWindow::Create(EditorComponent* _editor)
 
 					switch (path_data_type)
 					{
-					case AnimationComponent::AnimationChannel::PathDataType::Event:
+					case AnimationComponent::AnimationChannel::PathDataType_Event:
 						animation_data->keyframe_times.erase(animation_data->keyframe_times.begin() + timeIndex);
 						break;
-					case AnimationComponent::AnimationChannel::PathDataType::Float:
+					case AnimationComponent::AnimationChannel::PathDataType_Float:
 						animation_data->keyframe_times.erase(animation_data->keyframe_times.begin() + timeIndex);
 						animation_data->keyframe_data.erase(animation_data->keyframe_data.begin() + timeIndex);
 						break;
-					case AnimationComponent::AnimationChannel::PathDataType::Float2:
+					case AnimationComponent::AnimationChannel::PathDataType_Float2:
 						animation_data->keyframe_times.erase(animation_data->keyframe_times.begin() + timeIndex);
 						animation_data->keyframe_data.erase(animation_data->keyframe_data.begin() + timeIndex * 2, animation_data->keyframe_data.begin() + timeIndex * 2 + 2);
 						break;
-					case AnimationComponent::AnimationChannel::PathDataType::Float3:
+					case AnimationComponent::AnimationChannel::PathDataType_Float3:
 						animation_data->keyframe_times.erase(animation_data->keyframe_times.begin() + timeIndex);
 						animation_data->keyframe_data.erase(animation_data->keyframe_data.begin() + timeIndex * 3, animation_data->keyframe_data.begin() + timeIndex * 3 + 3);
 						break;
-					case AnimationComponent::AnimationChannel::PathDataType::Float4:
+					case AnimationComponent::AnimationChannel::PathDataType_Float4:
 						animation_data->keyframe_times.erase(animation_data->keyframe_times.begin() + timeIndex);
 						animation_data->keyframe_data.erase(animation_data->keyframe_data.begin() + timeIndex * 4, animation_data->keyframe_data.begin() + timeIndex * 4 + 4);
 						break;
-					case AnimationComponent::AnimationChannel::PathDataType::Weights:
+					case AnimationComponent::AnimationChannel::PathDataType_Weights:
 						{
 							MeshComponent* mesh = scene.meshes.GetComponent(channel.target);
 							if (mesh == nullptr && scene.objects.Contains(channel.target))
@@ -1083,8 +1083,8 @@ void AnimationWindow::SetEntity(Entity entity)
 				// Add items to root bone name combo box.
 				for (const AnimationComponent::AnimationChannel& channel : animation->channels)
 				{
-					if (channel.path == AnimationComponent::AnimationChannel::Path::TRANSLATION ||
-						channel.path == AnimationComponent::AnimationChannel::Path::ROTATION) {
+					if (channel.path == AnimationComponent::AnimationChannel::Path_TRANSLATION ||
+						channel.path == AnimationComponent::AnimationChannel::Path_ROTATION) {
 
 						if (!EntityExistsInList(channel.target, bone_list))
 						{
@@ -1185,79 +1185,79 @@ void AnimationWindow::RefreshKeyframesList()
 		Protean::Gui::TreeList::Item item;
 		switch (channel.path)
 		{
-		case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+		case Protean::AnimationComponent::AnimationChannel::Path_TRANSLATION:
 			item.name += ICON_TRANSLATE " ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
+		case Protean::AnimationComponent::AnimationChannel::Path_ROTATION:
 			item.name += ICON_ROTATE " ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
+		case Protean::AnimationComponent::AnimationChannel::Path_SCALE:
 			item.name += ICON_SCALE " ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+		case Protean::AnimationComponent::AnimationChannel::Path_WEIGHTS:
 			item.name += ICON_MESH " ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_COLOR:
 			item.name += ICON_POINTLIGHT " [color] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY:
 			item.name += ICON_POINTLIGHT " [intensity] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_RANGE:
 			item.name += ICON_POINTLIGHT " [range] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE:
 			item.name += ICON_POINTLIGHT " [inner cone] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE:
 			item.name += ICON_POINTLIGHT " [outer cone] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_PLAY:
 			item.name += ICON_SOUND " [play] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_STOP:
 			item.name += ICON_SOUND " [stop] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+		case Protean::AnimationComponent::AnimationChannel::Path_SOUND_VOLUME:
 			item.name += ICON_SOUND " [volume] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+		case Protean::AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT:
 			item.name += ICON_EMITTER " [emit count] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOV:
 			item.name += ICON_CAMERA " [fov] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH:
 			item.name += ICON_CAMERA " [focal length] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE:
 			item.name += ICON_CAMERA " [aperture size] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+		case Protean::AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE:
 			item.name += ICON_CAMERA " [aperture shape] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY:
 			item.name += ICON_SCRIPT " [play] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path_SCRIPT_STOP:
 			item.name += ICON_SCRIPT " [stop] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR:
 			item.name += ICON_MATERIAL " [color] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE:
 			item.name += ICON_MATERIAL " [emissive] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS:
 			item.name += ICON_MATERIAL " [roughness] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS:
 			item.name += ICON_MATERIAL " [metalness] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE:
 			item.name += ICON_MATERIAL " [reflectance] ";
 			break;
-		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+		case Protean::AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD:
 			item.name += ICON_MATERIAL " [texmuladd] ";
 			break;
 		default:

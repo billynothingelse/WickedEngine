@@ -58,30 +58,30 @@ namespace Protean
 		{
 			TextureDesc desc;
 			desc.format = Protean::Renderer::format_rendertarget_main;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtMain);
 			device->SetName(&rtMain, "pathtracing.rtMain");
 
 			desc.format = Protean::Renderer::format_idbuffer;
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			desc.sample_count = 1;
 			device->CreateTexture(&desc, nullptr, &rtPrimitiveID);
 			device->SetName(&rtPrimitiveID, "pathtracing.rtPrimitiveID");
 
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET;
-			desc.format = Format::R32G32B32A32_FLOAT;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET;
+			desc.format = Format_R32G32B32A32_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &traceResult);
 			device->SetName(&traceResult, "pathtracing.traceResult");
 
 #ifdef OPEN_IMAGE_DENOISE
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS;
-			desc.layout = ResourceState::UNORDERED_ACCESS;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS;
+			desc.layout = ResourceState_UNORDERED_ACCESS;
 			device->CreateTexture(&desc, nullptr, &denoiserAlbedo);
 			device->SetName(&denoiserAlbedo, "pathtracing.denoiserAlbedo");
 			device->CreateTexture(&desc, nullptr, &denoiserNormal);
@@ -89,19 +89,19 @@ namespace Protean
 #endif // OPEN_IMAGE_DENOISE
 
 			{
-				desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				desc.format = Format::R32_FLOAT;
+				desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				desc.format = Format_R32_FLOAT;
 				device->CreateTexture(&desc, nullptr, &traceDepth);
 				device->SetName(&traceDepth, "pathtracing.traceDepth");
-				desc.format = Format::R8_UINT;
+				desc.format = Format_R8_UINT;
 				device->CreateTexture(&desc, nullptr, &traceStencil);
 				device->SetName(&traceStencil, "pathtracing.traceStencil");
 
 				depthBuffer_Copy = traceDepth;
 				depthBuffer_Copy1 = traceDepth;
 
-				desc.layout = ResourceState::DEPTHSTENCIL;
-				desc.bind_flags = BindFlag::DEPTH_STENCIL;
+				desc.layout = ResourceState_DEPTHSTENCIL;
+				desc.bind_flags = BindFlag_DEPTH_STENCIL;
 				desc.format = Protean::Renderer::format_depthbuffer_main;
 				device->CreateTexture(&desc, nullptr, &depthBuffer_Main);
 				device->SetName(&depthBuffer_Main, "pathtracing.depthBuffer_Main");
@@ -109,8 +109,8 @@ namespace Protean
 		}
 		{
 			TextureDesc desc;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R11G11B10_FLOAT;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R11G11B10_FLOAT;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtPostprocess);
@@ -119,7 +119,7 @@ namespace Protean
 
 			desc.width /= 4;
 			desc.height /= 4;
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &rtGUIBlurredBackground[0]);
 			device->SetName(&rtGUIBlurredBackground[0], "pathtracing.rtGUIBlurredBackground[0]");
 
@@ -277,8 +277,8 @@ namespace Protean
 						TextureDesc desc;
 						desc.width = (uint32_t)width;
 						desc.height = (uint32_t)height;
-						desc.bind_flags = BindFlag::SHADER_RESOURCE;
-						desc.format = Format::R32G32B32A32_FLOAT;
+						desc.bind_flags = BindFlag_SHADER_RESOURCE;
+						desc.format = Format_R32G32B32A32_FLOAT;
 
 						SubresourceData initdata;
 						initdata.data_ptr = texturedata_dst.data();
@@ -357,7 +357,7 @@ namespace Protean
 
 				// just clear depth for safety:
 				RenderPassImage rp[] = {
-					RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp::CLEAR),
+					RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp_CLEAR),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
 				device->RenderPassEnd(cmd);
@@ -371,7 +371,7 @@ namespace Protean
 				if (Protean::Renderer::GetRaytraceDebugBVHVisualizerEnabled())
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&traceResult, RenderPassImage::LoadOp::CLEAR)
+						RenderPassImage::RenderTarget(&traceResult, RenderPassImage::LoadOp_CLEAR)
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
 
@@ -490,8 +490,8 @@ namespace Protean
 			// Composite other effects on top:
 			{
 				RenderPassImage rp[] = {
-					RenderPassImage::RenderTarget(&rtMain, RenderPassImage::LoadOp::CLEAR),
-					RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp::LOAD),
+					RenderPassImage::RenderTarget(&rtMain, RenderPassImage::LoadOp_CLEAR),
+					RenderPassImage::DepthStencil(&depthBuffer_Main, RenderPassImage::LoadOp_LOAD),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
 
@@ -574,7 +574,7 @@ namespace Protean
 
 				if (getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 				{
-					rp[0].loadop = RenderPassImage::LoadOp::LOAD;
+					rp[0].loadop = RenderPassImage::LoadOp_LOAD;
 					Protean::Renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, arraysize(rp), cmd);
 				}
 			}
@@ -585,7 +585,7 @@ namespace Protean
 
 			for (auto& x : custom_post_processes)
 			{
-				if (x.stage == CustomPostprocess::Stage::BeforeTonemap)
+				if (x.stage == CustomPostprocess::Stage_BeforeTonemap)
 				{
 					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
@@ -645,7 +645,7 @@ namespace Protean
 
 			for (auto& x : custom_post_processes)
 			{
-				if (x.stage == CustomPostprocess::Stage::AfterTonemap)
+				if (x.stage == CustomPostprocess::Stage_AfterTonemap)
 				{
 					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,

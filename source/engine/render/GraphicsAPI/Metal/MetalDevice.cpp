@@ -33,96 +33,96 @@ namespace MetalInternal
 	constexpr MTL::AttributeFormat _ConvertAttributeFormat(Format value)
 	{
 		switch (value) {
-			case Format::R32G32B32A32_FLOAT:
+			case Format_R32G32B32A32_FLOAT:
 				return MTL::AttributeFormatFloat4;
-			case Format::R32G32B32_FLOAT:
+			case Format_R32G32B32_FLOAT:
 				return MTL::AttributeFormatFloat3;
-			case Format::R32G32_FLOAT:
+			case Format_R32G32_FLOAT:
 				return MTL::AttributeFormatFloat2;
-			case Format::R32_FLOAT:
+			case Format_R32_FLOAT:
 				return MTL::AttributeFormatFloat;
 				
-			case Format::R16G16B16A16_FLOAT:
+			case Format_R16G16B16A16_FLOAT:
 				return MTL::AttributeFormatHalf4;
-			case Format::R16G16_FLOAT:
+			case Format_R16G16_FLOAT:
 				return MTL::AttributeFormatHalf2;
-			case Format::R16_FLOAT:
+			case Format_R16_FLOAT:
 				return MTL::AttributeFormatHalf;
 				
-			case Format::R32G32B32A32_UINT:
+			case Format_R32G32B32A32_UINT:
 				return MTL::AttributeFormatUInt4;
-			case Format::R32G32B32_UINT:
+			case Format_R32G32B32_UINT:
 				return MTL::AttributeFormatUInt3;
-			case Format::R32G32_UINT:
+			case Format_R32G32_UINT:
 				return MTL::AttributeFormatUInt2;
-			case Format::R32_UINT:
+			case Format_R32_UINT:
 				return MTL::AttributeFormatUInt;
 				
-			case Format::R32G32B32A32_SINT:
+			case Format_R32G32B32A32_SINT:
 				return MTL::AttributeFormatInt4;
-			case Format::R32G32B32_SINT:
+			case Format_R32G32B32_SINT:
 				return MTL::AttributeFormatInt3;
-			case Format::R32G32_SINT:
+			case Format_R32G32_SINT:
 				return MTL::AttributeFormatInt2;
-			case Format::R32_SINT:
+			case Format_R32_SINT:
 				return MTL::AttributeFormatInt;
 				
-			case Format::R16G16B16A16_UINT:
+			case Format_R16G16B16A16_UINT:
 				return MTL::AttributeFormatUShort4;
-			case Format::R16G16_UINT:
+			case Format_R16G16_UINT:
 				return MTL::AttributeFormatUShort2;
-			case Format::R16_UINT:
+			case Format_R16_UINT:
 				return MTL::AttributeFormatUShort;
 				
-			case Format::R16G16B16A16_SINT:
+			case Format_R16G16B16A16_SINT:
 				return MTL::AttributeFormatShort4;
-			case Format::R16G16_SINT:
+			case Format_R16G16_SINT:
 				return MTL::AttributeFormatShort2;
-			case Format::R16_SINT:
+			case Format_R16_SINT:
 				return MTL::AttributeFormatShort;
 				
-			case Format::R16G16B16A16_UNORM:
+			case Format_R16G16B16A16_UNORM:
 				return MTL::AttributeFormatUShort4Normalized;
-			case Format::R16G16_UNORM:
+			case Format_R16G16_UNORM:
 				return MTL::AttributeFormatUShort2Normalized;
-			case Format::R16_UNORM:
+			case Format_R16_UNORM:
 				return MTL::AttributeFormatUShortNormalized;
 				
-			case Format::R16G16B16A16_SNORM:
+			case Format_R16G16B16A16_SNORM:
 				return MTL::AttributeFormatShort4Normalized;
-			case Format::R16G16_SNORM:
+			case Format_R16G16_SNORM:
 				return MTL::AttributeFormatShort2Normalized;
-			case Format::R16_SNORM:
+			case Format_R16_SNORM:
 				return MTL::AttributeFormatShortNormalized;
 				
-			case Format::R8G8B8A8_UINT:
+			case Format_R8G8B8A8_UINT:
 				return MTL::AttributeFormatUChar4;
-			case Format::R8G8_UINT:
+			case Format_R8G8_UINT:
 				return MTL::AttributeFormatUChar2;
-			case Format::R8_UINT:
+			case Format_R8_UINT:
 				return MTL::AttributeFormatUChar;
 				
-			case Format::B8G8R8A8_UNORM:
+			case Format_B8G8R8A8_UNORM:
 				return MTL::AttributeFormatUChar4Normalized_BGRA;
-			case Format::R8G8B8A8_UNORM:
+			case Format_R8G8B8A8_UNORM:
 				return MTL::AttributeFormatUChar4Normalized;
-			case Format::R8G8_UNORM:
+			case Format_R8G8_UNORM:
 				return MTL::AttributeFormatUChar2Normalized;
-			case Format::R8_UNORM:
+			case Format_R8_UNORM:
 				return MTL::AttributeFormatUCharNormalized;
 				
-			case Format::R8G8B8A8_SNORM:
+			case Format_R8G8B8A8_SNORM:
 				return MTL::AttributeFormatChar4Normalized;
-			case Format::R8G8_SNORM:
+			case Format_R8G8_SNORM:
 				return MTL::AttributeFormatChar2Normalized;
-			case Format::R8_SNORM:
+			case Format_R8_SNORM:
 				return MTL::AttributeFormatCharNormalized;
 				
-			case Format::R10G10B10A2_UNORM:
+			case Format_R10G10B10A2_UNORM:
 				return MTL::AttributeFormatUInt1010102Normalized;
-			case Format::R11G11B10_FLOAT:
+			case Format_R11G11B10_FLOAT:
 				return MTL::AttributeFormatFloatRG11B10;
-			case Format::R9G9B9E5_SHAREDEXP:
+			case Format_R9G9B9E5_SHAREDEXP:
 				return MTL::AttributeFormatFloatRGB9E5;
 				
 			default:
@@ -135,103 +135,103 @@ namespace MetalInternal
 		switch (value)
 		{
 		default:
-		case Format::UNKNOWN:
+		case Format_UNKNOWN:
 			return MTL::VertexFormatInvalid;
-		case Format::R32G32B32A32_FLOAT:
+		case Format_R32G32B32A32_FLOAT:
 			return MTL::VertexFormatFloat4;
-		case Format::R32G32B32A32_UINT:
+		case Format_R32G32B32A32_UINT:
 			return MTL::VertexFormatUInt4;
-		case Format::R32G32B32A32_SINT:
+		case Format_R32G32B32A32_SINT:
 			return MTL::VertexFormatInt4;
-		case Format::R32G32B32_FLOAT:
+		case Format_R32G32B32_FLOAT:
 			return MTL::VertexFormatFloat3;
-		case Format::R32G32B32_UINT:
+		case Format_R32G32B32_UINT:
 			return MTL::VertexFormatUInt3;
-		case Format::R32G32B32_SINT:
+		case Format_R32G32B32_SINT:
 			return MTL::VertexFormatInt3;
-		case Format::R16G16B16A16_FLOAT:
+		case Format_R16G16B16A16_FLOAT:
 			return MTL::VertexFormatHalf4;
-		case Format::R16G16B16A16_UNORM:
+		case Format_R16G16B16A16_UNORM:
 			return MTL::VertexFormatUShort4Normalized;
-		case Format::R16G16B16A16_UINT:
+		case Format_R16G16B16A16_UINT:
 			return MTL::VertexFormatUShort4;
-		case Format::R16G16B16A16_SNORM:
+		case Format_R16G16B16A16_SNORM:
 			return MTL::VertexFormatShort4Normalized;
-		case Format::R16G16B16A16_SINT:
+		case Format_R16G16B16A16_SINT:
 			return MTL::VertexFormatShort4;
-		case Format::R32G32_FLOAT:
+		case Format_R32G32_FLOAT:
 			return MTL::VertexFormatFloat2;
-		case Format::R32G32_UINT:
+		case Format_R32G32_UINT:
 			return MTL::VertexFormatUInt2;
-		case Format::R32G32_SINT:
+		case Format_R32G32_SINT:
 			return MTL::VertexFormatInt2;
-		case Format::D32_FLOAT_S8X24_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
 			return MTL::VertexFormatInvalid;
-		case Format::R10G10B10A2_UNORM:
+		case Format_R10G10B10A2_UNORM:
 			return MTL::VertexFormatUInt1010102Normalized;
-		case Format::R10G10B10A2_UINT:
+		case Format_R10G10B10A2_UINT:
 			return MTL::VertexFormatInvalid;
-		case Format::R11G11B10_FLOAT:
+		case Format_R11G11B10_FLOAT:
 			return MTL::VertexFormatFloatRG11B10;
-		case Format::R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM:
 			return MTL::VertexFormatUChar4Normalized;
-		case Format::R8G8B8A8_UNORM_SRGB:
+		case Format_R8G8B8A8_UNORM_SRGB:
 			return MTL::VertexFormatInvalid;
-		case Format::R8G8B8A8_UINT:
+		case Format_R8G8B8A8_UINT:
 			return MTL::VertexFormatUChar4;
-		case Format::R8G8B8A8_SNORM:
+		case Format_R8G8B8A8_SNORM:
 			return MTL::VertexFormatChar4Normalized;
-		case Format::R8G8B8A8_SINT:
+		case Format_R8G8B8A8_SINT:
 			return MTL::VertexFormatChar4;
-		case Format::R16G16_FLOAT:
+		case Format_R16G16_FLOAT:
 			return MTL::VertexFormatHalf2;
-		case Format::R16G16_UNORM:
+		case Format_R16G16_UNORM:
 			return MTL::VertexFormatUShort2Normalized;
-		case Format::R16G16_UINT:
+		case Format_R16G16_UINT:
 			return MTL::VertexFormatUShort2;
-		case Format::R16G16_SNORM:
+		case Format_R16G16_SNORM:
 			return MTL::VertexFormatShort2Normalized;
-		case Format::R16G16_SINT:
+		case Format_R16G16_SINT:
 			return MTL::VertexFormatShort2;
-		case Format::D32_FLOAT:
+		case Format_D32_FLOAT:
 			return MTL::VertexFormatInvalid;
-		case Format::R32_FLOAT:
+		case Format_R32_FLOAT:
 			return MTL::VertexFormatFloat;
-		case Format::R32_UINT:
+		case Format_R32_UINT:
 			return MTL::VertexFormatUInt;
-		case Format::R32_SINT:
+		case Format_R32_SINT:
 			return MTL::VertexFormatInt;
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return MTL::VertexFormatInvalid;
-		case Format::R9G9B9E5_SHAREDEXP:
+		case Format_R9G9B9E5_SHAREDEXP:
 			return MTL::VertexFormatFloatRGB9E5;
-		case Format::R8G8_UNORM:
+		case Format_R8G8_UNORM:
 			return MTL::VertexFormatUChar2Normalized;
-		case Format::R8G8_UINT:
+		case Format_R8G8_UINT:
 			return MTL::VertexFormatUChar2;
-		case Format::R8G8_SNORM:
+		case Format_R8G8_SNORM:
 			return MTL::VertexFormatChar2Normalized;
-		case Format::R8G8_SINT:
+		case Format_R8G8_SINT:
 			return MTL::VertexFormatChar2;
-		case Format::R16_FLOAT:
+		case Format_R16_FLOAT:
 			return MTL::VertexFormatHalf;
-		case Format::D16_UNORM:
+		case Format_D16_UNORM:
 			return MTL::VertexFormatInvalid;
-		case Format::R16_UNORM:
+		case Format_R16_UNORM:
 			return MTL::VertexFormatUShortNormalized;
-		case Format::R16_UINT:
+		case Format_R16_UINT:
 			return MTL::VertexFormatUShort;
-		case Format::R16_SNORM:
+		case Format_R16_SNORM:
 			return MTL::VertexFormatShortNormalized;
-		case Format::R16_SINT:
+		case Format_R16_SINT:
 			return MTL::VertexFormatShort;
-		case Format::R8_UNORM:
+		case Format_R8_UNORM:
 			return MTL::VertexFormatUCharNormalized;
-		case Format::R8_UINT:
+		case Format_R8_UINT:
 			return MTL::VertexFormatUChar;
-		case Format::R8_SNORM:
+		case Format_R8_SNORM:
 			return MTL::VertexFormatCharNormalized;
-		case Format::R8_SINT:
+		case Format_R8_SINT:
 			return MTL::VertexFormatChar;
 		}
 		return MTL::VertexFormatInvalid;
@@ -240,137 +240,137 @@ namespace MetalInternal
 	{
 	   switch (value)
 	   {
-	   case Format::UNKNOWN:
+	   case Format_UNKNOWN:
 		   return MTL::PixelFormatInvalid;
-	   case Format::R32G32B32A32_FLOAT:
+	   case Format_R32G32B32A32_FLOAT:
 		   return MTL::PixelFormatRGBA32Float;
-	   case Format::R32G32B32A32_UINT:
+	   case Format_R32G32B32A32_UINT:
 		   return MTL::PixelFormatRGBA32Uint;
-	   case Format::R32G32B32A32_SINT:
+	   case Format_R32G32B32A32_SINT:
 		   return MTL::PixelFormatRGBA32Sint;
-	   case Format::R32G32B32_FLOAT:
+	   case Format_R32G32B32_FLOAT:
 		   return MTL::PixelFormatInvalid;
-	   case Format::R32G32B32_UINT:
+	   case Format_R32G32B32_UINT:
 		   return MTL::PixelFormatInvalid;
-	   case Format::R32G32B32_SINT:
+	   case Format_R32G32B32_SINT:
 		   return MTL::PixelFormatInvalid;
-	   case Format::R16G16B16A16_FLOAT:
+	   case Format_R16G16B16A16_FLOAT:
 		   return MTL::PixelFormatRGBA16Float;
-	   case Format::R16G16B16A16_UNORM:
+	   case Format_R16G16B16A16_UNORM:
 		   return MTL::PixelFormatRGBA16Unorm;
-	   case Format::R16G16B16A16_UINT:
+	   case Format_R16G16B16A16_UINT:
 		   return MTL::PixelFormatRGBA16Uint;
-	   case Format::R16G16B16A16_SNORM:
+	   case Format_R16G16B16A16_SNORM:
 		   return MTL::PixelFormatRGBA16Snorm;
-	   case Format::R16G16B16A16_SINT:
+	   case Format_R16G16B16A16_SINT:
 		   return MTL::PixelFormatRGBA16Sint;
-	   case Format::R32G32_FLOAT:
+	   case Format_R32G32_FLOAT:
 		   return MTL::PixelFormatRG32Float;
-	   case Format::R32G32_UINT:
+	   case Format_R32G32_UINT:
 		   return MTL::PixelFormatRG32Uint;
-	   case Format::R32G32_SINT:
+	   case Format_R32G32_SINT:
 		   return MTL::PixelFormatRG32Sint;
-	   case Format::D32_FLOAT_S8X24_UINT:
+	   case Format_D32_FLOAT_S8X24_UINT:
 		   return MTL::PixelFormatDepth32Float_Stencil8;
-	   case Format::R10G10B10A2_UNORM:
+	   case Format_R10G10B10A2_UNORM:
 		   return MTL::PixelFormatBGR10A2Unorm;
-	   case Format::R10G10B10A2_UINT:
+	   case Format_R10G10B10A2_UINT:
 		   return MTL::PixelFormatInvalid;
-	   case Format::R11G11B10_FLOAT:
+	   case Format_R11G11B10_FLOAT:
 		   return MTL::PixelFormatRG11B10Float;
-	   case Format::R8G8B8A8_UNORM:
+	   case Format_R8G8B8A8_UNORM:
 		   return MTL::PixelFormatRGBA8Unorm;
-	   case Format::R8G8B8A8_UNORM_SRGB:
+	   case Format_R8G8B8A8_UNORM_SRGB:
 		   return MTL::PixelFormatRGBA8Unorm_sRGB;
-	   case Format::R8G8B8A8_UINT:
+	   case Format_R8G8B8A8_UINT:
 		   return MTL::PixelFormatRGBA8Uint;
-	   case Format::R8G8B8A8_SNORM:
+	   case Format_R8G8B8A8_SNORM:
 		   return MTL::PixelFormatRGBA8Snorm;
-	   case Format::R8G8B8A8_SINT:
+	   case Format_R8G8B8A8_SINT:
 		   return MTL::PixelFormatRGBA8Sint;
-	   case Format::R16G16_FLOAT:
+	   case Format_R16G16_FLOAT:
 		   return MTL::PixelFormatRG16Float;
-	   case Format::R16G16_UNORM:
+	   case Format_R16G16_UNORM:
 		   return MTL::PixelFormatRG16Unorm;
-	   case Format::R16G16_UINT:
+	   case Format_R16G16_UINT:
 		   return MTL::PixelFormatRG16Uint;
-	   case Format::R16G16_SNORM:
+	   case Format_R16G16_SNORM:
 		   return MTL::PixelFormatRG16Snorm;
-	   case Format::R16G16_SINT:
+	   case Format_R16G16_SINT:
 		   return MTL::PixelFormatRG16Sint;
-	   case Format::D32_FLOAT:
+	   case Format_D32_FLOAT:
 		   return MTL::PixelFormatDepth32Float;
-	   case Format::R32_FLOAT:
+	   case Format_R32_FLOAT:
 		   return MTL::PixelFormatR32Float;
-	   case Format::R32_UINT:
+	   case Format_R32_UINT:
 		   return MTL::PixelFormatR32Uint;
-	   case Format::R32_SINT:
+	   case Format_R32_SINT:
 		   return MTL::PixelFormatR32Sint;
-	   case Format::D24_UNORM_S8_UINT:
+	   case Format_D24_UNORM_S8_UINT:
 		   return MTL::PixelFormatDepth24Unorm_Stencil8;
-	   case Format::R9G9B9E5_SHAREDEXP:
+	   case Format_R9G9B9E5_SHAREDEXP:
 		   return MTL::PixelFormatRGB9E5Float;
-	   case Format::R8G8_UNORM:
+	   case Format_R8G8_UNORM:
 		   return MTL::PixelFormatRG8Unorm;
-	   case Format::R8G8_UINT:
+	   case Format_R8G8_UINT:
 		   return MTL::PixelFormatRG8Uint;
-	   case Format::R8G8_SNORM:
+	   case Format_R8G8_SNORM:
 		   return MTL::PixelFormatRG8Snorm;
-	   case Format::R8G8_SINT:
+	   case Format_R8G8_SINT:
 		   return MTL::PixelFormatRG8Sint;
-	   case Format::R16_FLOAT:
+	   case Format_R16_FLOAT:
 		   return MTL::PixelFormatR16Float;
-	   case Format::D16_UNORM:
+	   case Format_D16_UNORM:
 		   return MTL::PixelFormatDepth16Unorm;
-	   case Format::R16_UNORM:
+	   case Format_R16_UNORM:
 		   return MTL::PixelFormatR16Unorm;
-	   case Format::R16_UINT:
+	   case Format_R16_UINT:
 		   return MTL::PixelFormatR16Uint;
-	   case Format::R16_SNORM:
+	   case Format_R16_SNORM:
 		   return MTL::PixelFormatR16Snorm;
-	   case Format::R16_SINT:
+	   case Format_R16_SINT:
 		   return MTL::PixelFormatR16Sint;
-	   case Format::R8_UNORM:
+	   case Format_R8_UNORM:
 		   return MTL::PixelFormatR8Unorm;
-	   case Format::R8_UINT:
+	   case Format_R8_UINT:
 		   return MTL::PixelFormatR8Uint;
-	   case Format::R8_SNORM:
+	   case Format_R8_SNORM:
 		   return MTL::PixelFormatR8Snorm;
-	   case Format::R8_SINT:
+	   case Format_R8_SINT:
 		   return MTL::PixelFormatR8Sint;
-	   case Format::BC1_UNORM:
+	   case Format_BC1_UNORM:
 		   return MTL::PixelFormatBC1_RGBA;
-	   case Format::BC1_UNORM_SRGB:
+	   case Format_BC1_UNORM_SRGB:
 		   return MTL::PixelFormatBC1_RGBA_sRGB;
-	   case Format::BC2_UNORM:
+	   case Format_BC2_UNORM:
 		   return MTL::PixelFormatBC2_RGBA;
-	   case Format::BC2_UNORM_SRGB:
+	   case Format_BC2_UNORM_SRGB:
 		   return MTL::PixelFormatBC2_RGBA_sRGB;
-	   case Format::BC3_UNORM:
+	   case Format_BC3_UNORM:
 		   return MTL::PixelFormatBC3_RGBA;
-	   case Format::BC3_UNORM_SRGB:
+	   case Format_BC3_UNORM_SRGB:
 		   return MTL::PixelFormatBC3_RGBA_sRGB;
-	   case Format::BC4_UNORM:
+	   case Format_BC4_UNORM:
 		   return MTL::PixelFormatBC4_RUnorm;
-	   case Format::BC4_SNORM:
+	   case Format_BC4_SNORM:
 		   return MTL::PixelFormatBC4_RSnorm;
-	   case Format::BC5_UNORM:
+	   case Format_BC5_UNORM:
 		   return MTL::PixelFormatBC5_RGUnorm;
-	   case Format::BC5_SNORM:
+	   case Format_BC5_SNORM:
 		   return MTL::PixelFormatBC5_RGSnorm;
-	   case Format::B8G8R8A8_UNORM:
+	   case Format_B8G8R8A8_UNORM:
 		   return MTL::PixelFormatBGRA8Unorm;
-	   case Format::B8G8R8A8_UNORM_SRGB:
+	   case Format_B8G8R8A8_UNORM_SRGB:
 		   return MTL::PixelFormatBGRA8Unorm_sRGB;
-	   case Format::BC6H_UF16:
+	   case Format_BC6H_UF16:
 		   return MTL::PixelFormatBC6H_RGBUfloat;
-	   case Format::BC6H_SF16:
+	   case Format_BC6H_SF16:
 		   return MTL::PixelFormatBC6H_RGBFloat;
-	   case Format::BC7_UNORM:
+	   case Format_BC7_UNORM:
 		   return MTL::PixelFormatBC7_RGBAUnorm;
-	   case Format::BC7_UNORM_SRGB:
+	   case Format_BC7_UNORM_SRGB:
 		   return MTL::PixelFormatBC7_RGBAUnorm_sRGB;
-	   case Format::NV12:
+	   case Format_NV12:
 		   return MTL::PixelFormatInvalid;
 	   }
 	   return MTL::PixelFormatInvalid;
@@ -379,15 +379,15 @@ namespace MetalInternal
 	{
 		switch (value)
 		{
-			case BlendOp::ADD:
+			case BlendOp_ADD:
 				return MTL::BlendOperationAdd;
-			case BlendOp::SUBTRACT:
+			case BlendOp_SUBTRACT:
 				return MTL::BlendOperationSubtract;
-			case BlendOp::REV_SUBTRACT:
+			case BlendOp_REV_SUBTRACT:
 				return MTL::BlendOperationReverseSubtract;
-			case BlendOp::MIN:
+			case BlendOp_MIN:
 				return MTL::BlendOperationMin;
-			case BlendOp::MAX:
+			case BlendOp_MAX:
 				return MTL::BlendOperationMax;
 		}
 		return MTL::BlendOperationUnspecialized;
@@ -396,39 +396,39 @@ namespace MetalInternal
 	{
 		switch (value)
 		{
-			case Blend::ZERO:
+			case Blend_ZERO:
 				return MTL::BlendFactorZero;
-			case Blend::ONE:
+			case Blend_ONE:
 				return MTL::BlendFactorOne;
-			case Blend::BLEND_FACTOR:
+			case Blend_BLEND_FACTOR:
 				return MTL::BlendFactorBlendColor;
-			case Blend::INV_BLEND_FACTOR:
+			case Blend_INV_BLEND_FACTOR:
 				return MTL::BlendFactorOneMinusBlendColor;
-			case Blend::DEST_ALPHA:
+			case Blend_DEST_ALPHA:
 				return MTL::BlendFactorDestinationAlpha;
-			case Blend::DEST_COLOR:
+			case Blend_DEST_COLOR:
 				return MTL::BlendFactorDestinationColor;
-			case Blend::INV_DEST_ALPHA:
+			case Blend_INV_DEST_ALPHA:
 				return MTL::BlendFactorOneMinusDestinationAlpha;
-			case Blend::INV_DEST_COLOR:
+			case Blend_INV_DEST_COLOR:
 				return MTL::BlendFactorOneMinusDestinationColor;
-			case Blend::SRC_ALPHA:
+			case Blend_SRC_ALPHA:
 				return MTL::BlendFactorSourceAlpha;
-			case Blend::SRC_COLOR:
+			case Blend_SRC_COLOR:
 				return MTL::BlendFactorSourceColor;
-			case Blend::INV_SRC_ALPHA:
+			case Blend_INV_SRC_ALPHA:
 				return MTL::BlendFactorOneMinusSourceAlpha;
-			case Blend::INV_SRC_COLOR:
+			case Blend_INV_SRC_COLOR:
 				return MTL::BlendFactorOneMinusSourceColor;
-			case Blend::SRC1_ALPHA:
+			case Blend_SRC1_ALPHA:
 				return MTL::BlendFactorSource1Alpha;
-			case Blend::SRC1_COLOR:
+			case Blend_SRC1_COLOR:
 				return MTL::BlendFactorSource1Color;
-			case Blend::INV_SRC1_ALPHA:
+			case Blend_INV_SRC1_ALPHA:
 				return MTL::BlendFactorOneMinusSource1Alpha;
-			case Blend::INV_SRC1_COLOR:
+			case Blend_INV_SRC1_COLOR:
 				return MTL::BlendFactorOneMinusSource1Color;
-			case Blend::SRC_ALPHA_SAT:
+			case Blend_SRC_ALPHA_SAT:
 				return MTL::BlendFactorSourceAlphaSaturated;
 		}
 		return MTL::BlendFactorUnspecialized;
@@ -437,21 +437,21 @@ namespace MetalInternal
 	{
 		switch (value)
 		{
-			case ComparisonFunc::ALWAYS:
+			case ComparisonFunc_ALWAYS:
 				return MTL::CompareFunctionAlways;
-			case ComparisonFunc::NEVER:
+			case ComparisonFunc_NEVER:
 				return MTL::CompareFunctionNever;
-			case ComparisonFunc::EQUAL:
+			case ComparisonFunc_EQUAL:
 				return MTL::CompareFunctionEqual;
-			case ComparisonFunc::NOT_EQUAL:
+			case ComparisonFunc_NOT_EQUAL:
 				return MTL::CompareFunctionNotEqual;
-			case ComparisonFunc::LESS:
+			case ComparisonFunc_LESS:
 				return MTL::CompareFunctionLess;
-			case ComparisonFunc::LESS_EQUAL:
+			case ComparisonFunc_LESS_EQUAL:
 				return MTL::CompareFunctionLessEqual;
-			case ComparisonFunc::GREATER:
+			case ComparisonFunc_GREATER:
 				return MTL::CompareFunctionGreater;
-			case ComparisonFunc::GREATER_EQUAL:
+			case ComparisonFunc_GREATER_EQUAL:
 				return MTL::CompareFunctionGreaterEqual;
 		}
 		return MTL::CompareFunctionNever;
@@ -460,21 +460,21 @@ namespace MetalInternal
 	{
 		switch (value)
 		{
-			case StencilOp::KEEP:
+			case StencilOp_KEEP:
 				return MTL::StencilOperationKeep;
-			case StencilOp::REPLACE:
+			case StencilOp_REPLACE:
 				return MTL::StencilOperationReplace;
-			case StencilOp::ZERO:
+			case StencilOp_ZERO:
 				return MTL::StencilOperationZero;
-			case StencilOp::INVERT:
+			case StencilOp_INVERT:
 				return MTL::StencilOperationInvert;
-			case StencilOp::INCR:
+			case StencilOp_INCR:
 				return MTL::StencilOperationIncrementWrap;
-			case StencilOp::INCR_SAT:
+			case StencilOp_INCR_SAT:
 				return MTL::StencilOperationIncrementClamp;
-			case StencilOp::DECR:
+			case StencilOp_DECR:
 				return MTL::StencilOperationDecrementWrap;
-			case StencilOp::DECR_SAT:
+			case StencilOp_DECR_SAT:
 				return MTL::StencilOperationDecrementClamp;
 		}
 		return MTL::StencilOperationKeep;
@@ -483,17 +483,17 @@ namespace MetalInternal
 	{
 		switch (value)
 		{
-			case ComponentSwizzle::R:
+			case ComponentSwizzle_R:
 				return MTL::TextureSwizzleRed;
-			case ComponentSwizzle::G:
+			case ComponentSwizzle_G:
 				return MTL::TextureSwizzleGreen;
-			case ComponentSwizzle::B:
+			case ComponentSwizzle_B:
 				return MTL::TextureSwizzleBlue;
-			case ComponentSwizzle::A:
+			case ComponentSwizzle_A:
 				return MTL::TextureSwizzleAlpha;
-			case ComponentSwizzle::ONE:
+			case ComponentSwizzle_ONE:
 				return MTL::TextureSwizzleOne;
-			case ComponentSwizzle::ZERO:
+			case ComponentSwizzle_ZERO:
 				return MTL::TextureSwizzleZero;
 			default:
 				break;
@@ -503,15 +503,15 @@ namespace MetalInternal
 	constexpr MTL::SamplerAddressMode _ConvertAddressMode(TextureAddressMode value)
 	{
 		switch (value) {
-			case TextureAddressMode::CLAMP:
+			case TextureAddressMode_CLAMP:
 				return MTL::SamplerAddressModeClampToEdge;
-			case TextureAddressMode::WRAP:
+			case TextureAddressMode_WRAP:
 				return MTL::SamplerAddressModeRepeat;
-			case TextureAddressMode::MIRROR_ONCE:
+			case TextureAddressMode_MIRROR_ONCE:
 				return MTL::SamplerAddressModeMirrorClampToEdge;
-			case TextureAddressMode::MIRROR:
+			case TextureAddressMode_MIRROR:
 				return MTL::SamplerAddressModeMirrorRepeat;
-			case TextureAddressMode::BORDER:
+			case TextureAddressMode_BORDER:
 				return MTL::SamplerAddressModeClampToBorderColor;
 			default:
 				break;
@@ -537,11 +537,11 @@ namespace MetalInternal
 		
 		switch (desc.type)
 		{
-			case TextureDesc::Type::TEXTURE_1D:
+			case TextureDesc::Type_TEXTURE_1D:
 				//descriptor->setTextureType(desc->array_size > 1 ? MTL::TextureType1DArray : MTL::TextureType1D);
 				descriptor->setTextureType(desc.array_size > 1 ? MTL::TextureType2DArray : MTL::TextureType2D); // NOTE: This seems to be broken! Real Texture1D type doesn't work in shaders, but creating Texture2D instead works! Issue FB21629558
 				break;
-			case TextureDesc::Type::TEXTURE_2D:
+			case TextureDesc::Type_TEXTURE_2D:
 				if(desc.sample_count > 1)
 				{
 					descriptor->setTextureType(desc.array_size > 1 ? MTL::TextureType2DMultisampleArray : MTL::TextureType2DMultisample);
@@ -551,49 +551,49 @@ namespace MetalInternal
 					descriptor->setTextureType(desc.array_size > 1 ? MTL::TextureType2DArray : MTL::TextureType2D);
 				}
 				break;
-			case TextureDesc::Type::TEXTURE_3D:
+			case TextureDesc::Type_TEXTURE_3D:
 				descriptor->setTextureType(MTL::TextureType3D);
 				break;
 			default:
 				break;
 		}
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 		{
 			descriptor->setTextureType(desc.array_size > 6 ? MTL::TextureTypeCubeArray : MTL::TextureTypeCube);
 			descriptor->setArrayLength(desc.array_size / 6);
 		}
 		
 		MTL::ResourceOptions resource_options = {};
-		if (has_flag(desc.misc_flags, ResourceMiscFlag::TRANSIENT_ATTACHMENT))
+		if (has_flag(desc.misc_flags, ResourceMiscFlag_TRANSIENT_ATTACHMENT))
 		{
 			resource_options |= MTL::ResourceStorageModeMemoryless;
 			descriptor->setStorageMode(MTL::StorageModeMemoryless);
 		}
-		if (desc.usage == Usage::DEFAULT && !device->hasUnifiedMemory())
+		if (desc.usage == Usage_DEFAULT && !device->hasUnifiedMemory())
 		{
 			// Discrete GPU path:
 			resource_options |= MTL::ResourceStorageModePrivate;
 			descriptor->setStorageMode(MTL::StorageModePrivate);
 		}
 		else if (
-				 has_flag(desc.misc_flags, ResourceMiscFlag::SPARSE) ||
-				 has_flag(desc.bind_flags, BindFlag::RENDER_TARGET) ||
-				 has_flag(desc.bind_flags, BindFlag::DEPTH_STENCIL) ||
-				 has_flag(desc.bind_flags, BindFlag::UNORDERED_ACCESS)
+				 has_flag(desc.misc_flags, ResourceMiscFlag_SPARSE) ||
+				 has_flag(desc.bind_flags, BindFlag_RENDER_TARGET) ||
+				 has_flag(desc.bind_flags, BindFlag_DEPTH_STENCIL) ||
+				 has_flag(desc.bind_flags, BindFlag_UNORDERED_ACCESS)
 				 )
 		{
 			// optimized storage for render efficiency even on UMA GPU:
 			resource_options |= MTL::ResourceStorageModePrivate;
 			descriptor->setStorageMode(MTL::StorageModePrivate);
 		}
-		else if (desc.usage == Usage::UPLOAD)
+		else if (desc.usage == Usage_UPLOAD)
 		{
 			resource_options |= MTL::ResourceStorageModeShared;
 			resource_options |= MTL::ResourceOptionCPUCacheModeWriteCombined;
 			descriptor->setStorageMode(MTL::StorageModeShared);
 			descriptor->setTextureType(MTL::TextureTypeTextureBuffer);
 		}
-		else if (desc.usage == Usage::READBACK)
+		else if (desc.usage == Usage_READBACK)
 		{
 			resource_options |= MTL::ResourceStorageModeShared;
 			descriptor->setStorageMode(MTL::StorageModeShared);
@@ -608,11 +608,11 @@ namespace MetalInternal
 		descriptor->setResourceOptions(resource_options);
 		
 		MTL::TextureUsage usage = {};
-		if (has_flag(desc.bind_flags, BindFlag::RENDER_TARGET) || has_flag(desc.bind_flags, BindFlag::DEPTH_STENCIL))
+		if (has_flag(desc.bind_flags, BindFlag_RENDER_TARGET) || has_flag(desc.bind_flags, BindFlag_DEPTH_STENCIL))
 		{
 			usage |= MTL::TextureUsageRenderTarget;
 		}
-		if (has_flag(desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+		if (has_flag(desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 		{
 			usage |= MTL::TextureUsageShaderWrite;
 			usage |= MTL::TextureUsageRenderTarget; // support for ClearUAV
@@ -632,7 +632,7 @@ namespace MetalInternal
 					break;
 			}
 		}
-		if (has_flag(desc.bind_flags, BindFlag::SHADER_RESOURCE))
+		if (has_flag(desc.bind_flags, BindFlag_SHADER_RESOURCE))
 		{
 			usage |= MTL::TextureUsageShaderRead;
 		}
@@ -658,7 +658,7 @@ namespace MetalInternal
 		entry.metadata = (uint64_t)(*((uint32_t*)&min_lod_clamp) | ((uint64_t)metadata) << 32);
 		return entry;
 	}
-	IRDescriptorTableEntry create_entry(MTL::Buffer* res, uint64_t size, uint64_t offset = 0, MTL::Texture* texture_buffer_view = nullptr, Format format = Format::UNKNOWN, bool structured = false)
+	IRDescriptorTableEntry create_entry(MTL::Buffer* res, uint64_t size, uint64_t offset = 0, MTL::Texture* texture_buffer_view = nullptr, Format format = Format_UNKNOWN, bool structured = false)
 	{
 		IRDescriptorTableEntry entry;
 		IRBufferView view = {};
@@ -667,7 +667,7 @@ namespace MetalInternal
 		view.bufferOffset = offset;
 		if (texture_buffer_view == nullptr)
 		{
-			view.typedBuffer = structured || (format != Format::UNKNOWN);
+			view.typedBuffer = structured || (format != Format_UNKNOWN);
 		}
 		else
 		{
@@ -678,7 +678,7 @@ namespace MetalInternal
 		IRDescriptorTableSetBufferView(&entry, &view);
 		return entry;
 	}
-	IRDescriptorTableEntry create_entry(MTL::Buffer* res, uint64_t size, uint64_t offset = 0, MTL::ResourceID resourceID = {}, Format format = Format::UNKNOWN, bool structured = false)
+	IRDescriptorTableEntry create_entry(MTL::Buffer* res, uint64_t size, uint64_t offset = 0, MTL::ResourceID resourceID = {}, Format format = Format_UNKNOWN, bool structured = false)
 	{
 		// This is the expanded version of IRDescriptorTableSetBufferView, made to be compatible with texture view pooling
 		IRDescriptorTableEntry entry;
@@ -689,7 +689,7 @@ namespace MetalInternal
 		uint64_t textureViewOffsetInElements = 0;
 		if (entry.textureViewID == 0)
 		{
-			typedBuffer = structured || (format != Format::UNKNOWN);
+			typedBuffer = structured || (format != Format_UNKNOWN);
 		}
 		else
 		{
@@ -1001,7 +1001,7 @@ namespace MetalInternal
 	struct SwapChain_Metal
 	{
 		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
-		ColorSpace colorSpace = ColorSpace::SRGB;
+		ColorSpace colorSpace = ColorSpace_SRGB;
 		CA::MetalLayer* layer = nullptr;
 		NS::SharedPtr<CA::MetalDrawable> current_drawable;
 		NS::SharedPtr<MTL::Texture> current_texture;
@@ -1318,7 +1318,7 @@ using namespace MetalInternal;
 		MTL4::VisibilityOptions visibility_options = MTL4::VisibilityOptionNone;
 		for (auto& x : commandlist.barriers)
 		{
-			if (x.type == GPUBarrier::Type::ALIASING)
+			if (x.type == GPUBarrier::Type_ALIASING)
 			{
 				visibility_options |= MTL4::VisibilityOptionResourceAlias;
 			}
@@ -1481,13 +1481,13 @@ using namespace MetalInternal;
 		MTL::CullMode cull_mode = {};
 		switch (rs_desc.cull_mode)
 		{
-			case CullMode::BACK:
+			case CullMode_BACK:
 				cull_mode = MTL::CullModeBack;
 				break;
-			case CullMode::FRONT:
+			case CullMode_FRONT:
 				cull_mode = MTL::CullModeFront;
 				break;
-			case CullMode::NONE:
+			case CullMode_NONE:
 				cull_mode = MTL::CullModeNone;
 				break;
 		}
@@ -1497,10 +1497,10 @@ using namespace MetalInternal;
 		MTL::TriangleFillMode fill_mode = {};
 		switch (rs_desc.fill_mode)
 		{
-			case FillMode::SOLID:
+			case FillMode_SOLID:
 				fill_mode = MTL::TriangleFillModeFill;
 				break;
-			case FillMode::WIREFRAME:
+			case FillMode_WIREFRAME:
 				fill_mode = MTL::TriangleFillModeLines;
 				break;
 		}
@@ -1509,27 +1509,27 @@ using namespace MetalInternal;
 		
 		switch (pso->desc.pt)
 		{
-			case PrimitiveTopology::TRIANGLELIST:
+			case PrimitiveTopology_TRIANGLELIST:
 				commandlist.primitive_type = MTL::PrimitiveTypeTriangle;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveTypeTriangle;
 				break;
-			case PrimitiveTopology::TRIANGLESTRIP:
+			case PrimitiveTopology_TRIANGLESTRIP:
 				commandlist.primitive_type = MTL::PrimitiveTypeTriangleStrip;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveTypeTriangleStrip;
 				break;
-			case PrimitiveTopology::LINELIST:
+			case PrimitiveTopology_LINELIST:
 				commandlist.primitive_type = MTL::PrimitiveTypeLine;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveTypeLine;
 				break;
-			case PrimitiveTopology::LINESTRIP:
+			case PrimitiveTopology_LINESTRIP:
 				commandlist.primitive_type = MTL::PrimitiveTypeLineStrip;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveTypeLineStrip;
 				break;
-			case PrimitiveTopology::POINTLIST:
+			case PrimitiveTopology_POINTLIST:
 				commandlist.primitive_type = MTL::PrimitiveTypePoint;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveTypePoint;
 				break;
-			case PrimitiveTopology::PATCHLIST:
+			case PrimitiveTopology_PATCHLIST:
 				commandlist.primitive_type = MTL::PrimitiveTypeTriangle;
 				commandlist.ir_primitive_type = IRRuntimePrimitiveType3ControlPointPatchlist;
 				break;
@@ -1633,28 +1633,28 @@ using namespace MetalInternal;
 			device->supportsFamily(MTL::GPUFamilyMac2)
 		;
 		
-		capabilities |= GraphicsDeviceCapability::SAMPLER_MINMAX;
-		capabilities |= GraphicsDeviceCapability::ALIASING_GENERIC;
-		capabilities |= GraphicsDeviceCapability::DEPTH_BOUNDS_TEST;
-		capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_COMMON;
-		capabilities |= GraphicsDeviceCapability::UAV_LOAD_FORMAT_R11G11B10_FLOAT;
-		capabilities |= GraphicsDeviceCapability::SPARSE_BUFFER;
-		capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE2D;
-		capabilities |= GraphicsDeviceCapability::SPARSE_TEXTURE3D;
-		capabilities |= GraphicsDeviceCapability::SPARSE_NULL_MAPPING;
-		capabilities |= GraphicsDeviceCapability::DEPTH_RESOLVE_MIN_MAX;
-		capabilities |= GraphicsDeviceCapability::STENCIL_RESOLVE_MIN_MAX;
-		capabilities |= GraphicsDeviceCapability::MESH_SHADER;
-		capabilities |= GraphicsDeviceCapability::COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
-		capabilities |= GraphicsDeviceCapability::VIDEO_DECODE_H264;
+		capabilities |= GraphicsDeviceCapability_SAMPLER_MINMAX;
+		capabilities |= GraphicsDeviceCapability_ALIASING_GENERIC;
+		capabilities |= GraphicsDeviceCapability_DEPTH_BOUNDS_TEST;
+		capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_COMMON;
+		capabilities |= GraphicsDeviceCapability_UAV_LOAD_FORMAT_R11G11B10_FLOAT;
+		capabilities |= GraphicsDeviceCapability_SPARSE_BUFFER;
+		capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE2D;
+		capabilities |= GraphicsDeviceCapability_SPARSE_TEXTURE3D;
+		capabilities |= GraphicsDeviceCapability_SPARSE_NULL_MAPPING;
+		capabilities |= GraphicsDeviceCapability_DEPTH_RESOLVE_MIN_MAX;
+		capabilities |= GraphicsDeviceCapability_STENCIL_RESOLVE_MIN_MAX;
+		capabilities |= GraphicsDeviceCapability_MESH_SHADER;
+		capabilities |= GraphicsDeviceCapability_COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
+		capabilities |= GraphicsDeviceCapability_VIDEO_DECODE_H264;
 		
 		if (device->hasUnifiedMemory())
 		{
-			capabilities |= GraphicsDeviceCapability::CACHE_COHERENT_UMA;
+			capabilities |= GraphicsDeviceCapability_CACHE_COHERENT_UMA;
 		}
 		if (device->supportsRaytracing())
 		{
-			capabilities |= GraphicsDeviceCapability::RAYTRACING;
+			capabilities |= GraphicsDeviceCapability_RAYTRACING;
 			TOPLEVEL_ACCELERATION_STRUCTURE_INSTANCE_SIZE = sizeof(MTL::IndirectAccelerationStructureInstanceDescriptor);
 		}
 		
@@ -1855,18 +1855,18 @@ using namespace MetalInternal;
 		auto internal_state = Protean::Allocator::make_shared<Buffer_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		buffer->internal_state = internal_state;
-		buffer->type = GPUResource::Type::BUFFER;
+		buffer->type = GPUResource::Type_BUFFER;
 		buffer->mapped_data = nullptr;
 		buffer->mapped_size = 0;
 		buffer->desc = *desc;
 		
-		const bool sparse = has_flag(desc->misc_flags, ResourceMiscFlag::SPARSE);
-		const bool aliasing_storage = has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS);
+		const bool sparse = has_flag(desc->misc_flags, ResourceMiscFlag_SPARSE);
+		const bool aliasing_storage = has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS);
 		
 		MTL::ResourceOptions resource_options = {};
-		if (desc->usage == Usage::DEFAULT)
+		if (desc->usage == Usage_DEFAULT)
 		{
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::VIDEO_DECODE))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_VIDEO_DECODE))
 			{
 				// VideoToolbox reads the compressed bitstream on the CPU.
 				resource_options |= MTL::ResourceStorageModeShared;
@@ -1876,7 +1876,7 @@ using namespace MetalInternal;
 				// potentially used for sparse or other private requirement resource
 				resource_options |= MTL::ResourceStorageModePrivate;
 			}
-			else if (CheckCapability(GraphicsDeviceCapability::CACHE_COHERENT_UMA))
+			else if (CheckCapability(GraphicsDeviceCapability_CACHE_COHERENT_UMA))
 			{
 				resource_options |= MTL::ResourceStorageModeShared;
 			}
@@ -1885,12 +1885,12 @@ using namespace MetalInternal;
 				resource_options |= MTL::ResourceStorageModePrivate;
 			}
 		}
-		else if (desc->usage == Usage::UPLOAD)
+		else if (desc->usage == Usage_UPLOAD)
 		{
 			resource_options |= MTL::ResourceStorageModeShared;
 			resource_options |= MTL::ResourceCPUCacheModeWriteCombined;
 		}
-		else if (desc->usage == Usage::READBACK)
+		else if (desc->usage == Usage_READBACK)
 		{
 			resource_options |= MTL::ResourceStorageModeShared;
 		}
@@ -1957,15 +1957,15 @@ using namespace MetalInternal;
 			}
 		}
 		
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(desc->bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(desc->bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(buffer, SubresourceType::SRV, 0);
+				CreateSubresource(buffer, SubresourceType_SRV, 0);
 			}
-			if (has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(buffer, SubresourceType::UAV, 0);
+				CreateSubresource(buffer, SubresourceType_UAV, 0);
 			}
 		}
 		
@@ -1976,7 +1976,7 @@ using namespace MetalInternal;
 		auto internal_state = Protean::Allocator::make_shared<Texture_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		texture->internal_state = internal_state;
-		texture->type = GPUResource::Type::TEXTURE;
+		texture->type = GPUResource::Type_TEXTURE;
 		texture->mapped_data = nullptr;
 		texture->mapped_size = 0;
 		texture->mapped_subresources = nullptr;
@@ -1986,13 +1986,13 @@ using namespace MetalInternal;
 		
 		wilog_assert(!IsFormatBlockCompressed(desc->format) || device->supportsBCTextureCompression(), "Block compressed textures are not supported by this device!");
 		
-		const bool sparse = has_flag(desc->misc_flags, ResourceMiscFlag::SPARSE);
-		const bool aliasing_storage = has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS);
+		const bool sparse = has_flag(desc->misc_flags, ResourceMiscFlag_SPARSE);
+		const bool aliasing_storage = has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS) || has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS);
 
 		texture->desc.mip_levels = GetMipCount(texture->desc);
 		
 		NS::SharedPtr<MTL::TextureDescriptor> descriptor = _ConvertTextureDesc(texture->desc, device.get(), textureUlongAtomics);
-		const bool nv12 = texture->desc.format == Format::NV12;
+		const bool nv12 = texture->desc.format == Format_NV12;
 		if (nv12)
 		{
 			// Metal has no multi-planar NV12 format. Luma is R8 and chroma is a paired RG8 texture.
@@ -2014,7 +2014,7 @@ using namespace MetalInternal;
 			internal_state->sparse_properties.total_tile_count = uint32_t(sizealign.size / (uint64_t)texture->sparse_page_size);
 		}
 		
-		if (!has_flag(desc->bind_flags, BindFlag::UNORDERED_ACCESS) && !has_flag(desc->bind_flags, BindFlag::RENDER_TARGET))
+		if (!has_flag(desc->bind_flags, BindFlag_UNORDERED_ACCESS) && !has_flag(desc->bind_flags, BindFlag_RENDER_TARGET))
 		{
 			MTL::TextureSwizzleChannels swizzle = MTL::TextureSwizzleChannels::Default();
 			swizzle.red = _ConvertComponentSwizzle(desc->swizzle.r);
@@ -2053,7 +2053,7 @@ using namespace MetalInternal;
 		}
 		else
 		{
-			if (desc->usage == Usage::READBACK || desc->usage == Usage::UPLOAD)
+			if (desc->usage == Usage_READBACK || desc->usage == Usage_UPLOAD)
 			{
 				// Note: we are creating a buffer instead of linear image because linear image cannot have mips
 				//	With a buffer, we can tightly pack mips linearly into a buffer so it won't have that limitation
@@ -2171,23 +2171,23 @@ using namespace MetalInternal;
 			}
 		}
 		
-		if (!has_flag(desc->misc_flags, ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS))
+		if (!has_flag(desc->misc_flags, ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS))
 		{
-			if (has_flag(texture->desc.bind_flags, BindFlag::RENDER_TARGET))
+			if (has_flag(texture->desc.bind_flags, BindFlag_RENDER_TARGET))
 			{
-				CreateSubresource(texture, SubresourceType::RTV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_RTV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::DEPTH_STENCIL))
+			if (has_flag(texture->desc.bind_flags, BindFlag_DEPTH_STENCIL))
 			{
-				CreateSubresource(texture, SubresourceType::DSV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_DSV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::SHADER_RESOURCE))
+			if (has_flag(texture->desc.bind_flags, BindFlag_SHADER_RESOURCE))
 			{
-				CreateSubresource(texture, SubresourceType::SRV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_SRV, 0, -1, 0, -1);
 			}
-			if (has_flag(texture->desc.bind_flags, BindFlag::UNORDERED_ACCESS))
+			if (has_flag(texture->desc.bind_flags, BindFlag_UNORDERED_ACCESS))
 			{
-				CreateSubresource(texture, SubresourceType::UAV, 0, -1, 0, -1);
+				CreateSubresource(texture, SubresourceType_UAV, 0, -1, 0, -1);
 			}
 		}
 		
@@ -2201,11 +2201,11 @@ using namespace MetalInternal;
 		
 		// Offline reflection gathered data that's required to bring HLSL shaders to Metal is stored tightly after shadercode data:
 		if (
-			stage == ShaderStage::VS ||
-			stage == ShaderStage::GS ||
-			stage == ShaderStage::CS ||
-			stage == ShaderStage::MS ||
-			stage == ShaderStage::AS
+			stage == ShaderStage_VS ||
+			stage == ShaderStage_GS ||
+			stage == ShaderStage_CS ||
+			stage == ShaderStage_MS ||
+			stage == ShaderStage_AS
 			)
 		{
 			shadercode_size -= sizeof(internal_state->additional_data);
@@ -2226,7 +2226,7 @@ using namespace MetalInternal;
 		NS::SharedPtr<NS::String> entry = NS::TransferPtr(NS::String::alloc()->init(entrypoint, NS::UTF8StringEncoding));
 		NS::SharedPtr<MTL::FunctionConstantValues> constants = NS::TransferPtr(MTL::FunctionConstantValues::alloc()->init());
 		
-		if (stage == ShaderStage::HS || stage == ShaderStage::DS || stage == ShaderStage::GS)
+		if (stage == ShaderStage_HS || stage == ShaderStage_DS || stage == ShaderStage_GS)
 		{
 			// These will be used only by emulated pipeline creation, not native shader functions:
 			return internal_state->library.get() != nullptr;
@@ -2242,7 +2242,7 @@ using namespace MetalInternal;
 		}
 		assert(internal_state->function.get() != nullptr);
 		
-		if (stage == ShaderStage::CS)
+		if (stage == ShaderStage_CS)
 		{
 			error = nullptr;
 			internal_state->compute_pipeline = NS::TransferPtr(device->newComputePipelineState(internal_state->function.get(), &error));
@@ -2271,22 +2271,22 @@ using namespace MetalInternal;
 		MTL::SamplerMipFilter mip_filter = {};
 		switch (desc->filter)
 		{
-			case Filter::MIN_MAG_MIP_POINT:
-			case Filter::MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::COMPARISON_MIN_MAG_MIP_POINT:
-			case Filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MIN_MAG_MIP_POINT:
+			case Filter_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_COMPARISON_MIN_MAG_MIP_POINT:
+			case Filter_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_COMPARISON_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
 				mip_filter = MTL::SamplerMipFilterNearest;
 				break;
 			default:
@@ -2297,22 +2297,22 @@ using namespace MetalInternal;
 		MTL::SamplerMinMagFilter min_filter = {};
 		switch (desc->filter)
 		{
-			case Filter::MIN_MAG_MIP_POINT:
-			case Filter::MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::COMPARISON_MIN_MAG_MIP_POINT:
-			case Filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MIN_MAG_MIP_POINT:
+			case Filter_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_COMPARISON_MIN_MAG_MIP_POINT:
+			case Filter_COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_COMPARISON_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
 				min_filter = MTL::SamplerMinMagFilterNearest;
 				break;
 			default:
@@ -2323,22 +2323,22 @@ using namespace MetalInternal;
 		MTL::SamplerMinMagFilter mag_filter = {};
 		switch (desc->filter)
 		{
-			case Filter::MIN_MAG_MIP_POINT:
-			case Filter::MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::COMPARISON_MIN_MAG_MIP_POINT:
-			case Filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MIN_MAG_MIP_POINT:
+			case Filter_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_COMPARISON_MIN_MAG_MIP_POINT:
+			case Filter_COMPARISON_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_COMPARISON_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
 				mag_filter = MTL::SamplerMinMagFilterNearest;
 				break;
 			default:
@@ -2349,26 +2349,26 @@ using namespace MetalInternal;
 		MTL::SamplerReductionMode reduction_mode = {};
 		switch (desc->filter)
 		{
-			case Filter::MINIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MINIMUM_MIN_MAG_MIP_LINEAR:
-			case Filter::MINIMUM_ANISOTROPIC:
+			case Filter_MINIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MINIMUM_MIN_MAG_MIP_LINEAR:
+			case Filter_MINIMUM_ANISOTROPIC:
 				reduction_mode = MTL::SamplerReductionModeMinimum;
 				break;
-			case Filter::MAXIMUM_MIN_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
-			case Filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
-			case Filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
-			case Filter::MAXIMUM_MIN_MAG_MIP_LINEAR:
-			case Filter::MAXIMUM_ANISOTROPIC:
+			case Filter_MAXIMUM_MIN_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT:
+			case Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR:
+			case Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT:
+			case Filter_MAXIMUM_MIN_MAG_MIP_LINEAR:
+			case Filter_MAXIMUM_ANISOTROPIC:
 				reduction_mode = MTL::SamplerReductionModeMaximum;
 				break;
 			default:
@@ -2384,13 +2384,13 @@ using namespace MetalInternal;
 		MTL::SamplerBorderColor border_color = {};
 		switch (desc->border_color)
 		{
-			case SamplerBorderColor::TRANSPARENT_BLACK:
+			case SamplerBorderColor_TRANSPARENT_BLACK:
 				border_color = MTL::SamplerBorderColorTransparentBlack;
 				break;
-			case SamplerBorderColor::OPAQUE_BLACK:
+			case SamplerBorderColor_OPAQUE_BLACK:
 				border_color = MTL::SamplerBorderColorOpaqueBlack;
 				break;
-			case SamplerBorderColor::OPAQUE_WHITE:
+			case SamplerBorderColor_OPAQUE_WHITE:
 				border_color = MTL::SamplerBorderColorOpaqueWhite;
 				break;
 		}
@@ -2414,12 +2414,12 @@ using namespace MetalInternal;
 		
 		switch (desc->type)
 		{
-			case GpuQueryType::OCCLUSION:
-			case GpuQueryType::OCCLUSION_BINARY:
+			case GpuQueryType_OCCLUSION:
+			case GpuQueryType_OCCLUSION_BINARY:
 				internal_state->buffer = NS::TransferPtr(device->newBuffer(desc->query_count * sizeof(uint64_t), MTL::ResourceStorageModePrivate));
 				break;
 				
-			case GpuQueryType::TIMESTAMP:
+			case GpuQueryType_TIMESTAMP:
 			{
 				NS::SharedPtr<MTL4::CounterHeapDescriptor> descriptor = NS::TransferPtr(MTL4::CounterHeapDescriptor::alloc()->init());
 				descriptor->setType(MTL4::CounterHeapTypeTimestamp);
@@ -2522,7 +2522,7 @@ using namespace MetalInternal;
 				const uint64_t input_slot_stride = input_slot_strides[element.input_slot];
 				MTL::VertexBufferLayoutDescriptor* layout = vertex_descriptor->layouts()->object(kIRVertexBufferBindPoint + i);
 				layout->setStride(input_slot_stride);
-				layout->setStepFunction(element.input_slot_class == InputClassification::PER_VERTEX_DATA ? MTL::VertexStepFunctionPerVertex : MTL::VertexStepFunctionPerInstance);
+				layout->setStepFunction(element.input_slot_class == InputClassification_PER_VERTEX_DATA ? MTL::VertexStepFunctionPerVertex : MTL::VertexStepFunctionPerInstance);
 				layout->setStepRate(1);
 				MTL::VertexAttributeDescriptor* attribute = vertex_descriptor->attributes()->object(kIRStageInAttributeStartIndex + i);
 				attribute->setFormat(_ConvertVertexFormat(element.format));
@@ -2541,16 +2541,16 @@ using namespace MetalInternal;
 		{
 			switch (desc->pt)
 			{
-				case PrimitiveTopology::TRIANGLELIST:
-				case PrimitiveTopology::TRIANGLESTRIP:
-				case PrimitiveTopology::PATCHLIST:
+				case PrimitiveTopology_TRIANGLELIST:
+				case PrimitiveTopology_TRIANGLESTRIP:
+				case PrimitiveTopology_PATCHLIST:
 					internal_state->descriptor->setInputPrimitiveTopology(MTL::PrimitiveTopologyClassTriangle);
 					break;
-				case PrimitiveTopology::LINELIST:
-				case PrimitiveTopology::LINESTRIP:
+				case PrimitiveTopology_LINELIST:
+				case PrimitiveTopology_LINESTRIP:
 					internal_state->descriptor->setInputPrimitiveTopology(MTL::PrimitiveTopologyClassLine);
 					break;
-				case PrimitiveTopology::POINTLIST:
+				case PrimitiveTopology_POINTLIST:
 					internal_state->descriptor->setInputPrimitiveTopology(MTL::PrimitiveTopologyClassPoint);
 					break;
 				default:
@@ -2582,19 +2582,19 @@ using namespace MetalInternal;
 				
 				const BlendState::RenderTargetBlendState& bs_rt = bs_desc.render_target[i];
 				MTL::ColorWriteMask color_write_mask = {};
-				if (has_flag(bs_rt.render_target_write_mask, ColorWrite::ENABLE_RED))
+				if (has_flag(bs_rt.render_target_write_mask, ColorWrite_ENABLE_RED))
 				{
 					color_write_mask |= MTL::ColorWriteMaskRed;
 				}
-				if (has_flag(bs_rt.render_target_write_mask, ColorWrite::ENABLE_GREEN))
+				if (has_flag(bs_rt.render_target_write_mask, ColorWrite_ENABLE_GREEN))
 				{
 					color_write_mask |= MTL::ColorWriteMaskGreen;
 				}
-				if (has_flag(bs_rt.render_target_write_mask, ColorWrite::ENABLE_BLUE))
+				if (has_flag(bs_rt.render_target_write_mask, ColorWrite_ENABLE_BLUE))
 				{
 					color_write_mask |= MTL::ColorWriteMaskBlue;
 				}
-				if (has_flag(bs_rt.render_target_write_mask, ColorWrite::ENABLE_ALPHA))
+				if (has_flag(bs_rt.render_target_write_mask, ColorWrite_ENABLE_ALPHA))
 				{
 					color_write_mask |= MTL::ColorWriteMaskAlpha;
 				}
@@ -2639,10 +2639,10 @@ using namespace MetalInternal;
 				internal_state->ms_descriptor->setRasterSampleCount(sample_count);
 			
 			NS::SharedPtr<MTL::DepthStencilDescriptor> depth_stencil_desc = NS::TransferPtr(MTL::DepthStencilDescriptor::alloc()->init());
-			if (dss_desc.depth_enable && renderpass_info->ds_format != Format::UNKNOWN)
+			if (dss_desc.depth_enable && renderpass_info->ds_format != Format_UNKNOWN)
 			{
 				depth_stencil_desc->setDepthCompareFunction(_ConvertCompareFunction(dss_desc.depth_func));
-				depth_stencil_desc->setDepthWriteEnabled(dss_desc.depth_write_mask == DepthWriteMask::ALL);
+				depth_stencil_desc->setDepthWriteEnabled(dss_desc.depth_write_mask == DepthWriteMask_ALL);
 			}
 			NS::SharedPtr<MTL::StencilDescriptor> stencil_front;
 			NS::SharedPtr<MTL::StencilDescriptor> stencil_back;
@@ -2697,7 +2697,7 @@ using namespace MetalInternal;
 		Protean::vector<NS::SharedPtr<MTL4::AccelerationStructureGeometryDescriptor>> geometry_descs;
 		Protean::vector<MTL4::AccelerationStructureGeometryDescriptor*> geometry_descs_raw;
 		
-		if (desc->type == RaytracingAccelerationStructureDesc::Type::TOPLEVEL)
+		if (desc->type == RaytracingAccelerationStructureDesc::Type_TOPLEVEL)
 		{
 			NS::SharedPtr<MTL4::InstanceAccelerationStructureDescriptor> instance_descriptor = NS::TransferPtr(MTL4::InstanceAccelerationStructureDescriptor::alloc()->init());
 			instance_descriptor->setInstanceCount(desc->top_level.count);
@@ -2715,7 +2715,7 @@ using namespace MetalInternal;
 			
 			for (auto& x : desc->bottom_level.geometries)
 			{
-				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES)
+				if (x.type == RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES)
 				{
 					NS::SharedPtr<MTL4::AccelerationStructureTriangleGeometryDescriptor> geo = NS::TransferPtr(MTL4::AccelerationStructureTriangleGeometryDescriptor::alloc()->init());
 					geometry_descs.push_back(geo);
@@ -2723,7 +2723,7 @@ using namespace MetalInternal;
 					geo->setOpaque(x.flags & RaytracingAccelerationStructureDesc::BottomLevel::Geometry::FLAG_OPAQUE);
 					auto ib_internal = to_internal(&x.triangles.index_buffer);
 					auto vb_internal = to_internal(&x.triangles.vertex_buffer);
-					geo->setIndexType(x.triangles.index_format == IndexBufferFormat::UINT32 ? MTL::IndexTypeUInt32 : MTL::IndexTypeUInt16);
+					geo->setIndexType(x.triangles.index_format == IndexBufferFormat_UINT32 ? MTL::IndexTypeUInt32 : MTL::IndexTypeUInt16);
 					const uint64_t index_byteoffset = x.triangles.index_offset * GetIndexStride(x.triangles.index_format);
 					geo->setIndexBuffer({ib_internal->gpu_address + index_byteoffset, ib_internal->buffer->length()});
 					geo->setVertexFormat(_ConvertAttributeFormat(x.triangles.vertex_format));
@@ -2785,7 +2785,7 @@ using namespace MetalInternal;
 		auto internal_state = Protean::Allocator::make_shared<BVH_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		bvh->internal_state = internal_state;
-		bvh->type = GPUResource::Type::RAYTRACING_ACCELERATION_STRUCTURE;
+		bvh->type = GPUResource::Type_RAYTRACING_ACCELERATION_STRUCTURE;
 		bvh->desc = *desc;
 		bvh->size = 0;
 		
@@ -2800,7 +2800,7 @@ using namespace MetalInternal;
 		
 		internal_state->resourceid = internal_state->acceleration_structure->gpuResourceID();
 		
-		if (desc->type == RaytracingAccelerationStructureDesc::Type::TOPLEVEL)
+		if (desc->type == RaytracingAccelerationStructureDesc::Type_TOPLEVEL)
 		{
 			internal_state->tlas_header_instancecontributions = NS::TransferPtr(device->newBuffer(sizeof(IRRaytracingAccelerationStructureGPUHeader) + sizeof(uint32_t) * desc->top_level.count, MTL::ResourceStorageModeShared));
 			allocationhandler->make_resident(internal_state->tlas_header_instancecontributions.get());
@@ -2827,9 +2827,9 @@ using namespace MetalInternal;
 	{
 		if (desc == nullptr || video_decoder == nullptr)
 			return false;
-		if (desc->profile != VideoProfile::H264 || !CheckCapability(GraphicsDeviceCapability::VIDEO_DECODE_H264))
+		if (desc->profile != VideoProfile_H264 || !CheckCapability(GraphicsDeviceCapability_VIDEO_DECODE_H264))
 			return false;
-		if (desc->format != Format::NV12 || desc->width == 0 || desc->height == 0)
+		if (desc->format != Format_NV12 || desc->width == 0 || desc->height == 0)
 			return false;
 		if (desc->sps_count == 0 || desc->pps_count == 0 || desc->sps_datas == nullptr || desc->pps_datas == nullptr)
 			return false;
@@ -2925,7 +2925,7 @@ using namespace MetalInternal;
 		internal_state->pending_copies.reserve(GraphicsDevice::GetBufferCount() + 1);
 		video_decoder->internal_state = internal_state;
 		video_decoder->desc = *desc;
-		video_decoder->support = VideoDecoderSupportFlags::DPB_AND_OUTPUT_COINCIDE;
+		video_decoder->support = VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE;
 		return true;
 	}
 
@@ -2940,18 +2940,18 @@ using namespace MetalInternal;
 		}
 
 		MTL::Texture* src_texture = internal_state->texture.get();
-		if (texture->GetDesc().format == Format::NV12)
+		if (texture->GetDesc().format == Format_NV12)
 		{
-			const bool chroma = (aspect != nullptr && *aspect == ImageAspect::CHROMINANCE) || format == Format::R8G8_UNORM;
+			const bool chroma = (aspect != nullptr && *aspect == ImageAspect_CHROMINANCE) || format == Format_R8G8_UNORM;
 			if (chroma)
 			{
 				src_texture = internal_state->texture_chroma.get();
-				if (format == Format::NV12)
-					format = Format::R8G8_UNORM;
+				if (format == Format_NV12)
+					format = Format_R8G8_UNORM;
 			}
-			else if (format == Format::NV12)
+			else if (format == Format_NV12)
 			{
-				format = Format::R8_UNORM;
+				format = Format_R8_UNORM;
 			}
 		}
 		
@@ -2963,7 +2963,7 @@ using namespace MetalInternal;
 		mipCount = std::min(mipCount, texture->desc.mip_levels - firstMip);
 		
 		MTL::TextureType texture_type = src_texture->textureType();
-		if (type != SubresourceType::SRV &&
+		if (type != SubresourceType_SRV &&
 			(texture_type == MTL::TextureTypeCube || texture_type == MTL::TextureTypeCubeArray)
 			)
 		{
@@ -2973,8 +2973,8 @@ using namespace MetalInternal;
 		NS::SharedPtr<MTL::TextureViewDescriptor> view_desc;
 		
 		switch (type) {
-			case SubresourceType::SRV:
-			case SubresourceType::UAV:
+			case SubresourceType_SRV:
+			case SubresourceType_UAV:
 				view_desc = NS::TransferPtr(MTL::TextureViewDescriptor::alloc()->init());
 				view_desc->setLevelRange({firstMip, mipCount});
 				view_desc->setSliceRange({firstSlice, sliceCount});
@@ -2986,7 +2986,7 @@ using namespace MetalInternal;
 		};
 		
 		switch (type) {
-			case SubresourceType::SRV:
+			case SubresourceType_SRV:
 				{
 					MTL::TextureSwizzleChannels mtlswizzle = MTL::TextureSwizzleChannels::Default();
 					Swizzle requested_swizzle = texture->desc.swizzle;
@@ -3038,7 +3038,7 @@ using namespace MetalInternal;
 				}
 				break;
 				
-			case SubresourceType::UAV:
+			case SubresourceType_UAV:
 				{
 					if (!internal_state->uav.IsValid())
 					{
@@ -3079,7 +3079,7 @@ using namespace MetalInternal;
 				}
 				break;
 				
-			case SubresourceType::RTV:
+			case SubresourceType_RTV:
 				{
 					if (!internal_state->rtv.IsValid())
 					{
@@ -3102,7 +3102,7 @@ using namespace MetalInternal;
 				}
 				break;
 				
-			case SubresourceType::DSV:
+			case SubresourceType_DSV:
 				{
 					if (!internal_state->dsv.IsValid())
 					{
@@ -3144,7 +3144,7 @@ using namespace MetalInternal;
 			format = *format_change;
 		}
 		
-		const bool structured = has_flag(buffer->desc.misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr);
+		const bool structured = has_flag(buffer->desc.misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED) || (structuredbuffer_stride_change != nullptr);
 		
 		const MTL::PixelFormat pixelformat = _ConvertPixelFormat(format);
 		if (pixelformat != MTL::PixelFormatInvalid)
@@ -3155,7 +3155,7 @@ using namespace MetalInternal;
 			texture_descriptor->setResourceOptions(internal_state->buffer->resourceOptions());
 			texture_descriptor->setWidth(size / GetFormatStride(format));
 			MTL::TextureUsage texture_usage = MTL::TextureUsageShaderRead | MTL::TextureUsagePixelFormatView;
-			if (type == SubresourceType::UAV)
+			if (type == SubresourceType_UAV)
 			{
 				texture_usage |= MTL::TextureUsageShaderWrite;
 				switch (texture_descriptor->pixelFormat())
@@ -3173,7 +3173,7 @@ using namespace MetalInternal;
 		}
 		
 		switch (type) {
-			case SubresourceType::SRV:
+			case SubresourceType_SRV:
 				{
 					if (!internal_state->srv.IsValid())
 					{
@@ -3223,7 +3223,7 @@ using namespace MetalInternal;
 					}
 				}
 				break;
-			case SubresourceType::UAV:
+			case SubresourceType_UAV:
 				{
 					if (!internal_state->uav.IsValid())
 					{
@@ -3305,9 +3305,9 @@ using namespace MetalInternal;
 			auto internal_state = to_internal<Texture>(resource);
 			switch (type)
 			{
-				case SubresourceType::SRV:
+				case SubresourceType_SRV:
 					return subresource < 0 ? internal_state->srv.index : internal_state->subresources_srv[subresource].index;
-				case SubresourceType::UAV:
+				case SubresourceType_UAV:
 					return subresource < 0 ? internal_state->uav.index : internal_state->subresources_uav[subresource].index;
 				default:
 					break;
@@ -3318,9 +3318,9 @@ using namespace MetalInternal;
 			auto internal_state = to_internal<GPUBuffer>(resource);
 			switch (type)
 			{
-				case SubresourceType::SRV:
+				case SubresourceType_SRV:
 					return subresource < 0 ? internal_state->srv.index : internal_state->subresources_srv[subresource].index;
-				case SubresourceType::UAV:
+				case SubresourceType_UAV:
 					return subresource < 0 ? internal_state->uav.index : internal_state->subresources_uav[subresource].index;
 				default:
 					break;
@@ -3494,7 +3494,7 @@ using namespace MetalInternal;
 				MTL4::VisibilityOptions visibility_options = MTL4::VisibilityOptionNone;
 				for (auto& x : commandlist.barriers)
 				{
-					if (x.type == GPUBarrier::Type::ALIASING)
+					if (x.type == GPUBarrier::Type_ALIASING)
 					{
 						visibility_options |= MTL4::VisibilityOptionResourceAlias;
 					}
@@ -3659,7 +3659,7 @@ using namespace MetalInternal;
 	{
 		auto swapchain_internal = to_internal(swapchain);
 		Texture result;
-		result.type = GPUResource::Type::TEXTURE;
+		result.type = GPUResource::Type_TEXTURE;
 		auto texture_internal = Protean::Allocator::make_shared<Texture_Metal>();
 		texture_internal->texture = swapchain_internal->current_texture;
 		texture_internal->srv.index = allocationhandler->allocate_resource_index();
@@ -3668,7 +3668,7 @@ using namespace MetalInternal;
 		result.internal_state = texture_internal;
 		result.desc.width = swapchain->desc.width;
 		result.desc.height = swapchain->desc.height;
-		result.desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET;
+		result.desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET;
 		result.desc.format = swapchain->desc.format;
 		return result;
 	}
@@ -3703,7 +3703,7 @@ using namespace MetalInternal;
 					const SparseResourceCoordinate& coordinate = command.coordinates[j];
 					const SparseRegionSize& size = command.sizes[j];
 					auto& op = operations.emplace_back();
-					op.mode = command.range_flags[j] == TileRangeFlags::Null ? MTL::SparseTextureMappingModeUnmap : MTL::SparseTextureMappingModeMap;
+					op.mode = command.range_flags[j] == TileRangeFlags_Null ? MTL::SparseTextureMappingModeUnmap : MTL::SparseTextureMappingModeMap;
 					op.heapOffset = command.range_start_offsets[j];
 					op.textureLevel = coordinate.mip;
 					op.textureSlice = coordinate.slice;
@@ -3726,7 +3726,7 @@ using namespace MetalInternal;
 					const SparseResourceCoordinate& coordinate = command.coordinates[j];
 					const SparseRegionSize& size = command.sizes[j];
 					MTL4::UpdateSparseBufferMappingOperation op = {
-						command.range_flags[j] == TileRangeFlags::Null ? MTL::SparseTextureMappingModeUnmap : MTL::SparseTextureMappingModeMap,
+						command.range_flags[j] == TileRangeFlags_Null ? MTL::SparseTextureMappingModeUnmap : MTL::SparseTextureMappingModeMap,
 						{coordinate.x, size.width},
 						command.range_start_offsets[j]
 					};
@@ -3866,13 +3866,13 @@ using namespace MetalInternal;
 			
 			MTL::LoadAction load_action;
 			switch (image.loadop) {
-				case RenderPassImage::LoadOp::DONTCARE:
+				case RenderPassImage::LoadOp_DONTCARE:
 					load_action = MTL::LoadActionDontCare;
 					break;
-				case RenderPassImage::LoadOp::LOAD:
+				case RenderPassImage::LoadOp_LOAD:
 					load_action = MTL::LoadActionLoad;
 					break;
-				case RenderPassImage::LoadOp::CLEAR:
+				case RenderPassImage::LoadOp_CLEAR:
 					load_action = MTL::LoadActionClear;
 					break;
 				default:
@@ -3880,10 +3880,10 @@ using namespace MetalInternal;
 			}
 			MTL::StoreAction store_action;
 			switch (image.storeop) {
-			  case RenderPassImage::StoreOp::DONTCARE:
+			  case RenderPassImage::StoreOp_DONTCARE:
 				  store_action = MTL::StoreActionDontCare;
 				  break;
-			  case RenderPassImage::StoreOp::STORE:
+			  case RenderPassImage::StoreOp_STORE:
 				  store_action = MTL::StoreActionStore;
 				  break;
 			  default:
@@ -3891,7 +3891,7 @@ using namespace MetalInternal;
 			}
 			
 			switch (image.type) {
-				case RenderPassImage::Type::RENDERTARGET:
+				case RenderPassImage::Type_RENDERTARGET:
 				{
 					Texture_Metal::Subresource& subresource = image.subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[image.subresource];
 					auto& color_attachment_descriptor = color_attachment_descriptors[color_attachment_index];
@@ -3910,7 +3910,7 @@ using namespace MetalInternal;
 					color_attachment_index++;
 					break;
 				}
-				case RenderPassImage::Type::DEPTH_STENCIL:
+				case RenderPassImage::Type_DEPTH_STENCIL:
 				{
 					Texture_Metal::Subresource& subresource = image.subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[image.subresource];
 					depth_attachment_descriptor = NS::TransferPtr(MTL::RenderPassDepthAttachmentDescriptor::alloc()->init());
@@ -3933,7 +3933,7 @@ using namespace MetalInternal;
 					}
 					break;
 				}
-				case RenderPassImage::Type::RESOLVE:
+				case RenderPassImage::Type_RESOLVE:
 				{
 					Texture_Metal::Subresource& subresource = image.subresource < 0 ? internal_state->rtv : internal_state->subresources_rtv[image.subresource];
 					auto& color_attachment_descriptor = color_attachment_descriptors[resolve_index];
@@ -3945,7 +3945,7 @@ using namespace MetalInternal;
 					resolve_index++;
 					break;
 				}
-				case RenderPassImage::Type::RESOLVE_DEPTH:
+				case RenderPassImage::Type_RESOLVE_DEPTH:
 				{
 					Texture_Metal::Subresource& subresource = image.subresource < 0 ? internal_state->dsv : internal_state->subresources_dsv[image.subresource];
 					depth_attachment_descriptor->setResolveTexture(internal_state->texture.get());
@@ -3969,11 +3969,11 @@ using namespace MetalInternal;
 		}
 		
 		MTL4::RenderEncoderOptions options = MTL4::RenderEncoderOptionNone;
-		if (has_flag(flags, RenderPassFlags::SUSPENDING))
+		if (has_flag(flags, RenderPassFlags_SUSPENDING))
 		{
 			options |= MTL4::RenderEncoderOptionSuspending;
 		}
-		if (has_flag(flags, RenderPassFlags::RESUMING))
+		if (has_flag(flags, RenderPassFlags_RESUMING))
 		{
 			options |= MTL4::RenderEncoderOptionResuming;
 		}
@@ -4129,7 +4129,7 @@ using namespace MetalInternal;
 		CommandList_Metal& commandlist = GetCommandList(cmd);
 		commandlist.index_buffer.bufferAddress = internal_state->gpu_address + offset;
 		commandlist.index_buffer.length = internal_state->buffer->length();
-		commandlist.index_type = format == IndexBufferFormat::UINT32 ? MTL::IndexTypeUInt32 : MTL::IndexTypeUInt16;
+		commandlist.index_type = format == IndexBufferFormat_UINT32 ? MTL::IndexTypeUInt32 : MTL::IndexTypeUInt16;
 	}
 	void GraphicsDevice_Metal::BindStencilRef(uint32_t value, CommandList cmd)
 	{
@@ -4732,15 +4732,15 @@ using namespace MetalInternal;
 		CommandList_Metal& commandlist = GetCommandList(cmd);
 		switch (heap->desc.type)
 		{
-			case GpuQueryType::OCCLUSION:
+			case GpuQueryType_OCCLUSION:
 				assert(commandlist.render_encoder.get() != nullptr);
 				commandlist.render_encoder->setVisibilityResultMode(MTL::VisibilityResultModeCounting, index * sizeof(uint64_t));
 				break;
-			case GpuQueryType::OCCLUSION_BINARY:
+			case GpuQueryType_OCCLUSION_BINARY:
 				assert(commandlist.render_encoder.get() != nullptr);
 				commandlist.render_encoder->setVisibilityResultMode(MTL::VisibilityResultModeBoolean, index * sizeof(uint64_t));
 				break;
-			case GpuQueryType::TIMESTAMP:
+			case GpuQueryType_TIMESTAMP:
 				break;
 			default:
 				break;
@@ -4752,12 +4752,12 @@ using namespace MetalInternal;
 		auto internal_state = to_internal(heap);
 		switch (heap->desc.type)
 		{
-			case GpuQueryType::OCCLUSION:
-			case GpuQueryType::OCCLUSION_BINARY:
+			case GpuQueryType_OCCLUSION:
+			case GpuQueryType_OCCLUSION_BINARY:
 				assert(commandlist.render_encoder.get() != nullptr);
 				commandlist.render_encoder->setVisibilityResultMode(MTL::VisibilityResultModeDisabled, index * sizeof(uint64_t));
 				break;
-			case GpuQueryType::TIMESTAMP:
+			case GpuQueryType_TIMESTAMP:
 				if (commandlist.render_encoder.get() != nullptr)
 				{
 					// Note: fMTL::RenderStageFragment timestamp is unreliable if no fragment was rendered. But we can't determine here in a non-intrusive way whether a fragment was rendered or not in the current render pass for this timestamp
@@ -4787,12 +4787,12 @@ using namespace MetalInternal;
 		
 		switch (heap->desc.type)
 		{
-			case GpuQueryType::OCCLUSION:
-			case GpuQueryType::OCCLUSION_BINARY:
+			case GpuQueryType_OCCLUSION:
+			case GpuQueryType_OCCLUSION_BINARY:
 				precopy(cmd);
 				commandlist.compute_encoder->copyFromBuffer(internal_state->buffer.get(), index * sizeof(uint64_t), dst_internal->buffer.get(), dest_offset, count * sizeof(uint64_t));
 				break;
-			case GpuQueryType::TIMESTAMP:
+			case GpuQueryType_TIMESTAMP:
 				if (commandlist.compute_encoder.get() != nullptr)
 				{
 					commandlist.compute_encoder->endEncoding();
@@ -4951,7 +4951,7 @@ using namespace MetalInternal;
 		}
 
 		const Texture* target = op->output != nullptr ? op->output : op->DPB;
-		if (target == nullptr || target->desc.format != Format::NV12)
+		if (target == nullptr || target->desc.format != Format_NV12)
 		{
 			wilog_error("Metal video decoder output must be an NV12 texture");
 			return;

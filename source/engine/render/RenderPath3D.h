@@ -21,13 +21,12 @@ namespace Protean
 			AO_RTAO,		// ray traced ambient occlusion
 			// Don't alter order! (bound to lua manually)
 		};
-		enum class FSR2_Preset
-		{
+		enum FSR2_Preset {
 			// Guidelines: https://github.com/GPUOpen-Effects/FidelityFX-FSR2#scaling-modes
-			Quality,
-			Balanced,
-			Performance,
-			Ultra_Performance,
+			FSR2_Preset_Quality,
+			FSR2_Preset_Balanced,
+			FSR2_Preset_Performance,
+			FSR2_Preset_Ultra_Performance,
 		};
 	private:
 		float exposure = 1.0f;
@@ -57,11 +56,11 @@ namespace Protean
 		float raytracedReflectionsRange = 10000.0f;
 		float reflectionRoughnessCutoff = 0.6f;
 		float ssgiDepthRejection = 8;
-		Protean::Renderer::Tonemap tonemap = Protean::Renderer::Tonemap::ACES;
+		Protean::Renderer::Tonemap tonemap = Protean::Renderer::Tonemap_ACES;
 		float hdr_calibration = 1;
-		Protean::Renderer::PostProcessQuality raytracedDiffuseQuality = Protean::Renderer::PostProcessQuality::Medium;
-		Protean::Renderer::PostProcessQuality raytracedReflectionsQuality = Protean::Renderer::PostProcessQuality::Medium;
-		Protean::Renderer::PostProcessQuality ssrQuality = Protean::Renderer::PostProcessQuality::Medium;
+		Protean::Renderer::PostProcessQuality raytracedDiffuseQuality = Protean::Renderer::PostProcessQuality_Medium;
+		Protean::Renderer::PostProcessQuality raytracedReflectionsQuality = Protean::Renderer::PostProcessQuality_Medium;
+		Protean::Renderer::PostProcessQuality ssrQuality = Protean::Renderer::PostProcessQuality_Medium;
 		uint32_t planarReflectionMSAASampleCount = 4;
 		float planarReflectionResolutionScale = 0.25f;
 
@@ -373,11 +372,10 @@ namespace Protean
 			Protean::Graphics::Shader computeshader;
 			XMFLOAT4 params0;
 			XMFLOAT4 params1;
-			enum class Stage
-			{
-				BeforeTonemap, // Before tonemap and bloom in HDR color space
-				AfterTonemap // After tonemap, in display color space
-			} stage = Stage::AfterTonemap;
+			enum Stage {
+				Stage_BeforeTonemap, // Before tonemap and bloom in HDR color space
+				Stage_AfterTonemap // After tonemap, in display color space
+			} stage = Stage_AfterTonemap;
 		};
 		Protean::vector<CustomPostprocess> custom_post_processes;
 

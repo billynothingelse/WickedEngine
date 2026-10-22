@@ -32,13 +32,13 @@ namespace Protean::GPUSortLib
 
 	void LoadShaders()
 	{
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_countCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT"}, "FPS_Count");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_reduceCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT_REDUCE"}, "FPS_CountReduce");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scanCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN"}, "FPS_Scan");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scanaddCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN_ADD"}, "FPS_ScanAdd");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scatterCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER"}, "FPS_Scatter");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scatter_payloadCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER", "kRS_ValueCopy"}, "FPS_Scatter");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix_indirectCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_INDIRECT"}, "FPS_SetupIndirectParameters");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_countCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_COUNT"}, "FPS_Count");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_reduceCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_COUNT_REDUCE"}, "FPS_CountReduce");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_scanCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_SCAN"}, "FPS_Scan");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_scanaddCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_SCAN_ADD"}, "FPS_ScanAdd");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_scatterCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_SCATTER"}, "FPS_Scatter");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_scatter_payloadCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_SCATTER", "kRS_ValueCopy"}, "FPS_Scatter");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix_indirectCS, "radix_sortCS.cso", ShaderModel_SM_6_0, {"FPS_INDIRECT"}, "FPS_SetupIndirectParameters");
 	}
 
 	void Initialize()
@@ -51,15 +51,15 @@ namespace Protean::GPUSortLib
 
 		bd.stride = sizeof(FFX_ParallelSortCB);
 		bd.size = bd.stride;
-		bd.bind_flags = BindFlag::CONSTANT_BUFFER | BindFlag::UNORDERED_ACCESS;
-		bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+		bd.bind_flags = BindFlag_CONSTANT_BUFFER | BindFlag_UNORDERED_ACCESS;
+		bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 		device->CreateBuffer(&bd, nullptr, &m_IndirectConstantBuffer);
 		device->SetName(&m_IndirectConstantBuffer, "GPUSortLib::m_IndirectConstantBuffer");
 
 		bd.stride = sizeof(uint32_t);
 		bd.size = bd.stride * 3;
-		bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-		bd.misc_flags = ResourceMiscFlag::INDIRECT_ARGS | ResourceMiscFlag::BUFFER_STRUCTURED;
+		bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+		bd.misc_flags = ResourceMiscFlag_INDIRECT_ARGS | ResourceMiscFlag_BUFFER_STRUCTURED;
 		device->CreateBuffer(&bd, nullptr, &m_IndirectCountScatterArgs);
 		device->SetName(&m_IndirectCountScatterArgs, "GPUSortLib::m_IndirectCountScatterArgs");
 		device->CreateBuffer(&bd, nullptr, &m_IndirectReduceScanArgs);
@@ -97,8 +97,8 @@ namespace Protean::GPUSortLib
 			GPUBufferDesc bd;
 			bd.stride = sizeof(uint32_t);
 			bd.size = scratchBufferSize;
-			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_FPSScratchBuffer);
 			device->SetName(&m_FPSScratchBuffer, "GPUSortLib::m_FPSScratchBuffer");
 		}
@@ -107,8 +107,8 @@ namespace Protean::GPUSortLib
 			GPUBufferDesc bd;
 			bd.stride = sizeof(uint32_t);
 			bd.size = reducedScratchBufferSize;
-			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_FPSReducedScratchBuffer);
 			device->SetName(&m_FPSReducedScratchBuffer, "GPUSortLib::m_FPSReducedScratchBuffer");
 		}
@@ -117,8 +117,8 @@ namespace Protean::GPUSortLib
 			GPUBufferDesc bd;
 			bd.stride = sizeof(uint32_t);
 			bd.size = keyBuffer_uint_RW.desc.size;
-			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_TmpKeyBuffer);
 			device->SetName(&m_TmpKeyBuffer, "GPUSortLib::m_TmpKeyBuffer");
 		}
@@ -127,8 +127,8 @@ namespace Protean::GPUSortLib
 			GPUBufferDesc bd;
 			bd.stride = sizeof(uint32_t);
 			bd.size = payloadBuffer_uint_RW.desc.size;
-			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_TmpPayloadBuffer);
 			device->SetName(&m_TmpPayloadBuffer, "GPUSortLib::m_TmpPayloadBuffer");
 		}
@@ -146,20 +146,20 @@ namespace Protean::GPUSortLib
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&counterBuffer_RO,ResourceState::SHADER_RESOURCE,ResourceState::COPY_SRC),
-				GPUBarrier::Buffer(&m_IndirectCountBuffer,ResourceState::UNORDERED_ACCESS,ResourceState::COPY_DST),
+				GPUBarrier::Buffer(&counterBuffer_RO,ResourceState_SHADER_RESOURCE,ResourceState_COPY_SRC),
+				GPUBarrier::Buffer(&m_IndirectCountBuffer,ResourceState_UNORDERED_ACCESS,ResourceState_COPY_DST),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
 		device->CopyBuffer(&m_IndirectCountBuffer, 0, &counterBuffer_RO, counterReadOffset, sizeof(uint32_t), cmd);
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&counterBuffer_RO,ResourceState::COPY_SRC,ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&m_IndirectCountBuffer,ResourceState::COPY_DST,ResourceState::UNORDERED_ACCESS),
+				GPUBarrier::Buffer(&counterBuffer_RO,ResourceState_COPY_SRC,ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&m_IndirectCountBuffer,ResourceState_COPY_DST,ResourceState_UNORDERED_ACCESS),
 
-				GPUBarrier::Buffer(&m_IndirectConstantBuffer, ResourceState::CONSTANT_BUFFER, ResourceState::UNORDERED_ACCESS),
-				GPUBarrier::Buffer(&m_IndirectCountScatterArgs, ResourceState::INDIRECT_ARGUMENT, ResourceState::UNORDERED_ACCESS),
-				GPUBarrier::Buffer(&m_IndirectReduceScanArgs, ResourceState::INDIRECT_ARGUMENT, ResourceState::UNORDERED_ACCESS),
+				GPUBarrier::Buffer(&m_IndirectConstantBuffer, ResourceState_CONSTANT_BUFFER, ResourceState_UNORDERED_ACCESS),
+				GPUBarrier::Buffer(&m_IndirectCountScatterArgs, ResourceState_INDIRECT_ARGUMENT, ResourceState_UNORDERED_ACCESS),
+				GPUBarrier::Buffer(&m_IndirectReduceScanArgs, ResourceState_INDIRECT_ARGUMENT, ResourceState_UNORDERED_ACCESS),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -188,9 +188,9 @@ namespace Protean::GPUSortLib
 			GPUBarrier barriers[] = {
 				GPUBarrier::Memory(&m_IndirectCountScatterArgs),
 				GPUBarrier::Memory(&m_IndirectReduceScanArgs),
-				GPUBarrier::Buffer(&m_IndirectConstantBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::CONSTANT_BUFFER),
-				GPUBarrier::Buffer(&m_IndirectCountScatterArgs, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT),
-				GPUBarrier::Buffer(&m_IndirectReduceScanArgs, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT),
+				GPUBarrier::Buffer(&m_IndirectConstantBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_CONSTANT_BUFFER),
+				GPUBarrier::Buffer(&m_IndirectCountScatterArgs, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT),
+				GPUBarrier::Buffer(&m_IndirectReduceScanArgs, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}

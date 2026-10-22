@@ -143,7 +143,7 @@ namespace Protean::Lua::BacklogBindings
 		}
 		else
 		{
-			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel::Error);
+			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel_Error);
 		}
 #elif defined(PLATFORM_LINUX)
 		std::string op = "xdg-open \"" + logfile + "\"";
@@ -154,10 +154,10 @@ namespace Protean::Lua::BacklogBindings
 		}
 		else
 		{
-			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel::Error);
+			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel_Error);
 		}
 #else
-		Protean::Backlog::post("backlog_open(): not implemented for this operating system!", Protean::Backlog::LogLevel::Warning);
+		Protean::Backlog::post("backlog_open(): not implemented for this operating system!", Protean::Backlog::LogLevel_Warning);
 #endif
 		return 0;
 	}

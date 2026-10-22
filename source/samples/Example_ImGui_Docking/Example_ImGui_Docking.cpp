@@ -83,8 +83,8 @@ bool ImGui_Impl_CreateDeviceObjects()
 	textureDesc.height = height;
 	textureDesc.mip_levels = 1;
 	textureDesc.array_size = 1;
-	textureDesc.format = Format::R8G8B8A8_UNORM;
-	textureDesc.bind_flags = BindFlag::SHADER_RESOURCE;
+	textureDesc.format = Format_R8G8B8A8_UNORM;
+	textureDesc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 	SubresourceData textureData;
 	textureData.data_ptr = pixels;
@@ -94,10 +94,10 @@ bool ImGui_Impl_CreateDeviceObjects()
 	Protean::Graphics::GetDevice()->CreateTexture(&textureDesc, &textureData, &fontTexture);
 
 	SamplerDesc samplerDesc;
-	samplerDesc.address_u = TextureAddressMode::WRAP;
-	samplerDesc.address_v = TextureAddressMode::WRAP;
-	samplerDesc.address_w = TextureAddressMode::WRAP;
-	samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
+	samplerDesc.address_u = TextureAddressMode_WRAP;
+	samplerDesc.address_v = TextureAddressMode_WRAP;
+	samplerDesc.address_w = TextureAddressMode_WRAP;
+	samplerDesc.filter = Filter_MIN_MAG_MIP_LINEAR;
 	Protean::Graphics::GetDevice()->CreateSampler(&samplerDesc, &sampler);
 
 	// Store our identifier
@@ -105,9 +105,9 @@ bool ImGui_Impl_CreateDeviceObjects()
 
 	imguiInputLayout.elements =
 	{
-		{ "POSITION", 0, Format::R32G32_FLOAT, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, pos), InputClassification::PER_VERTEX_DATA },
-		{ "TEXCOORD", 0, Format::R32G32_FLOAT, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, uv), InputClassification::PER_VERTEX_DATA },
-		{ "COLOR", 0, Format::R8G8B8A8_UNORM, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, col), InputClassification::PER_VERTEX_DATA },
+		{ "POSITION", 0, Format_R32G32_FLOAT, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, pos), InputClassification_PER_VERTEX_DATA },
+		{ "TEXCOORD", 0, Format_R32G32_FLOAT, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, uv), InputClassification_PER_VERTEX_DATA },
+		{ "COLOR", 0, Format_R8G8B8A8_UNORM, 0, (uint32_t)IM_OFFSETOF(ImDrawVert, col), InputClassification_PER_VERTEX_DATA },
 	};
 
 	// Create pipeline
@@ -118,7 +118,7 @@ bool ImGui_Impl_CreateDeviceObjects()
 	desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHREAD);
 	desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 	desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-	desc.pt = PrimitiveTopology::TRIANGLELIST;
+	desc.pt = PrimitiveTopology_TRIANGLELIST;
 	Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &imguiPSO);
 
 	return true;
@@ -143,8 +143,8 @@ void Example_ImGui::Initialize()
 		auto shaderPath = Protean::Renderer::GetShaderSourcePath();
 		Protean::Renderer::SetShaderSourcePath(Protean::Helper::GetCurrentPath() + "/");
 
-		Protean::Renderer::LoadShader(ShaderStage::VS, imguiVS, "ImGuiVS.cso");
-		Protean::Renderer::LoadShader(ShaderStage::PS, imguiPS, "ImGuiPS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_VS, imguiVS, "ImGuiVS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_PS, imguiPS, "ImGuiPS.cso");
 
 		Protean::Renderer::SetShaderSourcePath(shaderPath);
 	}
@@ -283,7 +283,7 @@ void Example_ImGui::Compose(Protean::Graphics::CommandList cmd)
 	};
 
 	device->BindVertexBuffers(vbs, 0, 1, strides, offsets, cmd);
-	device->BindIndexBuffer(&indexBufferAllocation.buffer, IndexBufferFormat::UINT16, indexBufferAllocation.offset, cmd);
+	device->BindIndexBuffer(&indexBufferAllocation.buffer, IndexBufferFormat_UINT16, indexBufferAllocation.offset, cmd);
 
 	Viewport viewport;
 	viewport.width = (float)fb_width;

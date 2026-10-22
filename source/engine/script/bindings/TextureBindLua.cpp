@@ -42,12 +42,12 @@ namespace Protean::Lua
 	}
 	int Texture_BindLua::CreateGradientTexture(lua_State* L)
 	{
-		Protean::TextureHelper::GradientType gradient_type = Protean::TextureHelper::GradientType::Linear;
+		Protean::TextureHelper::GradientType gradient_type = Protean::TextureHelper::GradientType_Linear;
 		uint32_t width = 256;
 		uint32_t height = 256;
 		XMFLOAT2 uv_start = XMFLOAT2(0, 0);
 		XMFLOAT2 uv_end = XMFLOAT2(0, 0);
-		Protean::TextureHelper::GradientFlags gradient_flags = Protean::TextureHelper::GradientFlags::None;
+		Protean::TextureHelper::GradientFlags gradient_flags = Protean::TextureHelper::GradientFlags_None;
 		std::string swizzle_string;
 		float perlin_scale = 1;
 		uint32_t perlin_seed = 1234u;

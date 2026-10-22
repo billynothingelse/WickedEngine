@@ -125,7 +125,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 	if (!obj_errors.empty())
 	{
-		Protean::Backlog::post(obj_errors, Protean::Backlog::LogLevel::Error);
+		Protean::Backlog::post(obj_errors, Protean::Backlog::LogLevel_Error);
 	}
 
 	if (success)

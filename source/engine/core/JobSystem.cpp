@@ -193,7 +193,7 @@ namespace Protean::JobSystem
 	struct InternalState
 	{
 		uint32_t numCores = 0;
-		PriorityResources resources[int(Priority::Count)];
+		PriorityResources resources[int(Priority_Count)];
 		std::atomic_bool alive{ true };
 		void ShutDown()
 		{
@@ -244,7 +244,7 @@ namespace Protean::JobSystem
 		// Retrieve the number of hardware threads in this system:
 		internal_state.numCores = std::thread::hardware_concurrency();
 
-		for (int prio = 0; prio < int(Priority::Count); ++prio)
+		for (int prio = 0; prio < int(Priority_Count); ++prio)
 		{
 			const Priority priority = (Priority)prio;
 			PriorityResources& res = internal_state.resources[prio];
@@ -252,13 +252,13 @@ namespace Protean::JobSystem
 			// Calculate the actual number of worker threads we want:
 			switch (priority)
 			{
-			case Priority::High:
+			case Priority_High:
 				res.numThreads = internal_state.numCores - 1; // -1 for main thread
 				break;
-			case Priority::Low:
+			case Priority_Low:
 				res.numThreads = internal_state.numCores - 2; // -1 for main thread, -1 for streaming
 				break;
-			case Priority::Streaming:
+			case Priority_Streaming:
 				res.numThreads = 1;
 				break;
 			default:
@@ -292,19 +292,19 @@ namespace Protean::JobSystem
 					// so 3 would mean that other (prio 0) threads are around twice as important
 
 					switch (priority) {
-					case Priority::Low:
+					case Priority_Low:
 						if (setpriority(PRIO_PROCESS, 0, 3) != 0)
 						{
 							perror("setpriority");
 						}
 						break;
-					case Priority::Streaming:
+					case Priority_Streaming:
 						if (setpriority(PRIO_PROCESS, 0, 2) != 0)
 						{
 							perror("setpriority");
 						}
 						break;
-					case Priority::High:
+					case Priority_High:
 						// nothing to do
 						break;
 					default:
@@ -313,13 +313,13 @@ namespace Protean::JobSystem
 #elif defined(__APPLE__)
 					switch (priority)
 					{
-					case Priority::High:
+					case Priority_High:
 						pthread_set_qos_class_self_np(QOS_CLASS_USER_INTERACTIVE, 0);
 						break;
-					case Priority::Low:
+					case Priority_Low:
 						pthread_set_qos_class_self_np(QOS_CLASS_UTILITY, 0);
 						break;
-					case Priority::Streaming:
+					case Priority_Streaming:
 						pthread_set_qos_class_self_np(QOS_CLASS_BACKGROUND, 0);
 						break;
 					default:
@@ -341,7 +341,7 @@ namespace Protean::JobSystem
 				auto handle = worker.native_handle();
 
 				int core = threadID + 1; // put threads on increasing cores starting from 2nd
-				if (priority == Priority::Streaming)
+				if (priority == Priority_Streaming)
 				{
 					// Put streaming to last core:
 					core = internal_state.numCores - 1 - threadID;
@@ -355,30 +355,30 @@ namespace Protean::JobSystem
 				DWORD_PTR affinity_result = SetThreadAffinityMask(handle, affinityMask);
 				assert(affinity_result > 0);
 
-				if (priority == Priority::High)
+				if (priority == Priority_High)
 				{
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_NORMAL);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"Protean::job_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"pt_job_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
-				else if (priority == Priority::Low)
+				else if (priority == Priority_Low)
 				{
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_LOWEST);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"Protean::job_lo_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"pt_job_lo_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
-				else if (priority == Priority::Streaming)
+				else if (priority == Priority_Streaming)
 				{
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_BELOW_NORMAL);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"Protean::job_st_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"pt_job_st_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -398,24 +398,24 @@ namespace Protean::JobSystem
 					handle_error_en(ret, std::string(" pthread_setaffinity_np[" + std::to_string(threadID) + ']').c_str());
 
 
-				if (priority == Priority::High)
+				if (priority == Priority_High)
 				{
-					std::string thread_name = "Protean::job_" + std::to_string(threadID);
+					std::string thread_name = "pt_job_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
 				}
-				else if (priority == Priority::Low)
+				else if (priority == Priority_Low)
 				{
-					std::string thread_name = "Protean::job_lo_" + std::to_string(threadID);
+					std::string thread_name = "pt_job_lo_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
 					// priority is set in the worker function
 				}
-				else if (priority == Priority::Streaming)
+				else if (priority == Priority_Streaming)
 				{
-					std::string thread_name = "Protean::job_st_" + std::to_string(threadID);
+					std::string thread_name = "pt_job_st_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
@@ -429,7 +429,7 @@ namespace Protean::JobSystem
 			}
 		}
 
-		wilog("Protean::JobSystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
+		wilog("Protean::JobSystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority_High), GetThreadCount(Priority_Low), GetThreadCount(Priority_Streaming));
 
 		std::atexit(ShutDown);
 	}

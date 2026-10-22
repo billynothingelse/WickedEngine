@@ -94,12 +94,11 @@ namespace Protean::Physics
 	// Returns true if character is standing on the ground or steep ground, false otherwise
 	bool IsCharacterGroundSupported(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
-	enum class CharacterGroundStates
-	{
-		OnGround,		// Character is on the ground and can move freely.
-		OnSteepGround,	// Character is on a slope that is too steep and can't climb up any further. The caller should start applying downward velocity if sliding from the slope is desired.
-		NotSupported,	// Character is touching an object, but is not supported by it and should fall. The GetGroundXXX functions will return information about the touched object.
-		InAir,			// Character is in the air and is not touching anything.
+	enum CharacterGroundStates {
+		CharacterGroundStates_OnGround,		// Character is on the ground and can move freely.
+		CharacterGroundStates_OnSteepGround,	// Character is on a slope that is too steep and can't climb up any further. The caller should start applying downward velocity if sliding from the slope is desired.
+		CharacterGroundStates_NotSupported,	// Character is touching an object, but is not supported by it and should fall. The GetGroundXXX functions will return information about the touched object.
+		CharacterGroundStates_InAir,			// Character is in the air and is not touching anything.
 	};
 	CharacterGroundStates GetCharacterGroundState(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
@@ -184,10 +183,9 @@ namespace Protean::Physics
 	bool IsConstraintBroken(const Protean::PhysicsConstraintComponent& physicscomponent);
 	void SetConstraintBroken(Protean::PhysicsConstraintComponent& physicscomponent, bool broken = true);
 
-	enum class ActivationState
-	{
-		Active,
-		Inactive,
+	enum ActivationState {
+		ActivationState_Active,
+		ActivationState_Inactive,
 	};
 	void SetActivationState(
 		Protean::RigidBodyPhysicsComponent& physicscomponent,
@@ -226,7 +224,7 @@ namespace Protean::Physics
 		XMFLOAT3 position_local = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 normal = XMFLOAT3(0, 0, 0);
 		Protean::Entity humanoid_ragdoll_entity = Protean::INVALID_ENTITY;
-		Protean::HumanoidComponent::HumanoidBone humanoid_bone = Protean::HumanoidComponent::HumanoidBone::Count;
+		Protean::HumanoidComponent::HumanoidBone humanoid_bone = Protean::HumanoidComponent::HumanoidBone_Count;
 		int softbody_triangleID = -1;
 		const void* physicsobject = nullptr;
 		constexpr bool IsValid() const { return entity != Protean::INVALID_ENTITY; }
@@ -241,16 +239,15 @@ namespace Protean::Physics
 		Protean::Allocator::shared_ptr<void> internal_state;
 		inline bool IsValid() const { return internal_state != nullptr; }
 	};
-	enum class ConstraintType
-	{
-		Fixed,	// Fixes the whole object with the current orientation
-		Point,	// Fixes the object to rotate around a point
+	enum ConstraintType {
+		ConstraintType_Fixed,	// Fixes the whole object with the current orientation
+		ConstraintType_Point,	// Fixes the object to rotate around a point
 	};
 	void PickDrag(
 		const Protean::Scene& scene,
 		Protean::Ray ray,
 		PickDragOperation& op,
-		ConstraintType constraint_type = ConstraintType::Fixed,
+		ConstraintType constraint_type = ConstraintType_Fixed,
 		float break_distance = FLT_MAX
 	);
 

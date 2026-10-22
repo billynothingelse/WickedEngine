@@ -893,7 +893,7 @@ namespace Protean::Lua
 				return 0;
 			}
 
-			Protean::Physics::ConstraintType type = Protean::Physics::ConstraintType::Fixed;
+			Protean::Physics::ConstraintType type = Protean::Physics::ConstraintType_Fixed;
 			float break_distance = FLT_MAX;
 
 			if (argc > 3)

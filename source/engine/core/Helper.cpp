@@ -147,14 +147,14 @@ namespace Protean::Helper
 
 		switch (result)
 		{
-		case IDOK: return MessageBoxResult::OK;
-		case IDCANCEL: return MessageBoxResult::Cancel;
-		case IDYES: return MessageBoxResult::Yes;
-		case IDNO: return MessageBoxResult::No;
-		case IDABORT: return MessageBoxResult::Abort;
-		case IDRETRY: return MessageBoxResult::Retry;
-		case IDIGNORE: return MessageBoxResult::Ignore;
-		default: return MessageBoxResult::Cancel;
+		case IDOK: return MessageBoxResult_OK;
+		case IDCANCEL: return MessageBoxResult_Cancel;
+		case IDYES: return MessageBoxResult_Yes;
+		case IDNO: return MessageBoxResult_No;
+		case IDABORT: return MessageBoxResult_Abort;
+		case IDRETRY: return MessageBoxResult_Retry;
+		case IDIGNORE: return MessageBoxResult_Ignore;
+		default: return MessageBoxResult_Cancel;
 		}
 #elif defined(__APPLE__)
 		
@@ -182,18 +182,18 @@ namespace Protean::Helper
 		if (!SDL_ShowMessageBox(&messageboxdata, &buttonid))
 #endif
 		{
-			return MessageBoxResult::Cancel;
+			return MessageBoxResult_Cancel;
 		}
 		switch (buttonid)
 		{
-		case 0: return MessageBoxResult::Yes;
-		case 1: return MessageBoxResult::No;
-		case 2: return MessageBoxResult::Cancel;
-		default: return MessageBoxResult::Cancel;
+		case 0: return MessageBoxResult_Yes;
+		case 1: return MessageBoxResult_No;
+		case 2: return MessageBoxResult_Cancel;
+		default: return MessageBoxResult_Cancel;
 		}
 #endif
 
-		return MessageBoxResult::Cancel;
+		return MessageBoxResult_Cancel;
 	}
 
 	std::string screenshot(const Protean::Graphics::SwapChain& swapchain, const std::string& name)
@@ -244,10 +244,10 @@ namespace Protean::Helper
 
 		Texture stagingTex;
 		TextureDesc staging_desc = desc;
-		staging_desc.usage = Usage::READBACK;
-		staging_desc.layout = ResourceState::COPY_DST;
-		staging_desc.bind_flags = BindFlag::NONE;
-		staging_desc.misc_flags = ResourceMiscFlag::NONE;
+		staging_desc.usage = Usage_READBACK;
+		staging_desc.layout = ResourceState_COPY_DST;
+		staging_desc.bind_flags = BindFlag_NONE;
+		staging_desc.misc_flags = ResourceMiscFlag_NONE;
 		bool success = device->CreateTexture(&staging_desc, nullptr, &stagingTex);
 		assert(success);
 
@@ -255,7 +255,7 @@ namespace Protean::Helper
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&texture,texture.desc.layout,ResourceState::COPY_SRC),
+				GPUBarrier::Image(&texture,texture.desc.layout,ResourceState_COPY_SRC),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -264,7 +264,7 @@ namespace Protean::Helper
 
 		{
 			GPUBarrier barriers[] = {
-				GPUBarrier::Image(&texture,ResourceState::COPY_SRC,texture.desc.layout),
+				GPUBarrier::Image(&texture,ResourceState_COPY_SRC,texture.desc.layout),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -349,186 +349,186 @@ namespace Protean::Helper
 			dds::DXGI_FORMAT dds_format = dds::DXGI_FORMAT_UNKNOWN;
 			switch (desc.format)
 			{
-			case Protean::Graphics::Format::R32G32B32A32_FLOAT:
+			case Protean::Graphics::Format_R32G32B32A32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_FLOAT;
 				break;
-			case Protean::Graphics::Format::R32G32B32A32_UINT:
+			case Protean::Graphics::Format_R32G32B32A32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_UINT;
 				break;
-			case Protean::Graphics::Format::R32G32B32A32_SINT:
+			case Protean::Graphics::Format_R32G32B32A32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_SINT;
 				break;
-			case Protean::Graphics::Format::R32G32B32_FLOAT:
+			case Protean::Graphics::Format_R32G32B32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_FLOAT;
 				break;
-			case Protean::Graphics::Format::R32G32B32_UINT:
+			case Protean::Graphics::Format_R32G32B32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_UINT;
 				break;
-			case Protean::Graphics::Format::R32G32B32_SINT:
+			case Protean::Graphics::Format_R32G32B32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_SINT;
 				break;
-			case Protean::Graphics::Format::R16G16B16A16_FLOAT:
+			case Protean::Graphics::Format_R16G16B16A16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_FLOAT;
 				break;
-			case Protean::Graphics::Format::R16G16B16A16_UNORM:
+			case Protean::Graphics::Format_R16G16B16A16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_UNORM;
 				break;
-			case Protean::Graphics::Format::R16G16B16A16_UINT:
+			case Protean::Graphics::Format_R16G16B16A16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_UINT;
 				break;
-			case Protean::Graphics::Format::R16G16B16A16_SNORM:
+			case Protean::Graphics::Format_R16G16B16A16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_SNORM;
 				break;
-			case Protean::Graphics::Format::R16G16B16A16_SINT:
+			case Protean::Graphics::Format_R16G16B16A16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_SINT;
 				break;
-			case Protean::Graphics::Format::R32G32_FLOAT:
+			case Protean::Graphics::Format_R32G32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32_FLOAT;
 				break;
-			case Protean::Graphics::Format::R32G32_UINT:
+			case Protean::Graphics::Format_R32G32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32_UINT;
 				break;
-			case Protean::Graphics::Format::R32G32_SINT:
+			case Protean::Graphics::Format_R32G32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32_SINT;
 				break;
-			case Protean::Graphics::Format::R10G10B10A2_UNORM:
+			case Protean::Graphics::Format_R10G10B10A2_UNORM:
 				dds_format = dds::DXGI_FORMAT_R10G10B10A2_UNORM;
 				break;
-			case Protean::Graphics::Format::R10G10B10A2_UINT:
+			case Protean::Graphics::Format_R10G10B10A2_UINT:
 				dds_format = dds::DXGI_FORMAT_R10G10B10A2_UINT;
 				break;
-			case Protean::Graphics::Format::R11G11B10_FLOAT:
+			case Protean::Graphics::Format_R11G11B10_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R11G11B10_FLOAT;
 				break;
-			case Protean::Graphics::Format::R8G8B8A8_UNORM:
+			case Protean::Graphics::Format_R8G8B8A8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UNORM;
 				break;
-			case Protean::Graphics::Format::R8G8B8A8_UNORM_SRGB:
+			case Protean::Graphics::Format_R8G8B8A8_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 				break;
-			case Protean::Graphics::Format::R8G8B8A8_UINT:
+			case Protean::Graphics::Format_R8G8B8A8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UINT;
 				break;
-			case Protean::Graphics::Format::R8G8B8A8_SNORM:
+			case Protean::Graphics::Format_R8G8B8A8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_SNORM;
 				break;
-			case Protean::Graphics::Format::R8G8B8A8_SINT:
+			case Protean::Graphics::Format_R8G8B8A8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_SINT;
 				break;
-			case Protean::Graphics::Format::B8G8R8A8_UNORM:
+			case Protean::Graphics::Format_B8G8R8A8_UNORM:
 				dds_format = dds::DXGI_FORMAT_B8G8R8A8_UNORM;
 				break;
-			case Protean::Graphics::Format::B8G8R8A8_UNORM_SRGB:
+			case Protean::Graphics::Format_B8G8R8A8_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 				break;
-			case Protean::Graphics::Format::R16G16_FLOAT:
+			case Protean::Graphics::Format_R16G16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16G16_FLOAT;
 				break;
-			case Protean::Graphics::Format::R16G16_UNORM:
+			case Protean::Graphics::Format_R16G16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16_UNORM;
 				break;
-			case Protean::Graphics::Format::R16G16_UINT:
+			case Protean::Graphics::Format_R16G16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16G16_UINT;
 				break;
-			case Protean::Graphics::Format::R16G16_SNORM:
+			case Protean::Graphics::Format_R16G16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16_SNORM;
 				break;
-			case Protean::Graphics::Format::R16G16_SINT:
+			case Protean::Graphics::Format_R16G16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16G16_SINT;
 				break;
-			case Protean::Graphics::Format::D32_FLOAT:
-			case Protean::Graphics::Format::R32_FLOAT:
+			case Protean::Graphics::Format_D32_FLOAT:
+			case Protean::Graphics::Format_R32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32_FLOAT;
 				break;
-			case Protean::Graphics::Format::R32_UINT:
+			case Protean::Graphics::Format_R32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32_UINT;
 				break;
-			case Protean::Graphics::Format::R32_SINT:
+			case Protean::Graphics::Format_R32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32_SINT;
 				break;
-			case Protean::Graphics::Format::R9G9B9E5_SHAREDEXP:
+			case Protean::Graphics::Format_R9G9B9E5_SHAREDEXP:
 				dds_format = dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP;
 				break;
-			case Protean::Graphics::Format::R8G8_UNORM:
+			case Protean::Graphics::Format_R8G8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8_UNORM;
 				break;
-			case Protean::Graphics::Format::R8G8_UINT:
+			case Protean::Graphics::Format_R8G8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8G8_UINT;
 				break;
-			case Protean::Graphics::Format::R8G8_SNORM:
+			case Protean::Graphics::Format_R8G8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8_SNORM;
 				break;
-			case Protean::Graphics::Format::R8G8_SINT:
+			case Protean::Graphics::Format_R8G8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8G8_SINT;
 				break;
-			case Protean::Graphics::Format::R16_FLOAT:
+			case Protean::Graphics::Format_R16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16_FLOAT;
 				break;
-			case Protean::Graphics::Format::D16_UNORM:
-			case Protean::Graphics::Format::R16_UNORM:
+			case Protean::Graphics::Format_D16_UNORM:
+			case Protean::Graphics::Format_R16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16_UNORM;
 				break;
-			case Protean::Graphics::Format::R16_UINT:
+			case Protean::Graphics::Format_R16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16_UINT;
 				break;
-			case Protean::Graphics::Format::R16_SNORM:
+			case Protean::Graphics::Format_R16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16_SNORM;
 				break;
-			case Protean::Graphics::Format::R16_SINT:
+			case Protean::Graphics::Format_R16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16_SINT;
 				break;
-			case Protean::Graphics::Format::R8_UNORM:
+			case Protean::Graphics::Format_R8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8_UNORM;
 				break;
-			case Protean::Graphics::Format::R8_UINT:
+			case Protean::Graphics::Format_R8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8_UINT;
 				break;
-			case Protean::Graphics::Format::R8_SNORM:
+			case Protean::Graphics::Format_R8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8_SNORM;
 				break;
-			case Protean::Graphics::Format::R8_SINT:
+			case Protean::Graphics::Format_R8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8_SINT;
 				break;
-			case Protean::Graphics::Format::BC1_UNORM:
+			case Protean::Graphics::Format_BC1_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC1_UNORM;
 				break;
-			case Protean::Graphics::Format::BC1_UNORM_SRGB:
+			case Protean::Graphics::Format_BC1_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC1_UNORM_SRGB;
 				break;
-			case Protean::Graphics::Format::BC2_UNORM:
+			case Protean::Graphics::Format_BC2_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC2_UNORM;
 				break;
-			case Protean::Graphics::Format::BC2_UNORM_SRGB:
+			case Protean::Graphics::Format_BC2_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC2_UNORM_SRGB;
 				break;
-			case Protean::Graphics::Format::BC3_UNORM:
+			case Protean::Graphics::Format_BC3_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC3_UNORM;
 				break;
-			case Protean::Graphics::Format::BC3_UNORM_SRGB:
+			case Protean::Graphics::Format_BC3_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC3_UNORM_SRGB;
 				break;
-			case Protean::Graphics::Format::BC4_UNORM:
+			case Protean::Graphics::Format_BC4_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC4_UNORM;
 				break;
-			case Protean::Graphics::Format::BC4_SNORM:
+			case Protean::Graphics::Format_BC4_SNORM:
 				dds_format = dds::DXGI_FORMAT_BC4_SNORM;
 				break;
-			case Protean::Graphics::Format::BC5_UNORM:
+			case Protean::Graphics::Format_BC5_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC5_UNORM;
 				break;
-			case Protean::Graphics::Format::BC5_SNORM:
+			case Protean::Graphics::Format_BC5_SNORM:
 				dds_format = dds::DXGI_FORMAT_BC5_SNORM;
 				break;
-			case Protean::Graphics::Format::BC6H_UF16:
+			case Protean::Graphics::Format_BC6H_UF16:
 				dds_format = dds::DXGI_FORMAT_BC6H_UF16;
 				break;
-			case Protean::Graphics::Format::BC6H_SF16:
+			case Protean::Graphics::Format_BC6H_SF16:
 				dds_format = dds::DXGI_FORMAT_BC6H_SF16;
 				break;
-			case Protean::Graphics::Format::BC7_UNORM:
+			case Protean::Graphics::Format_BC7_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC7_UNORM;
 				break;
-			case Protean::Graphics::Format::BC7_UNORM_SRGB:
+			case Protean::Graphics::Format_BC7_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC7_UNORM_SRGB;
 				break;
 			default:
@@ -539,11 +539,11 @@ namespace Protean::Helper
 				filedata.data(),
 				dds_format,
 				desc.width,
-				desc.type == TextureDesc::Type::TEXTURE_1D ? 0 : desc.height,
+				desc.type == TextureDesc::Type_TEXTURE_1D ? 0 : desc.height,
 				desc.mip_levels,
 				desc.array_size,
-				has_flag(desc.misc_flags, ResourceMiscFlag::TEXTURECUBE),
-				desc.type == TextureDesc::Type::TEXTURE_3D ? desc.depth : 0
+				has_flag(desc.misc_flags, ResourceMiscFlag_TEXTURECUBE),
+				desc.type == TextureDesc::Type_TEXTURE_3D ? desc.depth : 0
 			);
 			std::memcpy(filedata.data() + sizeof(dds::Header), texturedata.data(), texturedata.size());
 			return true;
@@ -553,7 +553,7 @@ namespace Protean::Helper
 
 		if (is_png)
 		{
-			if (desc.format == Format::R16_UNORM || desc.format == Format::R16_UINT || desc.format == Format::R16_SNORM || desc.format == Format::R16_SINT)
+			if (desc.format == Format_R16_UNORM || desc.format == Format_R16_UINT || desc.format == Format_R16_SNORM || desc.format == Format_R16_SINT)
 			{
 				// Specialized handling for 16-bit single channel PNG:
 				Protean::vector<uint8_t> src_bigendian = texturedata;
@@ -567,7 +567,7 @@ namespace Protean::Helper
 				unsigned error = lodepng::encode(filedata, src_bigendian, desc.width, desc.height, LCT_GREY, 16);
 				return error == 0;
 			}
-			else if (desc.format == Format::R16G16_UNORM || desc.format == Format::R16G16_UINT || desc.format == Format::R16G16_SNORM || desc.format == Format::R16G16_SINT)
+			else if (desc.format == Format_R16G16_UNORM || desc.format == Format_R16G16_UINT || desc.format == Format_R16G16_SNORM || desc.format == Format_R16G16_SINT)
 			{
 				// Specialized handling for 16-bit PNG:
 				//	Two channel RG data is expanded to RGBA (2-channel PNG is not good because that is interpreted as red and alpha)
@@ -587,7 +587,7 @@ namespace Protean::Helper
 				unsigned error = lodepng::encode(filedata, (const unsigned char*)dest_rgba.data(), desc.width, desc.height, LCT_RGBA, 16);
 				return error == 0;
 			}
-			else if (desc.format == Format::R16G16B16A16_UNORM || desc.format == Format::R16G16B16A16_UINT || desc.format == Format::R16G16B16A16_SNORM || desc.format == Format::R16G16B16A16_SINT)
+			else if (desc.format == Format_R16G16B16A16_UNORM || desc.format == Format_R16G16B16A16_UINT || desc.format == Format_R16G16B16A16_SNORM || desc.format == Format_R16G16B16A16_SINT)
 			{
 				// Specialized handling for 16-bit PNG:
 				Protean::vector<uint8_t> src_bigendian = texturedata;
@@ -609,7 +609,7 @@ namespace Protean::Helper
 				unsigned error = lodepng::encode(filedata, src_bigendian, desc.width, desc.height, LCT_RGBA, 16);
 				return error == 0;
 			}
-			else if (desc.format == Format::R32_FLOAT || desc.format == Format::D32_FLOAT || desc.format == Format::D32_FLOAT_S8X24_UINT)
+			else if (desc.format == Format_R32_FLOAT || desc.format == Format_D32_FLOAT || desc.format == Format_D32_FLOAT_S8X24_UINT)
 			{
 				// Specialized handling for 16-bit single channel PNG from a 32-bit float source:
 				Protean::vector<uint8_t> dst_bigendian(desc.width * desc.height * sizeof(uint16_t));
@@ -655,7 +655,7 @@ namespace Protean::Helper
 		}
 
 		int dst_channel_count = 4;
-		if (desc.format == Format::R10G10B10A2_UNORM)
+		if (desc.format == Format_R10G10B10A2_UNORM)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			uint32_t* data32 = (uint32_t*)texturedata.data();
@@ -682,7 +682,7 @@ namespace Protean::Helper
 				data32[i] = rgba8;
 			}
 		}
-		else if (desc.format == Format::R32G32B32A32_FLOAT)
+		else if (desc.format == Format_R32G32B32A32_FLOAT)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			XMFLOAT4* dataSrc = (XMFLOAT4*)texturedata.data();
@@ -705,7 +705,7 @@ namespace Protean::Helper
 				data32[i] = rgba8;
 			}
 		}
-		else if (desc.format == Format::R16G16B16A16_FLOAT)
+		else if (desc.format == Format_R16G16B16A16_FLOAT)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			XMHALF4* dataSrc = (XMHALF4*)texturedata.data();
@@ -728,7 +728,7 @@ namespace Protean::Helper
 				data32[i] = rgba8;
 			}
 		}
-		else if (desc.format == Format::R16G16B16A16_UNORM || desc.format == Format::R16G16B16A16_UINT)
+		else if (desc.format == Format_R16G16B16A16_UNORM || desc.format == Format_R16G16B16A16_UINT)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			Protean::Color16* dataSrc = (Protean::Color16*)texturedata.data();
@@ -740,7 +740,7 @@ namespace Protean::Helper
 				data32[i] = Protean::Color::fromFloat4(pixel16.toFloat4());
 			}
 		}
-		else if (desc.format == Format::R11G11B10_FLOAT)
+		else if (desc.format == Format_R11G11B10_FLOAT)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			XMFLOAT3PK* dataSrc = (XMFLOAT3PK*)texturedata.data();
@@ -766,7 +766,7 @@ namespace Protean::Helper
 				data32[i] = rgba8;
 			}
 		}
-		else if (desc.format == Format::R9G9B9E5_SHAREDEXP)
+		else if (desc.format == Format_R9G9B9E5_SHAREDEXP)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			XMFLOAT3SE* dataSrc = (XMFLOAT3SE*)texturedata.data();
@@ -792,7 +792,7 @@ namespace Protean::Helper
 				data32[i] = rgba8;
 			}
 		}
-		else if (desc.format == Format::B8G8R8A8_UNORM || desc.format == Format::B8G8R8A8_UNORM_SRGB)
+		else if (desc.format == Format_B8G8R8A8_UNORM || desc.format == Format_B8G8R8A8_UNORM_SRGB)
 		{
 			// This will be converted first to rgba8 before saving to common format:
 			uint32_t* data32 = (uint32_t*)texturedata.data();
@@ -807,17 +807,17 @@ namespace Protean::Helper
 				data32[i] = r | (g << 8u) | (b << 16u) | (a << 24u);
 			}
 		}
-		else if (desc.format == Format::R8_UNORM)
+		else if (desc.format == Format_R8_UNORM)
 		{
 			// This can be saved by reducing target channel count, no conversion needed
 			dst_channel_count = 1;
 		}
-		else if (desc.format == Format::R8G8_UNORM)
+		else if (desc.format == Format_R8G8_UNORM)
 		{
 			// This can be saved by reducing target channel count, no conversion needed
 			dst_channel_count = 2;
 		}
-		else if (desc.format == Format::R8G8B8A8_UNORM || desc.format == Format::R8G8B8A8_UNORM_SRGB || desc.format == Format::R8G8B8A8_SNORM || desc.format == Format::R8G8B8A8_SINT || desc.format == Format::R8G8B8A8_UINT || desc.format == Format::R32_SINT || desc.format == Format::R32_UINT)
+		else if (desc.format == Format_R8G8B8A8_UNORM || desc.format == Format_R8G8B8A8_UNORM_SRGB || desc.format == Format_R8G8B8A8_SNORM || desc.format == Format_R8G8B8A8_SINT || desc.format == Format_R8G8B8A8_UINT || desc.format == Format_R32_SINT || desc.format == Format_R32_UINT)
 		{
 			// These are accepted as-is
 		}
@@ -1064,7 +1064,7 @@ namespace Protean::Helper
 		GraphicsDevice* device = GetDevice();
 
 		GPUBufferDesc desc = buffer.desc;
-		desc.usage = Protean::Graphics::Usage::READBACK;
+		desc.usage = Protean::Graphics::Usage_READBACK;
 		desc.bind_flags = {};
 		desc.misc_flags = {};
 		GPUBuffer staging;
@@ -1327,7 +1327,7 @@ namespace Protean::Helper
 			return true;
 		}
 
-		Protean::Backlog::post("File not found: " + fileName, Protean::Backlog::LogLevel::Warning);
+		Protean::Backlog::post("File not found: " + fileName, Protean::Backlog::LogLevel_Warning);
 		return false;
 	}
 	bool FileRead(const std::string& fileName, Protean::vector<uint8_t>& data, size_t max_read, size_t offset)
@@ -2001,15 +2001,15 @@ namespace Protean::Helper
 		switch (level)
 		{
 		default:
-		case DebugLevel::Normal:
+		case DebugLevel_Normal:
 			std::cout << str;
 			std::flush(std::cout);
 			break;
-		case DebugLevel::Warning:
+		case DebugLevel_Warning:
 			std::clog << str;
 			std::flush(std::clog);
 			break;
-		case DebugLevel::Error:
+		case DebugLevel_Error:
 			std::cerr << str;
 			std::flush(std::cerr);
 			break;
@@ -2066,7 +2066,7 @@ namespace Protean::Helper
 		return;
 #endif // __APPLE__
 
-		Protean::Backlog::post("Protean::Helper::OpenUrl(" + url + "): not implemented for this operating system!", Protean::Backlog::LogLevel::Warning);
+		Protean::Backlog::post("Protean::Helper::OpenUrl(" + url + "): not implemented for this operating system!", Protean::Backlog::LogLevel_Warning);
 	}
 
 	MemoryUsage GetMemoryUsage()

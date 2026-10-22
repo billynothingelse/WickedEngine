@@ -23,7 +23,7 @@ namespace Protean::Video
 		uint32_t width = 0;
 		uint32_t height = 0;
 		uint32_t bit_rate = 0;
-		Protean::Graphics::VideoProfile profile = Protean::Graphics::VideoProfile::H264;
+		Protean::Graphics::VideoProfile profile = Protean::Graphics::VideoProfile_H264;
 		Protean::vector<uint8_t> sps_datas;
 		Protean::vector<uint8_t> pps_datas;
 		Protean::vector<uint8_t> slice_header_datas;
@@ -39,7 +39,7 @@ namespace Protean::Video
 			uint64_t size = 0;
 			float timestamp_seconds = 0;
 			float duration_seconds = 0;
-			Protean::Graphics::VideoFrameType type = Protean::Graphics::VideoFrameType::Intra;
+			Protean::Graphics::VideoFrameType type = Protean::Graphics::VideoFrameType_Intra;
 			uint32_t reference_priority = 0;
 			int poc = 0;
 			int gop = 0;
@@ -95,17 +95,16 @@ namespace Protean::Video
 		float audio_time_origin = 0;
 		float audio_sync_time = 0;
 		bool audio_unavailable = false;
-		enum class Flags
-		{
-			Empty = 0,
-			Playing = 1 << 0,
-			Looped = 1 << 1,
-			Mipmapped = 1 << 2,
-			NeedsResolve = 1 << 3,
-			InitialFirstFrameDecoded = 1 << 4,
-			DecoderReset = 1 << 5,
+		enum Flags {
+			Flags_Empty = 0,
+			Flags_Playing = 1 << 0,
+			Flags_Looped = 1 << 1,
+			Flags_Mipmapped = 1 << 2,
+			Flags_NeedsResolve = 1 << 3,
+			Flags_InitialFirstFrameDecoded = 1 << 4,
+			Flags_DecoderReset = 1 << 5,
 		};
-		Flags flags = Flags::Empty;
+		Flags flags = Flags_Empty;
 		inline bool IsValid() const { return decoder.IsValid(); }
 
 		// Get texture resource of the latest decoded frame that can be displayed:

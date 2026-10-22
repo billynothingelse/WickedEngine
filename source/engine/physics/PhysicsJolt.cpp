@@ -333,7 +333,7 @@ namespace Protean::Physics
 
 			// for trace hit reporting:
 			Protean::Entity humanoid_ragdoll_entity = Protean::INVALID_ENTITY;
-			Protean::HumanoidComponent::HumanoidBone humanoid_bone = Protean::HumanoidComponent::HumanoidBone::Count;
+			Protean::HumanoidComponent::HumanoidBone humanoid_bone = Protean::HumanoidComponent::HumanoidBone_Count;
 			Protean::Capsule capsule;
 
 			// vehicle:
@@ -683,7 +683,7 @@ namespace Protean::Physics
 				Body* body = body_interface.CreateBody(settings);
 				if (body == nullptr || body->GetID().IsInvalid())
 				{
-					Protean::Backlog::post("AddRigidBody failed: body couldn't be created! This could mean that there are too many physics objects.", Protean::Backlog::LogLevel::Error);
+					Protean::Backlog::post("AddRigidBody failed: body couldn't be created! This could mean that there are too many physics objects.", Protean::Backlog::LogLevel_Error);
 					return;
 				}
 				physicsobject.bodyID = body->GetID();
@@ -738,13 +738,13 @@ namespace Protean::Physics
 					switch (physicscomponent.vehicle.collision_mode)
 					{
 					default:
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Ray:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Ray:
 						vehicle_tester = new VehicleCollisionTesterRay(Layers::MOVING);
 						break;
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Sphere:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Sphere:
 						vehicle_tester = new VehicleCollisionTesterCastSphere(Layers::MOVING, 0.5f * wheel_width);
 						break;
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Cylinder:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Cylinder:
 						vehicle_tester = new VehicleCollisionTesterCastCylinder(Layers::MOVING);
 						break;
 					}
@@ -915,13 +915,13 @@ namespace Protean::Physics
 					switch (physicscomponent.vehicle.collision_mode)
 					{
 					default:
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Ray:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Ray:
 						vehicle_tester = new VehicleCollisionTesterRay(Layers::MOVING);
 						break;
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Sphere:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Sphere:
 						vehicle_tester = new VehicleCollisionTesterCastSphere(Layers::MOVING, 0.5f * std::max(back_wheel_radius, front_wheel_radius));
 						break;
-					case RigidBodyPhysicsComponent::Vehicle::CollisionMode::Cylinder:
+					case RigidBodyPhysicsComponent::Vehicle::CollisionMode_Cylinder:
 						vehicle_tester = new VehicleCollisionTesterCastCylinder(Layers::MOVING);
 						break;
 					}
@@ -1010,7 +1010,7 @@ namespace Protean::Physics
 			physicscomponent.CreateFromMesh(mesh);
 			if (physicscomponent.physicsIndices.empty())
 			{
-				Protean::Backlog::post("AddSoftBody failed: physics faces are empty, this means generating physics mesh has failed, try to change settings.", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("AddSoftBody failed: physics faces are empty, this means generating physics mesh has failed, try to change settings.", Protean::Backlog::LogLevel_Error);
 				return;
 			}
 			const size_t vertexCount = physicscomponent.physicsToGraphicsVertexMapping.size();
@@ -1084,7 +1084,7 @@ namespace Protean::Physics
 
 			if (physicsobject.bodyID.IsInvalid())
 			{
-				Protean::Backlog::post("AddSoftBody failed: body couldn't be created! This could mean that there are too many physics objects.", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("AddSoftBody failed: body couldn't be created! This could mean that there are too many physics objects.", Protean::Backlog::LogLevel_Error);
 				return;
 			}
 		}
@@ -1149,21 +1149,21 @@ namespace Protean::Physics
 				physicsobject.body2_id = rb.bodyID;
 			}
 
-			if (physicscomponent.type == PhysicsConstraintComponent::Type::Fixed)
+			if (physicscomponent.type == PhysicsConstraintComponent::Type_Fixed)
 			{
 				FixedConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
 				settings.mPoint1 = settings.mPoint2 = cast(transform.GetPosition());
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::Point)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_Point)
 			{
 				PointConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
 				settings.mPoint1 = settings.mPoint2 = cast(transform.GetPosition());
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::Distance)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_Distance)
 			{
 				DistanceConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1172,7 +1172,7 @@ namespace Protean::Physics
 				settings.mMaxDistance = physicscomponent.distance_constraint.max_distance;
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::Hinge)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_Hinge)
 			{
 				HingeConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1183,7 +1183,7 @@ namespace Protean::Physics
 				settings.mLimitsMax = physicscomponent.hinge_constraint.max_angle;
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::Cone)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_Cone)
 			{
 				ConeConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1192,7 +1192,7 @@ namespace Protean::Physics
 				settings.mHalfConeAngle = physicscomponent.cone_constraint.half_cone_angle;
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::SixDOF)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_SixDOF)
 			{
 				SixDOFConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1213,7 +1213,7 @@ namespace Protean::Physics
 				settings.mLimitMax[SixDOFConstraintSettings::EAxis::RotationZ] = physicscomponent.six_dof.maxRotationAxes.z;
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::SwingTwist)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_SwingTwist)
 			{
 				SwingTwistConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1226,7 +1226,7 @@ namespace Protean::Physics
 				settings.mTwistMaxAngle = physicscomponent.swing_twist.max_twist_angle;
 				physicsobject.constraint = settings.Create(*body1, *body2);
 			}
-			else if (physicscomponent.type == PhysicsConstraintComponent::Type::Slider)
+			else if (physicscomponent.type == PhysicsConstraintComponent::Type_Slider)
 			{
 				SliderConstraintSettings settings;
 				settings.mSpace = EConstraintSpace::WorldSpace;
@@ -1378,83 +1378,83 @@ namespace Protean::Physics
 				// Calculate the bone lengths and radiuses in armature local space and create rigid bodies for bones:
 				for (int c = 0; c < BODYPART_COUNT; ++c)
 				{
-					HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone::Count;
+					HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone_Count;
 					Entity entityA = INVALID_ENTITY;
 					Entity entityB = INVALID_ENTITY;
 					switch (c)
 					{
 					case BODYPART_PELVIS:
-						humanoid_bone = HumanoidComponent::HumanoidBone::Hips;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Hips];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Spine];
+						humanoid_bone = HumanoidComponent::HumanoidBone_Hips;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Hips];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Spine];
 						break;
 					case BODYPART_SPINE:
-						humanoid_bone = HumanoidComponent::HumanoidBone::Spine;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Spine];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Neck]; // prefer neck instead of head
+						humanoid_bone = HumanoidComponent::HumanoidBone_Spine;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Spine];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Neck]; // prefer neck instead of head
 						if (entityB == INVALID_ENTITY)
 						{
-							entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Head]; // fall back to head if neck not available
+							entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Head]; // fall back to head if neck not available
 						}
 						break;
 					case BODYPART_HEAD:
-						humanoid_bone = HumanoidComponent::HumanoidBone::Neck;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Neck]; // prefer neck instead of head
+						humanoid_bone = HumanoidComponent::HumanoidBone_Neck;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Neck]; // prefer neck instead of head
 						if (entityA == INVALID_ENTITY)
 						{
-							humanoid_bone = HumanoidComponent::HumanoidBone::Head;
-							entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::Head]; // fall back to head if neck not available
+							humanoid_bone = HumanoidComponent::HumanoidBone_Head;
+							entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_Head]; // fall back to head if neck not available
 						}
 						break;
 					case BODYPART_LEFT_UPPER_LEG:
-						humanoid_bone = HumanoidComponent::HumanoidBone::LeftUpperLeg;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperLeg];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftLowerLeg];
+						humanoid_bone = HumanoidComponent::HumanoidBone_LeftUpperLeg;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperLeg];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftLowerLeg];
 						break;
 					case BODYPART_LEFT_LOWER_LEG:
-						humanoid_bone = HumanoidComponent::HumanoidBone::LeftLowerLeg;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftLowerLeg];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftFoot];
+						humanoid_bone = HumanoidComponent::HumanoidBone_LeftLowerLeg;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftLowerLeg];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftFoot];
 						break;
 					case BODYPART_RIGHT_UPPER_LEG:
-						humanoid_bone = HumanoidComponent::HumanoidBone::RightUpperLeg;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightUpperLeg];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightLowerLeg];
+						humanoid_bone = HumanoidComponent::HumanoidBone_RightUpperLeg;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightUpperLeg];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightLowerLeg];
 						break;
 					case BODYPART_RIGHT_LOWER_LEG:
-						humanoid_bone = HumanoidComponent::HumanoidBone::RightLowerLeg;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightLowerLeg];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightFoot];
+						humanoid_bone = HumanoidComponent::HumanoidBone_RightLowerLeg;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightLowerLeg];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightFoot];
 						break;
 					case BODYPART_LEFT_UPPER_ARM:
-						humanoid_bone = HumanoidComponent::HumanoidBone::LeftUpperArm;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperArm];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftLowerArm];
+						humanoid_bone = HumanoidComponent::HumanoidBone_LeftUpperArm;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperArm];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftLowerArm];
 						break;
 					case BODYPART_LEFT_LOWER_ARM:
-						humanoid_bone = HumanoidComponent::HumanoidBone::LeftLowerArm;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftLowerArm];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftHand];
+						humanoid_bone = HumanoidComponent::HumanoidBone_LeftLowerArm;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftLowerArm];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftHand];
 						break;
 					case BODYPART_RIGHT_UPPER_ARM:
-						humanoid_bone = HumanoidComponent::HumanoidBone::RightUpperArm;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightUpperArm];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightLowerArm];
+						humanoid_bone = HumanoidComponent::HumanoidBone_RightUpperArm;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightUpperArm];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightLowerArm];
 						break;
 					case BODYPART_RIGHT_LOWER_ARM:
-						humanoid_bone = HumanoidComponent::HumanoidBone::RightLowerArm;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightLowerArm];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightHand];
+						humanoid_bone = HumanoidComponent::HumanoidBone_RightLowerArm;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightLowerArm];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightHand];
 						break;
 					case BODYPART_LEFT_FOOT:
-						humanoid_bone = HumanoidComponent::HumanoidBone::LeftFoot;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftFoot];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftToes];
+						humanoid_bone = HumanoidComponent::HumanoidBone_LeftFoot;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftFoot];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftToes];
 						break;
 					case BODYPART_RIGHT_FOOT:
-						humanoid_bone = HumanoidComponent::HumanoidBone::RightFoot;
-						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightFoot];
-						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightToes];
+						humanoid_bone = HumanoidComponent::HumanoidBone_RightFoot;
+						entityA = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightFoot];
+						entityB = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightToes];
 						break;
 					}
 					if (entityA == INVALID_ENTITY)
@@ -2015,7 +2015,7 @@ namespace Protean::Physics
 			}
 			else
 			{
-				Protean::Backlog::post("CreateRigidBodyShape failed: convex hull physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("CreateRigidBodyShape failed: convex hull physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel_Error);
 				return;
 			}
 			break;
@@ -2049,7 +2049,7 @@ namespace Protean::Physics
 			}
 			else
 			{
-				Protean::Backlog::post("CreateRigidBodyShape failed: triangle mesh physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("CreateRigidBodyShape failed: triangle mesh physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel_Error);
 				return;
 			}
 			break;
@@ -2086,7 +2086,7 @@ namespace Protean::Physics
 			}
 			else
 			{
-				Protean::Backlog::post("CreateRigidBodyShape failed: height field physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("CreateRigidBodyShape failed: height field physics requested, but no MeshComponent provided!", Protean::Backlog::LogLevel_Error);
 				return;
 			}
 			break;
@@ -2286,18 +2286,18 @@ namespace Protean::Physics
 				if (physicscomponent.IsRefreshParametersNeeded())
 				{
 					physicscomponent.SetRefreshParametersNeeded(false);
-					if (physicscomponent.type == PhysicsConstraintComponent::Type::Fixed)
+					if (physicscomponent.type == PhysicsConstraintComponent::Type_Fixed)
 					{
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::Point)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_Point)
 					{
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::Distance)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_Distance)
 					{
 						DistanceConstraint* ptr = ((DistanceConstraint*)constraint.constraint.GetPtr());
 						ptr->SetDistance(physicscomponent.distance_constraint.min_distance, physicscomponent.distance_constraint.max_distance);
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::Hinge)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_Hinge)
 					{
 						HingeConstraint* ptr = ((HingeConstraint*)constraint.constraint.GetPtr());
 						ptr->SetLimits(physicscomponent.hinge_constraint.min_angle, physicscomponent.hinge_constraint.max_angle);
@@ -2321,18 +2321,18 @@ namespace Protean::Physics
 							ptr->SetMotorState(EMotorState::Off);
 						}
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::Cone)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_Cone)
 					{
 						ConeConstraint* ptr = ((ConeConstraint*)constraint.constraint.GetPtr());
 						ptr->SetHalfConeAngle(physicscomponent.cone_constraint.half_cone_angle);
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::SixDOF)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_SixDOF)
 					{
 						SixDOFConstraint* ptr = ((SixDOFConstraint*)constraint.constraint.GetPtr());
 						ptr->SetTranslationLimits(cast(physicscomponent.six_dof.minTranslationAxes), cast(physicscomponent.six_dof.maxTranslationAxes));
 						ptr->SetRotationLimits(cast(physicscomponent.six_dof.minRotationAxes), cast(physicscomponent.six_dof.maxRotationAxes));
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::SwingTwist)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_SwingTwist)
 					{
 						SwingTwistConstraint* ptr = ((SwingTwistConstraint*)constraint.constraint.GetPtr());
 						ptr->SetNormalHalfConeAngle(physicscomponent.swing_twist.normal_half_cone_angle);
@@ -2340,7 +2340,7 @@ namespace Protean::Physics
 						ptr->SetTwistMinAngle(physicscomponent.swing_twist.min_twist_angle);
 						ptr->SetTwistMaxAngle(physicscomponent.swing_twist.max_twist_angle);
 					}
-					else if (physicscomponent.type == PhysicsConstraintComponent::Type::Slider)
+					else if (physicscomponent.type == PhysicsConstraintComponent::Type_Slider)
 					{
 						SliderConstraint* ptr = ((SliderConstraint*)constraint.constraint.GetPtr());
 						ptr->SetLimits(physicscomponent.slider_constraint.min_limit, physicscomponent.slider_constraint.max_limit);
@@ -2888,11 +2888,11 @@ namespace Protean::Physics
 								physicscomponent.vehicle.wheel_entity_front_left,
 								physicscomponent.vehicle.wheel_entity_rear_left,
 							};
-							const uint32_t count = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car ? arraysize(car_wheel_entities) : arraysize(motor_wheel_entities);
+							const uint32_t count = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car ? arraysize(car_wheel_entities) : arraysize(motor_wheel_entities);
 
 							for (uint32_t i = 0; i < count; ++i)
 							{
-								Entity wheel_entity = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car ? car_wheel_entities[i] : motor_wheel_entities[i];
+								Entity wheel_entity = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car ? car_wheel_entities[i] : motor_wheel_entities[i];
 								if (wheel_entity == INVALID_ENTITY)
 									continue;
 
@@ -3366,26 +3366,26 @@ namespace Protean::Physics
 	CharacterGroundStates GetCharacterGroundState(Protean::RigidBodyPhysicsComponent& physicscomponent)
 	{
 		if (physicscomponent.physicsobject == nullptr)
-			return CharacterGroundStates::NotSupported;
+			return CharacterGroundStates_NotSupported;
 		RigidBody& physicsobject = GetRigidBody(physicscomponent);
 		if (physicsobject.character != nullptr)
 		{
 			switch (physicsobject.character->GetGroundState())
 			{
 			case CharacterBase::EGroundState::OnGround:
-				return CharacterGroundStates::OnGround;
+				return CharacterGroundStates_OnGround;
 			case CharacterBase::EGroundState::OnSteepGround:
-				return CharacterGroundStates::OnSteepGround;
+				return CharacterGroundStates_OnSteepGround;
 			case CharacterBase::EGroundState::NotSupported:
-				return CharacterGroundStates::NotSupported;
+				return CharacterGroundStates_NotSupported;
 			case CharacterBase::EGroundState::InAir:
-				return CharacterGroundStates::InAir;
+				return CharacterGroundStates_InAir;
 			default:
 				assert(0);
 				break;
 			}
 		}
-		return CharacterGroundStates::NotSupported;
+		return CharacterGroundStates_NotSupported;
 	}
 	bool ChangeCharacterShape(RigidBodyPhysicsComponent& physicscomponent, const RigidBodyPhysicsComponent::CapsuleParams& capsule)
 	{
@@ -3516,38 +3516,38 @@ namespace Protean::Physics
 		Ragdoll::BODYPART bodypart = Ragdoll::BODYPART_COUNT;
 		switch (bone)
 		{
-		case HumanoidComponent::HumanoidBone::Hips:
+		case HumanoidComponent::HumanoidBone_Hips:
 			bodypart = Ragdoll::BODYPART_PELVIS;
 			break;
-		case HumanoidComponent::HumanoidBone::Spine:
+		case HumanoidComponent::HumanoidBone_Spine:
 			bodypart = Ragdoll::BODYPART_SPINE;
 			break;
-		case HumanoidComponent::HumanoidBone::Head:
-		case HumanoidComponent::HumanoidBone::Neck:
+		case HumanoidComponent::HumanoidBone_Head:
+		case HumanoidComponent::HumanoidBone_Neck:
 			bodypart = Ragdoll::BODYPART_HEAD;
 			break;
-		case HumanoidComponent::HumanoidBone::RightUpperArm:
+		case HumanoidComponent::HumanoidBone_RightUpperArm:
 			bodypart = Ragdoll::BODYPART_RIGHT_UPPER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::RightLowerArm:
+		case HumanoidComponent::HumanoidBone_RightLowerArm:
 			bodypart = Ragdoll::BODYPART_RIGHT_LOWER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftUpperArm:
+		case HumanoidComponent::HumanoidBone_LeftUpperArm:
 			bodypart = Ragdoll::BODYPART_LEFT_UPPER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftLowerArm:
+		case HumanoidComponent::HumanoidBone_LeftLowerArm:
 			bodypart = Ragdoll::BODYPART_LEFT_LOWER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::RightUpperLeg:
+		case HumanoidComponent::HumanoidBone_RightUpperLeg:
 			bodypart = Ragdoll::BODYPART_RIGHT_UPPER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::RightLowerLeg:
+		case HumanoidComponent::HumanoidBone_RightLowerLeg:
 			bodypart = Ragdoll::BODYPART_RIGHT_LOWER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftUpperLeg:
+		case HumanoidComponent::HumanoidBone_LeftUpperLeg:
 			bodypart = Ragdoll::BODYPART_LEFT_UPPER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftLowerLeg:
+		case HumanoidComponent::HumanoidBone_LeftLowerLeg:
 			bodypart = Ragdoll::BODYPART_LEFT_LOWER_LEG;
 			break;
 		default:
@@ -3599,38 +3599,38 @@ namespace Protean::Physics
 		Ragdoll::BODYPART bodypart = Ragdoll::BODYPART_COUNT;
 		switch (bone)
 		{
-		case HumanoidComponent::HumanoidBone::Hips:
+		case HumanoidComponent::HumanoidBone_Hips:
 			bodypart = Ragdoll::BODYPART_PELVIS;
 			break;
-		case HumanoidComponent::HumanoidBone::Spine:
+		case HumanoidComponent::HumanoidBone_Spine:
 			bodypart = Ragdoll::BODYPART_SPINE;
 			break;
-		case HumanoidComponent::HumanoidBone::Head:
-		case HumanoidComponent::HumanoidBone::Neck:
+		case HumanoidComponent::HumanoidBone_Head:
+		case HumanoidComponent::HumanoidBone_Neck:
 			bodypart = Ragdoll::BODYPART_HEAD;
 			break;
-		case HumanoidComponent::HumanoidBone::RightUpperArm:
+		case HumanoidComponent::HumanoidBone_RightUpperArm:
 			bodypart = Ragdoll::BODYPART_RIGHT_UPPER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::RightLowerArm:
+		case HumanoidComponent::HumanoidBone_RightLowerArm:
 			bodypart = Ragdoll::BODYPART_RIGHT_LOWER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftUpperArm:
+		case HumanoidComponent::HumanoidBone_LeftUpperArm:
 			bodypart = Ragdoll::BODYPART_LEFT_UPPER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftLowerArm:
+		case HumanoidComponent::HumanoidBone_LeftLowerArm:
 			bodypart = Ragdoll::BODYPART_LEFT_LOWER_ARM;
 			break;
-		case HumanoidComponent::HumanoidBone::RightUpperLeg:
+		case HumanoidComponent::HumanoidBone_RightUpperLeg:
 			bodypart = Ragdoll::BODYPART_RIGHT_UPPER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::RightLowerLeg:
+		case HumanoidComponent::HumanoidBone_RightLowerLeg:
 			bodypart = Ragdoll::BODYPART_RIGHT_LOWER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftUpperLeg:
+		case HumanoidComponent::HumanoidBone_LeftUpperLeg:
 			bodypart = Ragdoll::BODYPART_LEFT_UPPER_LEG;
 			break;
-		case HumanoidComponent::HumanoidBone::LeftLowerLeg:
+		case HumanoidComponent::HumanoidBone_LeftLowerLeg:
 			bodypart = Ragdoll::BODYPART_LEFT_LOWER_LEG;
 			break;
 		default:
@@ -3677,12 +3677,12 @@ namespace Protean::Physics
 		if (physicsobject.vehicle_constraint == nullptr)
 			return;
 
-		if (physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car)
+		if (physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car)
 		{
 			WheeledVehicleController* controller = static_cast<WheeledVehicleController*>(physicsobject.vehicle_constraint->GetController());
 			controller->SetDriverInput(forward, -right, brake, handbrake);
 		}
-		else if (physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle)
+		else if (physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Motorcycle)
 		{
 			MotorcycleController* controller = static_cast<MotorcycleController*>(physicsobject.vehicle_constraint->GetController());
 			controller->SetDriverInput(forward, -right, brake, handbrake);
@@ -3734,11 +3734,11 @@ namespace Protean::Physics
 				physicscomponent.vehicle.wheel_entity_front_left,
 				physicscomponent.vehicle.wheel_entity_rear_left,
 			};
-			const uint32_t count = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car ? arraysize(car_wheel_entities) : arraysize(motor_wheel_entities);
+			const uint32_t count = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car ? arraysize(car_wheel_entities) : arraysize(motor_wheel_entities);
 
 			for (uint32_t i = 0; i < count; ++i)
 			{
-				Entity wheel_entity = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car ? car_wheel_entities[i] : motor_wheel_entities[i];
+				Entity wheel_entity = physicscomponent.vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car ? car_wheel_entities[i] : motor_wheel_entities[i];
 				if (wheel_entity == INVALID_ENTITY)
 					continue;
 
@@ -3795,7 +3795,7 @@ namespace Protean::Physics
 	)
 	{
 		RigidBody& physicsobject = GetRigidBody(physicscomponent);
-		if (physicsobject.character != nullptr && state == ActivationState::Active)
+		if (physicsobject.character != nullptr && state == ActivationState_Active)
 		{
 			physicsobject.character->Activate();
 			return;
@@ -3804,10 +3804,10 @@ namespace Protean::Physics
 		BodyInterface& body_interface = physics_scene.physics_system.GetBodyInterfaceNoLock();
 		switch (state)
 		{
-		case Protean::Physics::ActivationState::Active:
+		case Protean::Physics::ActivationState_Active:
 			body_interface.ActivateBody(physicsobject.bodyID);
 			break;
-		case Protean::Physics::ActivationState::Inactive:
+		case Protean::Physics::ActivationState_Inactive:
 			body_interface.DeactivateBody(physicsobject.bodyID);
 			break;
 		default:
@@ -3824,10 +3824,10 @@ namespace Protean::Physics
 		BodyInterface& body_interface = physics_scene.physics_system.GetBodyInterfaceNoLock();
 		switch (state)
 		{
-		case Protean::Physics::ActivationState::Active:
+		case Protean::Physics::ActivationState_Active:
 			body_interface.ActivateBody(physicsobject.bodyID);
 			break;
-		case Protean::Physics::ActivationState::Inactive:
+		case Protean::Physics::ActivationState_Inactive:
 			body_interface.DeactivateBody(physicsobject.bodyID);
 			break;
 		default:
@@ -4167,14 +4167,14 @@ namespace Protean::Physics
 				internal_state->bodyA = body_interface.CreateBody(BodyCreationSettings(new SphereShape(0.01f), pos, Quat::sIdentity(), EMotionType::Kinematic, Layers::GHOST));
 				body_interface.AddBody(internal_state->bodyA->GetID(), EActivation::Activate);
 
-				if (constraint_type == ConstraintType::Fixed)
+				if (constraint_type == ConstraintType_Fixed)
 				{
 					FixedConstraintSettings settings;
 					settings.SetEmbedded();
 					settings.mAutoDetectPoint = true;
 					internal_state->constraint = settings.Create(*internal_state->bodyA, *internal_state->bodyB);
 				}
-				else if (constraint_type == ConstraintType::Point)
+				else if (constraint_type == ConstraintType_Point)
 				{
 					PointConstraintSettings settings;
 					settings.SetEmbedded();

@@ -101,9 +101,9 @@ namespace Protean::ShaderCompiler
 			}
 			else
 			{
-				Protean::Backlog::post("Protean::ShaderCompiler: could not load library " + library, Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("Protean::ShaderCompiler: could not load library " + library, Protean::Backlog::LogLevel_Error);
 #ifdef PLATFORM_LINUX
-				Protean::Backlog::post(dlerror(), Protean::Backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
+				Protean::Backlog::post(dlerror(), Protean::Backlog::LogLevel_Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
 #endif // PLATFORM_LINUX
 			}
 
@@ -122,7 +122,7 @@ namespace Protean::ShaderCompiler
 
 	void Compile_DXCompiler(const CompilerInput& input, CompilerOutput& output)
 	{
-		InternalState_DXC& compiler_internal = input.format == ShaderFormat::HLSL6_XS ? dxc_compiler_xs() : dxc_compiler();
+		InternalState_DXC& compiler_internal = input.format == ShaderFormat_HLSL6_XS ? dxc_compiler_xs() : dxc_compiler();
 		if (compiler_internal.DxcCreateInstance == nullptr)
 		{
 			return;
@@ -163,12 +163,12 @@ namespace Protean::ShaderCompiler
 			L"-Wno-conversion",
 		};
 
-		if (has_flag(input.flags, Flags::DISABLE_OPTIMIZATION))
+		if (has_flag(input.flags, Flags_DISABLE_OPTIMIZATION))
 		{
 			args.push_back(L"-Od");
 		}
 		
-		if (has_flag(input.flags, Flags::KEEP_DEBUG_INFORMATION))
+		if (has_flag(input.flags, Flags_KEEP_DEBUG_INFORMATION))
 		{
 			args.push_back(L"-Zi");
 			args.push_back(L"-Qembed_debug");
@@ -176,15 +176,15 @@ namespace Protean::ShaderCompiler
 
 		switch (input.format)
 		{
-		case ShaderFormat::HLSL6:
-		case ShaderFormat::HLSL6_XS:
+		case ShaderFormat_HLSL6:
+		case ShaderFormat_HLSL6_XS:
 			args.push_back(L"-rootsig-define"); args.push_back(L"WICKED_ENGINE_DEFAULT_ROOTSIGNATURE");
-			if (has_flag(input.flags, Flags::STRIP_REFLECTION))
+			if (has_flag(input.flags, Flags_STRIP_REFLECTION))
 			{
 				args.push_back(L"-Qstrip_reflect"); // only valid in HLSL6 compiler
 			}
 			break;
-		case ShaderFormat::SPIRV:
+		case ShaderFormat_SPIRV:
 			args.push_back(L"-spirv");
 			args.push_back(L"-fspv-target-env=vulkan1.3");
 			args.push_back(L"-fvk-use-dx-layout");
@@ -210,7 +210,7 @@ namespace Protean::ShaderCompiler
 			args.push_back(L"-Vd"); // compiler issue
 
 			break;
-		case ShaderFormat::METAL:
+		case ShaderFormat_METAL:
 			args.push_back(L"-D"); args.push_back(L"__metal__");
 			break;
 		default:
@@ -221,234 +221,234 @@ namespace Protean::ShaderCompiler
 		ShaderModel minshadermodel = input.minshadermodel;
 
 		// global minshadermodel override:
-		//minshadermodel = std::max(minshadermodel, ShaderModel::SM_6_2);
+		//minshadermodel = std::max(minshadermodel, ShaderModel_SM_6_2);
 
-		if (input.format == ShaderFormat::HLSL6_XS)
+		if (input.format == ShaderFormat_HLSL6_XS)
 		{
-			minshadermodel = ShaderModel::SM_6_2;
+			minshadermodel = ShaderModel_SM_6_2;
 			args.push_back(L"-enable-16bit-types");
 		}
 		
-		if (input.format == ShaderFormat::METAL)
+		if (input.format == ShaderFormat_METAL)
 		{
-			minshadermodel = std::max(minshadermodel, ShaderModel::SM_6_6);
+			minshadermodel = std::max(minshadermodel, ShaderModel_SM_6_6);
 		}
 
 		args.push_back(L"-T");
 		switch (input.stage)
 		{
-		case ShaderStage::MS:
+		case ShaderStage_MS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"ms_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"ms_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"ms_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::AS:
+		case ShaderStage_AS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"as_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"as_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"as_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::VS:
+		case ShaderStage_VS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"vs_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"vs_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"vs_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"vs_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"vs_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"vs_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"vs_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"vs_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::HS:
+		case ShaderStage_HS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"hs_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"hs_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"hs_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"hs_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"hs_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"hs_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"hs_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"hs_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::DS:
+		case ShaderStage_DS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"ds_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"ds_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"ds_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"ds_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"ds_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"ds_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"ds_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"ds_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::GS:
+		case ShaderStage_GS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"gs_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"gs_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"gs_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"gs_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"gs_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"gs_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"gs_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"gs_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::PS:
+		case ShaderStage_PS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"ps_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"ps_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"ps_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"ps_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"ps_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"ps_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"ps_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"ps_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::CS:
+		case ShaderStage_CS:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"cs_6_0");
 				break;
-			case ShaderModel::SM_6_1:
+			case ShaderModel_SM_6_1:
 				args.push_back(L"cs_6_1");
 				break;
-			case ShaderModel::SM_6_2:
+			case ShaderModel_SM_6_2:
 				args.push_back(L"cs_6_2");
 				break;
-			case ShaderModel::SM_6_3:
+			case ShaderModel_SM_6_3:
 				args.push_back(L"cs_6_3");
 				break;
-			case ShaderModel::SM_6_4:
+			case ShaderModel_SM_6_4:
 				args.push_back(L"cs_6_4");
 				break;
-			case ShaderModel::SM_6_5:
+			case ShaderModel_SM_6_5:
 				args.push_back(L"cs_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"cs_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"cs_6_7");
 				break;
 			}
 			break;
-		case ShaderStage::LIB:
+		case ShaderStage_LIB:
 			switch (minshadermodel)
 			{
 			default:
 				args.push_back(L"lib_6_5");
 				break;
-			case ShaderModel::SM_6_6:
+			case ShaderModel_SM_6_6:
 				args.push_back(L"lib_6_6");
 				break;
-			case ShaderModel::SM_6_7:
+			case ShaderModel_SM_6_7:
 				args.push_back(L"lib_6_7");
 				break;
 			}
@@ -471,7 +471,7 @@ namespace Protean::ShaderCompiler
 		}
 
 #ifdef SHADERCOMPILER_XBOX_INCLUDED
-		if (input.format == ShaderFormat::HLSL6_XS)
+		if (input.format == ShaderFormat_HLSL6_XS)
 		{
 			Protean::ShaderCompiler::Xbox::AddArguments(input, args);
 		}
@@ -606,7 +606,7 @@ namespace Protean::ShaderCompiler
 			output.internal_state = internal_state;
 			
 #ifdef SHADERCOMPILER_APPLE_INCLUDED
-			if (input.format == ShaderFormat::METAL)
+			if (input.format == ShaderFormat_METAL)
 			{
 				static HMODULE irconverter = wiLoadLibrary("libmetalirconverter.dylib");
 				assert(irconverter); // You must install the metal shader converter
@@ -734,28 +734,28 @@ namespace Protean::ShaderCompiler
 					IRMetalLibBinary* pMetallib = IRMetalLibBinaryCreate();
 					IRShaderStage irstage = {};
 					switch (input.stage) {
-						case ShaderStage::VS:
+						case ShaderStage_VS:
 							irstage = IRShaderStageVertex;
 							break;
-						case ShaderStage::PS:
+						case ShaderStage_PS:
 							irstage = IRShaderStageFragment;
 							break;
-						case ShaderStage::GS:
+						case ShaderStage_GS:
 							irstage = IRShaderStageGeometry;
 							break;
-						case ShaderStage::HS:
+						case ShaderStage_HS:
 							irstage = IRShaderStageHull;
 							break;
-						case ShaderStage::DS:
+						case ShaderStage_DS:
 							irstage = IRShaderStageDomain;
 							break;
-						case ShaderStage::MS:
+						case ShaderStage_MS:
 							irstage = IRShaderStageMesh;
 							break;
-						case ShaderStage::AS:
+						case ShaderStage_AS:
 							irstage = IRShaderStageAmplification;
 							break;
-						case ShaderStage::CS:
+						case ShaderStage_CS:
 							irstage = IRShaderStageCompute;
 							break;
 						default:
@@ -767,11 +767,11 @@ namespace Protean::ShaderCompiler
 					auto internal_state = Protean::Allocator::make_shared<Protean::vector<uint8_t>>(metallibSize); // lifetime storage of pointer
 					IRMetalLibGetBytecode(pMetallib, internal_state->data());
 					if (
-						input.stage == ShaderStage::VS ||
-						input.stage == ShaderStage::GS ||
-						input.stage == ShaderStage::CS ||
-						input.stage == ShaderStage::MS ||
-						input.stage == ShaderStage::AS
+						input.stage == ShaderStage_VS ||
+						input.stage == ShaderStage_GS ||
+						input.stage == ShaderStage_CS ||
+						input.stage == ShaderStage_MS ||
+						input.stage == ShaderStage_AS
 						)
 					{
 						LINK_IR(IRShaderReflectionCreate)
@@ -788,7 +788,7 @@ namespace Protean::ShaderCompiler
 						bool success = IRObjectGetReflection(pOutIR, irstage, reflection);
 						assert(success);
 						Protean::Graphics::GraphicsDevice_Metal::ShaderAdditionalData reflection_append = {};
-						if (input.stage == ShaderStage::VS)
+						if (input.stage == ShaderStage_VS)
 						{
 							IRVersionedVSInfo vs_info = {};
 							success = IRShaderReflectionCopyVertexInfo(reflection, IRReflectionVersion_1_0, &vs_info);
@@ -796,14 +796,14 @@ namespace Protean::ShaderCompiler
 							reflection_append.needs_draw_params = vs_info.info_1_0.needs_draw_params ? 1 : 0;
 							reflection_append.vertex_output_size_in_bytes = vs_info.info_1_0.vertex_output_size_in_bytes;
 						}
-						if (input.stage == ShaderStage::GS)
+						if (input.stage == ShaderStage_GS)
 						{
 							IRVersionedGSInfo gs_info = {};
 							success = IRShaderReflectionCopyGeometryInfo(reflection, IRReflectionVersion_1_0, &gs_info);
 							assert(success);
 							reflection_append.max_input_primitives_per_mesh_threadgroup = gs_info.info_1_0.max_input_primitives_per_mesh_threadgroup;
 						}
-						if (input.stage == ShaderStage::CS)
+						if (input.stage == ShaderStage_CS)
 						{
 							IRVersionedCSInfo cs_info = {};
 							success = IRShaderReflectionCopyComputeInfo(reflection, IRReflectionVersion_1_0, &cs_info);
@@ -812,7 +812,7 @@ namespace Protean::ShaderCompiler
 							reflection_append.numthreads.height = cs_info.info_1_0.tg_size[1];
 							reflection_append.numthreads.depth = cs_info.info_1_0.tg_size[2];
 						}
-						else if (input.stage == ShaderStage::MS)
+						else if (input.stage == ShaderStage_MS)
 						{
 							IRVersionedMSInfo ms_info = {};
 							success = IRShaderReflectionCopyMeshInfo(reflection, IRReflectionVersion_1_0, &ms_info);
@@ -821,7 +821,7 @@ namespace Protean::ShaderCompiler
 							reflection_append.numthreads.height = ms_info.info_1_0.num_threads[1];
 							reflection_append.numthreads.depth = ms_info.info_1_0.num_threads[2];
 						}
-						else if (input.stage == ShaderStage::AS)
+						else if (input.stage == ShaderStage_AS)
 						{
 							IRVersionedASInfo as_info = {};
 							success = IRShaderReflectionCopyAmplificationInfo(reflection, IRReflectionVersion_1_0, &as_info);
@@ -848,7 +848,7 @@ namespace Protean::ShaderCompiler
 			
 		}
 
-		if (input.format == ShaderFormat::HLSL6)
+		if (input.format == ShaderFormat_HLSL6)
 		{
 			ComPtr<IDxcBlob> pHash = nullptr;
 			hr = pResults->GetOutput(DXC_OUT_SHADER_HASH, IID_PPV_ARGS(&pHash), nullptr);
@@ -902,7 +902,7 @@ namespace Protean::ShaderCompiler
 			return;
 		}
 
-		if (input.minshadermodel > ShaderModel::SM_5_0)
+		if (input.minshadermodel > ShaderModel_SM_5_0)
 		{
 			output.error_message = "SHADERFORMAT_HLSL5 cannot support specified minshadermodel!";
 			return;
@@ -924,27 +924,27 @@ namespace Protean::ShaderCompiler
 		switch (input.stage)
 		{
 		default:
-		case ShaderStage::MS:
-		case ShaderStage::AS:
-		case ShaderStage::LIB:
+		case ShaderStage_MS:
+		case ShaderStage_AS:
+		case ShaderStage_LIB:
 			// not applicable
 			return;
-		case ShaderStage::VS:
+		case ShaderStage_VS:
 			target = "vs_5_0";
 			break;
-		case ShaderStage::HS:
+		case ShaderStage_HS:
 			target = "hs_5_0";
 			break;
-		case ShaderStage::DS:
+		case ShaderStage_DS:
 			target = "ds_5_0";
 			break;
-		case ShaderStage::GS:
+		case ShaderStage_GS:
 			target = "gs_5_0";
 			break;
-		case ShaderStage::PS:
+		case ShaderStage_PS:
 			target = "ps_5_0";
 			break;
-		case ShaderStage::CS:
+		case ShaderStage_CS:
 			target = "cs_5_0";
 			break;
 		}
@@ -984,7 +984,7 @@ namespace Protean::ShaderCompiler
 
 		// https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/d3dcompile-constants
 		UINT Flags1 = 0;
-		if (has_flag(input.flags, Flags::DISABLE_OPTIMIZATION))
+		if (has_flag(input.flags, Flags_DISABLE_OPTIMIZATION))
 		{
 			Flags1 |= D3DCOMPILE_SKIP_OPTIMIZATION;
 		}
@@ -1036,22 +1036,22 @@ namespace Protean::ShaderCompiler
 			break;
 
 #ifdef SHADERCOMPILER_ENABLED_DXCOMPILER
-		case ShaderFormat::HLSL6:
-		case ShaderFormat::SPIRV:
-		case ShaderFormat::HLSL6_XS:
-		case ShaderFormat::METAL:
+		case ShaderFormat_HLSL6:
+		case ShaderFormat_SPIRV:
+		case ShaderFormat_HLSL6_XS:
+		case ShaderFormat_METAL:
 			Compile_DXCompiler(input, output);
 			break;
 #endif // SHADERCOMPILER_ENABLED_DXCOMPILER
 
 #ifdef SHADERCOMPILER_ENABLED_D3DCOMPILER
-		case ShaderFormat::HLSL5:
+		case ShaderFormat_HLSL5:
 			Compile_D3DCompiler(input, output);
 			break;
 #endif // SHADERCOMPILER_ENABLED_D3DCOMPILER
 
 #ifdef SHADERCOMPILER_PS5_INCLUDED
-		case ShaderFormat::PS5:
+		case ShaderFormat_PS5:
 			Protean::ShaderCompiler::ps5::Compile(input, output);
 			break;
 #endif // SHADERCOMPILER_PS5_INCLUDED

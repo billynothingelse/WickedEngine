@@ -6,14 +6,14 @@
 using namespace Protean;
 ModifierWindow::ModifierWindow(const std::string& name)
 {
-	Protean::Gui::Window::Create(name, Protean::Gui::Window::WindowControls::CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(name, Protean::Gui::Window::WindowControls_CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(200, 100));
 
 	blendCombo.Create("Blend: ");
 	blendCombo.SetSize(XMFLOAT2(100, 20));
-	blendCombo.AddItem("Normal", (uint64_t)Protean::Terrain::Modifier::BlendMode::Normal);
-	blendCombo.AddItem("Additive", (uint64_t)Protean::Terrain::Modifier::BlendMode::Additive);
-	blendCombo.AddItem("Multiply", (uint64_t)Protean::Terrain::Modifier::BlendMode::Multiply);
+	blendCombo.AddItem("Normal", (uint64_t)Protean::Terrain::Modifier::BlendMode_Normal);
+	blendCombo.AddItem("Additive", (uint64_t)Protean::Terrain::Modifier::BlendMode_Additive);
+	blendCombo.AddItem("Multiply", (uint64_t)Protean::Terrain::Modifier::BlendMode_Multiply);
 	blendCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		modifier->blend = (Protean::Terrain::Modifier::BlendMode)args.userdata;
 		generation_callback();
@@ -193,7 +193,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 				Protean::vector<uint8_t> filedata;
 				if (!Protean::Helper::FileRead(fileName, filedata))
 				{
-					Protean::Backlog::post("Heightmap loading failed, file couldn't be found: " + fileName, Protean::Backlog::LogLevel::Error);
+					Protean::Backlog::post("Heightmap loading failed, file couldn't be found: " + fileName, Protean::Backlog::LogLevel_Error);
 				}
 
 				if (stbi_is_16_bit_from_memory((const stbi_uc*)filedata.data(), (int)filedata.size()))
@@ -208,7 +208,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						Protean::Backlog::post("Heightmap loading unknown failure for 16-bit image: " + fileName, Protean::Backlog::LogLevel::Error);
+						Protean::Backlog::post("Heightmap loading unknown failure for 16-bit image: " + fileName, Protean::Backlog::LogLevel_Error);
 					}
 				}
 				else
@@ -222,7 +222,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						Protean::Backlog::post("Heightmap loading failure for 8-bit image: " + fileName, Protean::Backlog::LogLevel::Error);
+						Protean::Backlog::post("Heightmap loading failure for 8-bit image: " + fileName, Protean::Backlog::LogLevel_Error);
 					}
 				}
 			});
@@ -275,8 +275,8 @@ PropWindow::PropWindow(Protean::Terrain::Terrain* terrain, Protean::Terrain::Pro
 			archive,
 			serializer,
 			INVALID_ENTITY,
-			Protean::Scene::EntitySerializeFlags::RECURSIVE |
-			Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags_RECURSIVE |
+			Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 
 		const NameComponent* name = scene->names.GetComponent(entity);
@@ -289,7 +289,7 @@ PropWindow::PropWindow(Protean::Terrain::Terrain* terrain, Protean::Terrain::Pro
 		scene->Entity_Remove(entity);
 	}
 
-	Protean::Gui::Window::Create(windowName, Protean::Gui::Window::WindowControls::CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(windowName, Protean::Gui::Window::WindowControls_CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 
 	constexpr auto elementSize = XMFLOAT2(100, 20);
 
@@ -327,7 +327,7 @@ PropWindow::PropWindow(Protean::Terrain::Terrain* terrain, Protean::Terrain::Pro
 			archive,
 			serializer,
 			ent,
-			Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags_RECURSIVE | Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 		archive.WriteData(prop->data);
 		prop->source_entity = ent;
@@ -480,7 +480,7 @@ void PropWindow::ResizeLayout()
 PropsWindow::PropsWindow(EditorComponent* editor)
 	:editor(editor)
 {
-	Protean::Gui::Window::Create("Props", Protean::Gui::Window::WindowControls::COLLAPSE);
+	Protean::Gui::Window::Create("Props", Protean::Gui::Window::WindowControls_COLLAPSE);
 
 	SetCollapsed(true);
 
@@ -607,7 +607,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	RemoveWidgets();
 	ClearTransform();
 
-	Protean::Gui::Window::Create(ICON_TERRAIN " Terrain", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_TERRAIN " Terrain", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 1000));
 
 	closeButton.SetTooltip("Delete Terrain.");
@@ -820,8 +820,8 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		terrain->modifiers_to_remove.clear();
 		PerlinModifierWindow* perlin = new PerlinModifierWindow;
 		VoronoiModifierWindow* voronoi = new VoronoiModifierWindow;
-		perlin->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode::Additive);
-		voronoi->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode::Multiply);
+		perlin->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode_Additive);
+		voronoi->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode_Multiply);
 
 		switch (args.userdata)
 		{
@@ -1188,7 +1188,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 				Protean::Graphics::TextureDesc desc;
 				desc.width = uint32_t(width);
 				desc.height = uint32_t(height);
-				desc.format = Protean::Graphics::Format::R16_UNORM;
+				desc.format = Protean::Graphics::Format_R16_UNORM;
 				bool success = Protean::Helper::saveTextureToFile(data, desc, filename_replaced);
 				assert(success);
 
@@ -1270,7 +1270,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 				Protean::Graphics::TextureDesc desc;
 				desc.width = uint32_t(width);
 				desc.height = uint32_t(height);
-				desc.format = Protean::Graphics::Format::R8G8B8A8_UNORM;
+				desc.format = Protean::Graphics::Format_R8G8B8A8_UNORM;
 				bool success = Protean::Helper::saveTextureToFile(data, desc, filename_replaced);
 				assert(success);
 
@@ -1332,21 +1332,21 @@ void TerrainWindow::SetEntity(Entity entity)
 		switch (x->type)
 		{
 		default:
-		case Protean::Terrain::Modifier::Type::Perlin:
+		case Protean::Terrain::Modifier::Type_Perlin:
 		{
 			PerlinModifierWindow* modifier = new PerlinModifierWindow;
 			modifier->From((Protean::Terrain::PerlinModifier*)x.get());
 			AddModifier(modifier);
 		}
 		break;
-		case Protean::Terrain::Modifier::Type::Voronoi:
+		case Protean::Terrain::Modifier::Type_Voronoi:
 		{
 			VoronoiModifierWindow* modifier = new VoronoiModifierWindow;
 			modifier->From((Protean::Terrain::VoronoiModifier*)x.get());
 			AddModifier(modifier);
 		}
 		break;
-		case Protean::Terrain::Modifier::Type::Heightmap:
+		case Protean::Terrain::Modifier::Type_Heightmap:
 		{
 			HeightmapModifierWindow* modifier = new HeightmapModifierWindow;
 			modifier->From((Protean::Terrain::HeightmapModifier*)x.get());
@@ -1703,7 +1703,7 @@ void TerrainWindow::SetupAssets()
 			archive,
 			seri,
 			entity,
-			Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags_RECURSIVE | Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 		archive.WriteData(prop.data);
 		scene->Entity_Remove(entity); // The entities will be placed by terrain generator, we don't need the default object that the scene has anymore

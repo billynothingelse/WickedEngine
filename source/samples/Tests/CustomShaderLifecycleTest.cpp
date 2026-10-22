@@ -39,7 +39,7 @@ int main()
 	CustomShader replacement = first;
 	replacement.name = "replacement";
 	replacement.filterMask = Protean::FILTER_TRANSPARENT;
-	replacement.pso[Protean::RENDERPASS_MAIN].desc.pt = Protean::Graphics::PrimitiveTopology::LINELIST;
+	replacement.pso[Protean::RENDERPASS_MAIN].desc.pt = Protean::Graphics::PrimitiveTopology_LINELIST;
 	const size_t countBeforeUpdate = GetCustomShaders().size();
 	if (!Check(UpdateCustomShader(firstID, replacement), "valid update failed") ||
 		!Check(GetCustomShaders().size() == countBeforeUpdate, "update grew active registry storage") ||
@@ -47,7 +47,7 @@ int main()
 		!Check(resolved.id == firstID, "update changed stable ID") ||
 		!Check(resolved.name == replacement.name, "update did not publish replacement") ||
 		!Check(resolved.filterMask == replacement.filterMask, "update did not replace filter mask") ||
-		!Check(resolved.pso[Protean::RENDERPASS_MAIN].desc.pt == Protean::Graphics::PrimitiveTopology::LINELIST, "update did not replace PSO payload"))
+		!Check(resolved.pso[Protean::RENDERPASS_MAIN].desc.pt == Protean::Graphics::PrimitiveTopology_LINELIST, "update did not replace PSO payload"))
 		return 1;
 
 	CustomShader retainedCopy = resolved;

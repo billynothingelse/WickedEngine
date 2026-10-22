@@ -1037,7 +1037,7 @@ namespace Protean::Audio
 			{
 				std::stringstream ss("");
 				ss << "FAudioCreate returned error: " << res;
-				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 				return;
 			}
 
@@ -1051,7 +1051,7 @@ namespace Protean::Audio
 			{
 				std::stringstream ss("");
 				ss << "FAudio_CreateMasteringVoice returned error: " << res;
-				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 				return;
 			}
 		
@@ -1068,7 +1068,7 @@ namespace Protean::Audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 					return;
 				}
 			}
@@ -1081,7 +1081,7 @@ namespace Protean::Audio
 			{
 				std::stringstream ss("");
 				ss << "F3DAudioInitialize returned error: " << res;
-				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 				return;
 			}
 
@@ -1092,7 +1092,7 @@ namespace Protean::Audio
 				{
 					std::stringstream ss("");
 					ss << "FAudioCreateReverb returned error: " << res;
-					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 					return;
 				}
 
@@ -1113,7 +1113,7 @@ namespace Protean::Audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel_Error);
 					return;
 				}
 			}

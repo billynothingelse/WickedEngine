@@ -93,7 +93,7 @@ namespace Protean::FFTGenerator
 			// Create 6 cbuffers for 512x512 transform.
 
 			GPUBufferDesc cb_desc;
-			cb_desc.bind_flags = BindFlag::CONSTANT_BUFFER;
+			cb_desc.bind_flags = BindFlag_CONSTANT_BUFFER;
 			cb_desc.size = sizeof(FFTGeneratorCB);
 			cb_desc.stride = 0;
 
@@ -151,9 +151,9 @@ namespace Protean::FFTGenerator
 			// Temp buffer
 			GPUBufferDesc buf_desc;
 			buf_desc.size = sizeof(float) * 2 * (512 * fft_plan.slices) * 512;
-			buf_desc.usage = Usage::DEFAULT;
-			buf_desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-			buf_desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			buf_desc.usage = Usage_DEFAULT;
+			buf_desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+			buf_desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			buf_desc.stride = sizeof(float) * 2;
 
 			device->CreateBuffer(&buf_desc, nullptr, &fft_plan.pBuffer_Tmp);
@@ -195,8 +195,8 @@ namespace Protean::FFTGenerator
 
 	void LoadShaders()
 	{
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix008A_CS, "fft_512x512_c2c_CS.cso");
-		Protean::Renderer::LoadShader(ShaderStage::CS, radix008A_CS2, "fft_512x512_c2c_v2_CS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix008A_CS, "fft_512x512_c2c_CS.cso");
+		Protean::Renderer::LoadShader(ShaderStage_CS, radix008A_CS2, "fft_512x512_c2c_v2_CS.cso");
 	}
 
 }

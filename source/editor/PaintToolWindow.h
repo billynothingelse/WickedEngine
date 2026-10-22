@@ -84,12 +84,11 @@ public:
 	};
 	MODE GetMode() const;
 
-	enum class AxisLock
-	{
-		Disabled,
-		X,
-		Y,
-		Z
+	enum AxisLock {
+		AxisLock_Disabled,
+		AxisLock_X,
+		AxisLock_Y,
+		AxisLock_Z
 	};
 
 	std::deque<Protean::Gui::Button> terrain_material_buttons;

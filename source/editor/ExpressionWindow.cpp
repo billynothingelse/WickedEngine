@@ -6,7 +6,7 @@ void ExpressionWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create(ICON_EXPRESSION " Expression", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_EXPRESSION " Expression", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 580));
 
 	closeButton.SetTooltip("Delete ExpressionComponent");
@@ -125,9 +125,9 @@ void ExpressionWindow::Create(EditorComponent* _editor)
 
 	overrideMouthCombo.Create("Override Mouth: ");
 	overrideMouthCombo.SetTooltip("Lip sync override control");
-	overrideMouthCombo.AddItem("None", (uint64_t)ExpressionComponent::Override::None);
-	overrideMouthCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override::Block);
-	overrideMouthCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override::Blend);
+	overrideMouthCombo.AddItem("None", (uint64_t)ExpressionComponent::Override_None);
+	overrideMouthCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override_Block);
+	overrideMouthCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override_Blend);
 	overrideMouthCombo.OnSelect(handleExprList([] (auto& expression, auto args) {
 		expression.override_mouth = (ExpressionComponent::Override)args.userdata;
 	}));
@@ -135,9 +135,9 @@ void ExpressionWindow::Create(EditorComponent* _editor)
 
 	overrideBlinkCombo.Create("Override Blink: ");
 	overrideBlinkCombo.SetTooltip("Blink override control");
-	overrideBlinkCombo.AddItem("None", (uint64_t)ExpressionComponent::Override::None);
-	overrideBlinkCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override::Block);
-	overrideBlinkCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override::Blend);
+	overrideBlinkCombo.AddItem("None", (uint64_t)ExpressionComponent::Override_None);
+	overrideBlinkCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override_Block);
+	overrideBlinkCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override_Blend);
 	overrideBlinkCombo.OnSelect(handleExprList([] (auto& expression, auto args) {
 		expression.override_blink = (ExpressionComponent::Override)args.userdata;
 	}));
@@ -145,9 +145,9 @@ void ExpressionWindow::Create(EditorComponent* _editor)
 
 	overrideLookCombo.Create("Override Look: ");
 	overrideLookCombo.SetTooltip("Look-away override control");
-	overrideLookCombo.AddItem("None", (uint64_t)ExpressionComponent::Override::None);
-	overrideLookCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override::Block);
-	overrideLookCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override::Blend);
+	overrideLookCombo.AddItem("None", (uint64_t)ExpressionComponent::Override_None);
+	overrideLookCombo.AddItem("Block", (uint64_t)ExpressionComponent::Override_Block);
+	overrideLookCombo.AddItem("Blend", (uint64_t)ExpressionComponent::Override_Blend);
 	overrideLookCombo.OnSelect(handleExprList([] (auto& expression, auto args) {
 		expression.override_look = (ExpressionComponent::Override)args.userdata;
 	}));

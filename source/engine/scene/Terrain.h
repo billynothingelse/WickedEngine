@@ -381,19 +381,17 @@ namespace Protean::Terrain
 	{
 		virtual ~Modifier() = default;
 
-		enum class Type
-		{
-			Perlin,
-			Voronoi,
-			Heightmap,
-		} type = Type::Perlin;
+		enum Type {
+			Type_Perlin,
+			Type_Voronoi,
+			Type_Heightmap,
+		} type = Type_Perlin;
 
-		enum class BlendMode
-		{
-			Normal,
-			Additive,
-			Multiply,
-		} blend = BlendMode::Normal;
+		enum BlendMode {
+			BlendMode_Normal,
+			BlendMode_Additive,
+			BlendMode_Multiply,
+		} blend = BlendMode_Normal;
 
 		float weight = 0.5f;
 		float frequency = 0.0008f;
@@ -409,13 +407,13 @@ namespace Protean::Terrain
 			switch (blend)
 			{
 			default:
-			case BlendMode::Normal:
+			case BlendMode_Normal:
 				height = Protean::Math::Lerp(height, value, weight);
 				break;
-			case BlendMode::Multiply:
+			case BlendMode_Multiply:
 				height *= value * weight;
 				break;
-			case BlendMode::Additive:
+			case BlendMode_Additive:
 				height += value * weight;
 				break;
 			}
@@ -427,7 +425,7 @@ namespace Protean::Terrain
 		uint32_t seed = 0;
 		Protean::Noise::Perlin perlin_noise;
 
-		PerlinModifier() { type = Type::Perlin; }
+		PerlinModifier() { type = Type_Perlin; }
 		void Seed(uint32_t seed) override
 		{
 			this->seed = seed;
@@ -450,7 +448,7 @@ namespace Protean::Terrain
 		uint32_t seed = 0;
 		Protean::Noise::Perlin perlin_noise;
 
-		VoronoiModifier() { type = Type::Voronoi; }
+		VoronoiModifier() { type = Type_Voronoi; }
 		void Seed(uint32_t seed) override
 		{
 			this->seed = seed;
@@ -480,7 +478,7 @@ namespace Protean::Terrain
 		int width = 0;
 		int height = 0;
 
-		HeightmapModifier() { type = Type::Heightmap; SetScale(1.0f); }
+		HeightmapModifier() { type = Type_Heightmap; SetScale(1.0f); }
 		void Apply(const XMFLOAT2& world_pos, float& height) override
 		{
 			XMFLOAT2 p = world_pos;

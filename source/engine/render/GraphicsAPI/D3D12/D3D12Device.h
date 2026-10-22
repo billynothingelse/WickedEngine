@@ -235,7 +235,7 @@ namespace Protean::Graphics
 				active_rt = nullptr;
 				active_rootsig_graphics = nullptr;
 				active_rootsig_compute = nullptr;
-				prev_shadingrate = ShadingRate::RATE_INVALID;
+				prev_shadingrate = ShadingRate_RATE_INVALID;
 				prev_stencilref = 0;
 				dirty_pso = false;
 				swapchains.clear();
@@ -298,7 +298,7 @@ namespace Protean::Graphics
 		void predispatch(CommandList cmd);
 
 	public:
-		GraphicsDevice_DX12(ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
+		GraphicsDevice_DX12(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
 		~GraphicsDevice_DX12() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
@@ -337,9 +337,9 @@ namespace Protean::Graphics
 		ShaderFormat GetShaderFormat() const override
 		{
 #ifdef PLATFORM_XBOX
-			return ShaderFormat::HLSL6_XS;
+			return ShaderFormat_HLSL6_XS;
 #else
-			return ShaderFormat::HLSL6;
+			return ShaderFormat_HLSL6;
 #endif // PLATFORM_XBOX
 		}
 
@@ -351,31 +351,31 @@ namespace Protean::Graphics
 		uint32_t GetMinOffsetAlignment(const GPUBufferDesc* desc) const override
 		{
 			uint32_t alignment = std::max(1u, desc->alignment);
-			if (has_flag(desc->bind_flags, BindFlag::CONSTANT_BUFFER))
+			if (has_flag(desc->bind_flags, BindFlag_CONSTANT_BUFFER))
 			{
 				alignment = std::max(alignment, (uint32_t)D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::BUFFER_RAW))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_BUFFER_RAW))
 			{
 				alignment = std::max(alignment, (uint32_t)D3D12_RAW_UAV_SRV_BYTE_ALIGNMENT);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::BUFFER_STRUCTURED))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_BUFFER_STRUCTURED))
 			{
 				alignment = std::max(alignment, desc->stride);
 			}
-			if (desc->format != Format::UNKNOWN || has_flag(desc->misc_flags, ResourceMiscFlag::TYPED_FORMAT_CASTING))
+			if (desc->format != Format_UNKNOWN || has_flag(desc->misc_flags, ResourceMiscFlag_TYPED_FORMAT_CASTING))
 			{
 				alignment = std::max(alignment, 16u);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_BUFFER))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_BUFFER))
 			{
 				alignment = std::max(alignment, (uint32_t)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_NON_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS))
 			{
 				alignment = std::max(alignment, (uint32_t)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
 			}
-			if (has_flag(desc->misc_flags, ResourceMiscFlag::ALIASING_TEXTURE_RT_DS))
+			if (has_flag(desc->misc_flags, ResourceMiscFlag_ALIASING_TEXTURE_RT_DS))
 			{
 				alignment = std::max(alignment, (uint32_t)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
 			}
@@ -406,7 +406,7 @@ namespace Protean::Graphics
 
 		void WaitCommandList(CommandList cmd, CommandList wait_for) override;
 		void RenderPassBegin(const SwapChain* swapchain, CommandList cmd) override;
-		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags::NONE) override;
+		void RenderPassBegin(const RenderPassImage* images, uint32_t image_count, CommandList cmd, RenderPassFlags flags = RenderPassFlags_NONE) override;
 		void RenderPassEnd(CommandList cmd) override;
 		void BindScissorRects(uint32_t numRects, const Rect* rects, CommandList cmd) override;
 		void BindViewports(uint32_t NumViewports, const Viewport* pViewports, CommandList cmd) override;

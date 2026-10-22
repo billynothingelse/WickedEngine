@@ -38,17 +38,16 @@ public:
 	Protean::Resource imageResource;
 	std::string imageResourceName;
 
-	enum class ColorPickerMode
-	{
-		None,
-		Idle,
-		Focus,
-		Background,
-		Shadow,
-		Font,
-		FontShadow,
-		Gradient,
-		Wave,
+	enum ColorPickerMode {
+		ColorPickerMode_None,
+		ColorPickerMode_Idle,
+		ColorPickerMode_Focus,
+		ColorPickerMode_Background,
+		ColorPickerMode_Shadow,
+		ColorPickerMode_Font,
+		ColorPickerMode_FontShadow,
+		ColorPickerMode_Gradient,
+		ColorPickerMode_Wave,
 	} mode;
 	void UpdateColorPickerMode();
 

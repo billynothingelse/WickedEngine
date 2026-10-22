@@ -6,7 +6,7 @@ void ColliderWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create(ICON_COLLIDER " Collider", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_COLLIDER " Collider", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 340));
 
 	closeButton.SetTooltip("Delete ColliderComponent");
@@ -65,9 +65,9 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	shapeCombo.Create("Shape: ");
 	shapeCombo.SetSize(XMFLOAT2(wid, hei));
 	shapeCombo.SetPos(XMFLOAT2(x, y));
-	shapeCombo.AddItem("Sphere", (uint64_t)ColliderComponent::Shape::Sphere);
-	shapeCombo.AddItem("Capsule", (uint64_t)ColliderComponent::Shape::Capsule);
-	shapeCombo.AddItem("Plane", (uint64_t)ColliderComponent::Shape::Plane);
+	shapeCombo.AddItem("Sphere", (uint64_t)ColliderComponent::Shape_Sphere);
+	shapeCombo.AddItem("Capsule", (uint64_t)ColliderComponent::Shape_Capsule);
+	shapeCombo.AddItem("Plane", (uint64_t)ColliderComponent::Shape_Plane);
 	shapeCombo.OnSelect(forEachSelectedCollider([](auto collider, auto args) {
 		collider->shape = (ColliderComponent::Shape)args.userdata;
 	}));

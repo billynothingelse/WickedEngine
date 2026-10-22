@@ -24,7 +24,7 @@ void AddTexturePropertiesString(const Protean::Graphics::TextureDesc& desc, std:
 	{
 		str += " * " + std::to_string(desc.depth);
 	}
-	if (has_flag(desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+	if (has_flag(desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 	{
 		str += " (cubemap)";
 	}
@@ -70,7 +70,7 @@ void ResetTexAnim(MaterialComponent* material)
 void MaterialWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_MATERIAL " Material", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_MATERIAL " Material", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 1580));
 
 	closeButton.SetTooltip("Delete MaterialComponent");
@@ -117,13 +117,13 @@ void MaterialWindow::Create(EditorComponent* _editor)
 				Protean::Config::File config;
 				if (!config.Open(fileName.c_str()))
 				{
-					Protean::Backlog::post("Failed to load material preset: " + fileName, Protean::Backlog::LogLevel::Warning);
+					Protean::Backlog::post("Failed to load material preset: " + fileName, Protean::Backlog::LogLevel_Warning);
 					return;
 				}
 
 				if (!config.HasSection("material"))
 				{
-					Protean::Backlog::post("Invalid material preset: " + fileName, Protean::Backlog::LogLevel::Warning);
+					Protean::Backlog::post("Invalid material preset: " + fileName, Protean::Backlog::LogLevel_Warning);
 					return;
 				}
 
@@ -868,7 +868,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	colorComboBox.SetTooltip("Choose the destination data of the color picker.");
 	AddWidget(&colorComboBox);
 
-	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls_NONE);
 	colorPicker.SetPos(XMFLOAT2(10, y += step));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(true);
@@ -1132,8 +1132,8 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	const float screenW = editor->GetLogicalWidth();
 	const float screenH = editor->GetLogicalHeight();
 
-	auto wctrl = Protean::Gui::Window::WindowControls::ALL;
-	wctrl &= ~Protean::Gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
+	auto wctrl = Protean::Gui::Window::WindowControls_ALL;
+	wctrl &= ~Protean::Gui::Window::WindowControls_RESIZE_BOTTOMLEFT;
 	texturePickerWindow.Create("", wctrl);
 	texturePickerWindow.SetVisible(false);
 	const float texturePickerWindowW = screenW / 3.20f;
@@ -1319,7 +1319,7 @@ void MaterialWindow::SetEntity(Entity entity)
 		interiorOffsetZSlider.SetValue(material->interiorMappingOffset.z);
 		interiorRotationSlider.SetValue(Protean::Math::RadiansToDegrees(material->interiorMappingRotation));
 
-		shadingRateComboBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING));
+		shadingRateComboBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_VARIABLE_RATE_SHADING));
 
 		if (material->IsUsingSpecularGlossinessWorkflow())
 		{
@@ -1363,7 +1363,7 @@ void MaterialWindow::RecreateTexturePickerButtons()
 
 	// Create buttons for each unique texture
 	uniqueTextures.clear();
-	Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType::TEXTURE);
+	Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType_TEXTURE);
 	for (auto& [textureName, textureResource] : uniqueTextures)
 	{
 		texturePickerButtons.emplace_back();
@@ -1416,7 +1416,7 @@ void MaterialWindow::ResizeLayout()
 	if (texturePickerWindow.IsVisible())
 	{
 		uniqueTextures.clear();
-		Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType::TEXTURE);
+		Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType_TEXTURE);
 		if (texturePickerButtons.size() != uniqueTextures.size())
 		{
 			RecreateTexturePickerButtons();

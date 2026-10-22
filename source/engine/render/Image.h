@@ -94,13 +94,12 @@ namespace Protean::Image
 		float angular_softness_outer_angle = 0;
 		float saturation = 1;
 
-		enum class Gradient
-		{
-			None,
-			Linear,
-			LinearReflected,
-			Circular,
-		} gradient = Gradient::None;
+		enum Gradient {
+			Gradient_None,
+			Gradient_Linear,
+			Gradient_LinearReflected,
+			Gradient_Circular,
+		} gradient = Gradient_None;
 		XMFLOAT2 gradient_uv_start = XMFLOAT2(0, 0);
 		XMFLOAT2 gradient_uv_end = XMFLOAT2(1, 0);
 		XMFLOAT4 gradient_color = XMFLOAT4(1, 1, 1, 1);

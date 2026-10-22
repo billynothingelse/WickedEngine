@@ -68,9 +68,9 @@ namespace Protean
 			BLAS = {};
 
 			GPUBufferDesc bd;
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 
 			// Particle buffer:
 			bd.stride = sizeof(Particle);
@@ -101,10 +101,10 @@ namespace Protean
 			device->CreateBuffer2(&bd, fill_dead_indices, &deadList);
 			device->SetName(&deadList, "EmittedParticleSystem::deadList");
 
-			bd.misc_flags = ResourceMiscFlag::BUFFER_RAW | ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
-			if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+			bd.misc_flags = ResourceMiscFlag_BUFFER_RAW | ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
+			if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 			{
-				bd.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+				bd.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 			}
 			const uint64_t alignment = device->GetMinOffsetAlignment(&bd);
 
@@ -127,34 +127,34 @@ namespace Protean
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_pos.offset = buffer_offset;
-			vb_pos.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_pos.offset, vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT);
-			vb_pos.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_pos.offset, vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
-			vb_pos.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_pos.subresource_srv);
-			vb_pos.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_pos.subresource_uav);
+			vb_pos.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_pos.offset, vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT);
+			vb_pos.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_pos.offset, vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT); // UAV can't have RGB32_F format!
+			vb_pos.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_pos.subresource_srv);
+			vb_pos.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_pos.subresource_uav);
 			buffer_offset += vb_pos.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_nor.offset = buffer_offset;
-			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-			vb_nor.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_nor.subresource_srv);
-			vb_nor.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_nor.subresource_uav);
+			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+			vb_nor.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_nor.subresource_srv);
+			vb_nor.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_nor.subresource_uav);
 			buffer_offset += vb_nor.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_uvs.offset = buffer_offset;
-			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
-			vb_uvs.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
-			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_uvs.subresource_srv);
-			vb_uvs.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_uvs.subresource_uav);
+			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
+			vb_uvs.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
+			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_uvs.subresource_srv);
+			vb_uvs.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_uvs.subresource_uav);
 			buffer_offset += vb_uvs.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_col.offset = buffer_offset;
-			vb_col.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_col.offset, vb_col.size, &MeshComponent::Vertex_COL::FORMAT);
-			vb_col.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_col.offset, vb_col.size, &MeshComponent::Vertex_COL::FORMAT);
-			vb_col.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_col.subresource_srv);
-			vb_col.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_col.subresource_uav);
+			vb_col.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_col.offset, vb_col.size, &MeshComponent::Vertex_COL::FORMAT);
+			vb_col.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_col.offset, vb_col.size, &MeshComponent::Vertex_COL::FORMAT);
+			vb_col.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_col.subresource_srv);
+			vb_col.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_col.subresource_uav);
 			buffer_offset += vb_col.size;
 
 			primitiveBuffer = Protean::Renderer::GetIndexBufferForQuads(MAX_PARTICLES);
@@ -164,9 +164,9 @@ namespace Protean
 		{
 			// Distance buffer:
 			GPUBufferDesc bd;
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			bd.stride = sizeof(uint32_t);
 			bd.size = bd.stride * MAX_PARTICLES;
 			device->CreateBufferZeroed(&bd, &distanceBuffer);
@@ -176,9 +176,9 @@ namespace Protean
 		if (IsSPHEnabled())
 		{
 			GPUBufferDesc bd;
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 
 			if (densityBuffer.desc.size < MAX_PARTICLES * sizeof(float))
 			{
@@ -225,11 +225,11 @@ namespace Protean
 			counters.cellAllocator = 0;
 
 			GPUBufferDesc bd;
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 			bd.stride = sizeof(counters);
 			bd.size = bd.stride;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, &counters, &counterBuffer);
 			device->SetName(&counterBuffer, "EmittedParticleSystem::counterBuffer");
 		}
@@ -239,28 +239,28 @@ namespace Protean
 			GPUBufferDesc bd;
 
 			// Indirect Execution buffer:
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED | ResourceMiscFlag::INDIRECT_ARGS;
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED | ResourceMiscFlag_INDIRECT_ARGS;
 			bd.stride = sizeof(EmitterIndirectArgs);
 			bd.size = bd.stride;
 			device->CreateBufferZeroed(&bd, &indirectBuffers);
 			device->SetName(&indirectBuffers, "EmittedParticleSystem::indirectBuffers");
 
 			// Constant buffer:
-			bd.usage = Usage::DEFAULT;
+			bd.usage = Usage_DEFAULT;
 			bd.size = sizeof(EmittedParticleCB);
-			bd.bind_flags = BindFlag::CONSTANT_BUFFER;
-			bd.misc_flags = ResourceMiscFlag::NONE;
+			bd.bind_flags = BindFlag_CONSTANT_BUFFER;
+			bd.misc_flags = ResourceMiscFlag_NONE;
 			device->CreateBuffer(&bd, nullptr, &constantBuffer);
 			device->SetName(&constantBuffer, "EmittedParticleSystem::constantBuffer");
 
 			// Debug information CPU-readback buffer:
 			{
 				GPUBufferDesc debugBufDesc = counterBuffer.GetDesc();
-				debugBufDesc.usage = Usage::READBACK;
-				debugBufDesc.bind_flags = BindFlag::NONE;
-				debugBufDesc.misc_flags = ResourceMiscFlag::NONE;
+				debugBufDesc.usage = Usage_READBACK;
+				debugBufDesc.bind_flags = BindFlag_NONE;
+				debugBufDesc.misc_flags = ResourceMiscFlag_NONE;
 				for (int i = 0; i < arraysize(statisticsReadbackBuffer); ++i)
 				{
 					device->CreateBuffer(&debugBufDesc, nullptr, &statisticsReadbackBuffer[i]);
@@ -274,23 +274,23 @@ namespace Protean
 	{
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING) && !BLAS.IsValid() && primitiveBuffer.IsValid())
+		if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING) && !BLAS.IsValid() && primitiveBuffer.IsValid())
 		{
 			RaytracingAccelerationStructureDesc desc;
-			desc.type = RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL;
+			desc.type = RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL;
 			desc.flags |= RaytracingAccelerationStructureDesc::FLAG_ALLOW_UPDATE;
 			desc.flags |= RaytracingAccelerationStructureDesc::FLAG_PREFER_FAST_BUILD;
 
 			desc.bottom_level.geometries.emplace_back();
 			auto& geometry = desc.bottom_level.geometries.back();
-			geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES;
+			geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES;
 			geometry.triangles.vertex_buffer = generalBuffer;
 			geometry.triangles.index_buffer = primitiveBuffer;
 			geometry.triangles.index_format = GetIndexBufferFormat(primitiveBuffer.desc.format);
 			geometry.triangles.index_count = MAX_PARTICLES * 6;
 			geometry.triangles.index_offset = 0;
 			geometry.triangles.vertex_count = (uint32_t)(vb_pos.size / sizeof(MeshComponent::Vertex_POS32W));
-			geometry.triangles.vertex_format = Format::R32G32B32_FLOAT;
+			geometry.triangles.vertex_format = Format_R32G32B32_FLOAT;
 			geometry.triangles.vertex_stride = sizeof(MeshComponent::Vertex_POS32W);
 
 			bool success = device->CreateRaytracingAccelerationStructure(&desc, &BLAS);
@@ -514,7 +514,7 @@ namespace Protean
 			{
 				cb.xEmitterOptions |= EMITTER_OPTION_BIT_FRAME_BLENDING_ENABLED;
 			}
-			if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+			if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 			{
 				cb.xEmitterOptions |= EMITTER_OPTION_BIT_MESH_SHADER_ENABLED;
 			}
@@ -548,7 +548,7 @@ namespace Protean
 			device->UpdateBuffer(&constantBuffer, &cb, cmd);
 			{
 				GPUBarrier barriers[] = {
-					GPUBarrier::Buffer(&constantBuffer, ResourceState::COPY_DST, ResourceState::CONSTANT_BUFFER),
+					GPUBarrier::Buffer(&constantBuffer, ResourceState_COPY_DST, ResourceState_CONSTANT_BUFFER),
 				};
 				device->Barrier(barriers, arraysize(barriers), cmd);
 			}
@@ -569,8 +569,8 @@ namespace Protean
 			device->BindUAV(&culledIndirectionBuffer, 11, cmd);
 			device->BindUAV(&culledIndirectionBuffer2, 12, cmd);
 
-			GPUBarrier barrier_indirect_uav = GPUBarrier::Buffer(&indirectBuffers, ResourceState::INDIRECT_ARGUMENT, ResourceState::UNORDERED_ACCESS);
-			GPUBarrier barrier_uav_indirect = GPUBarrier::Buffer(&indirectBuffers, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT);
+			GPUBarrier barrier_indirect_uav = GPUBarrier::Buffer(&indirectBuffers, ResourceState_INDIRECT_ARGUMENT, ResourceState_UNORDERED_ACCESS);
+			GPUBarrier barrier_uav_indirect = GPUBarrier::Buffer(&indirectBuffers, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT);
 
 			device->Barrier(&barrier_indirect_uav, 1, cmd);
 
@@ -671,8 +671,8 @@ namespace Protean
 				device->DispatchIndirect(&indirectBuffers, offsetof(EmitterIndirectArgs, dispatch), cmd);
 				{
 					GPUBarrier barriers[] = {
-						GPUBarrier::Buffer(&sphGridCells, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-						GPUBarrier::Buffer(&sphParticleCells, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
+						GPUBarrier::Buffer(&sphGridCells, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE),
+						GPUBarrier::Buffer(&sphParticleCells, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE),
 					};
 					device->Barrier(barriers, arraysize(barriers), cmd);
 				}
@@ -769,8 +769,8 @@ namespace Protean
 			{
 				GPUBarrier barriers[] = {
 					GPUBarrier::Memory(),
-					GPUBarrier::Buffer(&counterBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-					GPUBarrier::Buffer(&distanceBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
+					GPUBarrier::Buffer(&counterBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+					GPUBarrier::Buffer(&distanceBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE),
 				};
 				device->Barrier(barriers, arraysize(barriers), cmd);
 			}
@@ -780,9 +780,9 @@ namespace Protean
 
 		if (IsSorted())
 		{
-			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS), cmd);
+			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState_SHADER_RESOURCE_COMPUTE, ResourceState_UNORDERED_ACCESS), cmd);
 			Protean::GPUSortLib::Sort(MAX_PARTICLES, distanceBuffer, counterBuffer, offsetof(ParticleCounters, culledCount), culledIndirectionBuffer, cmd);
-			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE), cmd);
+			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE), cmd);
 		}
 
 		if (!IsPaused() && dt > 0)
@@ -804,7 +804,7 @@ namespace Protean
 			{
 				GPUBarrier barriers[] = {
 					GPUBarrier::Memory(),
-					GPUBarrier::Buffer(&indirectBuffers, ResourceState::INDIRECT_ARGUMENT, ResourceState::UNORDERED_ACCESS),
+					GPUBarrier::Buffer(&indirectBuffers, ResourceState_INDIRECT_ARGUMENT, ResourceState_UNORDERED_ACCESS),
 				};
 				device->Barrier(barriers, arraysize(barriers), cmd);
 			}
@@ -818,7 +818,7 @@ namespace Protean
 		{
 			GPUBarrier barriers[] = {
 				GPUBarrier::Memory(),
-				GPUBarrier::Buffer(&counterBuffer, ResourceState::SHADER_RESOURCE, ResourceState::COPY_SRC),
+				GPUBarrier::Buffer(&counterBuffer, ResourceState_SHADER_RESOURCE, ResourceState_COPY_SRC),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -829,13 +829,13 @@ namespace Protean
 
 		{
 			const GPUBarrier barriers[] = {
-				GPUBarrier::Buffer(&indirectBuffers, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT),
-				GPUBarrier::Buffer(&counterBuffer, ResourceState::COPY_SRC, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&particleBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&aliveList[1], ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE),
-				GPUBarrier::Buffer(&culledIndirectionBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
-				GPUBarrier::Buffer(&culledIndirectionBuffer2, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE),
+				GPUBarrier::Buffer(&indirectBuffers, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT),
+				GPUBarrier::Buffer(&counterBuffer, ResourceState_COPY_SRC, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&particleBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&aliveList[1], ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&generalBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE),
+				GPUBarrier::Buffer(&culledIndirectionBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE),
+				GPUBarrier::Buffer(&culledIndirectionBuffer2, ResourceState_UNORDERED_ACCESS, ResourceState_SHADER_RESOURCE_COMPUTE),
 			};
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
@@ -873,7 +873,7 @@ namespace Protean
 		};
 		device->BindResources(res, 0, arraysize(res), cmd);
 
-		if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+		if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 		{
 			device->DispatchMeshIndirect(&indirectBuffers, offsetof(EmitterIndirectArgs, dispatch), cmd);
 		}
@@ -885,7 +885,7 @@ namespace Protean
 		if (Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_OVERLAY)
 		{
 			device->BindPipelineState(&PSO_wire, cmd);
-			if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+			if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 			{
 				device->DispatchMeshIndirect(&indirectBuffers, offsetof(EmitterIndirectArgs, dispatch), cmd);
 			}
@@ -962,10 +962,10 @@ namespace Protean
 			data[i + startup_length + keep_length] = uint16_t(t * 65535);
 		}
 		TextureDesc desc;
-		desc.type = TextureDesc::Type::TEXTURE_1D;
+		desc.type = TextureDesc::Type_TEXTURE_1D;
 		desc.width = arraysize(data);
-		desc.format = Format::R16_UNORM;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.format = Format_R16_UNORM;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE;
 		desc.swizzle = SwizzleFromString("rrr1");
 		SubresourceData initdata;
 		initdata.data_ptr = data;
@@ -978,34 +978,34 @@ namespace Protean
 	{
 		void LoadShaders()
 		{
-			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "emittedparticleVS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader_shadow, "emittedparticleVS_shadow.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, shadowPS, "emittedparticlePS_shadow.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, vertexShader, "emittedparticleVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, vertexShader_shadow, "emittedparticleVS_shadow.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, shadowPS, "emittedparticlePS_shadow.cso");
 
-			if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+			if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 			{
-				Protean::Renderer::LoadShader(ShaderStage::MS, meshShader, "emittedparticleMS.cso");
+				Protean::Renderer::LoadShader(ShaderStage_MS, meshShader, "emittedparticleMS.cso");
 			}
 
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT], "emittedparticlePS_soft.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_DISTORTION], "emittedparticlePS_soft_distortion.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SIMPLE], "emittedparticlePS_simple.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_LIGHTING], "emittedparticlePS_soft_lighting.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader[EmittedParticleSystem::SOFT], "emittedparticlePS_soft.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader[EmittedParticleSystem::SOFT_DISTORTION], "emittedparticlePS_soft_distortion.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader[EmittedParticleSystem::SIMPLE], "emittedparticlePS_simple.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, pixelShader[EmittedParticleSystem::SOFT_LIGHTING], "emittedparticlePS_soft_lighting.cso");
 
-			Protean::Renderer::LoadShader(ShaderStage::CS, kickoffUpdateCS, "emittedparticle_kickoffUpdateCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, finishUpdateCS, "emittedparticle_finishUpdateCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS, "emittedparticle_emitCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS_VOLUME, "emittedparticle_emitCS_volume.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS_FROMMESH, "emittedparticle_emitCS_FROMMESH.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, sphpartitionCS, "emittedparticle_sphpartitionCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, sphcellallocationCS, "emittedparticle_sphcellallocationCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, sphbinningCS, "emittedparticle_sphbinningCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, sphdensityCS, "emittedparticle_sphdensityCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, sphforceCS, "emittedparticle_sphforceCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS, "emittedparticle_simulateCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING, "emittedparticle_simulateCS_SORTING.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_DEPTHCOLLISIONS, "emittedparticle_simulateCS_DEPTHCOLLISIONS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING_DEPTHCOLLISIONS, "emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, kickoffUpdateCS, "emittedparticle_kickoffUpdateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, finishUpdateCS, "emittedparticle_finishUpdateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, emitCS, "emittedparticle_emitCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, emitCS_VOLUME, "emittedparticle_emitCS_volume.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, emitCS_FROMMESH, "emittedparticle_emitCS_FROMMESH.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, sphpartitionCS, "emittedparticle_sphpartitionCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, sphcellallocationCS, "emittedparticle_sphcellallocationCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, sphbinningCS, "emittedparticle_sphbinningCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, sphdensityCS, "emittedparticle_sphdensityCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, sphforceCS, "emittedparticle_sphforceCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, simulateCS, "emittedparticle_simulateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, simulateCS_SORTING, "emittedparticle_simulateCS_SORTING.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, simulateCS_DEPTHCOLLISIONS, "emittedparticle_simulateCS_DEPTHCOLLISIONS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, simulateCS_SORTING_DEPTHCOLLISIONS, "emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS.cso");
 
 
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
@@ -1013,8 +1013,8 @@ namespace Protean
 			for (int i = 0; i < BLENDMODE_COUNT; ++i)
 			{
 				PipelineStateDesc desc;
-				desc.pt = PrimitiveTopology::TRIANGLESTRIP;
-				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+				desc.pt = PrimitiveTopology_TRIANGLESTRIP;
+				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 				{
 					desc.ms = &meshShader;
 				}
@@ -1035,8 +1035,8 @@ namespace Protean
 
 			{
 				PipelineStateDesc desc;
-				desc.pt = PrimitiveTopology::TRIANGLESTRIP;
-				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+				desc.pt = PrimitiveTopology_TRIANGLESTRIP;
+				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_MESH_SHADER))
 				{
 					desc.ms = &meshShader;
 				}
@@ -1054,7 +1054,7 @@ namespace Protean
 
 			{
 				PipelineStateDesc desc;
-				desc.pt = PrimitiveTopology::TRIANGLESTRIP;
+				desc.pt = PrimitiveTopology_TRIANGLESTRIP;
 				desc.vs = &vertexShader_shadow;
 				desc.ps = &shadowPS;
 				desc.bs = &blendState_shadow;
@@ -1072,8 +1072,8 @@ namespace Protean
 		Protean::Timer timer;
 
 		RasterizerState rs;
-		rs.fill_mode = FillMode::SOLID;
-		rs.cull_mode = CullMode::NONE;
+		rs.fill_mode = FillMode_SOLID;
+		rs.cull_mode = CullMode_NONE;
 		rs.front_counter_clockwise = true;
 		rs.depth_bias = 0;
 		rs.depth_bias_clamp = 0;
@@ -1096,8 +1096,8 @@ namespace Protean
 		rasterizerState_shadow = rs;
 
 
-		rs.fill_mode = FillMode::WIREFRAME;
-		rs.cull_mode = CullMode::NONE;
+		rs.fill_mode = FillMode_WIREFRAME;
+		rs.cull_mode = CullMode_NONE;
 		rs.front_counter_clockwise = true;
 		rs.depth_bias = 0;
 		rs.depth_bias_clamp = 0;
@@ -1110,69 +1110,69 @@ namespace Protean
 
 		DepthStencilState dsd;
 		dsd.depth_enable = true;
-		dsd.depth_write_mask = DepthWriteMask::ZERO;
-		dsd.depth_func = ComparisonFunc::GREATER_EQUAL;
+		dsd.depth_write_mask = DepthWriteMask_ZERO;
+		dsd.depth_func = ComparisonFunc_GREATER_EQUAL;
 		dsd.stencil_enable = false;
 		depthStencilState = dsd;
 
-		//dsd.depth_write_mask = DepthWriteMask::ALL;
+		//dsd.depth_write_mask = DepthWriteMask_ALL;
 		depthStencilState_shadow = dsd;
 
 
 		BlendState bd;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ALPHA] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::SRC_ALPHA;
-		bd.render_target[0].dest_blend = Blend::ONE;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ZERO;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_SRC_ALPHA;
+		bd.render_target[0].dest_blend = Blend_ONE;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ZERO;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_ADDITIVE] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::ONE;
-		bd.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].src_blend = Blend_ONE;
+		bd.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_PREMULTIPLIED] = bd;
 
-		bd.render_target[0].src_blend = Blend::DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::DEST_ALPHA;
-		bd.render_target[0].dest_blend_alpha = Blend::ZERO;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
+		bd.render_target[0].src_blend = Blend_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_DEST_ALPHA;
+		bd.render_target[0].dest_blend_alpha = Blend_ZERO;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.alpha_to_coverage_enable = false;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_MULTIPLY] = bd;
 
-		bd.render_target[0].src_blend = Blend::INV_DEST_COLOR;
-		bd.render_target[0].dest_blend = Blend::ZERO;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::DEST_ALPHA;
-		bd.render_target[0].dest_blend_alpha = Blend::ZERO;
-		bd.render_target[0].blend_op_alpha = BlendOp::ADD;
+		bd.render_target[0].src_blend = Blend_INV_DEST_COLOR;
+		bd.render_target[0].dest_blend = Blend_ZERO;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_DEST_ALPHA;
+		bd.render_target[0].dest_blend_alpha = Blend_ZERO;
+		bd.render_target[0].blend_op_alpha = BlendOp_ADD;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.alpha_to_coverage_enable = false;
 		bd.independent_blend_enable = false;
 		blendStates[BLENDMODE_INVERSE] = bd;
@@ -1181,14 +1181,14 @@ namespace Protean
 		blendStates[BLENDMODE_OPAQUE] = bd;
 
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].src_blend = Blend::ZERO;
-		bd.render_target[0].dest_blend = Blend::SRC_COLOR;
-		bd.render_target[0].blend_op = BlendOp::ADD;
-		bd.render_target[0].src_blend_alpha = Blend::ONE;
-		bd.render_target[0].dest_blend_alpha = Blend::ONE;
-		bd.render_target[0].blend_op_alpha = BlendOp::MAX;
+		bd.render_target[0].src_blend = Blend_ZERO;
+		bd.render_target[0].dest_blend = Blend_SRC_COLOR;
+		bd.render_target[0].blend_op = BlendOp_ADD;
+		bd.render_target[0].src_blend_alpha = Blend_ONE;
+		bd.render_target[0].dest_blend_alpha = Blend_ONE;
+		bd.render_target[0].blend_op_alpha = BlendOp_MAX;
 		bd.render_target[0].blend_enable = true;
-		bd.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		bd.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		bd.alpha_to_coverage_enable = false;
 		bd.independent_blend_enable = false;
 		blendState_shadow = bd;

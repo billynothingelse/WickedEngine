@@ -98,7 +98,7 @@ namespace Protean
 		Protean::Font::UpdateAtlas(canvas.GetDPIScaling());
 
 		ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
-		if (colorspace == ColorSpace::HDR10_ST2084)
+		if (colorspace == ColorSpace_HDR10_ST2084)
 		{
 			// In HDR10, we perform the compositing in a custom linear color space render target
 			//	The reason is that blending doesn't look good in HDR10 color space
@@ -113,8 +113,8 @@ namespace Protean
 				TextureDesc desc;
 				desc.width = swapChain.desc.width;
 				desc.height = swapChain.desc.height;
-				desc.format = Format::R11G11B10_FLOAT;
-				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+				desc.format = Format_R11G11B10_FLOAT;
+				desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 				// try to set background color for swapchain color as if it's using hdr scaling:
 				desc.clear.color[0] = swapChain.desc.clear_color[0] * 9;
 				desc.clear.color[1] = swapChain.desc.clear_color[1] * 9;
@@ -160,7 +160,7 @@ namespace Protean
 					if (resource.IsValid())
 					{
 						splash_screen = resource.GetTexture();
-						splash_screen_subresource = graphicsDevice->CreateSubresource(&splash_screen, SubresourceType::SRV, 0, 1, 0, 1); // only first mip! mipgen is not initialized at this point...
+						splash_screen_subresource = graphicsDevice->CreateSubresource(&splash_screen, SubresourceType_SRV, 0, 1, 0, 1); // only first mip! mipgen is not initialized at this point...
 					}
 				}
 			}
@@ -188,7 +188,7 @@ namespace Protean
 					}
 					fx.pos = XMFLOAT3(canvas.GetLogicalWidth() * 0.5f, canvas.GetLogicalHeight() * 0.5f, 0);
 					fx.pivot = XMFLOAT2(0.5f, 0.5f);
-					if (colorspace != ColorSpace::SRGB)
+					if (colorspace != ColorSpace_SRGB)
 					{
 						fx.enableLinearOutputMapping(9);
 					}
@@ -339,17 +339,17 @@ namespace Protean
 				)
 			{
 				TextureDesc desc = backbuffer.desc;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE;
 				bool success = graphicsDevice->CreateTexture(&desc, nullptr, &fadeManager.crossFadeTexture);
 				assert(success);
 				graphicsDevice->SetName(&fadeManager.crossFadeTexture, "wiFadeManager::crossFadeTexture");
 			}
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, backbuffer.desc.layout, ResourceState::COPY_SRC));
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, fadeManager.crossFadeTexture.desc.layout, ResourceState::COPY_DST));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, backbuffer.desc.layout, ResourceState_COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, fadeManager.crossFadeTexture.desc.layout, ResourceState_COPY_DST));
 			Protean::Renderer::FlushBarriers(cmd);
 			graphicsDevice->CopyResource(&fadeManager.crossFadeTexture, &backbuffer, cmd);
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, ResourceState::COPY_DST, fadeManager.crossFadeTexture.desc.layout));
-			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, ResourceState::COPY_SRC, backbuffer.desc.layout));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, ResourceState_COPY_DST, fadeManager.crossFadeTexture.desc.layout));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, ResourceState_COPY_SRC, backbuffer.desc.layout));
 			Protean::Renderer::FlushBarriers(cmd);
 			fadeManager.crossFadeTextureSaveRequired = false;
 		}
@@ -453,12 +453,12 @@ namespace Protean
 			Protean::Image::Params fx;
 			fx.enableFullScreen();
 			fx.opacity = fadeManager.opacity;
-			if (fadeManager.type == FadeManager::FadeType::FadeToColor)
+			if (fadeManager.type == FadeManager::FadeType_FadeToColor)
 			{
 				fx.color = fadeManager.color;
 				Protean::Image::Draw(nullptr, fx, cmd);
 			}
-			else if (fadeManager.type == FadeManager::FadeType::CrossFade)
+			else if (fadeManager.type == FadeManager::FadeType_CrossFade)
 			{
 				Protean::Image::Draw(&fadeManager.crossFadeTexture, fx, cmd);
 			}
@@ -543,13 +543,13 @@ namespace Protean
 				switch (colorSpace)
 				{
 				default:
-				case Protean::Graphics::ColorSpace::SRGB:
+				case Protean::Graphics::ColorSpace_SRGB:
 					infodisplay_str += "sRGB";
 					break;
-				case Protean::Graphics::ColorSpace::HDR10_ST2084:
+				case Protean::Graphics::ColorSpace_HDR10_ST2084:
 					infodisplay_str += "ST.2084 (HDR10)";
 					break;
-				case Protean::Graphics::ColorSpace::HDR_LINEAR:
+				case Protean::Graphics::ColorSpace_HDR_LINEAR:
 					infodisplay_str += "Linear (HDR)";
 					break;
 				}
@@ -632,7 +632,7 @@ namespace Protean
 
 			// Explanation: this compose pass is in LINEAR space if display output is linear or HDR10
 			//	If HDR10, the HDR10 output mapping will be performed on whole image later when drawing to swapchain
-			if (colorspace != ColorSpace::SRGB)
+			if (colorspace != ColorSpace_SRGB)
 			{
 				params.enableLinearOutputMapping(9);
 			}
@@ -680,7 +680,7 @@ namespace Protean
 			{
 				params.cursor = Protean::Font::Draw(std::to_string(Protean::Renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
 			}
-			if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel::Error)
+			if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel_Error)
 			{
 				params.cursor = Protean::Font::Draw("Errors found, check the backlog for more information!", params, cmd);
 			}
@@ -727,36 +727,36 @@ namespace Protean
 		// User can also create a graphics device if custom logic is desired, but they must do before this function!
 		if (graphicsDevice == nullptr)
 		{
-			ValidationMode validationMode = ValidationMode::Disabled;
+			ValidationMode validationMode = ValidationMode_Disabled;
 			if (Protean::Arguments::HasArgument("debugdevice"))
 			{
-				validationMode = ValidationMode::Enabled;
+				validationMode = ValidationMode_Enabled;
 			}
 			if (Protean::Arguments::HasArgument("gpuvalidation"))
 			{
-				validationMode = ValidationMode::GPU;
+				validationMode = ValidationMode_GPU;
 			}
 			if (Protean::Arguments::HasArgument("gpu_verbose"))
 			{
-				validationMode = ValidationMode::Verbose;
+				validationMode = ValidationMode_Verbose;
 			}
 
-			GPUPreference preference = GPUPreference::Discrete;
+			GPUPreference preference = GPUPreference_Discrete;
 			if (Protean::Arguments::HasArgument("igpu"))
 			{
-				preference = GPUPreference::Integrated;
+				preference = GPUPreference_Integrated;
 			}
 			else if (Protean::Arguments::HasArgument("nvidiagpu"))
 			{
-				preference = GPUPreference::Nvidia;
+				preference = GPUPreference_Nvidia;
 			}
 			else if (Protean::Arguments::HasArgument("amdgpu"))
 			{
-				preference = GPUPreference::AMD;
+				preference = GPUPreference_AMD;
 			}
 			else if (Protean::Arguments::HasArgument("intelgpu"))
 			{
-				preference = GPUPreference::Intel;
+				preference = GPUPreference_Intel;
 			}
 
 #ifdef PLATFORM_PS5
@@ -790,7 +790,7 @@ namespace Protean
 #elif defined(WICKEDENGINE_BUILD_VULKAN)
 				use_vulkan = true;
 #else
-				Protean::Backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", Protean::Backlog::LogLevel::Error);
+				Protean::Backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", Protean::Backlog::LogLevel_Error);
 				assert(false);
 #endif
 			}
@@ -834,13 +834,13 @@ namespace Protean
 		{
 			// initialize for the first time
 			desc.buffer_count = 3;
-			if (graphicsDevice->CheckCapability(GraphicsDeviceCapability::R9G9B9E5_SHAREDEXP_RENDERABLE))
+			if (graphicsDevice->CheckCapability(GraphicsDeviceCapability_R9G9B9E5_SHAREDEXP_RENDERABLE))
 			{
-				desc.format = Format::R9G9B9E5_SHAREDEXP;
+				desc.format = Format_R9G9B9E5_SHAREDEXP;
 			}
 			else
 			{
-				desc.format = Format::R10G10B10A2_UNORM;
+				desc.format = Format_R10G10B10A2_UNORM;
 			}
 		}
 		desc.width = canvas.GetPhysicalWidth();

@@ -54,7 +54,7 @@ namespace Protean::Lua::RendererBindings
 	}
 	int IsRaytracingSupported(lua_State* L)
 	{
-		Protean::Lua::SSetBool(L, Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+		Protean::Lua::SSetBool(L, Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability_RAYTRACING));
 		return 1;
 	}
 

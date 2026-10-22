@@ -49,15 +49,14 @@ namespace Protean::Helper
 
 	void messageBox(const std::string& msg, const std::string& caption = "Warning!");
 
-	enum class MessageBoxResult
-	{
-		OK,
-		Cancel,
-		Yes,
-		No,
-		Abort,
-		Retry,
-		Ignore
+	enum MessageBoxResult {
+		MessageBoxResult_OK,
+		MessageBoxResult_Cancel,
+		MessageBoxResult_Yes,
+		MessageBoxResult_No,
+		MessageBoxResult_Abort,
+		MessageBoxResult_Retry,
+		MessageBoxResult_Ignore
 	};
 
 	// Shows a message box with custom buttons and returns the user's choice
@@ -191,13 +190,12 @@ namespace Protean::Helper
 	std::string StringRemoveTrailingWhitespaces(const std::string& str);
 
 	// Prints debug info to the console output
-	enum class DebugLevel
-	{
-		Normal,
-		Warning,
-		Error
+	enum DebugLevel {
+		DebugLevel_Normal,
+		DebugLevel_Warning,
+		DebugLevel_Error
 	};
-	void DebugOut(const std::string& str, DebugLevel level = DebugLevel::Normal);
+	void DebugOut(const std::string& str, DebugLevel level = DebugLevel_Normal);
 
 	// Puts the current thread to sleeping state for a given time (OS can overtake)
 	void Sleep(float milliseconds);

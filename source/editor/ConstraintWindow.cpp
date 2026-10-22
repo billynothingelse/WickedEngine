@@ -6,7 +6,7 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create(ICON_CONSTRAINT " Constraint", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_CONSTRAINT " Constraint", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete PhysicsConstraintComponent");
@@ -83,14 +83,14 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	AddWidget(&rebindButton);
 
 	typeComboBox.Create("Type: ");
-	typeComboBox.AddItem("Fixed", (uint64_t)PhysicsConstraintComponent::Type::Fixed);
-	typeComboBox.AddItem("Point", (uint64_t)PhysicsConstraintComponent::Type::Point);
-	typeComboBox.AddItem("Distance", (uint64_t)PhysicsConstraintComponent::Type::Distance);
-	typeComboBox.AddItem("Hinge", (uint64_t)PhysicsConstraintComponent::Type::Hinge);
-	typeComboBox.AddItem("Cone", (uint64_t)PhysicsConstraintComponent::Type::Cone);
-	typeComboBox.AddItem("Six DOF", (uint64_t)PhysicsConstraintComponent::Type::SixDOF);
-	typeComboBox.AddItem("Swing Twist", (uint64_t)PhysicsConstraintComponent::Type::SwingTwist);
-	typeComboBox.AddItem("Slider", (uint64_t)PhysicsConstraintComponent::Type::Slider);
+	typeComboBox.AddItem("Fixed", (uint64_t)PhysicsConstraintComponent::Type_Fixed);
+	typeComboBox.AddItem("Point", (uint64_t)PhysicsConstraintComponent::Type_Point);
+	typeComboBox.AddItem("Distance", (uint64_t)PhysicsConstraintComponent::Type_Distance);
+	typeComboBox.AddItem("Hinge", (uint64_t)PhysicsConstraintComponent::Type_Hinge);
+	typeComboBox.AddItem("Cone", (uint64_t)PhysicsConstraintComponent::Type_Cone);
+	typeComboBox.AddItem("Six DOF", (uint64_t)PhysicsConstraintComponent::Type_SixDOF);
+	typeComboBox.AddItem("Swing Twist", (uint64_t)PhysicsConstraintComponent::Type_SwingTwist);
+	typeComboBox.AddItem("Slider", (uint64_t)PhysicsConstraintComponent::Type_Slider);
 	typeComboBox.OnSelect(forEachSelected([](auto physicscomponent, auto args) {
 		PhysicsConstraintComponent::Type type = (PhysicsConstraintComponent::Type)args.userdata;
 		if (physicscomponent->type != type)
@@ -122,19 +122,19 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	minSlider.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
 		switch (physicscomponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Distance:
+		case PhysicsConstraintComponent::Type_Distance:
 			physicscomponent->distance_constraint.min_distance = args.fValue;
 			break;
-		case PhysicsConstraintComponent::Type::Hinge:
+		case PhysicsConstraintComponent::Type_Hinge:
 			physicscomponent->hinge_constraint.min_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
-		case PhysicsConstraintComponent::Type::Cone:
+		case PhysicsConstraintComponent::Type_Cone:
 			physicscomponent->cone_constraint.half_cone_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
-		case PhysicsConstraintComponent::Type::SwingTwist:
+		case PhysicsConstraintComponent::Type_SwingTwist:
 			physicscomponent->swing_twist.min_twist_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
-		case PhysicsConstraintComponent::Type::Slider:
+		case PhysicsConstraintComponent::Type_Slider:
 			physicscomponent->slider_constraint.min_limit = args.fValue;
 			break;
 		default:
@@ -148,16 +148,16 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	maxSlider.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
 		switch (physicscomponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Distance:
+		case PhysicsConstraintComponent::Type_Distance:
 			physicscomponent->distance_constraint.max_distance = args.fValue;
 			break;
-		case PhysicsConstraintComponent::Type::Hinge:
+		case PhysicsConstraintComponent::Type_Hinge:
 			physicscomponent->hinge_constraint.max_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
-		case PhysicsConstraintComponent::Type::SwingTwist:
+		case PhysicsConstraintComponent::Type_SwingTwist:
 			physicscomponent->swing_twist.max_twist_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
-		case PhysicsConstraintComponent::Type::Slider:
+		case PhysicsConstraintComponent::Type_Slider:
 			physicscomponent->slider_constraint.max_limit = args.fValue;
 			break;
 		default:
@@ -178,10 +178,10 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	motorSlider1.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
 		switch (physicscomponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Hinge:
+		case PhysicsConstraintComponent::Type_Hinge:
 			physicscomponent->hinge_constraint.target_angular_velocity = args.fValue;
 			break;
-		case PhysicsConstraintComponent::Type::Slider:
+		case PhysicsConstraintComponent::Type_Slider:
 			physicscomponent->slider_constraint.target_velocity = args.fValue;
 			break;
 		default:
@@ -195,7 +195,7 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	motorSlider2.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
 		switch (physicscomponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Slider:
+		case PhysicsConstraintComponent::Type_Slider:
 			physicscomponent->slider_constraint.max_force = args.fValue;
 			break;
 		default:
@@ -360,7 +360,7 @@ void ConstraintWindow::SetEntity(Entity entity)
 
 		switch (physicsComponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Distance:
+		case PhysicsConstraintComponent::Type_Distance:
 			minSlider.SetText("Min distance: ");
 			maxSlider.SetText("Max distance: ");
 			minSlider.SetRange(0, 10);
@@ -368,7 +368,7 @@ void ConstraintWindow::SetEntity(Entity entity)
 			minSlider.SetValue(physicsComponent->distance_constraint.min_distance);
 			maxSlider.SetValue(physicsComponent->distance_constraint.max_distance);
 			break;
-		case PhysicsConstraintComponent::Type::Slider:
+		case PhysicsConstraintComponent::Type_Slider:
 			minSlider.SetText("Min limit: ");
 			maxSlider.SetText("Max limit: ");
 			minSlider.SetRange(-10, 0);
@@ -382,7 +382,7 @@ void ConstraintWindow::SetEntity(Entity entity)
 			motorSlider2.SetRange(0, 1000);
 			motorSlider2.SetValue(physicsComponent->slider_constraint.max_force);
 			break;
-		case PhysicsConstraintComponent::Type::Hinge:
+		case PhysicsConstraintComponent::Type_Hinge:
 			minSlider.SetText("Min angle: ");
 			maxSlider.SetText("Max angle: ");
 			minSlider.SetRange(-180, 0);
@@ -393,12 +393,12 @@ void ConstraintWindow::SetEntity(Entity entity)
 			motorSlider1.SetRange(-10, 10);
 			motorSlider1.SetValue(physicsComponent->hinge_constraint.target_angular_velocity);
 			break;
-		case PhysicsConstraintComponent::Type::Cone:
+		case PhysicsConstraintComponent::Type_Cone:
 			minSlider.SetText("Cone half angle: ");
 			minSlider.SetRange(0, 90);
 			minSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->cone_constraint.half_cone_angle));
 			break;
-		case PhysicsConstraintComponent::Type::SwingTwist:
+		case PhysicsConstraintComponent::Type_SwingTwist:
 			minSlider.SetText("Min twist angle: ");
 			maxSlider.SetText("Max twist angle: ");
 			minSlider.SetRange(-180, 0);
@@ -474,14 +474,14 @@ void ConstraintWindow::ResizeLayout()
 	const PhysicsConstraintComponent* physicsComponent = scene.constraints.GetComponent(entity);
 	if (physicsComponent != nullptr)
 	{
-		motorSlider1.SetVisible(physicsComponent->type == PhysicsConstraintComponent::Type::Hinge || physicsComponent->type == PhysicsConstraintComponent::Type::Slider);
-		motorSlider2.SetVisible(physicsComponent->type == PhysicsConstraintComponent::Type::Slider);
+		motorSlider1.SetVisible(physicsComponent->type == PhysicsConstraintComponent::Type_Hinge || physicsComponent->type == PhysicsConstraintComponent::Type_Slider);
+		motorSlider2.SetVisible(physicsComponent->type == PhysicsConstraintComponent::Type_Slider);
 
 		switch (physicsComponent->type)
 		{
-		case PhysicsConstraintComponent::Type::Distance:
-		case PhysicsConstraintComponent::Type::Slider:
-		case PhysicsConstraintComponent::Type::Hinge:
+		case PhysicsConstraintComponent::Type_Distance:
+		case PhysicsConstraintComponent::Type_Slider:
+		case PhysicsConstraintComponent::Type_Hinge:
 			minSlider.SetVisible(true);
 			maxSlider.SetVisible(true);
 
@@ -507,7 +507,7 @@ void ConstraintWindow::ResizeLayout()
 			maxRotationYSlider.SetVisible(false);
 			maxRotationZSlider.SetVisible(false);
 			break;
-		case PhysicsConstraintComponent::Type::SwingTwist:
+		case PhysicsConstraintComponent::Type_SwingTwist:
 			minSlider.SetVisible(true);
 			maxSlider.SetVisible(true);
 			normalConeSlider.SetVisible(true);
@@ -532,7 +532,7 @@ void ConstraintWindow::ResizeLayout()
 			maxRotationYSlider.SetVisible(false);
 			maxRotationZSlider.SetVisible(false);
 			break;
-		case PhysicsConstraintComponent::Type::Cone:
+		case PhysicsConstraintComponent::Type_Cone:
 			minSlider.SetVisible(true);
 			maxSlider.SetVisible(false);
 
@@ -558,7 +558,7 @@ void ConstraintWindow::ResizeLayout()
 			maxRotationYSlider.SetVisible(false);
 			maxRotationZSlider.SetVisible(false);
 			break;
-		case PhysicsConstraintComponent::Type::SixDOF:
+		case PhysicsConstraintComponent::Type_SixDOF:
 			minSlider.SetVisible(false);
 			maxSlider.SetVisible(false);
 

@@ -37,7 +37,7 @@ namespace Translator_Internal
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEFAULT);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-			desc.pt = PrimitiveTopology::TRIANGLELIST;
+			desc.pt = PrimitiveTopology_TRIANGLELIST;
 
 			device->CreatePipelineState(&desc, &pso_solidpart);
 		}
@@ -51,7 +51,7 @@ namespace Translator_Internal
 			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEFAULT);
 			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_WIRE_DOUBLESIDED);
 			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-			desc.pt = PrimitiveTopology::LINELIST;
+			desc.pt = PrimitiveTopology_LINELIST;
 
 			device->CreatePipelineState(&desc, &pso_wirepart);
 		}

@@ -24,7 +24,7 @@ void ProfilerWidget::Render(const Protean::Canvas& canvas, Protean::Graphics::Co
 void ProfilerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Window::Create("Profiler", Protean::Gui::Window::WindowControls::ALL);
+	Window::Create("Profiler", Protean::Gui::Window::WindowControls_ALL);
 
 	OnClose([=](Protean::Gui::EventArgs args) {
 		Protean::Profiler::SetEnabled(false);

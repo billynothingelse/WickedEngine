@@ -97,17 +97,17 @@ namespace Protean::Lua
 
 	int VideoInstance_BindLua::Play(lua_State* L)
 	{
-		videoinstance.flags |= Protean::Video::VideoInstance::Flags::Playing;
+		videoinstance.flags |= Protean::Video::VideoInstance::Flags_Playing;
 		return 0;
 	}
 	int VideoInstance_BindLua::Pause(lua_State* L)
 	{
-		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
+		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags_Playing;
 		return 0;
 	}
 	int VideoInstance_BindLua::Stop(lua_State* L)
 	{
-		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
+		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags_Playing;
 		Protean::Video::Seek(&videoinstance, 0);
 		return 0;
 	}
@@ -123,11 +123,11 @@ namespace Protean::Lua
 
 		if (looped)
 		{
-			videoinstance.flags |= Protean::Video::VideoInstance::Flags::Looped;
+			videoinstance.flags |= Protean::Video::VideoInstance::Flags_Looped;
 		}
 		else
 		{
-			videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Looped;
+			videoinstance.flags &= ~Protean::Video::VideoInstance::Flags_Looped;
 		}
 		return 0;
 	}

@@ -36,7 +36,7 @@ namespace Protean
 		cpu_gpu_mapped_resource_index = device->GetBufferIndex(); // this is now saved so that the renderer knows the last resource index that the scene was updated with
 		this->dt = dt;
 		time += dt;
-		const bool UMA = device->CheckCapability(GraphicsDeviceCapability::CACHE_COHERENT_UMA); // Using this to determine whether upload buffers will be bound directly for Unified Memory Architecture GPU or it's better to copy them to DEFAULT
+		const bool UMA = device->CheckCapability(GraphicsDeviceCapability_CACHE_COHERENT_UMA); // Using this to determine whether upload buffers will be bound directly for Unified Memory Architecture GPU or it's better to copy them to DEFAULT
 
 		Protean::JobSystem::context ctx;
 
@@ -74,20 +74,20 @@ namespace Protean
 			{
 				GPUBufferDesc desc;
 				desc.size = voxel_gpu_size;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE;
-				desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE;
+				desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
 				device->CreateBuffer(&desc, nullptr, &voxelgrid_gpu[cpu_gpu_mapped_resource_index]);
 				device->SetName(&voxelgrid_gpu[cpu_gpu_mapped_resource_index], "voxelgrid_gpu");
 			}
 			if (voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index].desc.size < voxel_gpu_size)
 			{
 				GPUBufferDesc desc;
-				desc.usage = Usage::UPLOAD;
+				desc.usage = Usage_UPLOAD;
 				desc.size = voxel_gpu_size;
 				if (UMA)
 				{
-					desc.bind_flags = BindFlag::SHADER_RESOURCE;
-					desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
+					desc.bind_flags = BindFlag_SHADER_RESOURCE;
+					desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
 				}
 				device->CreateBuffer(&desc, nullptr, &voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index]);
 				device->SetName(&voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index], "voxelgrid_gpu_upload");
@@ -126,8 +126,8 @@ namespace Protean
 			desc.stride = sizeof(ShaderMeshInstance);
 			desc.alignment = alignof(ShaderMeshInstance);
 			desc.size = desc.stride * instanceArraySize * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			if (!UMA)
 			{
 				// Non-UMA: separate Default usage buffer
@@ -138,11 +138,11 @@ namespace Protean
 				}
 
 				// Upload buffer shouldn't be used by shaders with Non-UMA:
-				desc.bind_flags = BindFlag::NONE;
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.bind_flags = BindFlag_NONE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 			}
 
-			desc.usage = Usage::UPLOAD;
+			desc.usage = Usage_UPLOAD;
 			for (int i = 0; i < arraysize(instanceUploadBuffer); ++i)
 			{
 				device->CreateBuffer(&desc, nullptr, &instanceUploadBuffer[i]);
@@ -168,8 +168,8 @@ namespace Protean
 			desc.stride = sizeof(ShaderMaterial);
 			desc.alignment = alignof(ShaderMaterial);
 			desc.size = desc.stride * materialArraySize * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			if (!UMA)
 			{
 				// Non-UMA: separate Default usage buffer
@@ -180,11 +180,11 @@ namespace Protean
 				}
 
 				// Upload buffer shouldn't be used by shaders with Non-UMA:
-				desc.bind_flags = BindFlag::NONE;
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.bind_flags = BindFlag_NONE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 			}
 
-			desc.usage = Usage::UPLOAD;
+			desc.usage = Usage_UPLOAD;
 			for (int i = 0; i < arraysize(materialUploadBuffer); ++i)
 			{
 				device->CreateBuffer(&desc, nullptr, &materialUploadBuffer[i]);
@@ -199,15 +199,15 @@ namespace Protean
 			desc.stride = sizeof(uint32_t);
 			desc.alignment = alignof(uint32_t);
 			desc.size = desc.stride * materialArraySize * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::UNORDERED_ACCESS;
-			desc.format = Format::R32_UINT;
+			desc.bind_flags = BindFlag_UNORDERED_ACCESS;
+			desc.format = Format_R32_UINT;
 			device->CreateBuffer(&desc, nullptr, &textureStreamingFeedbackBuffer);
 			device->SetName(&textureStreamingFeedbackBuffer, "Scene::textureStreamingFeedbackBuffer");
 
 			// Readback buffer shouldn't be used by shaders:
-			desc.usage = Usage::READBACK;
-			desc.bind_flags = BindFlag::NONE;
-			desc.misc_flags = ResourceMiscFlag::NONE;
+			desc.usage = Usage_READBACK;
+			desc.bind_flags = BindFlag_NONE;
+			desc.misc_flags = ResourceMiscFlag_NONE;
 			for (int i = 0; i < arraysize(textureStreamingFeedbackBuffer_readback); ++i)
 			{
 				device->CreateBuffer(&desc, nullptr, &textureStreamingFeedbackBuffer_readback[i]);
@@ -223,13 +223,13 @@ namespace Protean
 			if (queryHeap.desc.query_count < minQueryCount)
 			{
 				GPUQueryHeapDesc desc;
-				desc.type = GpuQueryType::OCCLUSION_BINARY;
+				desc.type = GpuQueryType_OCCLUSION_BINARY;
 				desc.query_count = minQueryCount * 2; // *2 to grow fast
 				bool success = device->CreateQueryHeap(&desc, &queryHeap);
 				assert(success);
 
 				GPUBufferDesc bd;
-				bd.usage = Usage::READBACK;
+				bd.usage = Usage_READBACK;
 				bd.size = desc.query_count * sizeof(uint64_t);
 
 				for (int i = 0; i < arraysize(queryResultBuffer); ++i)
@@ -303,12 +303,12 @@ namespace Protean
 
 		// This must be after lightmap requests were determined:
 		TLAS_instancesMapped = nullptr;
-		if (instanceArraySize > 0 && IsAccelerationStructureUpdateRequested() && device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		if (instanceArraySize > 0 && IsAccelerationStructureUpdateRequested() && device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 		{
 			GPUBufferDesc desc;
 			desc.stride = (uint32_t)device->GetTopLevelAccelerationStructureInstanceSize();
 			desc.size = desc.stride * instanceArraySize * 2; // *2 to grow fast
-			desc.usage = Usage::UPLOAD;
+			desc.usage = Usage_UPLOAD;
 			if (TLAS_instancesUpload->desc.size < desc.size)
 			{
 				for (int i = 0; i < arraysize(TLAS_instancesUpload); ++i)
@@ -351,8 +351,8 @@ namespace Protean
 			desc.stride = sizeof(ShaderGeometry);
 			desc.alignment = alignof(ShaderGeometry);
 			desc.size = desc.stride * geometryArraySize * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			if (!UMA)
 			{
 				// Non-UMA: separate Default usage buffer
@@ -363,11 +363,11 @@ namespace Protean
 				}
 
 				// Upload buffer shouldn't be used by shaders with Non-UMA:
-				desc.bind_flags = BindFlag::NONE;
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.bind_flags = BindFlag_NONE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 			}
 
-			desc.usage = Usage::UPLOAD;
+			desc.usage = Usage_UPLOAD;
 			for (int i = 0; i < arraysize(geometryUploadBuffer); ++i)
 			{
 				device->CreateBuffer(&desc, nullptr, &geometryUploadBuffer[i]);
@@ -383,8 +383,8 @@ namespace Protean
 		{
 			GPUBufferDesc desc;
 			desc.size = skinningDataSize * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_RAW;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_RAW;
 			if (!UMA)
 			{
 				// Non-UMA: separate Default usage buffer
@@ -395,11 +395,11 @@ namespace Protean
 				}
 
 				// Upload buffer shouldn't be used by shaders with Non-UMA:
-				desc.bind_flags = BindFlag::NONE;
-				desc.misc_flags = ResourceMiscFlag::NONE;
+				desc.bind_flags = BindFlag_NONE;
+				desc.misc_flags = ResourceMiscFlag_NONE;
 			}
 
-			desc.usage = Usage::UPLOAD;
+			desc.usage = Usage_UPLOAD;
 			for (int i = 0; i < arraysize(skinningUploadBuffer); ++i)
 			{
 				device->CreateBuffer(&desc, nullptr, &skinningUploadBuffer[i]);
@@ -468,8 +468,8 @@ namespace Protean
 			GPUBufferDesc desc;
 			desc.stride = sizeof(ShaderMeshlet);
 			desc.size = desc.stride * meshletCount * 2; // *2 to grow fast
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+			desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 			bool success = device->CreateBuffer(&desc, nullptr, &meshletBuffer);
 			assert(success);
 			device->SetName(&meshletBuffer, "meshletBuffer");
@@ -477,17 +477,17 @@ namespace Protean
 
 		if (IsAccelerationStructureUpdateRequested())
 		{
-			if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+			if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 			{
 				// Recreate top level acceleration structure if the object count changed:
 				if (TLAS.desc.top_level.count < instanceArraySize)
 				{
 					RaytracingAccelerationStructureDesc desc;
 					desc.flags = RaytracingAccelerationStructureDesc::FLAG_PREFER_FAST_BUILD;
-					desc.type = RaytracingAccelerationStructureDesc::Type::TOPLEVEL;
+					desc.type = RaytracingAccelerationStructureDesc::Type_TOPLEVEL;
 					desc.top_level.count = (uint32_t)instanceArraySize * 2; // *2 to grow fast
 					GPUBufferDesc bufdesc;
-					bufdesc.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+					bufdesc.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 					bufdesc.stride = (uint32_t)device->GetTopLevelAccelerationStructureInstanceSize();
 					bufdesc.size = bufdesc.stride * desc.top_level.count;
 					auto safety_init = [&](void* dest) {
@@ -535,26 +535,26 @@ namespace Protean
 				GPUBufferDesc buf;
 				buf.stride = sizeof(Surfel);
 				buf.size = buf.stride * SURFEL_CAPACITY;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-				buf.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+				buf.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 				device->CreateBufferZeroed(&buf, &surfelgi.surfelBuffer);
 				device->SetName(&surfelgi.surfelBuffer, "surfelgi.surfelBuffer");
 
 				buf.stride = sizeof(SurfelData);
 				buf.size = buf.stride * SURFEL_CAPACITY;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.dataBuffer);
 				device->SetName(&surfelgi.dataBuffer, "surfelgi.dataBuffer");
 
 				buf.stride = sizeof(SurfelVarianceDataPacked);
 				buf.size = buf.stride * SURFEL_CAPACITY * SURFEL_MOMENT_RESOLUTION * SURFEL_MOMENT_RESOLUTION;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.varianceBuffer);
 				device->SetName(&surfelgi.varianceBuffer, "surfelgi.varianceBuffer");
 
 				buf.stride = sizeof(uint);
 				buf.size = buf.stride * SURFEL_CAPACITY;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.aliveBuffer[0]);
 				device->SetName(&surfelgi.aliveBuffer[0], "surfelgi.aliveBuffer[0]");
 				device->CreateBufferZeroed(&buf, &surfelgi.aliveBuffer[1]);
@@ -573,7 +573,7 @@ namespace Protean
 
 				buf.stride = sizeof(SurfelStats);
 				buf.size = buf.stride;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				SurfelStats stats = {};
 				stats.deadCount = SURFEL_CAPACITY;
 				device->CreateBuffer(&buf, &stats, &surfelgi.statsBuffer);
@@ -582,25 +582,25 @@ namespace Protean
 				buf.stride = sizeof(uint);
 				buf.stride = sizeof(SurfelIndirectArgs);
 				buf.size = buf.stride;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED | ResourceMiscFlag::INDIRECT_ARGS;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED | ResourceMiscFlag_INDIRECT_ARGS;
 				device->CreateBufferZeroed(&buf, &surfelgi.indirectBuffer);
 				device->SetName(&surfelgi.indirectBuffer, "surfelgi.indirectBuffer");
 
 				buf.stride = sizeof(SurfelGridCell);
 				buf.size = buf.stride * SURFEL_TOTAL_TABLE_SIZE; // one hash table per cascaded grid level
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.gridBuffer);
 				device->SetName(&surfelgi.gridBuffer, "surfelgi.gridBuffer");
 
 				buf.stride = sizeof(uint);
 				buf.size = buf.stride * SURFEL_CAPACITY * 27; // each surfel can be in 3x3x3=27 cells
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.cellBuffer);
 				device->SetName(&surfelgi.cellBuffer, "surfelgi.cellBuffer");
 
 				buf.stride = sizeof(SurfelRayDataPacked);
 				buf.size = buf.stride * SURFEL_RAY_BUDGET;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.rayBuffer);
 				device->SetName(&surfelgi.rayBuffer, "surfelgi.rayBuffer");
 
@@ -610,7 +610,7 @@ namespace Protean
 				// is read by the raytrace to remap thread -> original ray slot.
 				buf.stride = sizeof(uint32_t);
 				buf.size = buf.stride * SURFEL_RAY_BUDGET;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &surfelgi.raySortKeyBuffer);
 				device->SetName(&surfelgi.raySortKeyBuffer, "surfelgi.raySortKeyBuffer");
 				device->CreateBufferZeroed(&buf, &surfelgi.raySortPayloadBuffer);
@@ -620,9 +620,9 @@ namespace Protean
 				TextureDesc tex;
 				tex.width = SURFEL_MOMENT_ATLAS_TEXELS;
 				tex.height = SURFEL_MOMENT_ATLAS_TEXELS;
-				tex.format = Format::R16G16_FLOAT;
-				tex.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				tex.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+				tex.format = Format_R16G16_FLOAT;
+				tex.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				tex.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 				device->CreateTexture(&tex, nullptr, &surfelgi.momentsTexture);
 				device->SetName(&surfelgi.momentsTexture, "surfelgi.momentsTexture");
 			}
@@ -649,45 +649,45 @@ namespace Protean
 				GPUBufferDesc buf;
 				buf.stride = sizeof(DDGIRayDataPacked);
 				buf.size = buf.stride * probe_count * DDGI_MAX_RAYCOUNT;
-				buf.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &ddgi.ray_buffer);
 				device->SetName(&ddgi.ray_buffer, "ddgi.ray_buffer");
 
 				buf.stride = sizeof(DDGIVarianceDataPacked);
 				buf.size = buf.stride * probe_count * DDGI_COLOR_RESOLUTION * DDGI_COLOR_RESOLUTION;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				device->CreateBufferZeroed(&buf, &ddgi.variance_buffer);
 				device->SetName(&ddgi.variance_buffer, "ddgi.variance_buffer");
 
 				buf.stride = sizeof(uint8_t);
 				buf.size = buf.stride * probe_count;
-				buf.misc_flags = ResourceMiscFlag::NONE;
-				buf.format = Format::R8_UINT;
+				buf.misc_flags = ResourceMiscFlag_NONE;
+				buf.format = Format_R8_UINT;
 				device->CreateBufferZeroed(&buf, &ddgi.raycount_buffer);
 				device->SetName(&ddgi.raycount_buffer, "ddgi.raycount_buffer");
 
 				buf.stride = sizeof(uint32_t);
 				buf.size = buf.stride * (probe_count * DDGI_MAX_RAYCOUNT + 4); // +4: counter/indirect dispatch args
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED | ResourceMiscFlag::INDIRECT_ARGS;
-				buf.format = Format::UNKNOWN;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED | ResourceMiscFlag_INDIRECT_ARGS;
+				buf.format = Format_UNKNOWN;
 				device->CreateBufferZeroed(&buf, &ddgi.rayallocation_buffer);
 				device->SetName(&ddgi.rayallocation_buffer, "ddgi.rayallocation_buffer");
 
 				buf.stride = sizeof(DDGIProbe);
 				buf.size = buf.stride * probe_count;
-				buf.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
-				buf.format = Format::UNKNOWN;
+				buf.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
+				buf.format = Format_UNKNOWN;
 				device->CreateBufferZeroed(&buf, &ddgi.probe_buffer);
 				device->SetName(&ddgi.probe_buffer, "ddgi.probe_buffer");
 
 				TextureDesc tex;
 				tex.width = DDGI_DEPTH_TEXELS * ddgi.grid_dimensions.x * ddgi.grid_dimensions.y;
 				tex.height = DDGI_DEPTH_TEXELS * ddgi.grid_dimensions.z;
-				tex.format = Format::R16G16_FLOAT;
+				tex.format = Format_R16G16_FLOAT;
 				tex.misc_flags = {};
-				tex.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				tex.layout = ResourceState::SHADER_RESOURCE;
+				tex.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				tex.layout = ResourceState_SHADER_RESOURCE;
 				Protean::vector<uint8_t> zerodata(ComputeTextureMemorySizeInBytes(tex));
 				SubresourceData initdata;
 				initdata.data_ptr = zerodata.data();
@@ -722,14 +722,14 @@ namespace Protean
 			if(!vxgi.radiance.IsValid())
 			{
 				TextureDesc desc;
-				desc.type = TextureDesc::Type::TEXTURE_3D;
+				desc.type = TextureDesc::Type_TEXTURE_3D;
 				desc.width = vxgi.res * (6 + DIFFUSE_CONE_COUNT);
 				desc.height = vxgi.res * VXGI_CLIPMAP_COUNT;
 				desc.depth = vxgi.res;
 				desc.mip_levels = 1;
-				desc.format = Format::R16G16B16A16_FLOAT;
-				desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				desc.usage = Usage::DEFAULT;
+				desc.format = Format_R16G16B16A16_FLOAT;
+				desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				desc.usage = Usage_DEFAULT;
 
 				device->CreateTexture(&desc, nullptr, &vxgi.radiance);
 				device->SetName(&vxgi.radiance, "vxgi.radiance");
@@ -742,28 +742,28 @@ namespace Protean
 			if (!vxgi.render_atomic.IsValid())
 			{
 				TextureDesc desc;
-				desc.type = TextureDesc::Type::TEXTURE_3D;
+				desc.type = TextureDesc::Type_TEXTURE_3D;
 				desc.width = vxgi.res * 6;
 				desc.height = vxgi.res;
 				desc.depth = vxgi.res * VOXELIZATION_CHANNEL_COUNT;
 				desc.mip_levels = 1;
-				desc.usage = Usage::DEFAULT;
-				desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				desc.format = Format::R32_UINT;
+				desc.usage = Usage_DEFAULT;
+				desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				desc.format = Format_R32_UINT;
 				device->CreateTexture(&desc, nullptr, &vxgi.render_atomic);
 				device->SetName(&vxgi.render_atomic, "vxgi.render_atomic");
 			}
 			if (!vxgi.sdf.IsValid())
 			{
 				TextureDesc desc;
-				desc.type = TextureDesc::Type::TEXTURE_3D;
+				desc.type = TextureDesc::Type_TEXTURE_3D;
 				desc.width = vxgi.res;
 				desc.height = vxgi.res * VXGI_CLIPMAP_COUNT;
 				desc.depth = vxgi.res;
 				desc.mip_levels = 1;
-				desc.usage = Usage::DEFAULT;
-				desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-				desc.format = Format::R16_FLOAT;
+				desc.usage = Usage_DEFAULT;
+				desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+				desc.format = Format_R16_FLOAT;
 				device->CreateTexture(&desc, nullptr, &vxgi.sdf);
 				device->SetName(&vxgi.sdf, "vxgi.sdf");
 				device->CreateTexture(&desc, nullptr, &vxgi.sdf_temp);
@@ -781,9 +781,9 @@ namespace Protean
 				allocated_impostor_capacity = uint32_t(objects.GetCount() * 2); // *2 to grow fast
 
 				GPUBufferDesc desc;
-				desc.usage = Usage::DEFAULT;
-				desc.bind_flags = BindFlag::INDEX_BUFFER | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-				desc.misc_flags = ResourceMiscFlag::BUFFER_RAW | ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::INDIRECT_ARGS | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
+				desc.usage = Usage_DEFAULT;
+				desc.bind_flags = BindFlag_INDEX_BUFFER | BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
+				desc.misc_flags = ResourceMiscFlag_BUFFER_RAW | ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_INDIRECT_ARGS | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
 
 				const uint64_t alignment =
 					device->GetMinOffsetAlignment(&desc) *
@@ -806,52 +806,52 @@ namespace Protean
 				buffer_offset = align(buffer_offset, alignment);
 				impostor_indirect.offset = buffer_offset;
 				impostor_indirect.size = sizeof(IndirectDrawArgsIndexedInstanced);
-				impostor_indirect.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_indirect.offset, impostor_indirect.size, nullptr, &indirect_stride);
+				impostor_indirect.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_indirect.offset, impostor_indirect.size, nullptr, &indirect_stride);
 				buffer_offset += impostor_indirect.size;
 
 				buffer_offset = align(buffer_offset, alignment);
-				Format format32 = Format::R32_UINT;
-				Format format16 = Format::R16_UINT;
+				Format format32 = Format_R32_UINT;
+				Format format16 = Format_R16_UINT;
 				impostor_ib32.offset = buffer_offset;
 				impostor_ib32.size = allocated_impostor_capacity * sizeof(uint32_t) * 6;
 				impostor_ib16.offset = buffer_offset;
 				impostor_ib16.size = allocated_impostor_capacity * sizeof(uint16_t) * 6;
-				impostor_ib32.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType::SRV, impostor_ib32.offset, impostor_ib32.size, &format32);
-				impostor_ib32.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_ib32.offset, impostor_ib32.size, &format32);
-				impostor_ib32.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::SRV, impostor_ib32.subresource_srv);
-				impostor_ib32.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::UAV, impostor_ib32.subresource_uav);
+				impostor_ib32.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType_SRV, impostor_ib32.offset, impostor_ib32.size, &format32);
+				impostor_ib32.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_ib32.offset, impostor_ib32.size, &format32);
+				impostor_ib32.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_SRV, impostor_ib32.subresource_srv);
+				impostor_ib32.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_UAV, impostor_ib32.subresource_uav);
 				buffer_offset += impostor_ib32.size;
 
-				impostor_ib16.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType::SRV, impostor_ib16.offset, impostor_ib16.size, &format16);
-				impostor_ib16.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_ib16.offset, impostor_ib16.size, &format16);
-				impostor_ib16.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::SRV, impostor_ib16.subresource_srv);
-				impostor_ib16.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::UAV, impostor_ib16.subresource_uav);
+				impostor_ib16.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType_SRV, impostor_ib16.offset, impostor_ib16.size, &format16);
+				impostor_ib16.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_ib16.offset, impostor_ib16.size, &format16);
+				impostor_ib16.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_SRV, impostor_ib16.subresource_srv);
+				impostor_ib16.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_UAV, impostor_ib16.subresource_uav);
 
 				buffer_offset = align(buffer_offset, alignment);
 				impostor_vb_pos.offset = buffer_offset;
 				impostor_vb_pos.size = allocated_impostor_capacity * sizeof(MeshComponent::Vertex_POS32W) * 4;
-				impostor_vb_pos.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType::SRV, impostor_vb_pos.offset, impostor_vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT);
-				impostor_vb_pos.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_vb_pos.offset, impostor_vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT); // can't have RGB32F format for UAV!
-				impostor_vb_pos.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::SRV, impostor_vb_pos.subresource_srv);
-				impostor_vb_pos.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::UAV, impostor_vb_pos.subresource_uav);
+				impostor_vb_pos.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType_SRV, impostor_vb_pos.offset, impostor_vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT);
+				impostor_vb_pos.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_vb_pos.offset, impostor_vb_pos.size, &MeshComponent::Vertex_POS32W::FORMAT); // can't have RGB32F format for UAV!
+				impostor_vb_pos.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_SRV, impostor_vb_pos.subresource_srv);
+				impostor_vb_pos.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_UAV, impostor_vb_pos.subresource_uav);
 				buffer_offset += impostor_vb_pos.size;
 
 				buffer_offset = align(buffer_offset, alignment);
 				impostor_vb_nor.offset = buffer_offset;
 				impostor_vb_nor.size = allocated_impostor_capacity * sizeof(MeshComponent::Vertex_NOR) * 4;
-				impostor_vb_nor.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType::SRV, impostor_vb_nor.offset, impostor_vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-				impostor_vb_nor.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_vb_nor.offset, impostor_vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-				impostor_vb_nor.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::SRV, impostor_vb_nor.subresource_srv);
-				impostor_vb_nor.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::UAV, impostor_vb_nor.subresource_uav);
+				impostor_vb_nor.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType_SRV, impostor_vb_nor.offset, impostor_vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+				impostor_vb_nor.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_vb_nor.offset, impostor_vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+				impostor_vb_nor.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_SRV, impostor_vb_nor.subresource_srv);
+				impostor_vb_nor.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_UAV, impostor_vb_nor.subresource_uav);
 				buffer_offset += impostor_vb_nor.size;
 
 				buffer_offset = align(buffer_offset, alignment);
 				impostor_data.offset = buffer_offset;
 				impostor_data.size = allocated_impostor_capacity * sizeof(uint2);
-				impostor_data.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType::SRV, impostor_data.offset, impostor_data.size);
-				impostor_data.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType::UAV, impostor_data.offset, impostor_data.size);
-				impostor_data.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::SRV, impostor_data.subresource_srv);
-				impostor_data.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType::UAV, impostor_data.subresource_uav);
+				impostor_data.subresource_srv = device->CreateSubresource(&impostorBuffer, SubresourceType_SRV, impostor_data.offset, impostor_data.size);
+				impostor_data.subresource_uav = device->CreateSubresource(&impostorBuffer, SubresourceType_UAV, impostor_data.offset, impostor_data.size);
+				impostor_data.descriptor_srv = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_SRV, impostor_data.subresource_srv);
+				impostor_data.descriptor_uav = device->GetDescriptorIndex(&impostorBuffer, SubresourceType_UAV, impostor_data.subresource_uav);
 				buffer_offset += impostor_data.size;
 
 			}
@@ -898,10 +898,10 @@ namespace Protean
 				cloudmap_frame = 0;
 
 				TextureDesc desc;
-				desc.format = Format::R16G16B16A16_FLOAT;
+				desc.format = Format_R16G16B16A16_FLOAT;
 				desc.width = cloudmap_resolution;
 				desc.height = cloudmap_resolution;
-				desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+				desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 				bool success = device->CreateTexture(&desc, nullptr, &cloudmap);
 				assert(success);
 				device->SetName(&cloudmap, "cloudmap");
@@ -909,8 +909,8 @@ namespace Protean
 				GPUBufferDesc bd;
 				bd.stride = sizeof(XMUINT4) * 2 + sizeof(float);
 				bd.size = bd.stride * (desc.width / 2) * (desc.height / 2);
-				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
-				bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+				bd.bind_flags = BindFlag_UNORDERED_ACCESS;
+				bd.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 				success = device->CreateBuffer(&bd, nullptr, &cloudmap_variance);
 				device->SetName(&cloudmap_variance, "cloudmap_variance");
 
@@ -926,39 +926,39 @@ namespace Protean
 		// Shader scene resources:
 		if (UMA)
 		{
-			shaderscene.instancebuffer = device->GetDescriptorIndex(&instanceUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
-			shaderscene.geometrybuffer = device->GetDescriptorIndex(&geometryUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
-			shaderscene.materialbuffer = device->GetDescriptorIndex(&materialUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
+			shaderscene.instancebuffer = device->GetDescriptorIndex(&instanceUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
+			shaderscene.geometrybuffer = device->GetDescriptorIndex(&geometryUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
+			shaderscene.materialbuffer = device->GetDescriptorIndex(&materialUploadBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
 		}
 		else
 		{
-			shaderscene.instancebuffer = device->GetDescriptorIndex(&instanceBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
-			shaderscene.geometrybuffer = device->GetDescriptorIndex(&geometryBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
-			shaderscene.materialbuffer = device->GetDescriptorIndex(&materialBuffer[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
+			shaderscene.instancebuffer = device->GetDescriptorIndex(&instanceBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
+			shaderscene.geometrybuffer = device->GetDescriptorIndex(&geometryBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
+			shaderscene.materialbuffer = device->GetDescriptorIndex(&materialBuffer[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
 		}
 		shaderscene.instanceCount = (uint)instanceArraySize;
 		shaderscene.geometryCount = (uint)geometryArraySize;
 		shaderscene.materialCount = (uint)materialArraySize;
-		shaderscene.meshletbuffer = device->GetDescriptorIndex(&meshletBuffer, SubresourceType::SRV);
-		shaderscene.texturestreamingbuffer = device->GetDescriptorIndex(&textureStreamingFeedbackBuffer, SubresourceType::UAV);
+		shaderscene.meshletbuffer = device->GetDescriptorIndex(&meshletBuffer, SubresourceType_SRV);
+		shaderscene.texturestreamingbuffer = device->GetDescriptorIndex(&textureStreamingFeedbackBuffer, SubresourceType_UAV);
 		if (weather.skyMap.IsValid())
 		{
-			shaderscene.globalenvmap = device->GetDescriptorIndex(&weather.skyMap.GetTexture(), SubresourceType::SRV, weather.skyMap.GetTextureSRGBSubresource());
+			shaderscene.globalenvmap = device->GetDescriptorIndex(&weather.skyMap.GetTexture(), SubresourceType_SRV, weather.skyMap.GetTextureSRGBSubresource());
 		}
 		else
 		{
 			shaderscene.globalenvmap = -1;
 		}
-		shaderscene.texture_cloudmap = device->GetDescriptorIndex(&cloudmap, SubresourceType::SRV);
+		shaderscene.texture_cloudmap = device->GetDescriptorIndex(&cloudmap, SubresourceType_SRV);
 
 		if (probes.GetCount() > 0 && probes[0].texture.IsValid())
 		{
-			shaderscene.globalprobe = device->GetDescriptorIndex(&probes[0].texture, SubresourceType::SRV);
+			shaderscene.globalprobe = device->GetDescriptorIndex(&probes[0].texture, SubresourceType_SRV);
 			shaderscene.globalprobe_mipcount16f = Protean::Math::f32tof16(float(probes[0].texture.desc.mip_levels));
 		}
 		else if (global_dynamic_probe.texture.IsValid())
 		{
-			shaderscene.globalprobe = device->GetDescriptorIndex(&global_dynamic_probe.texture, SubresourceType::SRV);
+			shaderscene.globalprobe = device->GetDescriptorIndex(&global_dynamic_probe.texture, SubresourceType_SRV);
 			shaderscene.globalprobe_mipcount16f = Protean::Math::f32tof16(float(global_dynamic_probe.texture.desc.mip_levels));
 		}
 		else
@@ -968,10 +968,10 @@ namespace Protean
 		}
 
 		shaderscene.impostorInstanceOffset = impostorInstanceOffset;
-		shaderscene.TLAS = device->GetDescriptorIndex(&TLAS, SubresourceType::SRV);
-		shaderscene.BVH_counter = device->GetDescriptorIndex(&BVH.primitiveCounterBuffer, SubresourceType::SRV);
-		shaderscene.BVH_nodes = device->GetDescriptorIndex(&BVH.bvhNodeBuffer, SubresourceType::SRV);
-		shaderscene.BVH_primitives = device->GetDescriptorIndex(&BVH.primitiveBuffer, SubresourceType::SRV);
+		shaderscene.TLAS = device->GetDescriptorIndex(&TLAS, SubresourceType_SRV);
+		shaderscene.BVH_counter = device->GetDescriptorIndex(&BVH.primitiveCounterBuffer, SubresourceType_SRV);
+		shaderscene.BVH_nodes = device->GetDescriptorIndex(&BVH.bvhNodeBuffer, SubresourceType_SRV);
+		shaderscene.BVH_primitives = device->GetDescriptorIndex(&BVH.primitiveBuffer, SubresourceType_SRV);
 
 		shaderscene.aabb_min = bounds.getMin();
 		shaderscene.aabb_max = bounds.getMax();
@@ -1004,8 +1004,8 @@ namespace Protean
 		shaderscene.weather.ocean.extinction_color = XMFLOAT4(1 - weather.oceanParameters.extinctionColor.x, 1 - weather.oceanParameters.extinctionColor.y, 1 - weather.oceanParameters.extinctionColor.z, 1);
 		shaderscene.weather.ocean.water_height = weather.oceanParameters.waterHeight;
 		shaderscene.weather.ocean.patch_size_rcp = 1.0f / weather.oceanParameters.patch_length;
-		shaderscene.weather.ocean.texture_displacementmap = device->GetDescriptorIndex(ocean.getDisplacementMap(), SubresourceType::SRV);
-		shaderscene.weather.ocean.texture_gradientmap = device->GetDescriptorIndex(ocean.getGradientMap(), SubresourceType::SRV);
+		shaderscene.weather.ocean.texture_displacementmap = device->GetDescriptorIndex(ocean.getDisplacementMap(), SubresourceType_SRV);
+		shaderscene.weather.ocean.texture_gradientmap = device->GetDescriptorIndex(ocean.getGradientMap(), SubresourceType_SRV);
 		shaderscene.weather.stars = weather.stars;
 		XMStoreFloat4(&shaderscene.weather.stars_rotation, XMQuaternionNormalize(XMQuaternionInverse(XMLoadFloat4(&weather.stars_rotation_quaternion))));
 		shaderscene.weather.rain_amount = weather.rain_amount;
@@ -1017,10 +1017,10 @@ namespace Protean
 
 		shaderscene.ddgi.grid_dimensions = ddgi.grid_dimensions;
 		shaderscene.ddgi.probe_count = ddgi.grid_dimensions.x * ddgi.grid_dimensions.y * ddgi.grid_dimensions.z;
-		shaderscene.ddgi.probe_buffer = device->GetDescriptorIndex(&ddgi.probe_buffer, SubresourceType::SRV);
+		shaderscene.ddgi.probe_buffer = device->GetDescriptorIndex(&ddgi.probe_buffer, SubresourceType_SRV);
 		shaderscene.ddgi.depth_texture_resolution = uint2(ddgi.depth_texture.desc.width, ddgi.depth_texture.desc.height);
 		shaderscene.ddgi.depth_texture_resolution_rcp = float2(1.0f / shaderscene.ddgi.depth_texture_resolution.x, 1.0f / shaderscene.ddgi.depth_texture_resolution.y);
-		shaderscene.ddgi.depth_texture = device->GetDescriptorIndex(&ddgi.depth_texture, SubresourceType::SRV);
+		shaderscene.ddgi.depth_texture = device->GetDescriptorIndex(&ddgi.depth_texture, SubresourceType_SRV);
 		shaderscene.ddgi.grid_min = ddgi.grid_min;
 		shaderscene.ddgi.grid_extents.x = abs(ddgi.grid_max.x - ddgi.grid_min.x);
 		shaderscene.ddgi.grid_extents.y = abs(ddgi.grid_max.y - ddgi.grid_min.y);
@@ -1043,9 +1043,9 @@ namespace Protean
 		// when surfel GI is inactive so the sampler's guard skips it.
 		if (surfelgi.surfelBuffer.IsValid())
 		{
-			shaderscene.surfelgi.buffer = device->GetDescriptorIndex(&surfelgi.surfelBuffer, SubresourceType::SRV);
-			shaderscene.surfelgi.gridbuffer = device->GetDescriptorIndex(&surfelgi.gridBuffer, SubresourceType::SRV);
-			shaderscene.surfelgi.cellbuffer = device->GetDescriptorIndex(&surfelgi.cellBuffer, SubresourceType::SRV);
+			shaderscene.surfelgi.buffer = device->GetDescriptorIndex(&surfelgi.surfelBuffer, SubresourceType_SRV);
+			shaderscene.surfelgi.gridbuffer = device->GetDescriptorIndex(&surfelgi.gridBuffer, SubresourceType_SRV);
+			shaderscene.surfelgi.cellbuffer = device->GetDescriptorIndex(&surfelgi.cellBuffer, SubresourceType_SRV);
 		}
 		else
 		{
@@ -1066,11 +1066,11 @@ namespace Protean
 			VoxelGrid& voxelgrid = voxel_grids[0];
 			if (UMA)
 			{
-				shaderscene.voxelgrid.buffer = device->GetDescriptorIndex(&voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
+				shaderscene.voxelgrid.buffer = device->GetDescriptorIndex(&voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
 			}
 			else
 			{
-				shaderscene.voxelgrid.buffer = device->GetDescriptorIndex(&voxelgrid_gpu[cpu_gpu_mapped_resource_index], SubresourceType::SRV);
+				shaderscene.voxelgrid.buffer = device->GetDescriptorIndex(&voxelgrid_gpu[cpu_gpu_mapped_resource_index], SubresourceType_SRV);
 			}
 			shaderscene.voxelgrid.resolution = voxelgrid.resolution;
 			shaderscene.voxelgrid.resolution_div4 = voxelgrid.resolution_div4;
@@ -1244,13 +1244,13 @@ namespace Protean
 			switch (collider.shape)
 			{
 			default:
-			case ColliderComponent::Shape::Sphere:
+			case ColliderComponent::Shape_Sphere:
 				aabb.createFromHalfWidth(collider.sphere.center, XMFLOAT3(collider.sphere.radius, collider.sphere.radius, collider.sphere.radius));
 				break;
-			case ColliderComponent::Shape::Capsule:
+			case ColliderComponent::Shape_Capsule:
 				aabb = collider.capsule.getAABB();
 				break;
-			case ColliderComponent::Shape::Plane:
+			case ColliderComponent::Shape_Plane:
 			{
 				collider.plane.origin = collider.sphere.center;
 				XMVECTOR N = XMVectorSet(0, 1, 0, 0);
@@ -1406,11 +1406,11 @@ namespace Protean
 
 		// First write the root entity to staging area:
 		archive.SetReadModeAndResetPos(false);
-		Entity_Serialize(archive, seri, entity, EntitySerializeFlags::RECURSIVE);
+		Entity_Serialize(archive, seri, entity, EntitySerializeFlags_RECURSIVE);
 
 		// Then deserialize root:
 		archive.SetReadModeAndResetPos(true);
-		Entity root = Entity_Serialize(archive, seri, INVALID_ENTITY, EntitySerializeFlags::RECURSIVE | EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES);
+		Entity root = Entity_Serialize(archive, seri, INVALID_ENTITY, EntitySerializeFlags_RECURSIVE | EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES);
 
 		return root;
 	}
@@ -2148,7 +2148,7 @@ namespace Protean
 							keyRight = k;
 						}
 					}
-					if (path_data_type != AnimationComponent::AnimationChannel::PathDataType::Event)
+					if (path_data_type != AnimationComponent::AnimationChannel::PathDataType_Event)
 					{
 						if (animation.timer < timeFirst)
 						{
@@ -2186,9 +2186,9 @@ namespace Protean
 					MaterialComponent* target_material = nullptr;
 
 					if (
-						channel.path == AnimationComponent::AnimationChannel::Path::TRANSLATION ||
-						channel.path == AnimationComponent::AnimationChannel::Path::ROTATION ||
-						channel.path == AnimationComponent::AnimationChannel::Path::SCALE
+						channel.path == AnimationComponent::AnimationChannel::Path_TRANSLATION ||
+						channel.path == AnimationComponent::AnimationChannel::Path_ROTATION ||
+						channel.path == AnimationComponent::AnimationChannel::Path_SCALE
 						)
 					{
 						target_transform = transforms.GetComponent(channel.target);
@@ -2196,20 +2196,20 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::TRANSLATION:
+						case AnimationComponent::AnimationChannel::Path_TRANSLATION:
 							interpolator.f3 = target_transform->translation_local;
 							break;
-						case AnimationComponent::AnimationChannel::Path::ROTATION:
+						case AnimationComponent::AnimationChannel::Path_ROTATION:
 							interpolator.f4 = target_transform->rotation_local;
 							break;
-						case AnimationComponent::AnimationChannel::Path::SCALE:
+						case AnimationComponent::AnimationChannel::Path_SCALE:
 							interpolator.f3 = target_transform->scale_local;
 							break;
 						default:
 							break;
 						}
 					}
-					else if (channel.path == AnimationComponent::AnimationChannel::Path::WEIGHTS)
+					else if (channel.path == AnimationComponent::AnimationChannel::Path_WEIGHTS)
 					{
 						target_mesh = meshes.GetComponent(channel.target);
 						if (target_mesh == nullptr)
@@ -2225,8 +2225,8 @@ namespace Protean
 						animation.morph_weights_temp.resize(target_mesh->morph_targets.size());
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::LIGHT_COLOR &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_LIGHT_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_LIGHT_COLOR &&
+						channel.path < AnimationComponent::AnimationChannel::Path__LIGHT_RANGE_END
 						)
 					{
 						target_light = lights.GetComponent(channel.target);
@@ -2234,19 +2234,19 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_COLOR:
 							interpolator.f3 = target_light->color;
 							break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY:
 							interpolator.f = target_light->intensity;
 							break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_RANGE:
 							interpolator.f = target_light->range;
 							break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE:
 							interpolator.f = target_light->innerConeAngle;
 							break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE:
 							interpolator.f = target_light->outerConeAngle;
 							break;
 						default:
@@ -2254,8 +2254,8 @@ namespace Protean
 						}
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::SOUND_PLAY &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_SOUND_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_SOUND_PLAY &&
+						channel.path < AnimationComponent::AnimationChannel::Path__SOUND_RANGE_END
 						)
 					{
 						target_sound = sounds.GetComponent(channel.target);
@@ -2263,7 +2263,7 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+						case AnimationComponent::AnimationChannel::Path_SOUND_VOLUME:
 							interpolator.f = target_sound->volume;
 							break;
 						default:
@@ -2271,8 +2271,8 @@ namespace Protean
 						}
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_EMITTER_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT &&
+						channel.path < AnimationComponent::AnimationChannel::Path__EMITTER_RANGE_END
 						)
 					{
 						target_emitter = emitters.GetComponent(channel.target);
@@ -2280,7 +2280,7 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+						case AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT:
 							interpolator.f = target_emitter->count;
 							break;
 						default:
@@ -2288,8 +2288,8 @@ namespace Protean
 						}
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::CAMERA_FOV &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_CAMERA_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_CAMERA_FOV &&
+						channel.path < AnimationComponent::AnimationChannel::Path__CAMERA_RANGE_END
 						)
 					{
 						target_camera = cameras.GetComponent(channel.target);
@@ -2297,16 +2297,16 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_FOV:
 							interpolator.f = target_camera->fov;
 							break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH:
 							interpolator.f = target_camera->focal_length;
 							break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE:
 							interpolator.f = target_camera->aperture_size;
 							break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE:
 							interpolator.f2 = target_camera->aperture_shape;
 							break;
 						default:
@@ -2314,8 +2314,8 @@ namespace Protean
 						}
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_SCRIPT_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY &&
+						channel.path < AnimationComponent::AnimationChannel::Path__SCRIPT_RANGE_END
 						)
 					{
 						target_script = scripts.GetComponent(channel.target);
@@ -2323,8 +2323,8 @@ namespace Protean
 							continue;
 					}
 					else if (
-						channel.path >= AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR &&
-						channel.path < AnimationComponent::AnimationChannel::Path::_MATERIAL_RANGE_END
+						channel.path >= AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR &&
+						channel.path < AnimationComponent::AnimationChannel::Path__MATERIAL_RANGE_END
 						)
 					{
 						target_material = materials.GetComponent(channel.target);
@@ -2332,22 +2332,22 @@ namespace Protean
 							continue;
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR:
 							interpolator.f4 = target_material->baseColor;
 							break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE:
 							interpolator.f4 = target_material->emissiveColor;
 							break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS:
 							interpolator.f = target_material->roughness;
 							break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS:
 							interpolator.f = target_material->metalness;
 							break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE:
 							interpolator.f = target_material->reflectance;
 							break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD:
 							interpolator.f4 = target_material->texMulAdd;
 							break;
 						default:
@@ -2360,7 +2360,7 @@ namespace Protean
 						continue;
 					}
 
-					if (path_data_type == AnimationComponent::AnimationChannel::PathDataType::Event)
+					if (path_data_type == AnimationComponent::AnimationChannel::PathDataType_Event)
 					{
 						// No path data, only event trigger:
 						if (keyLeft == channel.next_event && animation.timer >= timeLeft)
@@ -2368,16 +2368,16 @@ namespace Protean
 							channel.next_event++;
 							switch (channel.path)
 							{
-							case AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+							case AnimationComponent::AnimationChannel::Path_SOUND_PLAY:
 								target_sound->Play();
 								break;
-							case AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+							case AnimationComponent::AnimationChannel::Path_SOUND_STOP:
 								target_sound->Stop();
 								break;
-							case AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+							case AnimationComponent::AnimationChannel::Path_SCRIPT_PLAY:
 								target_script->Play();
 								break;
-							case AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+							case AnimationComponent::AnimationChannel::Path_SCRIPT_STOP:
 								target_script->Stop();
 								break;
 							default:
@@ -2398,31 +2398,31 @@ namespace Protean
 							switch (path_data_type)
 							{
 							default:
-							case AnimationComponent::AnimationChannel::PathDataType::Float:
+							case AnimationComponent::AnimationChannel::PathDataType_Float:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size());
 								interpolator.f = animationdata->keyframe_data[key];
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float2:
+							case AnimationComponent::AnimationChannel::PathDataType_Float2:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 2);
 								interpolator.f2 = ((const XMFLOAT2*)animationdata->keyframe_data.data())[key];
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float3:
+							case AnimationComponent::AnimationChannel::PathDataType_Float3:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 3);
 								interpolator.f3 = ((const XMFLOAT3*)animationdata->keyframe_data.data())[key];
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float4:
+							case AnimationComponent::AnimationChannel::PathDataType_Float4:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 4);
 								interpolator.f4 = ((const XMFLOAT4*)animationdata->keyframe_data.data())[key];
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Weights:
+							case AnimationComponent::AnimationChannel::PathDataType_Weights:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * animation.morph_weights_temp.size());
 								for (size_t j = 0; j < animation.morph_weights_temp.size(); ++j)
@@ -2451,7 +2451,7 @@ namespace Protean
 							switch (path_data_type)
 							{
 							default:
-							case AnimationComponent::AnimationChannel::PathDataType::Float:
+							case AnimationComponent::AnimationChannel::PathDataType_Float:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size());
 								float vLeft = animationdata->keyframe_data[keyLeft];
@@ -2460,7 +2460,7 @@ namespace Protean
 								interpolator.f = vAnim;
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float2:
+							case AnimationComponent::AnimationChannel::PathDataType_Float2:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 2);
 								const XMFLOAT2* data = (const XMFLOAT2*)animationdata->keyframe_data.data();
@@ -2470,7 +2470,7 @@ namespace Protean
 								XMStoreFloat2(&interpolator.f2, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float3:
+							case AnimationComponent::AnimationChannel::PathDataType_Float3:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 3);
 								const XMFLOAT3* data = (const XMFLOAT3*)animationdata->keyframe_data.data();
@@ -2480,14 +2480,14 @@ namespace Protean
 								XMStoreFloat3(&interpolator.f3, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float4:
+							case AnimationComponent::AnimationChannel::PathDataType_Float4:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 4);
 								const XMFLOAT4* data = (const XMFLOAT4*)animationdata->keyframe_data.data();
 								XMVECTOR vLeft = XMLoadFloat4(&data[keyLeft]);
 								XMVECTOR vRight = XMLoadFloat4(&data[keyRight]);
 								XMVECTOR vAnim;
-								if (channel.path == AnimationComponent::AnimationChannel::Path::ROTATION)
+								if (channel.path == AnimationComponent::AnimationChannel::Path_ROTATION)
 								{
 									vAnim = XMQuaternionSlerp(vLeft, vRight, t);
 									vAnim = XMQuaternionNormalize(vAnim);
@@ -2499,7 +2499,7 @@ namespace Protean
 								XMStoreFloat4(&interpolator.f4, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Weights:
+							case AnimationComponent::AnimationChannel::PathDataType_Weights:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * animation.morph_weights_temp.size());
 								for (size_t j = 0; j < animation.morph_weights_temp.size(); ++j)
@@ -2534,7 +2534,7 @@ namespace Protean
 							switch (path_data_type)
 							{
 							default:
-							case AnimationComponent::AnimationChannel::PathDataType::Float:
+							case AnimationComponent::AnimationChannel::PathDataType_Float:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size());
 								float vLeft = animationdata->keyframe_data[keyLeft * 3 + 1];
@@ -2545,7 +2545,7 @@ namespace Protean
 								interpolator.f = vAnim;
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float2:
+							case AnimationComponent::AnimationChannel::PathDataType_Float2:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 2 * 3);
 								const XMFLOAT2* data = (const XMFLOAT2*)animationdata->keyframe_data.data();
@@ -2557,7 +2557,7 @@ namespace Protean
 								XMStoreFloat2(&interpolator.f2, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float3:
+							case AnimationComponent::AnimationChannel::PathDataType_Float3:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 3 * 3);
 								const XMFLOAT3* data = (const XMFLOAT3*)animationdata->keyframe_data.data();
@@ -2569,7 +2569,7 @@ namespace Protean
 								XMStoreFloat3(&interpolator.f3, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Float4:
+							case AnimationComponent::AnimationChannel::PathDataType_Float4:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * 4 * 3);
 								const XMFLOAT4* data = (const XMFLOAT4*)animationdata->keyframe_data.data();
@@ -2578,14 +2578,14 @@ namespace Protean
 								XMVECTOR vRightTanIn = dt * XMLoadFloat4(&data[keyRight * 3 + 0]);
 								XMVECTOR vRight = XMLoadFloat4(&data[keyRight * 3 + 1]);
 								XMVECTOR vAnim = (2 * t3 - 3 * t2 + 1) * vLeft + (t3 - 2 * t2 + t) * vLeftTanOut + (-2 * t3 + 3 * t2) * vRight + (t3 - t2) * vRightTanIn;
-								if (channel.path == AnimationComponent::AnimationChannel::Path::ROTATION)
+								if (channel.path == AnimationComponent::AnimationChannel::Path_ROTATION)
 								{
 									vAnim = XMQuaternionNormalize(vAnim);
 								}
 								XMStoreFloat4(&interpolator.f4, vAnim);
 							}
 							break;
-							case AnimationComponent::AnimationChannel::PathDataType::Weights:
+							case AnimationComponent::AnimationChannel::PathDataType_Weights:
 							{
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size() * animation.morph_weights_temp.size() * 3);
 								for (size_t j = 0; j < animation.morph_weights_temp.size(); ++j)
@@ -2617,7 +2617,7 @@ namespace Protean
 
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::TRANSLATION:
+						case AnimationComponent::AnimationChannel::Path_TRANSLATION:
 						{
 							const XMVECTOR aT = XMLoadFloat3(&target_transform->translation_local);
 							XMVECTOR bT = XMLoadFloat3(&interpolator.f3);
@@ -2674,7 +2674,7 @@ namespace Protean
 							}
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::ROTATION:
+						case AnimationComponent::AnimationChannel::Path_ROTATION:
 						{
 							const XMVECTOR aR = XMLoadFloat4(&target_transform->rotation_local);
 							XMVECTOR bR = XMLoadFloat4(&interpolator.f4);
@@ -2732,7 +2732,7 @@ namespace Protean
 
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::SCALE:
+						case AnimationComponent::AnimationChannel::Path_SCALE:
 						{
 							const XMVECTOR aS = XMLoadFloat3(&target_transform->scale_local);
 							XMVECTOR bS = XMLoadFloat3(&interpolator.f3);
@@ -2773,27 +2773,27 @@ namespace Protean
 					{
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_COLOR:
 						{
 							target_light->color = Protean::Math::Lerp(target_light->color, interpolator.f3, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_INTENSITY:
 						{
 							target_light->intensity = Protean::Math::Lerp(target_light->intensity, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_RANGE:
 						{
 							target_light->range = Protean::Math::Lerp(target_light->range, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_INNERCONE:
 						{
 							target_light->innerConeAngle = Protean::Math::Lerp(target_light->innerConeAngle, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+						case AnimationComponent::AnimationChannel::Path_LIGHT_OUTERCONE:
 						{
 							target_light->outerConeAngle = Protean::Math::Lerp(target_light->outerConeAngle, interpolator.f, t);
 						}
@@ -2807,7 +2807,7 @@ namespace Protean
 					{
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+						case AnimationComponent::AnimationChannel::Path_SOUND_VOLUME:
 						{
 							target_sound->volume = Protean::Math::Lerp(target_sound->volume, interpolator.f, t);
 						}
@@ -2821,7 +2821,7 @@ namespace Protean
 					{
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+						case AnimationComponent::AnimationChannel::Path_EMITTER_EMITCOUNT:
 						{
 							target_emitter->count = Protean::Math::Lerp(target_emitter->count, interpolator.f, t);
 						}
@@ -2835,22 +2835,22 @@ namespace Protean
 					{
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_FOV:
 						{
 							target_camera->fov = Protean::Math::Lerp(target_camera->fov, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_FOCAL_LENGTH:
 						{
 							target_camera->focal_length = Protean::Math::Lerp(target_camera->focal_length, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SIZE:
 						{
 							target_camera->aperture_size = Protean::Math::Lerp(target_camera->aperture_size, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+						case AnimationComponent::AnimationChannel::Path_CAMERA_APERTURE_SHAPE:
 						{
 							target_camera->aperture_shape = Protean::Math::Lerp(target_camera->aperture_shape, interpolator.f2, t);
 						}
@@ -2866,32 +2866,32 @@ namespace Protean
 
 						switch (channel.path)
 						{
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_COLOR:
 						{
 							target_material->baseColor = Protean::Math::Lerp(target_material->baseColor, interpolator.f4, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_EMISSIVE:
 						{
 							target_material->emissiveColor = Protean::Math::Lerp(target_material->emissiveColor, interpolator.f4, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_ROUGHNESS:
 						{
 							target_material->roughness = Protean::Math::Lerp(target_material->roughness, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_METALNESS:
 						{
 							target_material->metalness = Protean::Math::Lerp(target_material->metalness, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_REFLECTANCE:
 						{
 							target_material->reflectance = Protean::Math::Lerp(target_material->reflectance, interpolator.f, t);
 						}
 						break;
-						case AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+						case AnimationComponent::AnimationChannel::Path_MATERIAL_TEXMULADD:
 						{
 							target_material->texMulAdd = Protean::Math::Lerp(target_material->texMulAdd, interpolator.f4, t);
 						}
@@ -3032,7 +3032,7 @@ namespace Protean
 			expression_mastering.blink_timer += expression_mastering.blink_frequency * dt;
 			if (expression_mastering.blink_timer >= 1)
 			{
-				int blink = expression_mastering.presets[(int)ExpressionComponent::Preset::Blink];
+				int blink = expression_mastering.presets[(int)ExpressionComponent::Preset_Blink];
 				if (blink >= 0 && blink < expression_mastering.expressions.size())
 				{
 					ExpressionComponent::Expression& expression = expression_mastering.expressions[blink];
@@ -3076,10 +3076,10 @@ namespace Protean
 			if (expression_mastering.look_timer >= 1)
 			{
 				int looks[] = {
-					expression_mastering.presets[(int)ExpressionComponent::Preset::LookDown],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::LookUp],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::LookLeft],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::LookRight],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_LookDown],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_LookUp],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_LookLeft],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_LookRight],
 				};
 				for (int idx = 0; idx<arraysize(looks); ++idx)
 				{
@@ -3113,7 +3113,7 @@ namespace Protean
 			{
 				ExpressionComponent::Preset unused_phonemes[4];
 				int next = 0;
-				for (int phoneme = (int)ExpressionComponent::Preset::Aa; phoneme <= (int)ExpressionComponent::Preset::Oh; phoneme++)
+				for (int phoneme = (int)ExpressionComponent::Preset_Aa; phoneme <= (int)ExpressionComponent::Preset_Oh; phoneme++)
 				{
 					if (phoneme != (int)expression_mastering.talking_phoneme) // don't allow to select the current phoneme next
 					{
@@ -3190,11 +3190,11 @@ namespace Protean
 				// When talking ended, smoothly blend out all phoneme expressions:
 				bool talking_active = false;
 				int phonemes[] = {
-					expression_mastering.presets[(int)ExpressionComponent::Preset::Aa],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::Ih],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::Ou],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::Ee],
-					expression_mastering.presets[(int)ExpressionComponent::Preset::Oh],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_Aa],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_Ih],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_Ou],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_Ee],
+					expression_mastering.presets[(int)ExpressionComponent::Preset_Oh],
 				};
 				for (auto& phoneme : phonemes)
 				{
@@ -3223,27 +3223,27 @@ namespace Protean
 				if (expression.weight > 0)
 				{
 					const float blend = expression.IsBinary() ? 1 : expression.weight;
-					if (expression.override_mouth == ExpressionComponent::Override::Block)
+					if (expression.override_mouth == ExpressionComponent::Override_Block)
 					{
 						overrideMouthBlend += 1;
 					}
-					if (expression.override_mouth == ExpressionComponent::Override::Blend)
+					if (expression.override_mouth == ExpressionComponent::Override_Blend)
 					{
 						overrideMouthBlend += blend;
 					}
-					if (expression.override_blink == ExpressionComponent::Override::Block)
+					if (expression.override_blink == ExpressionComponent::Override_Block)
 					{
 						overrideBlinkBlend += 1;
 					}
-					if (expression.override_blink == ExpressionComponent::Override::Blend)
+					if (expression.override_blink == ExpressionComponent::Override_Blend)
 					{
 						overrideBlinkBlend += blend;
 					}
-					if (expression.override_look == ExpressionComponent::Override::Block)
+					if (expression.override_look == ExpressionComponent::Override_Block)
 					{
 						overrideLookBlend += 1;
 					}
-					if (expression.override_look == ExpressionComponent::Override::Blend)
+					if (expression.override_look == ExpressionComponent::Override_Blend)
 					{
 						overrideLookBlend += blend;
 					}
@@ -3268,11 +3268,11 @@ namespace Protean
 
 			// Override weights are factored in:
 			const int mouths[] = {
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Aa],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Ih],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Ou],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Ee],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Oh],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Aa],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Ih],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Ou],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Ee],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Oh],
 			};
 			for (int mouth : mouths)
 			{
@@ -3283,9 +3283,9 @@ namespace Protean
 				}
 			}
 			const int blinks[] = {
-				expression_mastering.presets[(int)ExpressionComponent::Preset::Blink],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::BlinkLeft],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::BlinkRight],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_Blink],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_BlinkLeft],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_BlinkRight],
 			};
 			for (int blink : blinks)
 			{
@@ -3296,10 +3296,10 @@ namespace Protean
 				}
 			}
 			const int looks[] = {
-				expression_mastering.presets[(int)ExpressionComponent::Preset::LookUp],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::LookDown],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::LookLeft],
-				expression_mastering.presets[(int)ExpressionComponent::Preset::LookRight],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_LookUp],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_LookDown],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_LookLeft],
+				expression_mastering.presets[(int)ExpressionComponent::Preset_LookRight],
 			};
 			for (int look : looks)
 			{
@@ -3356,7 +3356,7 @@ namespace Protean
 			HumanoidComponent* humanoid = humanoids.GetComponent(character.humanoidEntity);
 			if (humanoid == nullptr)
 				continue;
-			character.left_foot = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::LeftFoot)];
+			character.left_foot = humanoid->bones[size_t(HumanoidComponent::HumanoidBone_LeftFoot)];
 			if (!inverse_kinematics.Contains(character.left_foot))
 			{
 				InverseKinematicsComponent& ik = inverse_kinematics.Create(character.left_foot);
@@ -3364,7 +3364,7 @@ namespace Protean
 				ik.chain_length = 2;
 				ik.iteration_count = 10;
 			}
-			character.right_foot = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::RightFoot)];
+			character.right_foot = humanoid->bones[size_t(HumanoidComponent::HumanoidBone_RightFoot)];
 			if (!inverse_kinematics.Contains(character.right_foot))
 			{
 				InverseKinematicsComponent& ik = inverse_kinematics.Create(character.right_foot);
@@ -3571,14 +3571,14 @@ namespace Protean
 									{
 									default:
 										break;
-									case HumanoidComponent::HumanoidBone::LeftUpperLeg:
-									case HumanoidComponent::HumanoidBone::RightUpperLeg:
+									case HumanoidComponent::HumanoidBone_LeftUpperLeg:
+									case HumanoidComponent::HumanoidBone_RightUpperLeg:
 										link.constrain = true;
 										link.constraint_min = XMFLOAT3(XM_PI * 0.6f, XM_PI * 0.1f, XM_PI * 0.1f);
 										link.constraint_max = XMFLOAT3(XM_PI * 0.1f, XM_PI * 0.1f, XM_PI * 0.1f);
 										break;
-									case HumanoidComponent::HumanoidBone::LeftLowerLeg:
-									case HumanoidComponent::HumanoidBone::RightLowerLeg:
+									case HumanoidComponent::HumanoidBone_LeftLowerLeg:
+									case HumanoidComponent::HumanoidBone_RightLowerLeg:
 										link.constrain = true;
 										link.constraint_min = XMFLOAT3(0, 0, 0);
 										link.constraint_max = XMFLOAT3(XM_PI * 0.8f, 0, 0);
@@ -3686,7 +3686,7 @@ namespace Protean
 
 			// The head is always taken as reference frame transform even for the eyes:
 			//	Note: taking eye reference frame transform for the eyes was causing issue with VRM 1.0 because eyes were rotated differently than head
-			const Entity headBone = humanoid.bones[size_t(HumanoidComponent::HumanoidBone::Head)];
+			const Entity headBone = humanoid.bones[size_t(HumanoidComponent::HumanoidBone_Head)];
 			if (headBone == INVALID_ENTITY)
 				return;
 			const size_t headBoneIndex = transforms.GetIndex(headBone);
@@ -3706,9 +3706,9 @@ namespace Protean
 				XMFLOAT4* lookAtDeltaRotationState;
 			};
 			LookAtSource sources[] = {
-				{ HumanoidComponent::HumanoidBone::Head, &humanoid.head_rotation_max, &humanoid.head_rotation_speed, &humanoid.lookAtDeltaRotationState_Head },
-				{ HumanoidComponent::HumanoidBone::LeftEye, &humanoid.eye_rotation_max, &humanoid.eye_rotation_speed, &humanoid.lookAtDeltaRotationState_LeftEye },
-				{ HumanoidComponent::HumanoidBone::RightEye, &humanoid.eye_rotation_max, &humanoid.eye_rotation_speed, &humanoid.lookAtDeltaRotationState_RightEye },
+				{ HumanoidComponent::HumanoidBone_Head, &humanoid.head_rotation_max, &humanoid.head_rotation_speed, &humanoid.lookAtDeltaRotationState_Head },
+				{ HumanoidComponent::HumanoidBone_LeftEye, &humanoid.eye_rotation_max, &humanoid.eye_rotation_speed, &humanoid.lookAtDeltaRotationState_LeftEye },
+				{ HumanoidComponent::HumanoidBone_RightEye, &humanoid.eye_rotation_max, &humanoid.eye_rotation_speed, &humanoid.lookAtDeltaRotationState_RightEye },
 			};
 
 			if (humanoid.IsLookAtEnabled() && humanoid.lookAtEntity != INVALID_ENTITY)
@@ -3808,8 +3808,8 @@ namespace Protean
 			if (humanoid.arm_spacing != 0.0f)
 			{
 				recompute_hierarchy.store(true);
-				size_t left_arm = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperArm]);
-				size_t right_arm = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightUpperArm]);
+				size_t left_arm = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperArm]);
+				size_t right_arm = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightUpperArm]);
 				if (left_arm != INVALID_INDEX)
 				{
 					transforms_temp[left_arm].Rotate(XMQuaternionRotationNormal(FORWARD, -humanoid.arm_spacing * XM_PIDIV4));
@@ -3822,8 +3822,8 @@ namespace Protean
 			if (humanoid.leg_spacing != 0.0f)
 			{
 				recompute_hierarchy.store(true);
-				size_t left_leg = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperLeg]);
-				size_t right_leg = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightUpperLeg]);
+				size_t left_leg = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperLeg]);
+				size_t right_leg = transforms.GetIndex(humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightUpperLeg]);
 				if (left_leg != INVALID_INDEX)
 				{
 					transforms_temp[left_leg].Rotate(XMQuaternionRotationNormal(FORWARD, -humanoid.leg_spacing * XM_PIDIV4));
@@ -3928,13 +3928,13 @@ namespace Protean
 			switch (collider.shape)
 			{
 			default:
-			case ColliderComponent::Shape::Sphere:
+			case ColliderComponent::Shape_Sphere:
 				aabb.createFromHalfWidth(collider.sphere.center, XMFLOAT3(collider.sphere.radius, collider.sphere.radius, collider.sphere.radius));
 				break;
-			case ColliderComponent::Shape::Capsule:
+			case ColliderComponent::Shape_Capsule:
 				aabb = collider.capsule.getAABB();
 				break;
-			case ColliderComponent::Shape::Plane:
+			case ColliderComponent::Shape_Plane:
 			{
 				collider.plane.origin = collider.sphere.center;
 				XMVECTOR N = XMVectorSet(0, 1, 0, 0);
@@ -3989,7 +3989,7 @@ namespace Protean
 		if (collider_count_cpu > 0)
 		{
 			// Issue the bvh rebuild on a background thread, the result will be used next frame...
-			collider_bvh_workload.priority = Protean::JobSystem::Priority::Low;
+			collider_bvh_workload.priority = Protean::JobSystem::Priority_Low;
 			Protean::JobSystem::Execute(collider_bvh_workload, [this](Protean::JobSystem::JobArgs args) {
 				collider_bvh_next.Build(aabb_colliders_cpu, collider_count_cpu);
 			});
@@ -4355,7 +4355,7 @@ namespace Protean
 			{
 				// Video attachment will overwrite texture slots on shader side:
 				Texture videoTexture = video->videoinstance.GetCurrentFrameTexture();
-				int descriptor = GetDevice()->GetDescriptorIndex(&videoTexture, SubresourceType::SRV, video->videoinstance.GetCurrentFrameTextureSRGBSubresource());
+				int descriptor = GetDevice()->GetDescriptorIndex(&videoTexture, SubresourceType_SRV, video->videoinstance.GetCurrentFrameTextureSRGBSubresource());
 				material.WriteShaderTextureSlot(materialArrayMapped + args.jobIndex, BASECOLORMAP, descriptor);
 				material.WriteShaderTextureSlot(materialArrayMapped + args.jobIndex, EMISSIVEMAP, descriptor);
 			}
@@ -4366,7 +4366,7 @@ namespace Protean
 				if (camera != nullptr && camera->render_to_texture.rendertarget_render.IsValid())
 				{
 					// Camera attachment will overwrite texture slots on shader side:
-					int descriptor = GetDevice()->GetDescriptorIndex(&camera->render_to_texture.rendertarget_render, SubresourceType::SRV);
+					int descriptor = GetDevice()->GetDescriptorIndex(&camera->render_to_texture.rendertarget_render, SubresourceType_SRV);
 					material.WriteShaderTextureSlot(materialArrayMapped + args.jobIndex, BASECOLORMAP, descriptor);
 					material.WriteShaderTextureSlot(materialArrayMapped + args.jobIndex, EMISSIVEMAP, descriptor);
 				}
@@ -4419,46 +4419,46 @@ namespace Protean
 			desc.height = impostorTextureDim;
 
 			desc.sample_count = 8;
-			desc.bind_flags = BindFlag::DEPTH_STENCIL;
-			desc.format = Format::D16_UNORM;
-			desc.layout = ResourceState::DEPTHSTENCIL;
-			desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
+			desc.bind_flags = BindFlag_DEPTH_STENCIL;
+			desc.format = Format_D16_UNORM;
+			desc.layout = ResourceState_DEPTHSTENCIL;
+			desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
 			device->CreateTexture(&desc, nullptr, &impostorDepthStencil);
 			device->SetName(&impostorDepthStencil, "impostorDepthStencil");
 
-			desc.bind_flags = BindFlag::RENDER_TARGET;
-			desc.layout = ResourceState::RENDERTARGET;
-			desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
+			desc.bind_flags = BindFlag_RENDER_TARGET;
+			desc.layout = ResourceState_RENDERTARGET;
+			desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
 
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.format = Format_R8G8B8A8_UNORM;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Albedo_MSAA);
 			device->SetName(&impostorRenderTarget_Albedo_MSAA, "impostorRenderTarget_Albedo_MSAA");
-			desc.format = Format::R11G11B10_FLOAT;
+			desc.format = Format_R11G11B10_FLOAT;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Normal_MSAA);
 			device->SetName(&impostorRenderTarget_Normal_MSAA, "impostorRenderTarget_Normal_MSAA");
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.format = Format_R8G8B8A8_UNORM;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Surface_MSAA);
 			device->SetName(&impostorRenderTarget_Surface_MSAA, "impostorRenderTarget_Surface_MSAA");
 
 			desc.sample_count = 1;
-			desc.misc_flags = ResourceMiscFlag::NONE;
-			desc.layout = ResourceState::SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_NONE;
+			desc.layout = ResourceState_SHADER_RESOURCE;
 
-			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET; // Note: RenderTarget required for MSAA resolve dest [PS5]
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET; // Note: RenderTarget required for MSAA resolve dest [PS5]
+			desc.format = Format_R8G8B8A8_UNORM;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Albedo);
 			device->SetName(&impostorRenderTarget_Albedo, "impostorRenderTarget_Albedo");
-			desc.format = Format::R11G11B10_FLOAT;
+			desc.format = Format_R11G11B10_FLOAT;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Normal);
 			device->SetName(&impostorRenderTarget_Normal, "impostorRenderTarget_Normal");
-			desc.format = Format::R8G8B8A8_UNORM;
+			desc.format = Format_R8G8B8A8_UNORM;
 			device->CreateTexture(&desc, nullptr, &impostorRenderTarget_Surface);
 			device->SetName(&impostorRenderTarget_Surface, "impostorRenderTarget_Surface");
 
-			desc.format = Format::BC3_UNORM;
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
-			desc.layout = ResourceState::SHADER_RESOURCE;
-			desc.misc_flags = ResourceMiscFlag::NONE;
+			desc.format = Format_BC3_UNORM;
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
+			desc.layout = ResourceState_SHADER_RESOURCE;
+			desc.misc_flags = ResourceMiscFlag_NONE;
 			desc.array_size = maxImpostorCount * impostorCaptureAngles * 3;
 			device->CreateTexture(&desc, nullptr, &impostorArray);
 			device->SetName(&impostorArray, "impostorArray");
@@ -4539,7 +4539,7 @@ namespace Protean
 			ShaderGeometry geometry = shader_geometry_null;
 			geometry.meshletCount = triangle_count_to_meshlet_count(uint32_t(objects.GetCount()) * 2);
 			geometry.meshletOffset = 0; // local meshlet offset
-			geometry.ib = impostor_ib_format == Format::R32_UINT ? impostor_ib32.descriptor_srv : impostor_ib16.descriptor_srv;
+			geometry.ib = impostor_ib_format == Format_R32_UINT ? impostor_ib32.descriptor_srv : impostor_ib16.descriptor_srv;
 			geometry.vb_pos_wind = impostor_vb_pos.descriptor_srv;
 			geometry.vb_nor = impostor_vb_nor.descriptor_srv;
 			geometry.materialIndex = impostorMaterialOffset;
@@ -4603,8 +4603,8 @@ namespace Protean
 				{
 					GPUBufferDesc desc;
 					desc.size = mesh.vertex_positions.size() * sizeof(uint16_t);
-					desc.format = Format::R16_UNORM;
-					desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+					desc.format = Format_R16_UNORM;
+					desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 					device->CreateBuffer(&desc, nullptr, &object.wetmap);
 					device->SetName(&object.wetmap, "wetmap");
 					object.wetmap_cleared = false;
@@ -4760,7 +4760,7 @@ namespace Protean
 
 				if (object.lightmap.IsValid())
 				{
-					inst.lightmap = device->GetDescriptorIndex(&object.lightmap, SubresourceType::SRV);
+					inst.lightmap = device->GetDescriptorIndex(&object.lightmap, SubresourceType_SRV);
 				}
 				inst.uid = entity;
 				inst.layerMask = layerMask;
@@ -4775,7 +4775,7 @@ namespace Protean
 				inst.center = object.center;
 				inst.radius = object.radius;
 				inst.vb_ao = object.vb_ao_srv;
-				inst.vb_wetmap = device->GetDescriptorIndex(&object.wetmap, SubresourceType::SRV);
+				inst.vb_wetmap = device->GetDescriptorIndex(&object.wetmap, SubresourceType_SRV);
 				inst.alphaTest_size = Protean::Math::pack_half2(XMFLOAT2(1 - object.alphaRef, size));
 				inst.SetUserStencilRef(object.userStencilRef);
 				inst.rimHighlight = Protean::Math::pack_half4(XMFLOAT4(object.rimHighlightColor.x * object.rimHighlightColor.w, object.rimHighlightColor.y * object.rimHighlightColor.w, object.rimHighlightColor.z * object.rimHighlightColor.w, object.rimHighlightFalloff));
@@ -4849,10 +4849,10 @@ namespace Protean
 						TextureDesc desc;
 						desc.width = object.lightmapWidth;
 						desc.height = object.lightmapHeight;
-						desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+						desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 						// Note: we need the full precision format to achieve correct accumulative blending! 
 						//	But the final lightmap will be compressed into an optimal format when the rendering is finished
-						desc.format = Format::R32G32B32A32_FLOAT;
+						desc.format = Format_R32G32B32A32_FLOAT;
 
 						device->CreateTexture(&desc, nullptr, &object.lightmap_render);
 						device->SetName(&object.lightmap_render, "lightmap_render");
@@ -4864,8 +4864,8 @@ namespace Protean
 						TextureDesc desc;
 						desc.width = object.lightmapWidth;
 						desc.height = object.lightmapHeight;
-						desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-						desc.format = Format::R16G16B16A16_FLOAT; // denoiser needs at least half precision float
+						desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+						desc.format = Format_R16G16B16A16_FLOAT; // denoiser needs at least half precision float
 
 						device->CreateTexture(&desc, nullptr, &object.lightmap);
 						device->SetName(&object.lightmap, "lightmap");
@@ -4878,26 +4878,26 @@ namespace Protean
 					const size_t lightmap_size = object.lightmapTextureData.size();
 					if (lightmap_size == object.lightmapWidth * object.lightmapHeight * sizeof(XMFLOAT4))
 					{
-						object.lightmap.desc.format = Format::R32G32B32A32_FLOAT;
+						object.lightmap.desc.format = Format_R32G32B32A32_FLOAT;
 					}
 					else if (lightmap_size == object.lightmapWidth * object.lightmapHeight * sizeof(XMHALF4))
 					{
-						object.lightmap.desc.format = Format::R16G16B16A16_FLOAT;
+						object.lightmap.desc.format = Format_R16G16B16A16_FLOAT;
 					}
 					else if (lightmap_size == object.lightmapWidth * object.lightmapHeight * sizeof(PackedVector::XMFLOAT3PK))
 					{
-						object.lightmap.desc.format = Format::R11G11B10_FLOAT;
+						object.lightmap.desc.format = Format_R11G11B10_FLOAT;
 					}
-					else if (lightmap_size == (object.lightmapWidth / GetFormatBlockSize(Format::BC6H_UF16)) * (object.lightmapHeight / GetFormatBlockSize(Format::BC6H_UF16)) * GetFormatStride(Format::BC6H_UF16))
+					else if (lightmap_size == (object.lightmapWidth / GetFormatBlockSize(Format_BC6H_UF16)) * (object.lightmapHeight / GetFormatBlockSize(Format_BC6H_UF16)) * GetFormatStride(Format_BC6H_UF16))
 					{
-						object.lightmap.desc.format = Format::BC6H_UF16;
+						object.lightmap.desc.format = Format_BC6H_UF16;
 					}
 					else
 					{
-						Protean::Backlog::post("Invalid or old lightmap data found, it will be discarded. Re-render the lightmap if required.", Protean::Backlog::LogLevel::Warning);
+						Protean::Backlog::post("Invalid or old lightmap data found, it will be discarded. Re-render the lightmap if required.", Protean::Backlog::LogLevel_Warning);
 						object.lightmapTextureData.clear();
 					}
-					if (object.lightmap.desc.format != Format::UNKNOWN)
+					if (object.lightmap.desc.format != Format_UNKNOWN)
 					{
 						Protean::TextureHelper::CreateTexture(object.lightmap, object.lightmapTextureData.data(), object.lightmapWidth, object.lightmapHeight, object.lightmap.desc.format);
 						device->SetName(&object.lightmap, "lightmap");
@@ -5150,12 +5150,12 @@ namespace Protean
 				{
 					const Texture& tex = material->textures[MaterialComponent::BASECOLORMAP].resource.GetTexture();
 					if (
-						(light.type == LightComponent::RECTANGLE && !has_flag(tex.desc.misc_flags, ResourceMiscFlag::TEXTURECUBE)) ||
-						(light.type == LightComponent::SPOT && !has_flag(tex.desc.misc_flags, ResourceMiscFlag::TEXTURECUBE)) ||
-						(light.type == LightComponent::POINT && has_flag(tex.desc.misc_flags, ResourceMiscFlag::TEXTURECUBE))
+						(light.type == LightComponent::RECTANGLE && !has_flag(tex.desc.misc_flags, ResourceMiscFlag_TEXTURECUBE)) ||
+						(light.type == LightComponent::SPOT && !has_flag(tex.desc.misc_flags, ResourceMiscFlag_TEXTURECUBE)) ||
+						(light.type == LightComponent::POINT && has_flag(tex.desc.misc_flags, ResourceMiscFlag_TEXTURECUBE))
 						)
 					{
-						light.maskTexDescriptor = device->GetDescriptorIndex(&tex, SubresourceType::SRV, material->textures[MaterialComponent::BASECOLORMAP].resource.GetTextureSRGBSubresource());
+						light.maskTexDescriptor = device->GetDescriptorIndex(&tex, SubresourceType_SRV, material->textures[MaterialComponent::BASECOLORMAP].resource.GetTextureSRGBSubresource());
 					}
 				}
 			}
@@ -5167,7 +5167,7 @@ namespace Protean
 				if (video != nullptr)
 				{
 					Texture videoTexture = video->videoinstance.GetCurrentFrameTexture();
-					light.maskTexDescriptor = device->GetDescriptorIndex(&videoTexture, SubresourceType::SRV, video->videoinstance.GetCurrentFrameTextureSRGBSubresource());
+					light.maskTexDescriptor = device->GetDescriptorIndex(&videoTexture, SubresourceType_SRV, video->videoinstance.GetCurrentFrameTextureSRGBSubresource());
 				}
 			}
 
@@ -5177,7 +5177,7 @@ namespace Protean
 				if (camera != nullptr && camera->render_to_texture.rendertarget_render.IsValid())
 				{
 					// Camera attachment will overwrite texture slots on shader side:
-					int descriptor = GetDevice()->GetDescriptorIndex(&camera->render_to_texture.rendertarget_render, SubresourceType::SRV);
+					int descriptor = GetDevice()->GetDescriptorIndex(&camera->render_to_texture.rendertarget_render, SubresourceType_SRV);
 					light.maskTexDescriptor = descriptor;
 				}
 			}
@@ -5346,7 +5346,7 @@ namespace Protean
 			geometry.indexOffset = 0;
 			geometry.indexCount = emitter.GetMaxParticleCount() * 6;
 			geometry.materialIndex = (uint)materials.GetIndex(entity);
-			geometry.ib = device->GetDescriptorIndex(&emitter.primitiveBuffer, SubresourceType::SRV);
+			geometry.ib = device->GetDescriptorIndex(&emitter.primitiveBuffer, SubresourceType_SRV);
 			geometry.vb_pos_wind = emitter.vb_pos.descriptor_srv;
 			geometry.vb_nor = emitter.vb_nor.descriptor_srv;
 			geometry.vb_uvs = emitter.vb_uvs.descriptor_srv;
@@ -5495,15 +5495,15 @@ namespace Protean
 			if (!rainMaterial.textures[MaterialComponent::BASECOLORMAP].resource.IsValid())
 			{
 				Texture gradientTex = Protean::TextureHelper::CreateGradientTexture(
-					Protean::TextureHelper::GradientType::Circular,
+					Protean::TextureHelper::GradientType_Circular,
 					64, 64,
 					XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0),
-					Protean::TextureHelper::GradientFlags::Smoothstep | Protean::TextureHelper::GradientFlags::Inverse
+					Protean::TextureHelper::GradientFlags_Smoothstep | Protean::TextureHelper::GradientFlags_Inverse
 				);
 				Texture gradientTexBC;
 				TextureDesc desc = gradientTex.GetDesc();
-				desc.format = Format::BC4_UNORM;
-				desc.swizzle = { Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::R };
+				desc.format = Format_BC4_UNORM;
+				desc.swizzle = { Protean::Graphics::ComponentSwizzle_ONE,Protean::Graphics::ComponentSwizzle_ONE,Protean::Graphics::ComponentSwizzle_ONE,Protean::Graphics::ComponentSwizzle_R };
 				bool success = device->CreateTexture(&desc, nullptr, &gradientTexBC);
 				assert(success);
 				Protean::Renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
@@ -5516,14 +5516,14 @@ namespace Protean
 				);
 				Texture gradientTexBC;
 				TextureDesc desc = gradientTex.GetDesc();
-				desc.format = Format::BC5_UNORM;
-				desc.swizzle = { Protean::Graphics::ComponentSwizzle::R,Protean::Graphics::ComponentSwizzle::G,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE };
+				desc.format = Format_BC5_UNORM;
+				desc.swizzle = { Protean::Graphics::ComponentSwizzle_R,Protean::Graphics::ComponentSwizzle_G,Protean::Graphics::ComponentSwizzle_ONE,Protean::Graphics::ComponentSwizzle_ONE };
 				bool success = device->CreateTexture(&desc, nullptr, &gradientTexBC);
 				assert(success);
 				Protean::Renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
 				rainMaterial.textures[MaterialComponent::NORMALMAP].resource.SetTexture(gradientTexBC);
 			}
-			//rainMaterial.shadingRate = ShadingRate::RATE_4X4;
+			//rainMaterial.shadingRate = ShadingRate_RATE_4X4;
 			TransformComponent transform;
 			transform.scale_local = XMFLOAT3(30, 30, 30);
 			transform.translation_local.x = camera.Eye.x + camera.At.x * 10;
@@ -5541,7 +5541,7 @@ namespace Protean
 			geometry.indexOffset = 0;
 			geometry.indexCount = rainEmitter.GetMaxParticleCount() * 6;
 			geometry.materialIndex = rainMaterialOffset;
-			geometry.ib = device->GetDescriptorIndex(&rainEmitter.primitiveBuffer, SubresourceType::SRV);
+			geometry.ib = device->GetDescriptorIndex(&rainEmitter.primitiveBuffer, SubresourceType_SRV);
 			geometry.vb_pos_wind = rainEmitter.vb_pos.descriptor_srv;
 			geometry.vb_nor = rainEmitter.vb_nor.descriptor_srv;
 			geometry.vb_uvs = rainEmitter.vb_uvs.descriptor_srv;
@@ -5669,23 +5669,23 @@ namespace Protean
 
 			if (video.IsPlaying())
 			{
-				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Playing;
+				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags_Playing;
 			}
 			else
 			{
-				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
+				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags_Playing;
 			}
 
 			if (video.IsLooped())
 			{
-				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Looped;
+				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags_Looped;
 			}
 			else
 			{
-				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Looped;
+				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags_Looped;
 			}
 
-			video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Mipmapped;
+			video.videoinstance.flags |= Protean::Video::VideoInstance::Flags_Mipmapped;
 
 			Protean::Video::UpdateVideo(&video.videoinstance, dt);
 
@@ -5879,9 +5879,9 @@ namespace Protean
 				// Swimming:
 				character.swimming = false;
 				float swim_offset = 0;
-				if (humanoid != nullptr && humanoid->bones[size_t(HumanoidComponent::HumanoidBone::Neck)] != INVALID_ENTITY)
+				if (humanoid != nullptr && humanoid->bones[size_t(HumanoidComponent::HumanoidBone_Neck)] != INVALID_ENTITY)
 				{
-					Entity neck_entity = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::Neck)];
+					Entity neck_entity = humanoid->bones[size_t(HumanoidComponent::HumanoidBone_Neck)];
 					TransformComponent* neck_transform = transforms.GetComponent(neck_entity);
 					if (neck_transform != nullptr)
 					{
@@ -6123,7 +6123,7 @@ namespace Protean
 					if (character.process_goal && character.voxelgrid != nullptr && !Protean::JobSystem::IsBusy(character.pathfinding_thread->ctx))
 					{
 						character.process_goal = false;
-						character.pathfinding_thread->ctx.priority = Protean::JobSystem::Priority::Low;
+						character.pathfinding_thread->ctx.priority = Protean::JobSystem::Priority_Low;
 						Protean::JobSystem::Execute(character.pathfinding_thread->ctx, [&](Protean::JobSystem::JobArgs args) {
 							character.pathfinding_thread->pathquery_work.process(character.position, character.goal, *character.voxelgrid);
 							AtomicOr(&character.pathfinding_thread->process_goal_completed, 1);
@@ -6611,13 +6611,13 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = ray.intersects(collider.sphere, dist, direction);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = ray.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = ray.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -6872,13 +6872,13 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = ray.intersects(collider.sphere, dist, direction);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = ray.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = ray.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -7136,13 +7136,13 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = ray.intersects(collider.sphere, dist, direction);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = ray.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = ray.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -7333,14 +7333,14 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = sphere.intersects(collider.sphere, dist, direction);
 					XMStoreFloat3(&position, XMLoadFloat3(&collider.sphere.center) + XMLoadFloat3(&direction) * dist);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = sphere.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = sphere.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -7640,14 +7640,14 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = sphere.intersects(collider.sphere, dist, direction);
 					XMStoreFloat3(&position, XMLoadFloat3(&collider.sphere.center) + XMLoadFloat3(&direction) * dist);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = sphere.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = sphere.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -7958,14 +7958,14 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = capsule.intersects(collider.sphere, dist, direction);
 					XMStoreFloat3(&position, XMLoadFloat3(&collider.sphere.center) + XMLoadFloat3(&direction) * dist);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = capsule.intersects(collider.capsule, position, direction, dist);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = capsule.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -8387,14 +8387,14 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					intersects = capsule.intersects(collider.sphere, dist, direction);
 					XMStoreFloat3(&position, XMLoadFloat3(&collider.sphere.center) + XMLoadFloat3(&direction) * dist);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					intersects = capsule.intersects(collider.capsule, position, direction, dist);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					intersects = capsule.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -8869,7 +8869,7 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 				{
 					Sphere sphere = collider.sphere;
 					Protean::JobSystem::Execute(ctx, [&voxelgrid, subtract, sphere](Protean::JobSystem::JobArgs args) {
@@ -8877,7 +8877,7 @@ namespace Protean
 						});
 				}
 				break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 				{
 					Capsule capsule = collider.capsule;
 					Protean::JobSystem::Execute(ctx, [&voxelgrid, subtract, capsule](Protean::JobSystem::JobArgs args) {
@@ -8885,7 +8885,7 @@ namespace Protean
 						});
 				}
 				break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 				{
 					XMMATRIX planeMatrix = XMMatrixInverse(nullptr, XMLoadFloat4x4(&collider.plane.projection));
 					XMVECTOR P0 = XMVector3Transform(XMVectorSet(-1, 0, -1, 1), planeMatrix);
@@ -9386,7 +9386,7 @@ namespace Protean
 
 								switch (channel.path)
 								{
-								case AnimationComponent::AnimationChannel::Path::SCALE:
+								case AnimationComponent::AnimationChannel::Path_SCALE:
 									for (size_t offset = 0; offset < retarget_animation_data.keyframe_data.size(); offset += 3)
 									{
 										XMFLOAT3* data = (XMFLOAT3*)&retarget_animation_data.keyframe_data[offset];
@@ -9397,7 +9397,7 @@ namespace Protean
 										XMStoreFloat3(data, S);
 									}
 									break;
-								case AnimationComponent::AnimationChannel::Path::ROTATION:
+								case AnimationComponent::AnimationChannel::Path_ROTATION:
 									for (size_t offset = 0; offset < retarget_animation_data.keyframe_data.size(); offset += 4)
 									{
 										XMFLOAT4* data = (XMFLOAT4*)&retarget_animation_data.keyframe_data[offset];
@@ -9408,7 +9408,7 @@ namespace Protean
 										XMStoreFloat4(data, R);
 									}
 									break;
-								case AnimationComponent::AnimationChannel::Path::TRANSLATION:
+								case AnimationComponent::AnimationChannel::Path_TRANSLATION:
 									for (size_t offset = 0; offset < retarget_animation_data.keyframe_data.size(); offset += 3)
 									{
 										XMFLOAT3* data = (XMFLOAT3*)&retarget_animation_data.keyframe_data[offset];
@@ -9785,13 +9785,13 @@ namespace Protean
 				switch (collider.shape)
 				{
 				default:
-				case ColliderComponent::Shape::Sphere:
+				case ColliderComponent::Shape_Sphere:
 					tail_sphere.intersects(collider.sphere, dist, direction);
 					break;
-				case ColliderComponent::Shape::Capsule:
+				case ColliderComponent::Shape_Capsule:
 					tail_sphere.intersects(collider.capsule, dist, direction);
 					break;
-				case ColliderComponent::Shape::Plane:
+				case ColliderComponent::Shape_Plane:
 					tail_sphere.intersects(collider.plane, dist, direction);
 					break;
 				}
@@ -9910,8 +9910,8 @@ namespace Protean
 			Entity humanoidEntity = humanoids.GetEntity(i);
 			if (humanoid.default_facing == 0)
 			{
-				Entity left_shoulder = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperArm];
-				Entity right_shoulder = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::RightUpperArm];
+				Entity left_shoulder = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperArm];
+				Entity right_shoulder = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_RightUpperArm];
 				XMVECTOR left_shoulder_pos = GetRestPose(left_shoulder).r[3];
 				XMVECTOR right_shoulder_pos = GetRestPose(right_shoulder).r[3];
 				const TransformComponent* transform = transforms.GetComponent(humanoidEntity);
@@ -9933,7 +9933,7 @@ namespace Protean
 			if (humanoid.knee_bending == 0)
 			{
 				humanoid.knee_bending = humanoid.default_facing;
-				Entity left_leg = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone::LeftUpperLeg];
+				Entity left_leg = humanoid.bones[(size_t)HumanoidComponent::HumanoidBone_LeftUpperLeg];
 				const TransformComponent* transform = transforms.GetComponent(left_leg);
 				if (transform != nullptr)
 				{

@@ -177,7 +177,7 @@ namespace Protean::Lua
 		std::string ss;
 		ss += WILUA_ERROR_PREFIX;
 		ss += str;
-		Protean::Backlog::post(ss, Protean::Backlog::LogLevel::Error);
+		Protean::Backlog::post(ss, Protean::Backlog::LogLevel_Error);
 		lua_pop(L, 1); // remove error message
 
 		ReturnToEditor(L);
@@ -748,7 +748,7 @@ namespace Protean::Lua
 		{
 			ss += error;
 		}
-		Protean::Backlog::post(ss, Protean::Backlog::LogLevel::Error);
+		Protean::Backlog::post(ss, Protean::Backlog::LogLevel_Error);
 
 		ReturnToEditor(L);
 	}

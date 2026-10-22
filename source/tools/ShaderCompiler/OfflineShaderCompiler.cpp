@@ -19,8 +19,8 @@ std::mutex locker;
 struct ShaderEntry
 {
 	std::string name;
-	Protean::Graphics::ShaderStage stage = Protean::Graphics::ShaderStage::Count;
-	Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel::SM_6_0;
+	Protean::Graphics::ShaderStage stage = Protean::Graphics::ShaderStage_Count;
+	Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel_SM_6_0;
 	struct Permutation
 	{
 		Protean::vector<std::string> defines;
@@ -37,331 +37,331 @@ struct ShaderEntry
 	std::string entrypoint = "main";
 };
 Protean::vector<ShaderEntry> shaders = {
-	{"hairparticle_simulateCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_simulateCS", Protean::Graphics::ShaderStage::CS},
-	{"generateMIPChainCubeCS_float4", Protean::Graphics::ShaderStage::CS},
-	{"generateMIPChainCubeArrayCS_float4", Protean::Graphics::ShaderStage::CS},
-	{"generateMIPChain3DCS_float4", Protean::Graphics::ShaderStage::CS},
-	{"generateMIPChain2DCS_float4", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC1", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC3", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC4", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC5", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC6H", Protean::Graphics::ShaderStage::CS},
-	{"blockcompressCS_BC6H_cubemap", Protean::Graphics::ShaderStage::CS},
-	{"blur_gaussian_float4CS", Protean::Graphics::ShaderStage::CS},
-	{"bloomseparateCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_mainCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_neighborhoodMaxCOCCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_prepassCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_upsampleCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_tileMaxCOC_verticalCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_tileMaxCOC_horizontalCS", Protean::Graphics::ShaderStage::CS},
-	{"vxgi_offsetprevCS", Protean::Graphics::ShaderStage::CS},
-	{"vxgi_temporalCS", Protean::Graphics::ShaderStage::CS},
-	{"vxgi_sdf_jumpfloodCS", Protean::Graphics::ShaderStage::CS},
-	{"vxgi_resolve_diffuseCS", Protean::Graphics::ShaderStage::CS},
-	{"vxgi_resolve_specularCS", Protean::Graphics::ShaderStage::CS},
-	{"upsample_bilateral_float1CS", Protean::Graphics::ShaderStage::CS},
-	{"upsample_bilateral_float4CS", Protean::Graphics::ShaderStage::CS},
-	{"temporalaaCS", Protean::Graphics::ShaderStage::CS},
-	{"tonemapCS", Protean::Graphics::ShaderStage::CS},
-	{"underwaterCS", Protean::Graphics::ShaderStage::CS},
-	{"mesh_blend_prepareCS", Protean::Graphics::ShaderStage::CS},
-	{"mesh_blend_expandCS", Protean::Graphics::ShaderStage::CS},
-	{"mesh_blendPS", Protean::Graphics::ShaderStage::PS},
-	{"fsr_upscalingCS", Protean::Graphics::ShaderStage::CS},
-	{"fsr_sharpenCS", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_autogen_reactive_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_compute_luminance_pyramid_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_prepare_input_color_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_reconstruct_previous_depth_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_depth_clip_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_lock_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_accumulate_pass", Protean::Graphics::ShaderStage::CS},
-	{"ffx-fsr2/ffx_fsr2_rcas_pass", Protean::Graphics::ShaderStage::CS},
-	{"ssaoCS", Protean::Graphics::ShaderStage::CS},
-	{"ssgi_deinterleaveCS", Protean::Graphics::ShaderStage::CS},
-	{"ssgiCS", Protean::Graphics::ShaderStage::CS},
-	{"ssgi_upsampleCS", Protean::Graphics::ShaderStage::CS},
-	{"rtdiffuseCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5},
-	{"rtdiffuse_spatialCS", Protean::Graphics::ShaderStage::CS},
-	{"rtdiffuse_temporalCS", Protean::Graphics::ShaderStage::CS},
-	{"rtdiffuse_upsampleCS", Protean::Graphics::ShaderStage::CS},
-	{"rtreflectionCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5},
-	{"ssr_tileMaxRoughness_horizontalCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_tileMaxRoughness_verticalCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_depthHierarchyCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_resolveCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_temporalCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_upsampleCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_raytraceCS", Protean::Graphics::ShaderStage::CS},
-	{"ssr_raytraceCS_cheap", Protean::Graphics::ShaderStage::CS},
-	{"ssr_raytraceCS_earlyexit", Protean::Graphics::ShaderStage::CS},
-	{"sharpenCS", Protean::Graphics::ShaderStage::CS},
-	{"crt_screenCS", Protean::Graphics::ShaderStage::CS},
-	{"skinningCS", Protean::Graphics::ShaderStage::CS},
-	{"resolveMSAADepthStencilCS", Protean::Graphics::ShaderStage::CS},
-	{"raytraceCS", Protean::Graphics::ShaderStage::CS},
-	{"raytraceCS_rtapi", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5},
-	{"paint_textureCS", Protean::Graphics::ShaderStage::CS},
-	{"oceanUpdateDisplacementMapCS", Protean::Graphics::ShaderStage::CS},
-	{"oceanUpdateGradientFoldingCS", Protean::Graphics::ShaderStage::CS},
-	{"oceanSimulatorCS", Protean::Graphics::ShaderStage::CS},
-	{"msao_interleaveCS", Protean::Graphics::ShaderStage::CS},
-	{"msao_preparedepthbuffers1CS", Protean::Graphics::ShaderStage::CS},
-	{"msao_preparedepthbuffers2CS", Protean::Graphics::ShaderStage::CS},
-	{"msao_blurupsampleCS", Protean::Graphics::ShaderStage::CS},
-	{"msao_blurupsampleCS_blendout", Protean::Graphics::ShaderStage::CS},
-	{"msao_blurupsampleCS_premin", Protean::Graphics::ShaderStage::CS},
-	{"msao_blurupsampleCS_premin_blendout", Protean::Graphics::ShaderStage::CS},
-	{"msaoCS", Protean::Graphics::ShaderStage::CS},
-	{"motionblur_neighborhoodMaxVelocityCS", Protean::Graphics::ShaderStage::CS},
-	{"motionblur_tileMaxVelocity_horizontalCS", Protean::Graphics::ShaderStage::CS},
-	{"motionblur_tileMaxVelocity_verticalCS", Protean::Graphics::ShaderStage::CS},
-	{"luminancePass2CS", Protean::Graphics::ShaderStage::CS},
-	{"motionblurCS", Protean::Graphics::ShaderStage::CS},
-	{"motionblurCS_cheap", Protean::Graphics::ShaderStage::CS},
-	{"motionblurCS_earlyexit", Protean::Graphics::ShaderStage::CS},
-	{"luminancePass1CS", Protean::Graphics::ShaderStage::CS},
-	{"lightShaftsCS", Protean::Graphics::ShaderStage::CS},
-	{"hbaoCS", Protean::Graphics::ShaderStage::CS},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_COUNT"}}, "FPS_Count"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_COUNT_REDUCE"}}, "FPS_CountReduce"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_SCAN"}}, "FPS_Scan"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_SCAN_ADD"}}, "FPS_ScanAdd"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_SCATTER"}}, "FPS_Scatter"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_SCATTER", "kRS_ValueCopy"}}, "FPS_Scatter"},
-	{"radix_sortCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_0, {{"FPS_INDIRECT"}}, "FPS_SetupIndirectParameters"},
-	{"fxaaCS", Protean::Graphics::ShaderStage::CS},
-	{"filterEnvMapCS", Protean::Graphics::ShaderStage::CS},
-	{"fft_512x512_c2c_CS", Protean::Graphics::ShaderStage::CS},
-	{"fft_512x512_c2c_v2_CS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_sphpartitionCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_sphcellallocationCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_sphbinningCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_simulateCS_SORTING", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_sphdensityCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_sphforceCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_kickoffUpdateCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_simulateCS_DEPTHCOLLISIONS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_emitCS", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_emitCS_FROMMESH", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_emitCS_volume", Protean::Graphics::ShaderStage::CS},
-	{"emittedparticle_finishUpdateCS", Protean::Graphics::ShaderStage::CS},
-	{"downsample4xCS", Protean::Graphics::ShaderStage::CS},
-	{"lineardepthCS", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_prepassCS_earlyexit", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_mainCS_cheap", Protean::Graphics::ShaderStage::CS},
-	{"depthoffield_mainCS_earlyexit", Protean::Graphics::ShaderStage::CS },
-	{"depthoffield_postfilterCS", Protean::Graphics::ShaderStage::CS },
-	{"copytexture2D_float4_borderexpandCS", Protean::Graphics::ShaderStage::CS },
-	{"copytexture2D_float4CS", Protean::Graphics::ShaderStage::CS },
-	{"chromatic_aberrationCS", Protean::Graphics::ShaderStage::CS },
-	{"bvh_hierarchyCS", Protean::Graphics::ShaderStage::CS },
-	{"bvh_primitivesCS", Protean::Graphics::ShaderStage::CS },
-	{"bvh_propagateaabbCS", Protean::Graphics::ShaderStage::CS },
-	{"blur_gaussian_wide_float1CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_gaussian_wide_float4CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_gaussian_float1CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_bilateral_wide_float1CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_bilateral_wide_float4CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_bilateral_float1CS", Protean::Graphics::ShaderStage::CS },
-	{"blur_bilateral_float4CS", Protean::Graphics::ShaderStage::CS },
-	{"normalsfromdepthCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_curlnoiseCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_detailnoiseCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_renderCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_renderCS_capture", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_reprojectCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_shadow_renderCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_shapenoiseCS", Protean::Graphics::ShaderStage::CS },
-	{"volumetricCloud_upsamplePS", Protean::Graphics::ShaderStage::PS },
-	{"volumetricCloud_weathermapCS", Protean::Graphics::ShaderStage::CS },
-	{"shadingRateClassificationCS", Protean::Graphics::ShaderStage::CS },
-	{"shadingRateClassificationCS_DEBUG", Protean::Graphics::ShaderStage::CS },
-	{"aerialPerspectiveCS", Protean::Graphics::ShaderStage::CS },
-	{"skyAtmosphere_cameraVolumeLutCS", Protean::Graphics::ShaderStage::CS },
-	{"skyAtmosphere_transmittanceLutCS", Protean::Graphics::ShaderStage::CS },
-	{"skyAtmosphere_skyViewLutCS", Protean::Graphics::ShaderStage::CS },
-	{"skyAtmosphere_multiScatteredLuminanceLutCS", Protean::Graphics::ShaderStage::CS },
-	{"skyAtmosphere_skyLuminanceLutCS", Protean::Graphics::ShaderStage::CS },
-	{"screenspaceshadowCS", Protean::Graphics::ShaderStage::CS },
-	{"rtshadowCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5 },
-	{"rtshadow_denoise_tileclassificationCS", Protean::Graphics::ShaderStage::CS },
-	{"rtshadow_denoise_filterCS", Protean::Graphics::ShaderStage::CS },
-	{"rtshadow_denoise_temporalCS", Protean::Graphics::ShaderStage::CS },
-	{"rtshadow_upsampleCS", Protean::Graphics::ShaderStage::CS },
-	{"rtaoCS", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5 },
-	{"rtao_denoise_tileclassificationCS", Protean::Graphics::ShaderStage::CS },
-	{"rtao_denoise_filterCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_coverageCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_indirectprepareCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_updateCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_gridoffsetsCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_binningCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_raytraceCS_rtapi", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5 },
-	{"surfel_raytraceCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_integrateCS", Protean::Graphics::ShaderStage::CS },
-	{"surfel_denoiseCS", Protean::Graphics::ShaderStage::CS },
-	{"ddgi_rayallocationCS", Protean::Graphics::ShaderStage::CS },
-	{"ddgi_indirectprepareCS", Protean::Graphics::ShaderStage::CS },
-	{"ddgi_raytraceCS", Protean::Graphics::ShaderStage::CS },
-	{"ddgi_raytraceCS_rtapi", Protean::Graphics::ShaderStage::CS, Protean::Graphics::ShaderModel::SM_6_5 },
-	{"ddgi_updateCS", Protean::Graphics::ShaderStage::CS },
-	{"ddgi_updateCS_depth", Protean::Graphics::ShaderStage::CS },
-	{"terrainVirtualTextureUpdateCS", Protean::Graphics::ShaderStage::CS },
-	{"terrainVirtualTextureUpdateCS_normalmap", Protean::Graphics::ShaderStage::CS },
-	{"terrainVirtualTextureUpdateCS_surfacemap", Protean::Graphics::ShaderStage::CS },
-	{"terrainVirtualTextureUpdateCS_emissivemap", Protean::Graphics::ShaderStage::CS },
-	{"meshlet_prepareCS", Protean::Graphics::ShaderStage::CS },
-	{"impostor_prepareCS", Protean::Graphics::ShaderStage::CS },
-	{"virtualTextureTileRequestsCS", Protean::Graphics::ShaderStage::CS },
-	{"virtualTextureTileAllocateCS", Protean::Graphics::ShaderStage::CS },
-	{"virtualTextureResidencyUpdateCS", Protean::Graphics::ShaderStage::CS },
-	{"windCS", Protean::Graphics::ShaderStage::CS },
-	{"yuv_to_rgbCS", Protean::Graphics::ShaderStage::CS },
-	{"wetmap_updateCS", Protean::Graphics::ShaderStage::CS },
-	{"depth_reprojectCS", Protean::Graphics::ShaderStage::CS },
-	{"depth_pyramidCS", Protean::Graphics::ShaderStage::CS },
-	{"lightmap_expandCS", Protean::Graphics::ShaderStage::CS },
-	{"gaussian_splatCS", Protean::Graphics::ShaderStage::CS },
-	{"gaussian_splat_indirectCS", Protean::Graphics::ShaderStage::CS },
+	{"hairparticle_simulateCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_simulateCS", Protean::Graphics::ShaderStage_CS},
+	{"generateMIPChainCubeCS_float4", Protean::Graphics::ShaderStage_CS},
+	{"generateMIPChainCubeArrayCS_float4", Protean::Graphics::ShaderStage_CS},
+	{"generateMIPChain3DCS_float4", Protean::Graphics::ShaderStage_CS},
+	{"generateMIPChain2DCS_float4", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC1", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC3", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC4", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC5", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC6H", Protean::Graphics::ShaderStage_CS},
+	{"blockcompressCS_BC6H_cubemap", Protean::Graphics::ShaderStage_CS},
+	{"blur_gaussian_float4CS", Protean::Graphics::ShaderStage_CS},
+	{"bloomseparateCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_mainCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_neighborhoodMaxCOCCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_prepassCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_upsampleCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_tileMaxCOC_verticalCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_tileMaxCOC_horizontalCS", Protean::Graphics::ShaderStage_CS},
+	{"vxgi_offsetprevCS", Protean::Graphics::ShaderStage_CS},
+	{"vxgi_temporalCS", Protean::Graphics::ShaderStage_CS},
+	{"vxgi_sdf_jumpfloodCS", Protean::Graphics::ShaderStage_CS},
+	{"vxgi_resolve_diffuseCS", Protean::Graphics::ShaderStage_CS},
+	{"vxgi_resolve_specularCS", Protean::Graphics::ShaderStage_CS},
+	{"upsample_bilateral_float1CS", Protean::Graphics::ShaderStage_CS},
+	{"upsample_bilateral_float4CS", Protean::Graphics::ShaderStage_CS},
+	{"temporalaaCS", Protean::Graphics::ShaderStage_CS},
+	{"tonemapCS", Protean::Graphics::ShaderStage_CS},
+	{"underwaterCS", Protean::Graphics::ShaderStage_CS},
+	{"mesh_blend_prepareCS", Protean::Graphics::ShaderStage_CS},
+	{"mesh_blend_expandCS", Protean::Graphics::ShaderStage_CS},
+	{"mesh_blendPS", Protean::Graphics::ShaderStage_PS},
+	{"fsr_upscalingCS", Protean::Graphics::ShaderStage_CS},
+	{"fsr_sharpenCS", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_autogen_reactive_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_compute_luminance_pyramid_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_prepare_input_color_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_reconstruct_previous_depth_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_depth_clip_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_lock_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_accumulate_pass", Protean::Graphics::ShaderStage_CS},
+	{"ffx-fsr2/ffx_fsr2_rcas_pass", Protean::Graphics::ShaderStage_CS},
+	{"ssaoCS", Protean::Graphics::ShaderStage_CS},
+	{"ssgi_deinterleaveCS", Protean::Graphics::ShaderStage_CS},
+	{"ssgiCS", Protean::Graphics::ShaderStage_CS},
+	{"ssgi_upsampleCS", Protean::Graphics::ShaderStage_CS},
+	{"rtdiffuseCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5},
+	{"rtdiffuse_spatialCS", Protean::Graphics::ShaderStage_CS},
+	{"rtdiffuse_temporalCS", Protean::Graphics::ShaderStage_CS},
+	{"rtdiffuse_upsampleCS", Protean::Graphics::ShaderStage_CS},
+	{"rtreflectionCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5},
+	{"ssr_tileMaxRoughness_horizontalCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_tileMaxRoughness_verticalCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_depthHierarchyCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_resolveCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_temporalCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_upsampleCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_raytraceCS", Protean::Graphics::ShaderStage_CS},
+	{"ssr_raytraceCS_cheap", Protean::Graphics::ShaderStage_CS},
+	{"ssr_raytraceCS_earlyexit", Protean::Graphics::ShaderStage_CS},
+	{"sharpenCS", Protean::Graphics::ShaderStage_CS},
+	{"crt_screenCS", Protean::Graphics::ShaderStage_CS},
+	{"skinningCS", Protean::Graphics::ShaderStage_CS},
+	{"resolveMSAADepthStencilCS", Protean::Graphics::ShaderStage_CS},
+	{"raytraceCS", Protean::Graphics::ShaderStage_CS},
+	{"raytraceCS_rtapi", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5},
+	{"paint_textureCS", Protean::Graphics::ShaderStage_CS},
+	{"oceanUpdateDisplacementMapCS", Protean::Graphics::ShaderStage_CS},
+	{"oceanUpdateGradientFoldingCS", Protean::Graphics::ShaderStage_CS},
+	{"oceanSimulatorCS", Protean::Graphics::ShaderStage_CS},
+	{"msao_interleaveCS", Protean::Graphics::ShaderStage_CS},
+	{"msao_preparedepthbuffers1CS", Protean::Graphics::ShaderStage_CS},
+	{"msao_preparedepthbuffers2CS", Protean::Graphics::ShaderStage_CS},
+	{"msao_blurupsampleCS", Protean::Graphics::ShaderStage_CS},
+	{"msao_blurupsampleCS_blendout", Protean::Graphics::ShaderStage_CS},
+	{"msao_blurupsampleCS_premin", Protean::Graphics::ShaderStage_CS},
+	{"msao_blurupsampleCS_premin_blendout", Protean::Graphics::ShaderStage_CS},
+	{"msaoCS", Protean::Graphics::ShaderStage_CS},
+	{"motionblur_neighborhoodMaxVelocityCS", Protean::Graphics::ShaderStage_CS},
+	{"motionblur_tileMaxVelocity_horizontalCS", Protean::Graphics::ShaderStage_CS},
+	{"motionblur_tileMaxVelocity_verticalCS", Protean::Graphics::ShaderStage_CS},
+	{"luminancePass2CS", Protean::Graphics::ShaderStage_CS},
+	{"motionblurCS", Protean::Graphics::ShaderStage_CS},
+	{"motionblurCS_cheap", Protean::Graphics::ShaderStage_CS},
+	{"motionblurCS_earlyexit", Protean::Graphics::ShaderStage_CS},
+	{"luminancePass1CS", Protean::Graphics::ShaderStage_CS},
+	{"lightShaftsCS", Protean::Graphics::ShaderStage_CS},
+	{"hbaoCS", Protean::Graphics::ShaderStage_CS},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_COUNT"}}, "FPS_Count"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_COUNT_REDUCE"}}, "FPS_CountReduce"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_SCAN"}}, "FPS_Scan"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_SCAN_ADD"}}, "FPS_ScanAdd"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_SCATTER"}}, "FPS_Scatter"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_SCATTER", "kRS_ValueCopy"}}, "FPS_Scatter"},
+	{"radix_sortCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_0, {{"FPS_INDIRECT"}}, "FPS_SetupIndirectParameters"},
+	{"fxaaCS", Protean::Graphics::ShaderStage_CS},
+	{"filterEnvMapCS", Protean::Graphics::ShaderStage_CS},
+	{"fft_512x512_c2c_CS", Protean::Graphics::ShaderStage_CS},
+	{"fft_512x512_c2c_v2_CS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_sphpartitionCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_sphcellallocationCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_sphbinningCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_simulateCS_SORTING", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_sphdensityCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_sphforceCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_kickoffUpdateCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_simulateCS_DEPTHCOLLISIONS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_emitCS", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_emitCS_FROMMESH", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_emitCS_volume", Protean::Graphics::ShaderStage_CS},
+	{"emittedparticle_finishUpdateCS", Protean::Graphics::ShaderStage_CS},
+	{"downsample4xCS", Protean::Graphics::ShaderStage_CS},
+	{"lineardepthCS", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_prepassCS_earlyexit", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_mainCS_cheap", Protean::Graphics::ShaderStage_CS},
+	{"depthoffield_mainCS_earlyexit", Protean::Graphics::ShaderStage_CS },
+	{"depthoffield_postfilterCS", Protean::Graphics::ShaderStage_CS },
+	{"copytexture2D_float4_borderexpandCS", Protean::Graphics::ShaderStage_CS },
+	{"copytexture2D_float4CS", Protean::Graphics::ShaderStage_CS },
+	{"chromatic_aberrationCS", Protean::Graphics::ShaderStage_CS },
+	{"bvh_hierarchyCS", Protean::Graphics::ShaderStage_CS },
+	{"bvh_primitivesCS", Protean::Graphics::ShaderStage_CS },
+	{"bvh_propagateaabbCS", Protean::Graphics::ShaderStage_CS },
+	{"blur_gaussian_wide_float1CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_gaussian_wide_float4CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_gaussian_float1CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_bilateral_wide_float1CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_bilateral_wide_float4CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_bilateral_float1CS", Protean::Graphics::ShaderStage_CS },
+	{"blur_bilateral_float4CS", Protean::Graphics::ShaderStage_CS },
+	{"normalsfromdepthCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_curlnoiseCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_detailnoiseCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_renderCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_renderCS_capture", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_reprojectCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_shadow_renderCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_shapenoiseCS", Protean::Graphics::ShaderStage_CS },
+	{"volumetricCloud_upsamplePS", Protean::Graphics::ShaderStage_PS },
+	{"volumetricCloud_weathermapCS", Protean::Graphics::ShaderStage_CS },
+	{"shadingRateClassificationCS", Protean::Graphics::ShaderStage_CS },
+	{"shadingRateClassificationCS_DEBUG", Protean::Graphics::ShaderStage_CS },
+	{"aerialPerspectiveCS", Protean::Graphics::ShaderStage_CS },
+	{"skyAtmosphere_cameraVolumeLutCS", Protean::Graphics::ShaderStage_CS },
+	{"skyAtmosphere_transmittanceLutCS", Protean::Graphics::ShaderStage_CS },
+	{"skyAtmosphere_skyViewLutCS", Protean::Graphics::ShaderStage_CS },
+	{"skyAtmosphere_multiScatteredLuminanceLutCS", Protean::Graphics::ShaderStage_CS },
+	{"skyAtmosphere_skyLuminanceLutCS", Protean::Graphics::ShaderStage_CS },
+	{"screenspaceshadowCS", Protean::Graphics::ShaderStage_CS },
+	{"rtshadowCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5 },
+	{"rtshadow_denoise_tileclassificationCS", Protean::Graphics::ShaderStage_CS },
+	{"rtshadow_denoise_filterCS", Protean::Graphics::ShaderStage_CS },
+	{"rtshadow_denoise_temporalCS", Protean::Graphics::ShaderStage_CS },
+	{"rtshadow_upsampleCS", Protean::Graphics::ShaderStage_CS },
+	{"rtaoCS", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5 },
+	{"rtao_denoise_tileclassificationCS", Protean::Graphics::ShaderStage_CS },
+	{"rtao_denoise_filterCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_coverageCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_indirectprepareCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_updateCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_gridoffsetsCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_binningCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_raytraceCS_rtapi", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5 },
+	{"surfel_raytraceCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_integrateCS", Protean::Graphics::ShaderStage_CS },
+	{"surfel_denoiseCS", Protean::Graphics::ShaderStage_CS },
+	{"ddgi_rayallocationCS", Protean::Graphics::ShaderStage_CS },
+	{"ddgi_indirectprepareCS", Protean::Graphics::ShaderStage_CS },
+	{"ddgi_raytraceCS", Protean::Graphics::ShaderStage_CS },
+	{"ddgi_raytraceCS_rtapi", Protean::Graphics::ShaderStage_CS, Protean::Graphics::ShaderModel_SM_6_5 },
+	{"ddgi_updateCS", Protean::Graphics::ShaderStage_CS },
+	{"ddgi_updateCS_depth", Protean::Graphics::ShaderStage_CS },
+	{"terrainVirtualTextureUpdateCS", Protean::Graphics::ShaderStage_CS },
+	{"terrainVirtualTextureUpdateCS_normalmap", Protean::Graphics::ShaderStage_CS },
+	{"terrainVirtualTextureUpdateCS_surfacemap", Protean::Graphics::ShaderStage_CS },
+	{"terrainVirtualTextureUpdateCS_emissivemap", Protean::Graphics::ShaderStage_CS },
+	{"meshlet_prepareCS", Protean::Graphics::ShaderStage_CS },
+	{"impostor_prepareCS", Protean::Graphics::ShaderStage_CS },
+	{"virtualTextureTileRequestsCS", Protean::Graphics::ShaderStage_CS },
+	{"virtualTextureTileAllocateCS", Protean::Graphics::ShaderStage_CS },
+	{"virtualTextureResidencyUpdateCS", Protean::Graphics::ShaderStage_CS },
+	{"windCS", Protean::Graphics::ShaderStage_CS },
+	{"yuv_to_rgbCS", Protean::Graphics::ShaderStage_CS },
+	{"wetmap_updateCS", Protean::Graphics::ShaderStage_CS },
+	{"depth_reprojectCS", Protean::Graphics::ShaderStage_CS },
+	{"depth_pyramidCS", Protean::Graphics::ShaderStage_CS },
+	{"lightmap_expandCS", Protean::Graphics::ShaderStage_CS },
+	{"gaussian_splatCS", Protean::Graphics::ShaderStage_CS },
+	{"gaussian_splat_indirectCS", Protean::Graphics::ShaderStage_CS },
 
 
-	{"imagePS", Protean::Graphics::ShaderStage::PS },
-	{"emittedparticlePS_soft", Protean::Graphics::ShaderStage::PS },
-	{"emittedparticlePS_shadow", Protean::Graphics::ShaderStage::PS },
-	{"emittedparticlePS_soft_lighting", Protean::Graphics::ShaderStage::PS },
-	{"oceanSurfacePS", Protean::Graphics::ShaderStage::PS },
-	{"oceanSurfacePS_envmap", Protean::Graphics::ShaderStage::PS },
-	{"oceanSurfacePS_shadowmap", Protean::Graphics::ShaderStage::PS },
-	{"hairparticlePS", Protean::Graphics::ShaderStage::PS },
-	{"hairparticlePS_simple", Protean::Graphics::ShaderStage::PS },
-	{"hairparticlePS_prepass", Protean::Graphics::ShaderStage::PS },
-	{"hairparticlePS_prepass_depthonly", Protean::Graphics::ShaderStage::PS },
-	{"hairparticlePS_shadow", Protean::Graphics::ShaderStage::PS },
-	{"volumetricLight_SpotPS", Protean::Graphics::ShaderStage::PS },
-	{"volumetricLight_PointPS", Protean::Graphics::ShaderStage::PS },
-	{"volumetricLight_DirectionalPS", Protean::Graphics::ShaderStage::PS },
-	{"volumetriclight_rectanglePS", Protean::Graphics::ShaderStage::PS },
-	{"vertexcolorPS", Protean::Graphics::ShaderStage::PS },
-	{"upsample_bilateralPS", Protean::Graphics::ShaderStage::PS },
-	{"sunPS", Protean::Graphics::ShaderStage::PS },
-	{"skyPS_dynamic", Protean::Graphics::ShaderStage::PS },
-	{"skyPS_static", Protean::Graphics::ShaderStage::PS },
-	{"shadowPS_transparent", Protean::Graphics::ShaderStage::PS },
-	{"shadowPS_alphatest", Protean::Graphics::ShaderStage::PS },
-	{"paintdecalPS", Protean::Graphics::ShaderStage::PS },
-	{"renderlightmapPS", Protean::Graphics::ShaderStage::PS },
-	{"renderlightmapPS_rtapi", Protean::Graphics::ShaderStage::PS, Protean::Graphics::ShaderModel::SM_6_5 },
-	{"raytrace_debugbvhPS", Protean::Graphics::ShaderStage::PS },
-	{"outlinePS", Protean::Graphics::ShaderStage::PS },
-	{"oceanSurfaceSimplePS", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_voxelizer", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_hologram", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_paintradius", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_prepass", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_prepass_alphatest", Protean::Graphics::ShaderStage::PS },
-	{"objectPS_prepass_depthonly_alphatest", Protean::Graphics::ShaderStage::PS },
-	{"vRectLightPS", Protean::Graphics::ShaderStage::PS },
-	{"lensFlarePS", Protean::Graphics::ShaderStage::PS },
-	{"impostorPS", Protean::Graphics::ShaderStage::PS },
-	{"impostorPS_simple", Protean::Graphics::ShaderStage::PS },
-	{"impostorPS_prepass", Protean::Graphics::ShaderStage::PS },
-	{"impostorPS_prepass_depthonly", Protean::Graphics::ShaderStage::PS },
-	{"forceFieldVisualizerPS", Protean::Graphics::ShaderStage::PS },
-	{"envMap_skyPS_static", Protean::Graphics::ShaderStage::PS },
-	{"envMap_skyPS_dynamic", Protean::Graphics::ShaderStage::PS },
-	{"envMapPS", Protean::Graphics::ShaderStage::PS },
-	{"emittedparticlePS_soft_distortion", Protean::Graphics::ShaderStage::PS },
-	{"downsampleDepthBuffer4xPS", Protean::Graphics::ShaderStage::PS },
-	{"emittedparticlePS_simple", Protean::Graphics::ShaderStage::PS },
-	{"cubeMapPS", Protean::Graphics::ShaderStage::PS },
-	{"circlePS", Protean::Graphics::ShaderStage::PS },
-	{"captureImpostorPS", Protean::Graphics::ShaderStage::PS },
-	{"copyDepthPS", Protean::Graphics::ShaderStage::PS },
-	{"copyStencilBitPS", Protean::Graphics::ShaderStage::PS },
-	{"extractStencilBitPS", Protean::Graphics::ShaderStage::PS },
-	{"trailPS", Protean::Graphics::ShaderStage::PS },
-	{"waveeffectPS", Protean::Graphics::ShaderStage::PS },
-	{"gaussian_splatPS", Protean::Graphics::ShaderStage::PS },
-	{"voidPS", Protean::Graphics::ShaderStage::PS },
+	{"imagePS", Protean::Graphics::ShaderStage_PS },
+	{"emittedparticlePS_soft", Protean::Graphics::ShaderStage_PS },
+	{"emittedparticlePS_shadow", Protean::Graphics::ShaderStage_PS },
+	{"emittedparticlePS_soft_lighting", Protean::Graphics::ShaderStage_PS },
+	{"oceanSurfacePS", Protean::Graphics::ShaderStage_PS },
+	{"oceanSurfacePS_envmap", Protean::Graphics::ShaderStage_PS },
+	{"oceanSurfacePS_shadowmap", Protean::Graphics::ShaderStage_PS },
+	{"hairparticlePS", Protean::Graphics::ShaderStage_PS },
+	{"hairparticlePS_simple", Protean::Graphics::ShaderStage_PS },
+	{"hairparticlePS_prepass", Protean::Graphics::ShaderStage_PS },
+	{"hairparticlePS_prepass_depthonly", Protean::Graphics::ShaderStage_PS },
+	{"hairparticlePS_shadow", Protean::Graphics::ShaderStage_PS },
+	{"volumetricLight_SpotPS", Protean::Graphics::ShaderStage_PS },
+	{"volumetricLight_PointPS", Protean::Graphics::ShaderStage_PS },
+	{"volumetricLight_DirectionalPS", Protean::Graphics::ShaderStage_PS },
+	{"volumetriclight_rectanglePS", Protean::Graphics::ShaderStage_PS },
+	{"vertexcolorPS", Protean::Graphics::ShaderStage_PS },
+	{"upsample_bilateralPS", Protean::Graphics::ShaderStage_PS },
+	{"sunPS", Protean::Graphics::ShaderStage_PS },
+	{"skyPS_dynamic", Protean::Graphics::ShaderStage_PS },
+	{"skyPS_static", Protean::Graphics::ShaderStage_PS },
+	{"shadowPS_transparent", Protean::Graphics::ShaderStage_PS },
+	{"shadowPS_alphatest", Protean::Graphics::ShaderStage_PS },
+	{"paintdecalPS", Protean::Graphics::ShaderStage_PS },
+	{"renderlightmapPS", Protean::Graphics::ShaderStage_PS },
+	{"renderlightmapPS_rtapi", Protean::Graphics::ShaderStage_PS, Protean::Graphics::ShaderModel_SM_6_5 },
+	{"raytrace_debugbvhPS", Protean::Graphics::ShaderStage_PS },
+	{"outlinePS", Protean::Graphics::ShaderStage_PS },
+	{"oceanSurfaceSimplePS", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_voxelizer", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_hologram", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_paintradius", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_prepass", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_prepass_alphatest", Protean::Graphics::ShaderStage_PS },
+	{"objectPS_prepass_depthonly_alphatest", Protean::Graphics::ShaderStage_PS },
+	{"vRectLightPS", Protean::Graphics::ShaderStage_PS },
+	{"lensFlarePS", Protean::Graphics::ShaderStage_PS },
+	{"impostorPS", Protean::Graphics::ShaderStage_PS },
+	{"impostorPS_simple", Protean::Graphics::ShaderStage_PS },
+	{"impostorPS_prepass", Protean::Graphics::ShaderStage_PS },
+	{"impostorPS_prepass_depthonly", Protean::Graphics::ShaderStage_PS },
+	{"forceFieldVisualizerPS", Protean::Graphics::ShaderStage_PS },
+	{"envMap_skyPS_static", Protean::Graphics::ShaderStage_PS },
+	{"envMap_skyPS_dynamic", Protean::Graphics::ShaderStage_PS },
+	{"envMapPS", Protean::Graphics::ShaderStage_PS },
+	{"emittedparticlePS_soft_distortion", Protean::Graphics::ShaderStage_PS },
+	{"downsampleDepthBuffer4xPS", Protean::Graphics::ShaderStage_PS },
+	{"emittedparticlePS_simple", Protean::Graphics::ShaderStage_PS },
+	{"cubeMapPS", Protean::Graphics::ShaderStage_PS },
+	{"circlePS", Protean::Graphics::ShaderStage_PS },
+	{"captureImpostorPS", Protean::Graphics::ShaderStage_PS },
+	{"copyDepthPS", Protean::Graphics::ShaderStage_PS },
+	{"copyStencilBitPS", Protean::Graphics::ShaderStage_PS },
+	{"extractStencilBitPS", Protean::Graphics::ShaderStage_PS },
+	{"trailPS", Protean::Graphics::ShaderStage_PS },
+	{"waveeffectPS", Protean::Graphics::ShaderStage_PS },
+	{"gaussian_splatPS", Protean::Graphics::ShaderStage_PS },
+	{"voidPS", Protean::Graphics::ShaderStage_PS },
 
 
-	{"hairparticleVS", Protean::Graphics::ShaderStage::VS },
-	{"emittedparticleVS", Protean::Graphics::ShaderStage::VS },
-	{"emittedparticleVS_shadow", Protean::Graphics::ShaderStage::VS },
-	{"imageVS", Protean::Graphics::ShaderStage::VS },
-	{"voxelVS", Protean::Graphics::ShaderStage::VS },
-	{"vertexcolorVS", Protean::Graphics::ShaderStage::VS },
-	{"volumetriclight_directionalVS", Protean::Graphics::ShaderStage::VS },
-	{"volumetriclight_pointVS", Protean::Graphics::ShaderStage::VS },
-	{"volumetriclight_spotVS", Protean::Graphics::ShaderStage::VS },
-	{"volumetriclight_rectangleVS", Protean::Graphics::ShaderStage::VS },
-	{"vSpotLightVS", Protean::Graphics::ShaderStage::VS },
-	{"vPointLightVS", Protean::Graphics::ShaderStage::VS },
-	{"vRectLightVS", Protean::Graphics::ShaderStage::VS },
-	{"sphereVS", Protean::Graphics::ShaderStage::VS },
-	{"skyVS", Protean::Graphics::ShaderStage::VS },
-	{"postprocessVS", Protean::Graphics::ShaderStage::VS },
-	{"paintdecalVS", Protean::Graphics::ShaderStage::VS },
-	{"renderlightmapVS", Protean::Graphics::ShaderStage::VS },
-	{"raytrace_screenVS", Protean::Graphics::ShaderStage::VS },
-	{"oceanSurfaceVS", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_debug", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_voxelizer", Protean::Graphics::ShaderStage::VS },
-	{"lensFlareVS", Protean::Graphics::ShaderStage::VS },
-	{"impostorVS", Protean::Graphics::ShaderStage::VS },
-	{"forceFieldPointVisualizerVS", Protean::Graphics::ShaderStage::VS },
-	{"forceFieldPlaneVisualizerVS", Protean::Graphics::ShaderStage::VS },
-	{"envMap_skyVS", Protean::Graphics::ShaderStage::VS },
-	{"envMapVS", Protean::Graphics::ShaderStage::VS },
-	{"occludeeVS", Protean::Graphics::ShaderStage::VS },
-	{"ddgi_debugVS", Protean::Graphics::ShaderStage::VS },
-	{"voxelGS", Protean::Graphics::ShaderStage::GS },
-	{"objectGS_voxelizer", Protean::Graphics::ShaderStage::GS },
-	{"objectVS_simple", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_common", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_common_tessellation", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_prepass", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_prepass_alphatest", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_prepass_tessellation", Protean::Graphics::ShaderStage::VS },
-	{"objectVS_simple_tessellation", Protean::Graphics::ShaderStage::VS },
-	{"shadowVS", Protean::Graphics::ShaderStage::VS },
-	{"shadowVS_alphatest", Protean::Graphics::ShaderStage::VS },
-	{"shadowVS_transparent", Protean::Graphics::ShaderStage::VS },
-	{"screenVS", Protean::Graphics::ShaderStage::VS },
-	{"voxelgridVS", Protean::Graphics::ShaderStage::VS },
-	{"trailVS", Protean::Graphics::ShaderStage::VS },
-	{"gaussian_splatVS", Protean::Graphics::ShaderStage::VS },
+	{"hairparticleVS", Protean::Graphics::ShaderStage_VS },
+	{"emittedparticleVS", Protean::Graphics::ShaderStage_VS },
+	{"emittedparticleVS_shadow", Protean::Graphics::ShaderStage_VS },
+	{"imageVS", Protean::Graphics::ShaderStage_VS },
+	{"voxelVS", Protean::Graphics::ShaderStage_VS },
+	{"vertexcolorVS", Protean::Graphics::ShaderStage_VS },
+	{"volumetriclight_directionalVS", Protean::Graphics::ShaderStage_VS },
+	{"volumetriclight_pointVS", Protean::Graphics::ShaderStage_VS },
+	{"volumetriclight_spotVS", Protean::Graphics::ShaderStage_VS },
+	{"volumetriclight_rectangleVS", Protean::Graphics::ShaderStage_VS },
+	{"vSpotLightVS", Protean::Graphics::ShaderStage_VS },
+	{"vPointLightVS", Protean::Graphics::ShaderStage_VS },
+	{"vRectLightVS", Protean::Graphics::ShaderStage_VS },
+	{"sphereVS", Protean::Graphics::ShaderStage_VS },
+	{"skyVS", Protean::Graphics::ShaderStage_VS },
+	{"postprocessVS", Protean::Graphics::ShaderStage_VS },
+	{"paintdecalVS", Protean::Graphics::ShaderStage_VS },
+	{"renderlightmapVS", Protean::Graphics::ShaderStage_VS },
+	{"raytrace_screenVS", Protean::Graphics::ShaderStage_VS },
+	{"oceanSurfaceVS", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_debug", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_voxelizer", Protean::Graphics::ShaderStage_VS },
+	{"lensFlareVS", Protean::Graphics::ShaderStage_VS },
+	{"impostorVS", Protean::Graphics::ShaderStage_VS },
+	{"forceFieldPointVisualizerVS", Protean::Graphics::ShaderStage_VS },
+	{"forceFieldPlaneVisualizerVS", Protean::Graphics::ShaderStage_VS },
+	{"envMap_skyVS", Protean::Graphics::ShaderStage_VS },
+	{"envMapVS", Protean::Graphics::ShaderStage_VS },
+	{"occludeeVS", Protean::Graphics::ShaderStage_VS },
+	{"ddgi_debugVS", Protean::Graphics::ShaderStage_VS },
+	{"voxelGS", Protean::Graphics::ShaderStage_GS },
+	{"objectGS_voxelizer", Protean::Graphics::ShaderStage_GS },
+	{"objectVS_simple", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_common", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_common_tessellation", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_prepass", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_prepass_alphatest", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_prepass_tessellation", Protean::Graphics::ShaderStage_VS },
+	{"objectVS_simple_tessellation", Protean::Graphics::ShaderStage_VS },
+	{"shadowVS", Protean::Graphics::ShaderStage_VS },
+	{"shadowVS_alphatest", Protean::Graphics::ShaderStage_VS },
+	{"shadowVS_transparent", Protean::Graphics::ShaderStage_VS },
+	{"screenVS", Protean::Graphics::ShaderStage_VS },
+	{"voxelgridVS", Protean::Graphics::ShaderStage_VS },
+	{"trailVS", Protean::Graphics::ShaderStage_VS },
+	{"gaussian_splatVS", Protean::Graphics::ShaderStage_VS },
 
 
 
-	{"objectDS", Protean::Graphics::ShaderStage::DS },
-	{"objectDS_prepass", Protean::Graphics::ShaderStage::DS },
-	{"objectDS_simple", Protean::Graphics::ShaderStage::DS },
+	{"objectDS", Protean::Graphics::ShaderStage_DS },
+	{"objectDS_prepass", Protean::Graphics::ShaderStage_DS },
+	{"objectDS_simple", Protean::Graphics::ShaderStage_DS },
 
 
-	{"objectHS", Protean::Graphics::ShaderStage::HS },
-	{"objectHS_prepass", Protean::Graphics::ShaderStage::HS },
-	{"objectHS_simple", Protean::Graphics::ShaderStage::HS },
+	{"objectHS", Protean::Graphics::ShaderStage_HS },
+	{"objectHS_prepass", Protean::Graphics::ShaderStage_HS },
+	{"objectHS_simple", Protean::Graphics::ShaderStage_HS },
 
-	{"emittedparticleMS", Protean::Graphics::ShaderStage::MS },
+	{"emittedparticleMS", Protean::Graphics::ShaderStage_MS },
 
-	{"objectMS", Protean::Graphics::ShaderStage::MS },
-	{"objectMS_prepass", Protean::Graphics::ShaderStage::MS },
-	{"objectMS_prepass_alphatest", Protean::Graphics::ShaderStage::MS },
-	{"objectMS_simple", Protean::Graphics::ShaderStage::MS },
-	{"shadowMS", Protean::Graphics::ShaderStage::MS },
-	{"shadowMS_alphatest", Protean::Graphics::ShaderStage::MS },
-	{"shadowMS_transparent", Protean::Graphics::ShaderStage::MS },
+	{"objectMS", Protean::Graphics::ShaderStage_MS },
+	{"objectMS_prepass", Protean::Graphics::ShaderStage_MS },
+	{"objectMS_prepass_alphatest", Protean::Graphics::ShaderStage_MS },
+	{"objectMS_simple", Protean::Graphics::ShaderStage_MS },
+	{"shadowMS", Protean::Graphics::ShaderStage_MS },
+	{"shadowMS_alphatest", Protean::Graphics::ShaderStage_MS },
+	{"shadowMS_transparent", Protean::Graphics::ShaderStage_MS },
 
-	{"objectAS", Protean::Graphics::ShaderStage::AS },
+	{"objectAS", Protean::Graphics::ShaderStage_AS },
 
 
-	//{"rtreflectionLIB", Protean::Graphics::ShaderStage::LIB },
+	//{"rtreflectionLIB", Protean::Graphics::ShaderStage_LIB },
 };
 
 struct Target
@@ -380,14 +380,14 @@ std::ostream nullout(&nullbuf);
 
 int main(int argc, char* argv[])
 {
-	Protean::ShaderCompiler::Flags compile_flags = Protean::ShaderCompiler::Flags::NONE;
+	Protean::ShaderCompiler::Flags compile_flags = Protean::ShaderCompiler::Flags_NONE;
 
 	Protean::Arguments::Parse(argc, argv);
 	std::ostream* out;
 
 	if (Protean::Arguments::HasArgument("quiet"))
 	{
-		Protean::Backlog::SetLogLevel(Protean::Backlog::LogLevel::Error);
+		Protean::Backlog::SetLogLevel(Protean::Backlog::LogLevel_Error);
 		out = &nullout;
 	}
 	else
@@ -419,32 +419,32 @@ int main(int argc, char* argv[])
 
 	if (Protean::Arguments::HasArgument("hlsl5"))
 	{
-		targets.push_back({ ShaderFormat::HLSL5, "shaders/hlsl5/" });
+		targets.push_back({ ShaderFormat_HLSL5, "shaders/hlsl5/" });
 		*out << "hlsl5 ";
 	}
 	if (Protean::Arguments::HasArgument("hlsl6"))
 	{
-		targets.push_back({ ShaderFormat::HLSL6, "shaders/hlsl6/" });
+		targets.push_back({ ShaderFormat_HLSL6, "shaders/hlsl6/" });
 		*out << "hlsl6 ";
 	}
 	if (Protean::Arguments::HasArgument("spirv"))
 	{
-		targets.push_back({ ShaderFormat::SPIRV, "shaders/spirv/" });
+		targets.push_back({ ShaderFormat_SPIRV, "shaders/spirv/" });
 		*out << "spirv ";
 	}
 	if (Protean::Arguments::HasArgument("metal"))
 	{
-		targets.push_back({ ShaderFormat::METAL, "shaders/metal/" });
+		targets.push_back({ ShaderFormat_METAL, "shaders/metal/" });
 		*out << "metal ";
 	}
 	if (Protean::Arguments::HasArgument("hlsl6_xs"))
 	{
-		targets.push_back({ ShaderFormat::HLSL6_XS, "shaders/hlsl6_xs/" });
+		targets.push_back({ ShaderFormat_HLSL6_XS, "shaders/hlsl6_xs/" });
 		*out << "hlsl6_xs ";
 	}
 	if (Protean::Arguments::HasArgument("ps5"))
 	{
-		targets.push_back({ ShaderFormat::PS5, "shaders/ps5/" });
+		targets.push_back({ ShaderFormat_PS5, "shaders/ps5/" });
 		*out << "ps5 ";
 	}
 
@@ -462,56 +462,56 @@ int main(int argc, char* argv[])
 
 	if (Protean::Arguments::HasArgument("disable_optimization"))
 	{
-		compile_flags |= Protean::ShaderCompiler::Flags::DISABLE_OPTIMIZATION;
+		compile_flags |= Protean::ShaderCompiler::Flags_DISABLE_OPTIMIZATION;
 		*out << "disable_optimization ";
 	}
 
 	if (Protean::Arguments::HasArgument("debuginfo"))
 	{
-		compile_flags |= Protean::ShaderCompiler::Flags::KEEP_DEBUG_INFORMATION;
+		compile_flags |= Protean::ShaderCompiler::Flags_KEEP_DEBUG_INFORMATION;
 		*out << "debuginfo ";
 	}
 
 	if (Protean::Arguments::HasArgument("strip_reflection"))
 	{
-		compile_flags |= Protean::ShaderCompiler::Flags::STRIP_REFLECTION;
+		compile_flags |= Protean::ShaderCompiler::Flags_STRIP_REFLECTION;
 		*out << "strip_reflection ";
 	}
 
-	ShaderModel minshadermodel_override = ShaderModel::SM_5_0;
+	ShaderModel minshadermodel_override = ShaderModel_SM_5_0;
 	if (Protean::Arguments::HasArgument("sm6.1"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_1;
+		minshadermodel_override = ShaderModel_SM_6_1;
 		*out << "sm6.1 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.2"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_2;
+		minshadermodel_override = ShaderModel_SM_6_2;
 		*out << "sm6.2 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.3"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_3;
+		minshadermodel_override = ShaderModel_SM_6_3;
 		*out << "sm6.3 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.4"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_4;
+		minshadermodel_override = ShaderModel_SM_6_4;
 		*out << "sm6.4 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.5"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_5;
+		minshadermodel_override = ShaderModel_SM_6_5;
 		*out << "sm6.5 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.6"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_6;
+		minshadermodel_override = ShaderModel_SM_6_6;
 		*out << "sm6.6 ";
 	}
 	if (Protean::Arguments::HasArgument("sm6.7"))
 	{
-		minshadermodel_override = ShaderModel::SM_6_7;
+		minshadermodel_override = ShaderModel_SM_6_7;
 		*out << "sm6.7 ";
 	}
 
@@ -521,18 +521,18 @@ int main(int argc, char* argv[])
 	{
 		targets = {
 #ifdef __APPLE__
-			{ ShaderFormat::METAL, "shaders/metal/" },
+			{ ShaderFormat_METAL, "shaders/metal/" },
 #else
-			//{ ShaderFormat::HLSL5, "shaders/hlsl5/" },
-			{ ShaderFormat::HLSL6, "shaders/hlsl6/" },
-			{ ShaderFormat::SPIRV, "shaders/spirv/" },
+			//{ ShaderFormat_HLSL5, "shaders/hlsl5/" },
+			{ ShaderFormat_HLSL6, "shaders/hlsl6/" },
+			{ ShaderFormat_SPIRV, "shaders/spirv/" },
 #endif // __APPLE__
 		};
 		*out << "No shader formats were specified, assuming command arguments: spirv hlsl6\n";
 	}
 
 	// permutations for objectPS:
-	shaders.push_back({ "objectPS", Protean::Graphics::ShaderStage::PS });
+	shaders.push_back({ "objectPS", Protean::Graphics::ShaderStage_PS });
 	for (auto& x : Protean::MaterialComponent::shaderTypeDefines)
 	{
 		shaders.back().permutations.emplace_back().defines = x;
@@ -543,24 +543,24 @@ int main(int argc, char* argv[])
 	}
 
 	// permutations for visibility_analyzeCS:
-	shaders.push_back({ "visibility_analyzeCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "visibility_analyzeCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back();
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_MSAA" };
 
 	// permutations for visibility_resolveCS:
-	shaders.push_back({ "visibility_resolveCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "visibility_resolveCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_UNIFORM" };
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_DIVERGENT" };
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_UNIFORM", "MATERIAL_BINNING" };
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_DIVERGENT", "MATERIAL_BINNING" };
 
 	// permutations for visibility_velocityCS:
-	shaders.push_back({ "visibility_velocityCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "visibility_velocityCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_UNIFORM" };
 	shaders.back().permutations.emplace_back().defines = { "PRIMITIVEID_DIVERGENT" };
 
 	// permutations for visibility_surfaceCS:
-	shaders.push_back({ "visibility_surfaceCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "visibility_surfaceCS", Protean::Graphics::ShaderStage_CS });
 	for (auto& x : Protean::MaterialComponent::shaderTypeDefines)
 	{
 		shaders.back().permutations.emplace_back().defines = x;
@@ -573,7 +573,7 @@ int main(int argc, char* argv[])
 	}
 
 	// permutations for visibility_shadeCS:
-	shaders.push_back({ "visibility_shadeCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "visibility_shadeCS", Protean::Graphics::ShaderStage_CS });
 	for (auto& x : Protean::MaterialComponent::shaderTypeDefines)
 	{
 		shaders.back().permutations.emplace_back().defines = x;
@@ -586,22 +586,22 @@ int main(int argc, char* argv[])
 	}
 
 	// permutations for ssgiCS:
-	shaders.push_back({ "ssgiCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "ssgiCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = { "WIDE" };
 	// permutations for ssgi_upsampleCS:
-	shaders.push_back({ "ssgi_upsampleCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "ssgi_upsampleCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = { "WIDE" };
 
 	// permutations for copyStencilBitPS:
-	shaders.push_back({ "copyStencilBitPS", Protean::Graphics::ShaderStage::PS });
+	shaders.push_back({ "copyStencilBitPS", Protean::Graphics::ShaderStage_PS });
 	shaders.back().permutations.emplace_back().defines = { "MSAA" };
 
 	// permutations for yuv_to_rgbCS:
-	shaders.push_back({ "yuv_to_rgbCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "yuv_to_rgbCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = { "ARRAY" };
 
 	// permutations for lightCullingCS:
-	shaders.push_back({ "lightCullingCS", Protean::Graphics::ShaderStage::CS });
+	shaders.push_back({ "lightCullingCS", Protean::Graphics::ShaderStage_CS });
 	shaders.back().permutations.emplace_back().defines = {};
 	shaders.back().permutations.emplace_back().defines = { "DEBUG" };
 	shaders.back().permutations.emplace_back().defines = { "ADVANCED" };
@@ -633,12 +633,12 @@ int main(int argc, char* argv[])
 
 		for (auto& shader : shaders)
 		{
-			if (target.format == ShaderFormat::HLSL5)
+			if (target.format == ShaderFormat_HLSL5)
 			{
 				if (
-					shader.stage == ShaderStage::MS ||
-					shader.stage == ShaderStage::AS ||
-					shader.stage == ShaderStage::LIB
+					shader.stage == ShaderStage_MS ||
+					shader.stage == ShaderStage_AS ||
+					shader.stage == ShaderStage_LIB
 					)
 				{
 					// shader stage not applicable to HLSL5
@@ -699,17 +699,17 @@ int main(int argc, char* argv[])
 					input.minshadermodel = std::max(shader.minshadermodel, minshadermodel_override);
 					input.defines = permutation.defines;
 
-					if (input.minshadermodel > ShaderModel::SM_5_0 && target.format == ShaderFormat::HLSL5)
+					if (input.minshadermodel > ShaderModel_SM_5_0 && target.format == ShaderFormat_HLSL5)
 					{
 						// if shader format cannot support shader model, then we cancel the task without returning error
 						return;
 					}
-					if (target.format == ShaderFormat::PS5 && (input.minshadermodel >= ShaderModel::SM_6_5 || input.stage == ShaderStage::MS || input.stage == ShaderStage::AS))
+					if (target.format == ShaderFormat_PS5 && (input.minshadermodel >= ShaderModel_SM_6_5 || input.stage == ShaderStage_MS || input.stage == ShaderStage_AS))
 					{
 						// TODO PS5 raytracing, mesh shader
 						return;
 					}
-					if (target.format == ShaderFormat::HLSL6_XS && (input.stage == ShaderStage::MS || input.stage == ShaderStage::AS))
+					if (target.format == ShaderFormat_HLSL6_XS && (input.stage == ShaderStage_MS || input.stage == ShaderStage_AS))
 					{
 						// TODO Xbox mesh shader
 						return;
@@ -770,7 +770,7 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				Protean::Helper::DebugOut("Compression failed while creating shader dump!", Protean::Helper::DebugLevel::Error);
+				Protean::Helper::DebugOut("Compression failed while creating shader dump!", Protean::Helper::DebugLevel_Error);
 				continue;
 			}
 

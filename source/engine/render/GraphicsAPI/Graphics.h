@@ -15,491 +15,485 @@ namespace Protean::Graphics
 	struct GPUBuffer;
 	struct Texture;
 
-	enum class ValidationMode : uint8_t
+	enum ValidationMode : uint8_t
 	{
-		Disabled,	// No validation is enabled
-		Enabled,	// CPU command validation
-		GPU,		// CPU and GPU-based validation
-		Verbose		// Print all warnings, errors and info messages
+		ValidationMode_Disabled,	// No validation is enabled
+		ValidationMode_Enabled,	// CPU command validation
+		ValidationMode_GPU,		// CPU and GPU-based validation
+		ValidationMode_Verbose		// Print all warnings, errors and info messages
 	};
 
-	enum class AdapterType : uint8_t
+	enum AdapterType : uint8_t
 	{
-		Other,
-		IntegratedGpu,
-		DiscreteGpu,
-		VirtualGpu,
-		Cpu,
+		AdapterType_Other,
+		AdapterType_IntegratedGpu,
+		AdapterType_DiscreteGpu,
+		AdapterType_VirtualGpu,
+		AdapterType_Cpu,
 	};
 
-	enum class GPUPreference : uint8_t
+	enum GPUPreference : uint8_t
 	{
-		Discrete,
-		Integrated,
-		Nvidia,
-		Intel,
-		AMD,
+		GPUPreference_Discrete,
+		GPUPreference_Integrated,
+		GPUPreference_Nvidia,
+		GPUPreference_Intel,
+		GPUPreference_AMD,
 	};
 
-	enum class ShaderStage : uint8_t
+	enum ShaderStage : uint8_t
 	{
-		MS,		// Mesh Shader
-		AS,		// Amplification Shader
-		VS,		// Vertex Shader
-		HS,		// Hull Shader
-		DS,		// Domain Shader
-		GS,		// Geometry Shader
-		PS,		// Pixel Shader
-		CS,		// Compute Shader
-		LIB,	// Shader Library
-		Count,
+		ShaderStage_MS,		// Mesh Shader
+		ShaderStage_AS,		// Amplification Shader
+		ShaderStage_VS,		// Vertex Shader
+		ShaderStage_HS,		// Hull Shader
+		ShaderStage_DS,		// Domain Shader
+		ShaderStage_GS,		// Geometry Shader
+		ShaderStage_PS,		// Pixel Shader
+		ShaderStage_CS,		// Compute Shader
+		ShaderStage_LIB,	// Shader Library
+		ShaderStage_Count,
 	};
-	enum class ShaderFormat : uint8_t
+	enum ShaderFormat : uint8_t
 	{
-		NONE,		// Not used
-		HLSL5,		// DXBC
-		HLSL6,		// DXIL
-		SPIRV,		// SPIR-V
-		HLSL6_XS,	// XBOX Series Native
-		PS5,		// Playstation 5
-		METAL,		// Apple Metal
+		ShaderFormat_NONE,		// Not used
+		ShaderFormat_HLSL5,		// DXBC
+		ShaderFormat_HLSL6,		// DXIL
+		ShaderFormat_SPIRV,		// SPIR-V
+		ShaderFormat_HLSL6_XS,	// XBOX Series Native
+		ShaderFormat_PS5,		// Playstation 5
+		ShaderFormat_METAL,		// Apple Metal
 	};
-	enum class ShaderModel : uint8_t
+	enum ShaderModel : uint8_t
 	{
-		SM_5_0,
-		SM_6_0,
-		SM_6_1,
-		SM_6_2,
-		SM_6_3,
-		SM_6_4,
-		SM_6_5,
-		SM_6_6,
-		SM_6_7,
+		ShaderModel_SM_5_0,
+		ShaderModel_SM_6_0,
+		ShaderModel_SM_6_1,
+		ShaderModel_SM_6_2,
+		ShaderModel_SM_6_3,
+		ShaderModel_SM_6_4,
+		ShaderModel_SM_6_5,
+		ShaderModel_SM_6_6,
+		ShaderModel_SM_6_7,
 	};
-	enum class PrimitiveTopology : uint8_t
+	enum PrimitiveTopology : uint8_t
 	{
-		UNDEFINED,
-		TRIANGLELIST,
-		TRIANGLESTRIP,
-		POINTLIST,
-		LINELIST,
-		LINESTRIP,
-		PATCHLIST,
+		PrimitiveTopology_UNDEFINED,
+		PrimitiveTopology_TRIANGLELIST,
+		PrimitiveTopology_TRIANGLESTRIP,
+		PrimitiveTopology_POINTLIST,
+		PrimitiveTopology_LINELIST,
+		PrimitiveTopology_LINESTRIP,
+		PrimitiveTopology_PATCHLIST,
 	};
-	enum class ComparisonFunc : uint8_t
+	enum ComparisonFunc : uint8_t
 	{
-		NEVER,
-		LESS,
-		EQUAL,
-		LESS_EQUAL,
-		GREATER,
-		NOT_EQUAL,
-		GREATER_EQUAL,
-		ALWAYS,
+		ComparisonFunc_NEVER,
+		ComparisonFunc_LESS,
+		ComparisonFunc_EQUAL,
+		ComparisonFunc_LESS_EQUAL,
+		ComparisonFunc_GREATER,
+		ComparisonFunc_NOT_EQUAL,
+		ComparisonFunc_GREATER_EQUAL,
+		ComparisonFunc_ALWAYS,
 	};
-	enum class DepthWriteMask : uint8_t
+	enum DepthWriteMask : uint8_t
 	{
-		ZERO,	// Disables depth write
-		ALL,	// Enables depth write
+		DepthWriteMask_ZERO,	// Disables depth write
+		DepthWriteMask_ALL,	// Enables depth write
 	};
-	enum class StencilOp : uint8_t
+	enum StencilOp : uint8_t
 	{
-		KEEP,
-		ZERO,
-		REPLACE,
-		INCR_SAT,
-		DECR_SAT,
-		INVERT,
-		INCR,
-		DECR,
+		StencilOp_KEEP,
+		StencilOp_ZERO,
+		StencilOp_REPLACE,
+		StencilOp_INCR_SAT,
+		StencilOp_DECR_SAT,
+		StencilOp_INVERT,
+		StencilOp_INCR,
+		StencilOp_DECR,
 	};
-	enum class Blend : uint8_t
+	enum Blend : uint8_t
 	{
-		ZERO,
-		ONE,
-		SRC_COLOR,
-		INV_SRC_COLOR,
-		SRC_ALPHA,
-		INV_SRC_ALPHA,
-		DEST_ALPHA,
-		INV_DEST_ALPHA,
-		DEST_COLOR,
-		INV_DEST_COLOR,
-		SRC_ALPHA_SAT,
-		BLEND_FACTOR,
-		INV_BLEND_FACTOR,
-		SRC1_COLOR,
-		INV_SRC1_COLOR,
-		SRC1_ALPHA,
-		INV_SRC1_ALPHA,
+		Blend_ZERO,
+		Blend_ONE,
+		Blend_SRC_COLOR,
+		Blend_INV_SRC_COLOR,
+		Blend_SRC_ALPHA,
+		Blend_INV_SRC_ALPHA,
+		Blend_DEST_ALPHA,
+		Blend_INV_DEST_ALPHA,
+		Blend_DEST_COLOR,
+		Blend_INV_DEST_COLOR,
+		Blend_SRC_ALPHA_SAT,
+		Blend_BLEND_FACTOR,
+		Blend_INV_BLEND_FACTOR,
+		Blend_SRC1_COLOR,
+		Blend_INV_SRC1_COLOR,
+		Blend_SRC1_ALPHA,
+		Blend_INV_SRC1_ALPHA,
 	}; 
-	enum class BlendOp : uint8_t
+	enum BlendOp : uint8_t
 	{
-		ADD,
-		SUBTRACT,
-		REV_SUBTRACT,
-		MIN,
-		MAX,
+		BlendOp_ADD,
+		BlendOp_SUBTRACT,
+		BlendOp_REV_SUBTRACT,
+		BlendOp_MIN,
+		BlendOp_MAX,
 	};
-	enum class FillMode : uint8_t
+	enum FillMode : uint8_t
 	{
-		WIREFRAME,
-		SOLID,
+		FillMode_WIREFRAME,
+		FillMode_SOLID,
 	};
-	enum class CullMode : uint8_t
+	enum CullMode : uint8_t
 	{
-		NONE,
-		FRONT,
-		BACK,
+		CullMode_NONE,
+		CullMode_FRONT,
+		CullMode_BACK,
 	};
-	enum class InputClassification : uint8_t
+	enum InputClassification : uint8_t
 	{
-		PER_VERTEX_DATA,
-		PER_INSTANCE_DATA,
+		InputClassification_PER_VERTEX_DATA,
+		InputClassification_PER_INSTANCE_DATA,
 	};
-	enum class Usage : uint8_t
+	enum Usage : uint8_t
 	{
-		DEFAULT,	// CPU no access, GPU read/write
-		UPLOAD,	    // CPU write, GPU read
-		READBACK,	// CPU read, GPU write
+		Usage_DEFAULT,	// CPU no access, GPU read/write
+		Usage_UPLOAD,	    // CPU write, GPU read
+		Usage_READBACK,	// CPU read, GPU write
 	};
-	enum class TextureAddressMode : uint8_t
+	enum TextureAddressMode : uint8_t
 	{
-		WRAP,
-		MIRROR,
-		CLAMP,
-		BORDER,
-		MIRROR_ONCE,
+		TextureAddressMode_WRAP,
+		TextureAddressMode_MIRROR,
+		TextureAddressMode_CLAMP,
+		TextureAddressMode_BORDER,
+		TextureAddressMode_MIRROR_ONCE,
 	};
-	enum class Filter : uint8_t
+	enum Filter : uint8_t
 	{
-		MIN_MAG_MIP_POINT,
-		MIN_MAG_POINT_MIP_LINEAR,
-		MIN_POINT_MAG_LINEAR_MIP_POINT,
-		MIN_POINT_MAG_MIP_LINEAR,
-		MIN_LINEAR_MAG_MIP_POINT,
-		MIN_LINEAR_MAG_POINT_MIP_LINEAR,
-		MIN_MAG_LINEAR_MIP_POINT,
-		MIN_MAG_MIP_LINEAR,
-		ANISOTROPIC,
-		COMPARISON_MIN_MAG_MIP_POINT,
-		COMPARISON_MIN_MAG_POINT_MIP_LINEAR,
-		COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT,
-		COMPARISON_MIN_POINT_MAG_MIP_LINEAR,
-		COMPARISON_MIN_LINEAR_MAG_MIP_POINT,
-		COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
-		COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
-		COMPARISON_MIN_MAG_MIP_LINEAR,
-		COMPARISON_ANISOTROPIC,
-		MINIMUM_MIN_MAG_MIP_POINT,
-		MINIMUM_MIN_MAG_POINT_MIP_LINEAR,
-		MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
-		MINIMUM_MIN_POINT_MAG_MIP_LINEAR,
-		MINIMUM_MIN_LINEAR_MAG_MIP_POINT,
-		MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
-		MINIMUM_MIN_MAG_LINEAR_MIP_POINT,
-		MINIMUM_MIN_MAG_MIP_LINEAR,
-		MINIMUM_ANISOTROPIC,
-		MAXIMUM_MIN_MAG_MIP_POINT,
-		MAXIMUM_MIN_MAG_POINT_MIP_LINEAR,
-		MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
-		MAXIMUM_MIN_POINT_MAG_MIP_LINEAR,
-		MAXIMUM_MIN_LINEAR_MAG_MIP_POINT,
-		MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
-		MAXIMUM_MIN_MAG_LINEAR_MIP_POINT,
-		MAXIMUM_MIN_MAG_MIP_LINEAR,
-		MAXIMUM_ANISOTROPIC,
+		Filter_MIN_MAG_MIP_POINT,
+		Filter_MIN_MAG_POINT_MIP_LINEAR,
+		Filter_MIN_POINT_MAG_LINEAR_MIP_POINT,
+		Filter_MIN_POINT_MAG_MIP_LINEAR,
+		Filter_MIN_LINEAR_MAG_MIP_POINT,
+		Filter_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+		Filter_MIN_MAG_LINEAR_MIP_POINT,
+		Filter_MIN_MAG_MIP_LINEAR,
+		Filter_ANISOTROPIC,
+		Filter_COMPARISON_MIN_MAG_MIP_POINT,
+		Filter_COMPARISON_MIN_MAG_POINT_MIP_LINEAR,
+		Filter_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT,
+		Filter_COMPARISON_MIN_POINT_MAG_MIP_LINEAR,
+		Filter_COMPARISON_MIN_LINEAR_MAG_MIP_POINT,
+		Filter_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+		Filter_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+		Filter_COMPARISON_MIN_MAG_MIP_LINEAR,
+		Filter_COMPARISON_ANISOTROPIC,
+		Filter_MINIMUM_MIN_MAG_MIP_POINT,
+		Filter_MINIMUM_MIN_MAG_POINT_MIP_LINEAR,
+		Filter_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
+		Filter_MINIMUM_MIN_POINT_MAG_MIP_LINEAR,
+		Filter_MINIMUM_MIN_LINEAR_MAG_MIP_POINT,
+		Filter_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+		Filter_MINIMUM_MIN_MAG_LINEAR_MIP_POINT,
+		Filter_MINIMUM_MIN_MAG_MIP_LINEAR,
+		Filter_MINIMUM_ANISOTROPIC,
+		Filter_MAXIMUM_MIN_MAG_MIP_POINT,
+		Filter_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR,
+		Filter_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT,
+		Filter_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR,
+		Filter_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT,
+		Filter_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR,
+		Filter_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT,
+		Filter_MAXIMUM_MIN_MAG_MIP_LINEAR,
+		Filter_MAXIMUM_ANISOTROPIC,
 	};
-	enum class SamplerBorderColor : uint8_t
+	enum SamplerBorderColor : uint8_t
 	{
-		TRANSPARENT_BLACK,
-		OPAQUE_BLACK,
-		OPAQUE_WHITE,
+		SamplerBorderColor_TRANSPARENT_BLACK,
+		SamplerBorderColor_OPAQUE_BLACK,
+		SamplerBorderColor_OPAQUE_WHITE,
 	};
-	enum class Format : uint8_t
+	enum Format : uint8_t
 	{
-		UNKNOWN,
+		Format_UNKNOWN,
 
-		R32G32B32A32_FLOAT,
-		R32G32B32A32_UINT,
-		R32G32B32A32_SINT,
+		Format_R32G32B32A32_FLOAT,
+		Format_R32G32B32A32_UINT,
+		Format_R32G32B32A32_SINT,
 
-		R32G32B32_FLOAT,
-		R32G32B32_UINT,
-		R32G32B32_SINT,
+		Format_R32G32B32_FLOAT,
+		Format_R32G32B32_UINT,
+		Format_R32G32B32_SINT,
 
-		R16G16B16A16_FLOAT,
-		R16G16B16A16_UNORM,
-		R16G16B16A16_UINT,
-		R16G16B16A16_SNORM,
-		R16G16B16A16_SINT,
+		Format_R16G16B16A16_FLOAT,
+		Format_R16G16B16A16_UNORM,
+		Format_R16G16B16A16_UINT,
+		Format_R16G16B16A16_SNORM,
+		Format_R16G16B16A16_SINT,
 
-		R32G32_FLOAT,
-		R32G32_UINT,
-		R32G32_SINT,
-		D32_FLOAT_S8X24_UINT,	// depth (32-bit) + stencil (8-bit) | SRV: R32_FLOAT (default or depth aspect), R8_UINT (stencil aspect)
+		Format_R32G32_FLOAT,
+		Format_R32G32_UINT,
+		Format_R32G32_SINT,
+		Format_D32_FLOAT_S8X24_UINT,	// depth (32-bit) + stencil (8-bit) | SRV: R32_FLOAT (default or depth aspect), R8_UINT (stencil aspect)
 
-		R10G10B10A2_UNORM,
-		R10G10B10A2_UINT,
-		R11G11B10_FLOAT,
-		R8G8B8A8_UNORM,
-		R8G8B8A8_UNORM_SRGB,
-		R8G8B8A8_UINT,
-		R8G8B8A8_SNORM,
-		R8G8B8A8_SINT,
-		B8G8R8A8_UNORM,
-		B8G8R8A8_UNORM_SRGB,
-		R16G16_FLOAT,
-		R16G16_UNORM,
-		R16G16_UINT,
-		R16G16_SNORM,
-		R16G16_SINT,
-		D32_FLOAT,				// depth (32-bit) | SRV: R32_FLOAT
-		R32_FLOAT,
-		R32_UINT,
-		R32_SINT, 
-		D24_UNORM_S8_UINT,		// depth (24-bit) + stencil (8-bit) | SRV: R24_INTERNAL (default or depth aspect), R8_UINT (stencil aspect)
-		R9G9B9E5_SHAREDEXP,
+		Format_R10G10B10A2_UNORM,
+		Format_R10G10B10A2_UINT,
+		Format_R11G11B10_FLOAT,
+		Format_R8G8B8A8_UNORM,
+		Format_R8G8B8A8_UNORM_SRGB,
+		Format_R8G8B8A8_UINT,
+		Format_R8G8B8A8_SNORM,
+		Format_R8G8B8A8_SINT,
+		Format_B8G8R8A8_UNORM,
+		Format_B8G8R8A8_UNORM_SRGB,
+		Format_R16G16_FLOAT,
+		Format_R16G16_UNORM,
+		Format_R16G16_UINT,
+		Format_R16G16_SNORM,
+		Format_R16G16_SINT,
+		Format_D32_FLOAT,				// depth (32-bit) | SRV: R32_FLOAT
+		Format_R32_FLOAT,
+		Format_R32_UINT,
+		Format_R32_SINT, 
+		Format_D24_UNORM_S8_UINT,		// depth (24-bit) + stencil (8-bit) | SRV: R24_INTERNAL (default or depth aspect), R8_UINT (stencil aspect)
+		Format_R9G9B9E5_SHAREDEXP,
 
-		R8G8_UNORM,
-		R8G8_UINT,
-		R8G8_SNORM,
-		R8G8_SINT,
-		R16_FLOAT,
-		D16_UNORM,				// depth (16-bit) | SRV: R16_UNORM
-		R16_UNORM,
-		R16_UINT,
-		R16_SNORM,
-		R16_SINT,
+		Format_R8G8_UNORM,
+		Format_R8G8_UINT,
+		Format_R8G8_SNORM,
+		Format_R8G8_SINT,
+		Format_R16_FLOAT,
+		Format_D16_UNORM,				// depth (16-bit) | SRV: R16_UNORM
+		Format_R16_UNORM,
+		Format_R16_UINT,
+		Format_R16_SNORM,
+		Format_R16_SINT,
 
-		R8_UNORM,
-		R8_UINT,
-		R8_SNORM,
-		R8_SINT,
+		Format_R8_UNORM,
+		Format_R8_UINT,
+		Format_R8_SNORM,
+		Format_R8_SINT,
 
 		// Formats that are not usable in render pass must be below because formats in render pass must be encodable as 6 bits:
 
-		BC1_UNORM,			// Three color channels (5 bits:6 bits:5 bits), with 0 or 1 bit(s) of alpha
-		BC1_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits), with 0 or 1 bit(s) of alpha
-		BC2_UNORM,			// Three color channels (5 bits:6 bits:5 bits), with 4 bits of alpha
-		BC2_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits), with 4 bits of alpha
-		BC3_UNORM,			// Three color channels (5 bits:6 bits:5 bits) with 8 bits of alpha
-		BC3_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits) with 8 bits of alpha
-		BC4_UNORM,			// One color channel (8 bits)
-		BC4_SNORM,			// One color channel (8 bits)
-		BC5_UNORM,			// Two color channels (8 bits:8 bits)
-		BC5_SNORM,			// Two color channels (8 bits:8 bits)
-		BC6H_UF16,			// Three color channels (16 bits:16 bits:16 bits) in "half" floating point
-		BC6H_SF16,			// Three color channels (16 bits:16 bits:16 bits) in "half" floating point
-		BC7_UNORM,			// Three color channels (4 to 7 bits per channel) with 0 to 8 bits of alpha
-		BC7_UNORM_SRGB,		// Three color channels (4 to 7 bits per channel) with 0 to 8 bits of alpha
+		Format_BC1_UNORM,			// Three color channels (5 bits:6 bits:5 bits), with 0 or 1 bit(s) of alpha
+		Format_BC1_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits), with 0 or 1 bit(s) of alpha
+		Format_BC2_UNORM,			// Three color channels (5 bits:6 bits:5 bits), with 4 bits of alpha
+		Format_BC2_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits), with 4 bits of alpha
+		Format_BC3_UNORM,			// Three color channels (5 bits:6 bits:5 bits) with 8 bits of alpha
+		Format_BC3_UNORM_SRGB,		// Three color channels (5 bits:6 bits:5 bits) with 8 bits of alpha
+		Format_BC4_UNORM,			// One color channel (8 bits)
+		Format_BC4_SNORM,			// One color channel (8 bits)
+		Format_BC5_UNORM,			// Two color channels (8 bits:8 bits)
+		Format_BC5_SNORM,			// Two color channels (8 bits:8 bits)
+		Format_BC6H_UF16,			// Three color channels (16 bits:16 bits:16 bits) in "half" floating point
+		Format_BC6H_SF16,			// Three color channels (16 bits:16 bits:16 bits) in "half" floating point
+		Format_BC7_UNORM,			// Three color channels (4 to 7 bits per channel) with 0 to 8 bits of alpha
+		Format_BC7_UNORM_SRGB,		// Three color channels (4 to 7 bits per channel) with 0 to 8 bits of alpha
 
-		NV12,				// video YUV420; SRV Luminance aspect: R8_UNORM, SRV Chrominance aspect: R8G8_UNORM
+		Format_NV12,				// video YUV420; SRV Luminance aspect: R8_UNORM, SRV Chrominance aspect: R8G8_UNORM
 	};
-	enum class GpuQueryType : uint8_t
+	enum GpuQueryType : uint8_t
 	{
-		TIMESTAMP,			// retrieve time point of gpu execution
-		OCCLUSION,			// how many samples passed depth test?
-		OCCLUSION_BINARY,	// depth test passed or not?
+		GpuQueryType_TIMESTAMP,			// retrieve time point of gpu execution
+		GpuQueryType_OCCLUSION,			// how many samples passed depth test?
+		GpuQueryType_OCCLUSION_BINARY,	// depth test passed or not?
 	};
-	enum class IndexBufferFormat : uint8_t
+	enum IndexBufferFormat : uint8_t
 	{
-		UINT16,
-		UINT32,
+		IndexBufferFormat_UINT16,
+		IndexBufferFormat_UINT32,
 	};
-	enum class SubresourceType : uint8_t
+	enum SubresourceType : uint8_t
 	{
-		SRV, // shader resource view
-		UAV, // unordered access view
-		RTV, // render target view
-		DSV, // depth stencil view
-	};
-
-	enum class ShadingRate : uint8_t
-	{
-		RATE_1X1,	// Default/full shading rate
-		RATE_1X2,
-		RATE_2X1,
-		RATE_2X2,
-		RATE_2X4,
-		RATE_4X2,
-		RATE_4X4,
-
-		RATE_INVALID
+		SubresourceType_SRV, // shader resource view
+		SubresourceType_UAV, // unordered access view
+		SubresourceType_RTV, // render target view
+		SubresourceType_DSV, // depth stencil view
 	};
 
-	enum class PredicationOp : uint8_t
+	enum ShadingRate : uint8_t
 	{
-		EQUAL_ZERO,
-		NOT_EQUAL_ZERO,
+		ShadingRate_RATE_1X1,	// Default/full shading rate
+		ShadingRate_RATE_1X2,
+		ShadingRate_RATE_2X1,
+		ShadingRate_RATE_2X2,
+		ShadingRate_RATE_2X4,
+		ShadingRate_RATE_4X2,
+		ShadingRate_RATE_4X4,
+
+		ShadingRate_RATE_INVALID
 	};
 
-	enum class ImageAspect : uint8_t
+	enum PredicationOp : uint8_t
 	{
-		COLOR,
-		DEPTH,
-		STENCIL,
-		LUMINANCE,
-		CHROMINANCE,
+		PredicationOp_EQUAL_ZERO,
+		PredicationOp_NOT_EQUAL_ZERO,
 	};
 
-	enum class VideoFrameType : uint8_t
+	enum ImageAspect : uint8_t
 	{
-		Intra,
-		Predictive,
+		ImageAspect_COLOR,
+		ImageAspect_DEPTH,
+		ImageAspect_STENCIL,
+		ImageAspect_LUMINANCE,
+		ImageAspect_CHROMINANCE,
 	};
 
-	enum class VideoProfile : uint8_t
+	enum VideoFrameType : uint8_t
 	{
-		H264,	// AVC
-		H265,	// HEVC
+		VideoFrameType_Intra,
+		VideoFrameType_Predictive,
 	};
 
-	enum class ComponentSwizzle : uint8_t
+	enum VideoProfile : uint8_t
 	{
-		R,
-		G,
-		B,
-		A,
-		ZERO,
-		ONE,
+		VideoProfile_H264,	// AVC
+		VideoProfile_H265,	// HEVC
 	};
 
-	enum class ColorSpace : uint8_t
+	enum ComponentSwizzle : uint8_t
 	{
-		SRGB,			// SDR color space (8 or 10 bits per channel)
-		HDR10_ST2084,	// HDR10 color space (10 bits per channel)
-		HDR_LINEAR,		// HDR color space (16 bits per channel)
+		ComponentSwizzle_R,
+		ComponentSwizzle_G,
+		ComponentSwizzle_B,
+		ComponentSwizzle_A,
+		ComponentSwizzle_ZERO,
+		ComponentSwizzle_ONE,
+	};
+
+	enum ColorSpace : uint8_t
+	{
+		ColorSpace_SRGB,			// SDR color space (8 or 10 bits per channel)
+		ColorSpace_HDR10_ST2084,	// HDR10 color space (10 bits per channel)
+		ColorSpace_HDR_LINEAR,		// HDR color space (16 bits per channel)
 	};
 
 	// Flags ////////////////////////////////////////////
 
-	enum class ColorWrite
-	{
-		DISABLE = 0,
-		ENABLE_RED = 1 << 0,
-		ENABLE_GREEN = 1 << 1,
-		ENABLE_BLUE = 1 << 2,
-		ENABLE_ALPHA = 1 << 3,
-		ENABLE_ALL = ~0,
+	enum ColorWrite {
+		ColorWrite_DISABLE = 0,
+		ColorWrite_ENABLE_RED = 1 << 0,
+		ColorWrite_ENABLE_GREEN = 1 << 1,
+		ColorWrite_ENABLE_BLUE = 1 << 2,
+		ColorWrite_ENABLE_ALPHA = 1 << 3,
+		ColorWrite_ENABLE_ALL = ~0,
 	};
 
-	enum class BindFlag : uint8_t
+	enum BindFlag : uint8_t
 	{
-		NONE = 0,
-		VERTEX_BUFFER = 1 << 0,
-		INDEX_BUFFER = 1 << 1,
-		CONSTANT_BUFFER = 1 << 2,
-		SHADER_RESOURCE = 1 << 3,
-		RENDER_TARGET = 1 << 4,
-		DEPTH_STENCIL = 1 << 5,
-		UNORDERED_ACCESS = 1 << 6,
-		SHADING_RATE = 1 << 7,
+		BindFlag_NONE = 0,
+		BindFlag_VERTEX_BUFFER = 1 << 0,
+		BindFlag_INDEX_BUFFER = 1 << 1,
+		BindFlag_CONSTANT_BUFFER = 1 << 2,
+		BindFlag_SHADER_RESOURCE = 1 << 3,
+		BindFlag_RENDER_TARGET = 1 << 4,
+		BindFlag_DEPTH_STENCIL = 1 << 5,
+		BindFlag_UNORDERED_ACCESS = 1 << 6,
+		BindFlag_SHADING_RATE = 1 << 7,
 	};
 
-	enum class ResourceMiscFlag
-	{
-		NONE = 0,
-		TEXTURECUBE = 1 << 0,
-		INDIRECT_ARGS = 1 << 1,
-		BUFFER_RAW = 1 << 2,
-		BUFFER_STRUCTURED = 1 << 3,
-		RAY_TRACING = 1 << 4,
-		PREDICATION = 1 << 5,
-		TRANSIENT_ATTACHMENT = 1 << 6,	// hint: used in renderpass, without needing to write content to memory (VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT)
-		SPARSE = 1 << 7,	// sparse resource without backing memory allocation
-		ALIASING_BUFFER = 1 << 8,			// memory allocation will be suitable for buffers
-		ALIASING_TEXTURE_NON_RT_DS = 1 << 9,// memory allocation will be suitable for textures that are non render targets nor depth stencils
-		ALIASING_TEXTURE_RT_DS = 1 << 10,	// memory allocation will be suitable for textures that are either render targets or depth stencils
-		TYPED_FORMAT_CASTING = 1 << 11,	// enable casting formats between same type and different modifiers: eg. UNORM -> SRGB
-		TYPELESS_FORMAT_CASTING = 1 << 12,	// enable casting formats to other formats that have the same bit-width and channel layout: eg. R32_FLOAT -> R32_UINT
-		VIDEO_DECODE = 1 << 13,	// resource is usabe in video decoding operations (for buffers it is indicating a bitstream buffer, for textures it is a DPB and output texture if DPB_AND_OUTPUT_COINCIDE is supported)
-		VIDEO_DECODE_OUTPUT_ONLY = 1 << 14,	// resource is usabe in video decoding operations but as output only and not as DPB (used for DPB textures when DPB_AND_OUTPUT_COINCIDE is NOT supported)
-		VIDEO_DECODE_DPB_ONLY = 1 << 15,	// resource is usabe in video decoding operations but as strictly DPB only (used for output textures when DPB_AND_OUTPUT_COINCIDE is NOT supported)
-		NO_DEFAULT_DESCRIPTORS = 1 << 16, // skips creation of default descriptors for resources
-		SHARED = 1 << 17, // shared texture
+	enum ResourceMiscFlag {
+		ResourceMiscFlag_NONE = 0,
+		ResourceMiscFlag_TEXTURECUBE = 1 << 0,
+		ResourceMiscFlag_INDIRECT_ARGS = 1 << 1,
+		ResourceMiscFlag_BUFFER_RAW = 1 << 2,
+		ResourceMiscFlag_BUFFER_STRUCTURED = 1 << 3,
+		ResourceMiscFlag_RAY_TRACING = 1 << 4,
+		ResourceMiscFlag_PREDICATION = 1 << 5,
+		ResourceMiscFlag_TRANSIENT_ATTACHMENT = 1 << 6,	// hint: used in renderpass, without needing to write content to memory (VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT)
+		ResourceMiscFlag_SPARSE = 1 << 7,	// sparse resource without backing memory allocation
+		ResourceMiscFlag_ALIASING_BUFFER = 1 << 8,			// memory allocation will be suitable for buffers
+		ResourceMiscFlag_ALIASING_TEXTURE_NON_RT_DS = 1 << 9,// memory allocation will be suitable for textures that are non render targets nor depth stencils
+		ResourceMiscFlag_ALIASING_TEXTURE_RT_DS = 1 << 10,	// memory allocation will be suitable for textures that are either render targets or depth stencils
+		ResourceMiscFlag_TYPED_FORMAT_CASTING = 1 << 11,	// enable casting formats between same type and different modifiers: eg. UNORM -> SRGB
+		ResourceMiscFlag_TYPELESS_FORMAT_CASTING = 1 << 12,	// enable casting formats to other formats that have the same bit-width and channel layout: eg. R32_FLOAT -> R32_UINT
+		ResourceMiscFlag_VIDEO_DECODE = 1 << 13,	// resource is usabe in video decoding operations (for buffers it is indicating a bitstream buffer, for textures it is a DPB and output texture if DPB_AND_OUTPUT_COINCIDE is supported)
+		ResourceMiscFlag_VIDEO_DECODE_OUTPUT_ONLY = 1 << 14,	// resource is usabe in video decoding operations but as output only and not as DPB (used for DPB textures when DPB_AND_OUTPUT_COINCIDE is NOT supported)
+		ResourceMiscFlag_VIDEO_DECODE_DPB_ONLY = 1 << 15,	// resource is usabe in video decoding operations but as strictly DPB only (used for output textures when DPB_AND_OUTPUT_COINCIDE is NOT supported)
+		ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS = 1 << 16, // skips creation of default descriptors for resources
+		ResourceMiscFlag_SHARED = 1 << 17, // shared texture
 
-		VIDEO_COMPATIBILITY_H264 = 1 << 18,	// required for vulkan resource creation for every resource (bitstream buffer, DPB, output) that will be used in a H264 decode session
-		VIDEO_COMPATIBILITY_H265 = 1 << 19,	// required for vulkan resource creation for every resource (bitstream buffer, DPB, output) that will be used in a H265 decode session
+		ResourceMiscFlag_VIDEO_COMPATIBILITY_H264 = 1 << 18,	// required for vulkan resource creation for every resource (bitstream buffer, DPB, output) that will be used in a H264 decode session
+		ResourceMiscFlag_VIDEO_COMPATIBILITY_H265 = 1 << 19,	// required for vulkan resource creation for every resource (bitstream buffer, DPB, output) that will be used in a H265 decode session
 	};
 
-	enum class GraphicsDeviceCapability
-	{
-		NONE = 0,
-		TESSELLATION = 1 << 0,
-		CONSERVATIVE_RASTERIZATION = 1 << 1,
-		RASTERIZER_ORDERED_VIEWS = 1 << 2,
-		UAV_LOAD_FORMAT_COMMON = 1 << 3, // eg: R16G16B16A16_FLOAT, R8G8B8A8_UNORM and more common ones
-		UAV_LOAD_FORMAT_R11G11B10_FLOAT = 1 << 4,
-		VARIABLE_RATE_SHADING = 1 << 5,
-		VARIABLE_RATE_SHADING_TIER2 = 1 << 6,
-		MESH_SHADER = 1 << 7,
-		RAYTRACING = 1 << 8,
-		PREDICATION = 1 << 9,
-		SAMPLER_MINMAX = 1 << 10,
-		DEPTH_BOUNDS_TEST = 1 << 11,
-		SPARSE_BUFFER = 1 << 12,
-		SPARSE_TEXTURE2D = 1 << 13,
-		SPARSE_TEXTURE3D = 1 << 14,
-		SPARSE_NULL_MAPPING = 1 << 15,
-		ALIASING_GENERIC = 1 << 16, // allows using ResourceMiscFlag::ALIASING (non resource type specific version)
-		DEPTH_RESOLVE_MIN_MAX = 1 << 17,
-		STENCIL_RESOLVE_MIN_MAX = 1 << 18,
-		CACHE_COHERENT_UMA = 1 << 19,	// https://learn.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_architecture
-		VIDEO_DECODE_H264 = 1 << 20,
-		VIDEO_DECODE_H265 = 1 << 21,
-		R9G9B9E5_SHAREDEXP_RENDERABLE = 1 << 22, // indicates supporting R9G9B9E5_SHAREDEXP format for rendering to
-		COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED = 1 << 23, // indicates that CopyTexture src and dst ImageAspect must match
+	enum GraphicsDeviceCapability {
+		GraphicsDeviceCapability_NONE = 0,
+		GraphicsDeviceCapability_TESSELLATION = 1 << 0,
+		GraphicsDeviceCapability_CONSERVATIVE_RASTERIZATION = 1 << 1,
+		GraphicsDeviceCapability_RASTERIZER_ORDERED_VIEWS = 1 << 2,
+		GraphicsDeviceCapability_UAV_LOAD_FORMAT_COMMON = 1 << 3, // eg: R16G16B16A16_FLOAT, R8G8B8A8_UNORM and more common ones
+		GraphicsDeviceCapability_UAV_LOAD_FORMAT_R11G11B10_FLOAT = 1 << 4,
+		GraphicsDeviceCapability_VARIABLE_RATE_SHADING = 1 << 5,
+		GraphicsDeviceCapability_VARIABLE_RATE_SHADING_TIER2 = 1 << 6,
+		GraphicsDeviceCapability_MESH_SHADER = 1 << 7,
+		GraphicsDeviceCapability_RAYTRACING = 1 << 8,
+		GraphicsDeviceCapability_PREDICATION = 1 << 9,
+		GraphicsDeviceCapability_SAMPLER_MINMAX = 1 << 10,
+		GraphicsDeviceCapability_DEPTH_BOUNDS_TEST = 1 << 11,
+		GraphicsDeviceCapability_SPARSE_BUFFER = 1 << 12,
+		GraphicsDeviceCapability_SPARSE_TEXTURE2D = 1 << 13,
+		GraphicsDeviceCapability_SPARSE_TEXTURE3D = 1 << 14,
+		GraphicsDeviceCapability_SPARSE_NULL_MAPPING = 1 << 15,
+		GraphicsDeviceCapability_ALIASING_GENERIC = 1 << 16, // allows using ResourceMiscFlag::ALIASING (non resource type specific version)
+		GraphicsDeviceCapability_DEPTH_RESOLVE_MIN_MAX = 1 << 17,
+		GraphicsDeviceCapability_STENCIL_RESOLVE_MIN_MAX = 1 << 18,
+		GraphicsDeviceCapability_CACHE_COHERENT_UMA = 1 << 19,	// https://learn.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_feature_data_architecture
+		GraphicsDeviceCapability_VIDEO_DECODE_H264 = 1 << 20,
+		GraphicsDeviceCapability_VIDEO_DECODE_H265 = 1 << 21,
+		GraphicsDeviceCapability_R9G9B9E5_SHAREDEXP_RENDERABLE = 1 << 22, // indicates supporting R9G9B9E5_SHAREDEXP format for rendering to
+		GraphicsDeviceCapability_COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED = 1 << 23, // indicates that CopyTexture src and dst ImageAspect must match
 		
 		// Compat:
-		GENERIC_SPARSE_TILE_POOL = ALIASING_GENERIC,
+		GraphicsDeviceCapability_GENERIC_SPARSE_TILE_POOL = GraphicsDeviceCapability_ALIASING_GENERIC,
 	};
 
-	enum class ResourceState
-	{
+	enum ResourceState {
 		// Common resource states:
-		UNDEFINED = 0,						// invalid state (don't preserve contents)
-		SHADER_RESOURCE = 1 << 0,			// shader resource, read only
-		SHADER_RESOURCE_COMPUTE = 1 << 1,	// shader resource, read only, non-pixel shader
-		UNORDERED_ACCESS = 1 << 2,			// shader resource, write enabled
-		COPY_SRC = 1 << 3,					// copy from
-		COPY_DST = 1 << 4,					// copy to
+		ResourceState_UNDEFINED = 0,						// invalid state (don't preserve contents)
+		ResourceState_SHADER_RESOURCE = 1 << 0,			// shader resource, read only
+		ResourceState_SHADER_RESOURCE_COMPUTE = 1 << 1,	// shader resource, read only, non-pixel shader
+		ResourceState_UNORDERED_ACCESS = 1 << 2,			// shader resource, write enabled
+		ResourceState_COPY_SRC = 1 << 3,					// copy from
+		ResourceState_COPY_DST = 1 << 4,					// copy to
 
 		// Texture specific resource states:
-		RENDERTARGET = 1 << 5,				// render target, write enabled
-		DEPTHSTENCIL = 1 << 6,				// depth stencil, write enabled
-		DEPTHSTENCIL_READONLY = 1 << 7,		// depth stencil, read only
-		SHADING_RATE_SOURCE = 1 << 8,		// shading rate control per tile
+		ResourceState_RENDERTARGET = 1 << 5,				// render target, write enabled
+		ResourceState_DEPTHSTENCIL = 1 << 6,				// depth stencil, write enabled
+		ResourceState_DEPTHSTENCIL_READONLY = 1 << 7,		// depth stencil, read only
+		ResourceState_SHADING_RATE_SOURCE = 1 << 8,		// shading rate control per tile
 
 		// GPUBuffer specific resource states:
-		VERTEX_BUFFER = 1 << 9,				// vertex buffer, read only
-		INDEX_BUFFER = 1 << 10,				// index buffer, read only
-		CONSTANT_BUFFER = 1 << 11,			// constant buffer, read only
-		INDIRECT_ARGUMENT = 1 << 12,		// argument buffer to DrawIndirect() or DispatchIndirect()
-		RAYTRACING_ACCELERATION_STRUCTURE = 1 << 13, // acceleration structure storage or scratch
-		PREDICATION = 1 << 14,				// storage for predication comparison value
+		ResourceState_VERTEX_BUFFER = 1 << 9,				// vertex buffer, read only
+		ResourceState_INDEX_BUFFER = 1 << 10,				// index buffer, read only
+		ResourceState_CONSTANT_BUFFER = 1 << 11,			// constant buffer, read only
+		ResourceState_INDIRECT_ARGUMENT = 1 << 12,		// argument buffer to DrawIndirect() or DispatchIndirect()
+		ResourceState_RAYTRACING_ACCELERATION_STRUCTURE = 1 << 13, // acceleration structure storage or scratch
+		ResourceState_PREDICATION = 1 << 14,				// storage for predication comparison value
 
 		// Other:
-		VIDEO_DECODE_SRC = 1 << 15,			// video decode operation source (bitstream buffer or DPB texture)
-		VIDEO_DECODE_DST = 1 << 16,			// video decode operation destination output texture
-		VIDEO_DECODE_DPB = 1 << 17,			// video decode operation destination DPB texture
-		SWAPCHAIN = 1 << 18,				// resource state of swap chain's back buffer texture when it's not rendering
+		ResourceState_VIDEO_DECODE_SRC = 1 << 15,			// video decode operation source (bitstream buffer or DPB texture)
+		ResourceState_VIDEO_DECODE_DST = 1 << 16,			// video decode operation destination output texture
+		ResourceState_VIDEO_DECODE_DPB = 1 << 17,			// video decode operation destination DPB texture
+		ResourceState_SWAPCHAIN = 1 << 18,				// resource state of swap chain's back buffer texture when it's not rendering
 	};
 
-	enum class RenderPassFlags
-	{
-		NONE = 0,
-		ALLOW_UAV_WRITES = 1 << 0,			// allows UAV writes to happen within render pass
-		SUSPENDING = 1 << 1,				// suspends the renderpass to be continued in the next submitted command list
-		RESUMING = 1 << 2,					// resumes the renderpass that was suspended in the previously submitted command list
+	enum RenderPassFlags {
+		RenderPassFlags_NONE = 0,
+		RenderPassFlags_ALLOW_UAV_WRITES = 1 << 0,			// allows UAV writes to happen within render pass
+		RenderPassFlags_SUSPENDING = 1 << 1,				// suspends the renderpass to be continued in the next submitted command list
+		RenderPassFlags_RESUMING = 1 << 2,					// resumes the renderpass that was suspended in the previously submitted command list
 	};
 
-	enum class VideoDecoderSupportFlags
-	{
-		NONE = 0,
-		DPB_AND_OUTPUT_COINCIDE = 1 << 0,				// the video decoder supports using the DPB texture as output shader resource. If not supported, then DPB_AND_OUTPUT_DISTINCT must be supported.
-		DPB_AND_OUTPUT_DISTINCT = 1 << 1,				// the video decoder supports outputting to a texture that is not part of the DPB as part of the decode operation. If not supported, then DPB_AND_OUTPUT_COINCIDE must be supported.
-		DPB_INDIVIDUAL_TEXTURES_SUPPORTED = 1 << 2,		// the video decoder supports using a DPB that is not an array texture, so each slot can be an individually allocated texture
+	enum VideoDecoderSupportFlags {
+		VideoDecoderSupportFlags_NONE = 0,
+		VideoDecoderSupportFlags_DPB_AND_OUTPUT_COINCIDE = 1 << 0,				// the video decoder supports using the DPB texture as output shader resource. If not supported, then DPB_AND_OUTPUT_DISTINCT must be supported.
+		VideoDecoderSupportFlags_DPB_AND_OUTPUT_DISTINCT = 1 << 1,				// the video decoder supports outputting to a texture that is not part of the DPB as part of the decode operation. If not supported, then DPB_AND_OUTPUT_COINCIDE must be supported.
+		VideoDecoderSupportFlags_DPB_INDIVIDUAL_TEXTURES_SUPPORTED = 1 << 2,		// the video decoder supports using a DPB that is not an array texture, so each slot can be an individually allocated texture
 	};
 
 
@@ -523,10 +517,10 @@ namespace Protean::Graphics
 		{
 			std::string semantic_name;
 			uint32_t semantic_index = 0;
-			Format format = Format::UNKNOWN;
+			Format format = Format_UNKNOWN;
 			uint32_t input_slot = 0;
 			uint32_t aligned_byte_offset = APPEND_ALIGNED_ELEMENT;
-			InputClassification input_slot_class = InputClassification::PER_VERTEX_DATA;
+			InputClassification input_slot_class = InputClassification_PER_VERTEX_DATA;
 		};
 		Protean::vector<Element> elements;
 	};
@@ -543,23 +537,23 @@ namespace Protean::Graphics
 
 	struct Swizzle
 	{
-		ComponentSwizzle r = ComponentSwizzle::R;
-		ComponentSwizzle g = ComponentSwizzle::G;
-		ComponentSwizzle b = ComponentSwizzle::B;
-		ComponentSwizzle a = ComponentSwizzle::A;
+		ComponentSwizzle r = ComponentSwizzle_R;
+		ComponentSwizzle g = ComponentSwizzle_G;
+		ComponentSwizzle b = ComponentSwizzle_B;
+		ComponentSwizzle a = ComponentSwizzle_A;
 	};
 
 	struct TextureDesc
 	{
-		enum class Type : uint8_t
+		enum Type : uint8_t
 		{
-			TEXTURE_1D,
-			TEXTURE_2D,
-			TEXTURE_3D,
-		} type = Type::TEXTURE_2D;
-		Format format = Format::UNKNOWN;
-		Usage usage = Usage::DEFAULT;
-		BindFlag bind_flags = BindFlag::NONE;
+			Type_TEXTURE_1D,
+			Type_TEXTURE_2D,
+			Type_TEXTURE_3D,
+		} type = Type_TEXTURE_2D;
+		Format format = Format_UNKNOWN;
+		Usage usage = Usage_DEFAULT;
+		BindFlag bind_flags = BindFlag_NONE;
 		uint32_t width = 1;
 		uint32_t height = 1;
 		uint32_t depth = 1;
@@ -568,28 +562,28 @@ namespace Protean::Graphics
 		uint32_t sample_count = 1;
 		ClearValue clear = {};
 		Swizzle swizzle;
-		ResourceMiscFlag misc_flags = ResourceMiscFlag::NONE;
-		ResourceState layout = ResourceState::SHADER_RESOURCE;
+		ResourceMiscFlag misc_flags = ResourceMiscFlag_NONE;
+		ResourceState layout = ResourceState_SHADER_RESOURCE;
 	};
 
 	struct SamplerDesc
 	{
-		Filter filter = Filter::MIN_MAG_MIP_POINT;
-		TextureAddressMode address_u = TextureAddressMode::CLAMP;
-		TextureAddressMode address_v = TextureAddressMode::CLAMP;
-		TextureAddressMode address_w = TextureAddressMode::CLAMP;
+		Filter filter = Filter_MIN_MAG_MIP_POINT;
+		TextureAddressMode address_u = TextureAddressMode_CLAMP;
+		TextureAddressMode address_v = TextureAddressMode_CLAMP;
+		TextureAddressMode address_w = TextureAddressMode_CLAMP;
 		float mip_lod_bias = 0;
 		uint32_t max_anisotropy = 0;
-		ComparisonFunc comparison_func = ComparisonFunc::NEVER;
-		SamplerBorderColor border_color = SamplerBorderColor::TRANSPARENT_BLACK;
+		ComparisonFunc comparison_func = ComparisonFunc_NEVER;
+		SamplerBorderColor border_color = SamplerBorderColor_TRANSPARENT_BLACK;
 		float min_lod = 0;
 		float max_lod = std::numeric_limits<float>::max();
 	};
 
 	struct RasterizerState
 	{
-		FillMode fill_mode = FillMode::SOLID;
-		CullMode cull_mode = CullMode::NONE;
+		FillMode fill_mode = FillMode_SOLID;
+		CullMode cull_mode = CullMode_NONE;
 		bool front_counter_clockwise = false;
 		int32_t depth_bias = 0;
 		float depth_bias_clamp = 0;
@@ -605,18 +599,18 @@ namespace Protean::Graphics
 	struct DepthStencilState
 	{
 		bool depth_enable = false;
-		DepthWriteMask depth_write_mask = DepthWriteMask::ZERO;
-		ComparisonFunc depth_func = ComparisonFunc::NEVER;
+		DepthWriteMask depth_write_mask = DepthWriteMask_ZERO;
+		ComparisonFunc depth_func = ComparisonFunc_NEVER;
 		bool stencil_enable = false;
 		uint8_t stencil_read_mask = 0xff;
 		uint8_t stencil_write_mask = 0xff;
 
 		struct DepthStencilOp
 		{
-			StencilOp stencil_fail_op = StencilOp::KEEP;
-			StencilOp stencil_depth_fail_op = StencilOp::KEEP;
-			StencilOp stencil_pass_op = StencilOp::KEEP;
-			ComparisonFunc stencil_func = ComparisonFunc::NEVER;
+			StencilOp stencil_fail_op = StencilOp_KEEP;
+			StencilOp stencil_depth_fail_op = StencilOp_KEEP;
+			StencilOp stencil_pass_op = StencilOp_KEEP;
+			ComparisonFunc stencil_func = ComparisonFunc_NEVER;
 		};
 		DepthStencilOp front_face;
 		DepthStencilOp back_face;
@@ -632,13 +626,13 @@ namespace Protean::Graphics
 		struct RenderTargetBlendState
 		{
 			bool blend_enable = false;
-			Blend src_blend = Blend::SRC_ALPHA;
-			Blend dest_blend = Blend::INV_SRC_ALPHA;
-			BlendOp blend_op = BlendOp::ADD;
-			Blend src_blend_alpha = Blend::ONE;
-			Blend dest_blend_alpha = Blend::ONE;
-			BlendOp blend_op_alpha = BlendOp::ADD;
-			ColorWrite render_target_write_mask = ColorWrite::ENABLE_ALL;
+			Blend src_blend = Blend_SRC_ALPHA;
+			Blend dest_blend = Blend_INV_SRC_ALPHA;
+			BlendOp blend_op = BlendOp_ADD;
+			Blend src_blend_alpha = Blend_ONE;
+			Blend dest_blend_alpha = Blend_ONE;
+			BlendOp blend_op_alpha = BlendOp_ADD;
+			ColorWrite render_target_write_mask = ColorWrite_ENABLE_ALL;
 		};
 		RenderTargetBlendState render_target[8];
 	};
@@ -649,15 +643,15 @@ namespace Protean::Graphics
 		uint64_t size = 0;
 		uint32_t stride = 0; // only needed for structured buffer types!
 		uint32_t alignment = 0;
-		Usage usage = Usage::DEFAULT;
-		Format format = Format::UNKNOWN; // only needed for typed buffer!
-		BindFlag bind_flags = BindFlag::NONE;
-		ResourceMiscFlag misc_flags = ResourceMiscFlag::NONE;
+		Usage usage = Usage_DEFAULT;
+		Format format = Format_UNKNOWN; // only needed for typed buffer!
+		BindFlag bind_flags = BindFlag_NONE;
+		ResourceMiscFlag misc_flags = ResourceMiscFlag_NONE;
 	};
 
 	struct GPUQueryHeapDesc
 	{
-		GpuQueryType type = GpuQueryType::TIMESTAMP;
+		GpuQueryType type = GpuQueryType_TIMESTAMP;
 		uint32_t query_count = 0;
 	};
 
@@ -675,20 +669,19 @@ namespace Protean::Graphics
 		const RasterizerState* rs = nullptr;
 		const DepthStencilState* dss = nullptr;
 		const InputLayout* il = nullptr;
-		PrimitiveTopology pt = PrimitiveTopology::TRIANGLELIST;
+		PrimitiveTopology pt = PrimitiveTopology_TRIANGLELIST;
 		uint32_t patch_control_points = 3;
 		uint32_t sample_mask = 0xFFFFFFFF;
 	};
 
 	struct GPUBarrier
 	{
-		enum class Type
-		{
-			MEMORY,		// UAV accesses
-			IMAGE,		// image layout transition
-			BUFFER,		// buffer state transition
-			ALIASING,	// memory aliasing transition
-		} type = Type::MEMORY;
+		enum Type {
+			Type_MEMORY,		// UAV accesses
+			Type_IMAGE,		// image layout transition
+			Type_BUFFER,		// buffer state transition
+			Type_ALIASING,	// memory aliasing transition
+		} type = Type_MEMORY;
 
 		struct Memory
 		{
@@ -725,7 +718,7 @@ namespace Protean::Graphics
 		static GPUBarrier Memory(const GPUResource* resource = nullptr)
 		{
 			GPUBarrier barrier;
-			barrier.type = Type::MEMORY;
+			barrier.type = Type_MEMORY;
 			barrier.memory.resource = resource;
 			return barrier;
 		}
@@ -733,7 +726,7 @@ namespace Protean::Graphics
 			int mip = -1, int slice = -1, const ImageAspect* aspect = nullptr)
 		{
 			GPUBarrier barrier;
-			barrier.type = Type::IMAGE;
+			barrier.type = Type_IMAGE;
 			barrier.image.texture = texture;
 			barrier.image.layout_before = before;
 			barrier.image.layout_after = after;
@@ -745,7 +738,7 @@ namespace Protean::Graphics
 		static GPUBarrier Buffer(const GPUBuffer* buffer, ResourceState before, ResourceState after)
 		{
 			GPUBarrier barrier;
-			barrier.type = Type::BUFFER;
+			barrier.type = Type_BUFFER;
 			barrier.buffer.buffer = buffer;
 			barrier.buffer.state_before = before;
 			barrier.buffer.state_after = after;
@@ -754,7 +747,7 @@ namespace Protean::Graphics
 		static GPUBarrier Aliasing(const GPUResource* before, const GPUResource* after)
 		{
 			GPUBarrier barrier;
-			barrier.type = Type::ALIASING;
+			barrier.type = Type_ALIASING;
 			barrier.aliasing.resource_before = before;
 			barrier.aliasing.resource_after = after;
 			return barrier;
@@ -766,7 +759,7 @@ namespace Protean::Graphics
 		uint32_t width = 0;
 		uint32_t height = 0;
 		uint32_t buffer_count = 2;
-		Format format = Format::R10G10B10A2_UNORM;
+		Format format = Format_R10G10B10A2_UNORM;
 		bool fullscreen = false;
 		bool vsync = true;
 		float clear_color[4] = { 0,0,0,1 };
@@ -823,8 +816,8 @@ namespace Protean::Graphics
 		uint32_t width = 0;					// must meet the codec specific alignment requirements
 		uint32_t height = 0;				// must meet the codec specific alignment requirements
 		uint32_t bit_rate = 0;				// can be 0, it means that decoding will be prepared for worst case
-		Format format = Format::NV12;
-		VideoProfile profile = VideoProfile::H264;
+		Format format = Format_NV12;
+		VideoProfile profile = VideoProfile_H264;
 		const void* pps_datas = nullptr;	// array of picture parameter set structures. The structure type depends on video codec
 		size_t pps_count = 0;				// number of picture parameter set structures in the pps_datas array
 		const void* sps_datas = nullptr;	// array of sequence parameter set structures. The structure type depends on video codec
@@ -856,7 +849,7 @@ namespace Protean::Graphics
 		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
-		ShaderStage stage = ShaderStage::Count;
+		ShaderStage stage = ShaderStage_Count;
 	};
 
 	struct GPUResource
@@ -870,16 +863,16 @@ namespace Protean::Graphics
 
 		uint32_t sparse_page_size = 0;	// specifies the required alignment of backing allocation for sparse tile pool
 
-		enum class Type : uint8_t
+		enum Type : uint8_t
 		{
-			BUFFER,
-			TEXTURE,
-			RAYTRACING_ACCELERATION_STRUCTURE,
-			UNKNOWN_TYPE,
-		} type = Type::UNKNOWN_TYPE;
-		constexpr bool IsTexture() const { return type == Type::TEXTURE; }
-		constexpr bool IsBuffer() const { return type == Type::BUFFER; }
-		constexpr bool IsAccelerationStructure() const { return type == Type::RAYTRACING_ACCELERATION_STRUCTURE; }
+			Type_BUFFER,
+			Type_TEXTURE,
+			Type_RAYTRACING_ACCELERATION_STRUCTURE,
+			Type_UNKNOWN_TYPE,
+		} type = Type_UNKNOWN_TYPE;
+		constexpr bool IsTexture() const { return type == Type_TEXTURE; }
+		constexpr bool IsBuffer() const { return type == Type_BUFFER; }
+		constexpr bool IsAccelerationStructure() const { return type == Type_RAYTRACING_ACCELERATION_STRUCTURE; }
 
 		// Dynamic allocation and destruction of this object is not allowed because virtual table is not used. Placement new is allowed.
 		static void* operator new (size_t) = delete;
@@ -906,7 +899,7 @@ namespace Protean::Graphics
 		const SubresourceData* mapped_subresources = nullptr;	// an array of subresource mappings in the following memory layout: slice0|mip0, slice0|mip1, slice0|mip2, ... sliceN|mipN
 		size_t mapped_subresource_count = 0;					// the array size of mapped_subresources (number of slices * number of miplevels)
 
-		// These are only valid if texture was created with ResourceMiscFlag::SPARSE flag:
+		// These are only valid if texture was created with ResourceMiscFlag_SPARSE flag:
 		const SparseTextureProperties* sparse_properties = nullptr;
 
 #if defined(_WIN32)
@@ -925,7 +918,7 @@ namespace Protean::Graphics
 
 		VideoDesc desc;
 		constexpr const VideoDesc& GetDesc() const { return desc; }
-		VideoDecoderSupportFlags support = VideoDecoderSupportFlags::NONE;
+		VideoDecoderSupportFlags support = VideoDecoderSupportFlags_NONE;
 	};
 
 	struct VideoDecodeOperation
@@ -939,7 +932,7 @@ namespace Protean::Graphics
 		const GPUBuffer* stream = nullptr;
 		uint64_t stream_offset = 0; // must be aligned with GraphicsDevice::GetVideoDecodeBitstreamAlignment()
 		uint64_t stream_size = 0;
-		VideoFrameType frame_type = VideoFrameType::Intra;
+		VideoFrameType frame_type = VideoFrameType_Intra;
 		uint32_t reference_priority = 0; // nal_ref_idc from nal unit header
 		int decoded_frame_index = 0; // frame index in order of decoding
 		const void* slice_header = nullptr; // slice header for current frame
@@ -957,52 +950,48 @@ namespace Protean::Graphics
 
 	struct RenderPassImage
 	{
-		enum class Type
-		{
-			RENDERTARGET,
-			DEPTH_STENCIL,
-			RESOLVE, // resolve render target (color)
-			RESOLVE_DEPTH,
-			SHADING_RATE_SOURCE
-		} type = Type::RENDERTARGET;
-		enum class LoadOp
-		{
-			LOAD,
-			CLEAR,
-			DONTCARE,
-		} loadop = LoadOp::LOAD;
+		enum Type {
+			Type_RENDERTARGET,
+			Type_DEPTH_STENCIL,
+			Type_RESOLVE, // resolve render target (color)
+			Type_RESOLVE_DEPTH,
+			Type_SHADING_RATE_SOURCE
+		} type = Type_RENDERTARGET;
+		enum LoadOp {
+			LoadOp_LOAD,
+			LoadOp_CLEAR,
+			LoadOp_DONTCARE,
+		} loadop = LoadOp_LOAD;
 		const Texture* texture = nullptr;
 		int subresource = -1;
-		enum class StoreOp
-		{
-			STORE,
-			DONTCARE,
-		} storeop = StoreOp::STORE;
-		ResourceState layout_before = ResourceState::UNDEFINED;	// layout before the render pass
-		ResourceState layout = ResourceState::UNDEFINED;	// layout within the render pass
-		ResourceState layout_after = ResourceState::UNDEFINED;	// layout after the render pass
-		enum class DepthResolveMode
-		{
-			Min,
-			Max,
-		} depth_resolve_mode = DepthResolveMode::Min;
+		enum StoreOp {
+			StoreOp_STORE,
+			StoreOp_DONTCARE,
+		} storeop = StoreOp_STORE;
+		ResourceState layout_before = ResourceState_UNDEFINED;	// layout before the render pass
+		ResourceState layout = ResourceState_UNDEFINED;	// layout within the render pass
+		ResourceState layout_after = ResourceState_UNDEFINED;	// layout after the render pass
+		enum DepthResolveMode {
+			DepthResolveMode_Min,
+			DepthResolveMode_Max,
+		} depth_resolve_mode = DepthResolveMode_Min;
 
 		static RenderPassImage RenderTarget(
 			const Texture* resource,
-			LoadOp load_op = LoadOp::LOAD,
-			StoreOp store_op = StoreOp::STORE,
-			ResourceState layout_before = ResourceState::SHADER_RESOURCE,
-			ResourceState layout_after = ResourceState::SHADER_RESOURCE,
+			LoadOp load_op = LoadOp_LOAD,
+			StoreOp store_op = StoreOp_STORE,
+			ResourceState layout_before = ResourceState_SHADER_RESOURCE,
+			ResourceState layout_after = ResourceState_SHADER_RESOURCE,
 			int subresource_RTV = -1
 		)
 		{
 			RenderPassImage image;
-			image.type = Type::RENDERTARGET;
+			image.type = Type_RENDERTARGET;
 			image.texture = resource;
 			image.loadop = load_op;
 			image.storeop = store_op;
 			image.layout_before = layout_before;
-			image.layout = ResourceState::RENDERTARGET;
+			image.layout = ResourceState_RENDERTARGET;
 			image.layout_after = layout_after;
 			image.subresource = subresource_RTV;
 			return image;
@@ -1010,16 +999,16 @@ namespace Protean::Graphics
 
 		static RenderPassImage DepthStencil(
 			const Texture* resource,
-			LoadOp load_op = LoadOp::LOAD,
-			StoreOp store_op = StoreOp::STORE,
-			ResourceState layout_before = ResourceState::DEPTHSTENCIL,
-			ResourceState layout = ResourceState::DEPTHSTENCIL,
-			ResourceState layout_after = ResourceState::DEPTHSTENCIL,
+			LoadOp load_op = LoadOp_LOAD,
+			StoreOp store_op = StoreOp_STORE,
+			ResourceState layout_before = ResourceState_DEPTHSTENCIL,
+			ResourceState layout = ResourceState_DEPTHSTENCIL,
+			ResourceState layout_after = ResourceState_DEPTHSTENCIL,
 			int subresource_DSV = -1
 		)
 		{
 			RenderPassImage image;
-			image.type = Type::DEPTH_STENCIL;
+			image.type = Type_DEPTH_STENCIL;
 			image.texture = resource;
 			image.loadop = load_op;
 			image.storeop = store_op;
@@ -1032,16 +1021,16 @@ namespace Protean::Graphics
 
 		static RenderPassImage Resolve(
 			const Texture* resource,
-			ResourceState layout_before = ResourceState::SHADER_RESOURCE,
-			ResourceState layout_after = ResourceState::SHADER_RESOURCE,
+			ResourceState layout_before = ResourceState_SHADER_RESOURCE,
+			ResourceState layout_after = ResourceState_SHADER_RESOURCE,
 			int subresource_SRV = -1
 		)
 		{
 			RenderPassImage image;
-			image.type = Type::RESOLVE;
+			image.type = Type_RESOLVE;
 			image.texture = resource;
 			image.layout_before = layout_before;
-			image.layout = ResourceState::COPY_DST;
+			image.layout = ResourceState_COPY_DST;
 			image.layout_after = layout_after;
 			image.subresource = subresource_SRV;
 			return image;
@@ -1049,17 +1038,17 @@ namespace Protean::Graphics
 
 		static RenderPassImage ResolveDepth(
 			const Texture* resource,
-			DepthResolveMode depth_resolve_mode = DepthResolveMode::Min,
-			ResourceState layout_before = ResourceState::SHADER_RESOURCE,
-			ResourceState layout_after = ResourceState::SHADER_RESOURCE,
+			DepthResolveMode depth_resolve_mode = DepthResolveMode_Min,
+			ResourceState layout_before = ResourceState_SHADER_RESOURCE,
+			ResourceState layout_after = ResourceState_SHADER_RESOURCE,
 			int subresource_SRV = -1
 		)
 		{
 			RenderPassImage image;
-			image.type = Type::RESOLVE_DEPTH;
+			image.type = Type_RESOLVE_DEPTH;
 			image.texture = resource;
 			image.layout_before = layout_before;
-			image.layout = ResourceState::COPY_DST;
+			image.layout = ResourceState_COPY_DST;
 			image.layout_after = layout_after;
 			image.subresource = subresource_SRV;
 			image.depth_resolve_mode = depth_resolve_mode;
@@ -1068,15 +1057,15 @@ namespace Protean::Graphics
 
 		static RenderPassImage ShadingRateSource(
 			const Texture* resource,
-			ResourceState layout_before = ResourceState::SHADING_RATE_SOURCE,
-			ResourceState layout_after = ResourceState::SHADING_RATE_SOURCE
+			ResourceState layout_before = ResourceState_SHADING_RATE_SOURCE,
+			ResourceState layout_after = ResourceState_SHADING_RATE_SOURCE
 		)
 		{
 			RenderPassImage image;
-			image.type = Type::SHADING_RATE_SOURCE;
+			image.type = Type_SHADING_RATE_SOURCE;
 			image.texture = resource;
 			image.layout_before = layout_before;
-			image.layout = ResourceState::SHADING_RATE_SOURCE;
+			image.layout = ResourceState_SHADING_RATE_SOURCE;
 			image.layout_after = layout_after;
 			return image;
 		}
@@ -1086,7 +1075,7 @@ namespace Protean::Graphics
 	{
 		Format rt_formats[8] = {};
 		uint32_t rt_count = 0;
-		Format ds_format = Format::UNKNOWN;
+		Format ds_format = Format_UNKNOWN;
 		uint32_t sample_count = 1;
 
 		constexpr uint64_t get_hash() const
@@ -1130,11 +1119,11 @@ namespace Protean::Graphics
 				const TextureDesc& desc = image.texture->GetDesc();
 				switch (image.type)
 				{
-				case RenderPassImage::Type::RENDERTARGET:
+				case RenderPassImage::Type_RENDERTARGET:
 					info.rt_formats[info.rt_count++] = desc.format;
 					info.sample_count = desc.sample_count;
 					break;
-				case RenderPassImage::Type::DEPTH_STENCIL:
+				case RenderPassImage::Type_DEPTH_STENCIL:
 					info.ds_format = desc.format;
 					info.sample_count = desc.sample_count;
 					break;
@@ -1196,11 +1185,10 @@ namespace Protean::Graphics
 		};
 		uint32_t flags = FLAG_EMPTY;
 
-		enum class Type
-		{
-			BOTTOMLEVEL,
-			TOPLEVEL,
-		} type = Type::BOTTOMLEVEL;
+		enum Type {
+			Type_BOTTOMLEVEL,
+			Type_TOPLEVEL,
+		} type = Type_BOTTOMLEVEL;
 
 		struct BottomLevel
 		{
@@ -1215,11 +1203,10 @@ namespace Protean::Graphics
 				};
 				uint32_t flags = FLAG_EMPTY;
 
-				enum class Type
-				{
-					TRIANGLES,
-					PROCEDURAL_AABBS,
-				} type = Type::TRIANGLES;
+				enum Type {
+					Type_TRIANGLES,
+					Type_PROCEDURAL_AABBS,
+				} type = Type_TRIANGLES;
 
 				struct Triangles
 				{
@@ -1230,8 +1217,8 @@ namespace Protean::Graphics
 					uint32_t vertex_count = 0;
 					uint64_t vertex_byte_offset = 0;
 					uint32_t vertex_stride = 0;
-					IndexBufferFormat index_format = IndexBufferFormat::UINT32;
-					Format vertex_format = Format::R32G32B32_FLOAT;
+					IndexBufferFormat index_format = IndexBufferFormat_UINT32;
+					Format vertex_format = Format_R32G32B32_FLOAT;
 					GPUBuffer transform_3x4_buffer;
 					uint32_t transform_3x4_buffer_offset = 0;
 				} triangles;
@@ -1282,25 +1269,23 @@ namespace Protean::Graphics
 
 	struct ShaderLibrary
 	{
-		enum class Type
-		{
-			RAYGENERATION,
-			MISS,
-			CLOSESTHIT,
-			ANYHIT,
-			INTERSECTION,
-		} type = Type::RAYGENERATION;
+		enum Type {
+			Type_RAYGENERATION,
+			Type_MISS,
+			Type_CLOSESTHIT,
+			Type_ANYHIT,
+			Type_INTERSECTION,
+		} type = Type_RAYGENERATION;
 		const Shader* shader = nullptr;
 		std::string function_name;
 	};
 	struct ShaderHitGroup
 	{
-		enum class Type
-		{
-			GENERAL, // raygen or miss
-			TRIANGLES,
-			PROCEDURAL,
-		} type = Type::TRIANGLES;
+		enum Type {
+			Type_GENERAL, // raygen or miss
+			Type_TRIANGLES,
+			Type_PROCEDURAL,
+		} type = Type_TRIANGLES;
 		std::string name;
 		uint32_t general_shader = ~0u;
 		uint32_t closest_hit_shader = ~0u;
@@ -1379,10 +1364,9 @@ namespace Protean::Graphics
 		uint32_t height = 1;	// number of tiles to be mapped in Y dimension (texture only)
 		uint32_t depth = 1;		// number of tiles to be mapped in Z dimension (3D texture only)
 	};
-	enum class TileRangeFlags
-	{
-		None = 0,		// map page to tile memory
-		Null = 1 << 0,	// set page to null
+	enum TileRangeFlags {
+		TileRangeFlags_None = 0,		// map page to tile memory
+		TileRangeFlags_Null = 1 << 0,	// set page to null
 	};
 	struct SparseUpdateCommand
 	{
@@ -1410,12 +1394,12 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::R8G8B8A8_UNORM_SRGB:
-		case Format::B8G8R8A8_UNORM_SRGB:
-		case Format::BC1_UNORM_SRGB:
-		case Format::BC2_UNORM_SRGB:
-		case Format::BC3_UNORM_SRGB:
-		case Format::BC7_UNORM_SRGB:
+		case Format_R8G8B8A8_UNORM_SRGB:
+		case Format_B8G8R8A8_UNORM_SRGB:
+		case Format_BC1_UNORM_SRGB:
+		case Format_BC2_UNORM_SRGB:
+		case Format_BC3_UNORM_SRGB:
+		case Format_BC7_UNORM_SRGB:
 			return true;
 		default:
 			return false;
@@ -1425,28 +1409,28 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::R16G16B16A16_UNORM:
-		case Format::R10G10B10A2_UNORM:
-		case Format::R8G8B8A8_UNORM:
-		case Format::R8G8B8A8_UNORM_SRGB:
-		case Format::B8G8R8A8_UNORM:
-		case Format::B8G8R8A8_UNORM_SRGB:
-		case Format::R16G16_UNORM:
-		case Format::D24_UNORM_S8_UINT:
-		case Format::R8G8_UNORM:
-		case Format::D16_UNORM:
-		case Format::R16_UNORM:
-		case Format::R8_UNORM:
-		case Format::BC1_UNORM:
-		case Format::BC1_UNORM_SRGB:
-		case Format::BC2_UNORM:
-		case Format::BC2_UNORM_SRGB:
-		case Format::BC3_UNORM:
-		case Format::BC3_UNORM_SRGB:
-		case Format::BC4_UNORM:
-		case Format::BC5_UNORM:
-		case Format::BC7_UNORM:
-		case Format::BC7_UNORM_SRGB:
+		case Format_R16G16B16A16_UNORM:
+		case Format_R10G10B10A2_UNORM:
+		case Format_R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM_SRGB:
+		case Format_B8G8R8A8_UNORM:
+		case Format_B8G8R8A8_UNORM_SRGB:
+		case Format_R16G16_UNORM:
+		case Format_D24_UNORM_S8_UINT:
+		case Format_R8G8_UNORM:
+		case Format_D16_UNORM:
+		case Format_R16_UNORM:
+		case Format_R8_UNORM:
+		case Format_BC1_UNORM:
+		case Format_BC1_UNORM_SRGB:
+		case Format_BC2_UNORM:
+		case Format_BC2_UNORM_SRGB:
+		case Format_BC3_UNORM:
+		case Format_BC3_UNORM_SRGB:
+		case Format_BC4_UNORM:
+		case Format_BC5_UNORM:
+		case Format_BC7_UNORM:
+		case Format_BC7_UNORM_SRGB:
 			return true;
 		default:
 			return false;
@@ -1456,20 +1440,20 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::BC1_UNORM:
-		case Format::BC1_UNORM_SRGB:
-		case Format::BC2_UNORM:
-		case Format::BC2_UNORM_SRGB:
-		case Format::BC3_UNORM:
-		case Format::BC3_UNORM_SRGB:
-		case Format::BC4_UNORM:
-		case Format::BC4_SNORM:
-		case Format::BC5_UNORM:
-		case Format::BC5_SNORM:
-		case Format::BC6H_UF16:
-		case Format::BC6H_SF16:
-		case Format::BC7_UNORM:
-		case Format::BC7_UNORM_SRGB:
+		case Format_BC1_UNORM:
+		case Format_BC1_UNORM_SRGB:
+		case Format_BC2_UNORM:
+		case Format_BC2_UNORM_SRGB:
+		case Format_BC3_UNORM:
+		case Format_BC3_UNORM_SRGB:
+		case Format_BC4_UNORM:
+		case Format_BC4_SNORM:
+		case Format_BC5_UNORM:
+		case Format_BC5_SNORM:
+		case Format_BC6H_UF16:
+		case Format_BC6H_SF16:
+		case Format_BC7_UNORM:
+		case Format_BC7_UNORM_SRGB:
 			return true;
 		default:
 			return false;
@@ -1479,10 +1463,10 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::D16_UNORM:
-		case Format::D32_FLOAT:
-		case Format::D32_FLOAT_S8X24_UINT:
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D16_UNORM:
+		case Format_D32_FLOAT:
+		case Format_D32_FLOAT_S8X24_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return true;
 		default:
 			return false;
@@ -1492,8 +1476,8 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::D32_FLOAT_S8X24_UINT:
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return true;
 		default:
 			return false;
@@ -1503,9 +1487,9 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::D32_FLOAT_S8X24_UINT:
-		case Format::D24_UNORM_S8_UINT:
-		case Format::NV12:
+		case Format_D32_FLOAT_S8X24_UINT:
+		case Format_D24_UNORM_S8_UINT:
+		case Format_NV12:
 			return 2;
 		default:
 			return 1;
@@ -1528,85 +1512,85 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::R32G32B32A32_FLOAT:
-		case Format::R32G32B32A32_UINT:
-		case Format::R32G32B32A32_SINT:
-		case Format::BC2_UNORM:
-		case Format::BC2_UNORM_SRGB:
-		case Format::BC3_UNORM:
-		case Format::BC3_UNORM_SRGB:
-		case Format::BC5_SNORM:
-		case Format::BC5_UNORM:
-		case Format::BC6H_UF16:
-		case Format::BC6H_SF16:
-		case Format::BC7_UNORM:
-		case Format::BC7_UNORM_SRGB:
+		case Format_R32G32B32A32_FLOAT:
+		case Format_R32G32B32A32_UINT:
+		case Format_R32G32B32A32_SINT:
+		case Format_BC2_UNORM:
+		case Format_BC2_UNORM_SRGB:
+		case Format_BC3_UNORM:
+		case Format_BC3_UNORM_SRGB:
+		case Format_BC5_SNORM:
+		case Format_BC5_UNORM:
+		case Format_BC6H_UF16:
+		case Format_BC6H_SF16:
+		case Format_BC7_UNORM:
+		case Format_BC7_UNORM_SRGB:
 			return 16u;
 
-		case Format::R32G32B32_FLOAT:
-		case Format::R32G32B32_UINT:
-		case Format::R32G32B32_SINT:
+		case Format_R32G32B32_FLOAT:
+		case Format_R32G32B32_UINT:
+		case Format_R32G32B32_SINT:
 			return 12u;
 
-		case Format::R16G16B16A16_FLOAT:
-		case Format::R16G16B16A16_UNORM:
-		case Format::R16G16B16A16_UINT:
-		case Format::R16G16B16A16_SNORM:
-		case Format::R16G16B16A16_SINT:
-		case Format::R32G32_FLOAT:
-		case Format::R32G32_UINT:
-		case Format::R32G32_SINT:
-		case Format::BC1_UNORM:
-		case Format::BC1_UNORM_SRGB:
-		case Format::BC4_SNORM:
-		case Format::BC4_UNORM:
+		case Format_R16G16B16A16_FLOAT:
+		case Format_R16G16B16A16_UNORM:
+		case Format_R16G16B16A16_UINT:
+		case Format_R16G16B16A16_SNORM:
+		case Format_R16G16B16A16_SINT:
+		case Format_R32G32_FLOAT:
+		case Format_R32G32_UINT:
+		case Format_R32G32_SINT:
+		case Format_BC1_UNORM:
+		case Format_BC1_UNORM_SRGB:
+		case Format_BC4_SNORM:
+		case Format_BC4_UNORM:
 			return 8u;
 
-		case Format::R10G10B10A2_UNORM:
-		case Format::R10G10B10A2_UINT:
-		case Format::R11G11B10_FLOAT:
-		case Format::R8G8B8A8_UNORM:
-		case Format::R8G8B8A8_UNORM_SRGB:
-		case Format::R8G8B8A8_UINT:
-		case Format::R8G8B8A8_SNORM:
-		case Format::R8G8B8A8_SINT:
-		case Format::B8G8R8A8_UNORM:
-		case Format::B8G8R8A8_UNORM_SRGB:
-		case Format::R16G16_FLOAT:
-		case Format::R16G16_UNORM:
-		case Format::R16G16_UINT:
-		case Format::R16G16_SNORM:
-		case Format::R16G16_SINT:
-		case Format::D32_FLOAT:
-		case Format::R32_FLOAT:
-		case Format::R32_UINT:
-		case Format::R32_SINT:
-		case Format::R9G9B9E5_SHAREDEXP:
+		case Format_R10G10B10A2_UNORM:
+		case Format_R10G10B10A2_UINT:
+		case Format_R11G11B10_FLOAT:
+		case Format_R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM_SRGB:
+		case Format_R8G8B8A8_UINT:
+		case Format_R8G8B8A8_SNORM:
+		case Format_R8G8B8A8_SINT:
+		case Format_B8G8R8A8_UNORM:
+		case Format_B8G8R8A8_UNORM_SRGB:
+		case Format_R16G16_FLOAT:
+		case Format_R16G16_UNORM:
+		case Format_R16G16_UINT:
+		case Format_R16G16_SNORM:
+		case Format_R16G16_SINT:
+		case Format_D32_FLOAT:
+		case Format_R32_FLOAT:
+		case Format_R32_UINT:
+		case Format_R32_SINT:
+		case Format_R9G9B9E5_SHAREDEXP:
 			return 4u;
 
-		case Format::R8G8_UNORM:
-		case Format::R8G8_UINT:
-		case Format::R8G8_SNORM:
-		case Format::R8G8_SINT:
-		case Format::R16_FLOAT:
-		case Format::D16_UNORM:
-		case Format::R16_UNORM:
-		case Format::R16_UINT:
-		case Format::R16_SNORM:
-		case Format::R16_SINT:
+		case Format_R8G8_UNORM:
+		case Format_R8G8_UINT:
+		case Format_R8G8_SNORM:
+		case Format_R8G8_SINT:
+		case Format_R16_FLOAT:
+		case Format_D16_UNORM:
+		case Format_R16_UNORM:
+		case Format_R16_UINT:
+		case Format_R16_SNORM:
+		case Format_R16_SINT:
 			return 2u;
 
-		case Format::R8_UNORM:
-		case Format::R8_UINT:
-		case Format::R8_SNORM:
-		case Format::R8_SINT:
+		case Format_R8_UNORM:
+		case Format_R8_UINT:
+		case Format_R8_SNORM:
+		case Format_R8_SINT:
 			return 1u;
 
-		case Format::D24_UNORM_S8_UINT:
+		case Format_D24_UNORM_S8_UINT:
 			return plane == ~0u ? 4u : (plane == 0 ? 3u : 1u);
-		case Format::D32_FLOAT_S8X24_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
 			return plane == ~0u ? 8u : (plane == 0 ? 4u : 1u); // 8 is chosen for interleaved instead of 5 for safe alignment
-		case Format::NV12:
+		case Format_NV12:
 			return plane == ~0u ? 2u : 1u; // warning: really it should be 1 byte for luminance, 2 bytes for 2x2 chrominance, so this is overestimated as 1 for both
 
 		default:
@@ -1618,18 +1602,18 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::R8G8B8A8_UNORM_SRGB:
-			return Format::R8G8B8A8_UNORM;
-		case Format::B8G8R8A8_UNORM_SRGB:
-			return Format::B8G8R8A8_UNORM;
-		case Format::BC1_UNORM_SRGB:
-			return Format::BC1_UNORM;
-		case Format::BC2_UNORM_SRGB:
-			return Format::BC2_UNORM;
-		case Format::BC3_UNORM_SRGB:
-			return Format::BC3_UNORM;
-		case Format::BC7_UNORM_SRGB:
-			return Format::BC7_UNORM;
+		case Format_R8G8B8A8_UNORM_SRGB:
+			return Format_R8G8B8A8_UNORM;
+		case Format_B8G8R8A8_UNORM_SRGB:
+			return Format_B8G8R8A8_UNORM;
+		case Format_BC1_UNORM_SRGB:
+			return Format_BC1_UNORM;
+		case Format_BC2_UNORM_SRGB:
+			return Format_BC2_UNORM;
+		case Format_BC3_UNORM_SRGB:
+			return Format_BC3_UNORM;
+		case Format_BC7_UNORM_SRGB:
+			return Format_BC7_UNORM;
 		default:
 			return format;
 		}
@@ -1638,163 +1622,163 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::R8G8B8A8_UNORM:
-		case Format::R8G8B8A8_UNORM_SRGB:
-			return Format::R8G8B8A8_UNORM_SRGB;
-		case Format::B8G8R8A8_UNORM:
-		case Format::B8G8R8A8_UNORM_SRGB:
-			return Format::B8G8R8A8_UNORM_SRGB;
-		case Format::BC1_UNORM:
-		case Format::BC1_UNORM_SRGB:
-			return Format::BC1_UNORM_SRGB;
-		case Format::BC2_UNORM:
-		case Format::BC2_UNORM_SRGB:
-			return Format::BC2_UNORM_SRGB;
-		case Format::BC3_UNORM:
-		case Format::BC3_UNORM_SRGB:
-			return Format::BC3_UNORM_SRGB;
-		case Format::BC7_UNORM:
-		case Format::BC7_UNORM_SRGB:
-			return Format::BC7_UNORM_SRGB;
+		case Format_R8G8B8A8_UNORM:
+		case Format_R8G8B8A8_UNORM_SRGB:
+			return Format_R8G8B8A8_UNORM_SRGB;
+		case Format_B8G8R8A8_UNORM:
+		case Format_B8G8R8A8_UNORM_SRGB:
+			return Format_B8G8R8A8_UNORM_SRGB;
+		case Format_BC1_UNORM:
+		case Format_BC1_UNORM_SRGB:
+			return Format_BC1_UNORM_SRGB;
+		case Format_BC2_UNORM:
+		case Format_BC2_UNORM_SRGB:
+			return Format_BC2_UNORM_SRGB;
+		case Format_BC3_UNORM:
+		case Format_BC3_UNORM_SRGB:
+			return Format_BC3_UNORM_SRGB;
+		case Format_BC7_UNORM:
+		case Format_BC7_UNORM_SRGB:
+			return Format_BC7_UNORM_SRGB;
 		default:
-			return Format::UNKNOWN;
+			return Format_UNKNOWN;
 		}
 	}
 	constexpr const char* GetFormatString(Format format)
 	{
 		switch (format)
 		{
-		case Protean::Graphics::Format::UNKNOWN:
+		case Protean::Graphics::Format_UNKNOWN:
 			return "UNKNOWN";
-		case Protean::Graphics::Format::R32G32B32A32_FLOAT:
+		case Protean::Graphics::Format_R32G32B32A32_FLOAT:
 			return "R32G32B32A32_FLOAT";
-		case Protean::Graphics::Format::R32G32B32A32_UINT:
+		case Protean::Graphics::Format_R32G32B32A32_UINT:
 			return "R32G32B32A32_UINT";
-		case Protean::Graphics::Format::R32G32B32A32_SINT:
+		case Protean::Graphics::Format_R32G32B32A32_SINT:
 			return "R32G32B32A32_SINT";
-		case Protean::Graphics::Format::R32G32B32_FLOAT:
+		case Protean::Graphics::Format_R32G32B32_FLOAT:
 			return "R32G32B32_FLOAT";
-		case Protean::Graphics::Format::R32G32B32_UINT:
+		case Protean::Graphics::Format_R32G32B32_UINT:
 			return "R32G32B32_UINT";
-		case Protean::Graphics::Format::R32G32B32_SINT:
+		case Protean::Graphics::Format_R32G32B32_SINT:
 			return "R32G32B32_SINT";
-		case Protean::Graphics::Format::R16G16B16A16_FLOAT:
+		case Protean::Graphics::Format_R16G16B16A16_FLOAT:
 			return "R16G16B16A16_FLOAT";
-		case Protean::Graphics::Format::R16G16B16A16_UNORM:
+		case Protean::Graphics::Format_R16G16B16A16_UNORM:
 			return "R16G16B16A16_UNORM";
-		case Protean::Graphics::Format::R16G16B16A16_UINT:
+		case Protean::Graphics::Format_R16G16B16A16_UINT:
 			return "R16G16B16A16_UINT";
-		case Protean::Graphics::Format::R16G16B16A16_SNORM:
+		case Protean::Graphics::Format_R16G16B16A16_SNORM:
 			return "R16G16B16A16_SNORM";
-		case Protean::Graphics::Format::R16G16B16A16_SINT:
+		case Protean::Graphics::Format_R16G16B16A16_SINT:
 			return "R16G16B16A16_SINT";
-		case Protean::Graphics::Format::R32G32_FLOAT:
+		case Protean::Graphics::Format_R32G32_FLOAT:
 			return "R32G32_FLOAT";
-		case Protean::Graphics::Format::R32G32_UINT:
+		case Protean::Graphics::Format_R32G32_UINT:
 			return "R32G32_UINT";
-		case Protean::Graphics::Format::R32G32_SINT:
+		case Protean::Graphics::Format_R32G32_SINT:
 			return "R32G32_SINT";
-		case Protean::Graphics::Format::D32_FLOAT_S8X24_UINT:
+		case Protean::Graphics::Format_D32_FLOAT_S8X24_UINT:
 			return "D32_FLOAT_S8X24_UINT";
-		case Protean::Graphics::Format::R10G10B10A2_UNORM:
+		case Protean::Graphics::Format_R10G10B10A2_UNORM:
 			return "R10G10B10A2_UNORM";
-		case Protean::Graphics::Format::R10G10B10A2_UINT:
+		case Protean::Graphics::Format_R10G10B10A2_UINT:
 			return "R10G10B10A2_UINT";
-		case Protean::Graphics::Format::R11G11B10_FLOAT:
+		case Protean::Graphics::Format_R11G11B10_FLOAT:
 			return "R11G11B10_FLOAT";
-		case Protean::Graphics::Format::R8G8B8A8_UNORM:
+		case Protean::Graphics::Format_R8G8B8A8_UNORM:
 			return "R8G8B8A8_UNORM";
-		case Protean::Graphics::Format::R8G8B8A8_UNORM_SRGB:
+		case Protean::Graphics::Format_R8G8B8A8_UNORM_SRGB:
 			return "R8G8B8A8_UNORM_SRGB";
-		case Protean::Graphics::Format::R8G8B8A8_UINT:
+		case Protean::Graphics::Format_R8G8B8A8_UINT:
 			return "R8G8B8A8_UINT";
-		case Protean::Graphics::Format::R8G8B8A8_SNORM:
+		case Protean::Graphics::Format_R8G8B8A8_SNORM:
 			return "R8G8B8A8_SNORM";
-		case Protean::Graphics::Format::R8G8B8A8_SINT:
+		case Protean::Graphics::Format_R8G8B8A8_SINT:
 			return "R8G8B8A8_SINT";
-		case Protean::Graphics::Format::B8G8R8A8_UNORM:
+		case Protean::Graphics::Format_B8G8R8A8_UNORM:
 			return "B8G8R8A8_UNORM";
-		case Protean::Graphics::Format::B8G8R8A8_UNORM_SRGB:
+		case Protean::Graphics::Format_B8G8R8A8_UNORM_SRGB:
 			return "B8G8R8A8_UNORM_SRGB";
-		case Protean::Graphics::Format::R16G16_FLOAT:
+		case Protean::Graphics::Format_R16G16_FLOAT:
 			return "R16G16_FLOAT";
-		case Protean::Graphics::Format::R16G16_UNORM:
+		case Protean::Graphics::Format_R16G16_UNORM:
 			return "R16G16_UNORM";
-		case Protean::Graphics::Format::R16G16_UINT:
+		case Protean::Graphics::Format_R16G16_UINT:
 			return "R16G16_UINT";
-		case Protean::Graphics::Format::R16G16_SNORM:
+		case Protean::Graphics::Format_R16G16_SNORM:
 			return "R16G16_SNORM";
-		case Protean::Graphics::Format::R16G16_SINT:
+		case Protean::Graphics::Format_R16G16_SINT:
 			return "R16G16_SINT";
-		case Protean::Graphics::Format::D32_FLOAT:
+		case Protean::Graphics::Format_D32_FLOAT:
 			return "D32_FLOAT";
-		case Protean::Graphics::Format::R32_FLOAT:
+		case Protean::Graphics::Format_R32_FLOAT:
 			return "R32_FLOAT";
-		case Protean::Graphics::Format::R32_UINT:
+		case Protean::Graphics::Format_R32_UINT:
 			return "R32_UINT";
-		case Protean::Graphics::Format::R32_SINT:
+		case Protean::Graphics::Format_R32_SINT:
 			return "R32_SINT";
-		case Protean::Graphics::Format::D24_UNORM_S8_UINT:
+		case Protean::Graphics::Format_D24_UNORM_S8_UINT:
 			return "D24_UNORM_S8_UINT";
-		case Protean::Graphics::Format::R9G9B9E5_SHAREDEXP:
+		case Protean::Graphics::Format_R9G9B9E5_SHAREDEXP:
 			return "R9G9B9E5_SHAREDEXP";
-		case Protean::Graphics::Format::R8G8_UNORM:
+		case Protean::Graphics::Format_R8G8_UNORM:
 			return "R8G8_UNORM";
-		case Protean::Graphics::Format::R8G8_UINT:
+		case Protean::Graphics::Format_R8G8_UINT:
 			return "R8G8_UINT";
-		case Protean::Graphics::Format::R8G8_SNORM:
+		case Protean::Graphics::Format_R8G8_SNORM:
 			return "R8G8_SNORM";
-		case Protean::Graphics::Format::R8G8_SINT:
+		case Protean::Graphics::Format_R8G8_SINT:
 			return "R8G8_SINT";
-		case Protean::Graphics::Format::R16_FLOAT:
+		case Protean::Graphics::Format_R16_FLOAT:
 			return "R16_FLOAT";
-		case Protean::Graphics::Format::D16_UNORM:
+		case Protean::Graphics::Format_D16_UNORM:
 			return "D16_UNORM";
-		case Protean::Graphics::Format::R16_UNORM:
+		case Protean::Graphics::Format_R16_UNORM:
 			return "R16_UNORM";
-		case Protean::Graphics::Format::R16_UINT:
+		case Protean::Graphics::Format_R16_UINT:
 			return "R16_UINT";
-		case Protean::Graphics::Format::R16_SNORM:
+		case Protean::Graphics::Format_R16_SNORM:
 			return "R16_SNORM";
-		case Protean::Graphics::Format::R16_SINT:
+		case Protean::Graphics::Format_R16_SINT:
 			return "R16_SINT";
-		case Protean::Graphics::Format::R8_UNORM:
+		case Protean::Graphics::Format_R8_UNORM:
 			return "R8_UNORM";
-		case Protean::Graphics::Format::R8_UINT:
+		case Protean::Graphics::Format_R8_UINT:
 			return "R8_UINT";
-		case Protean::Graphics::Format::R8_SNORM:
+		case Protean::Graphics::Format_R8_SNORM:
 			return "R8_SNORM";
-		case Protean::Graphics::Format::R8_SINT:
+		case Protean::Graphics::Format_R8_SINT:
 			return "R8_SINT";
-		case Protean::Graphics::Format::BC1_UNORM:
+		case Protean::Graphics::Format_BC1_UNORM:
 			return "BC1_UNORM";
-		case Protean::Graphics::Format::BC1_UNORM_SRGB:
+		case Protean::Graphics::Format_BC1_UNORM_SRGB:
 			return "BC1_UNORM_SRGB";
-		case Protean::Graphics::Format::BC2_UNORM:
+		case Protean::Graphics::Format_BC2_UNORM:
 			return "BC2_UNORM";
-		case Protean::Graphics::Format::BC2_UNORM_SRGB:
+		case Protean::Graphics::Format_BC2_UNORM_SRGB:
 			return "BC2_UNORM_SRGB";
-		case Protean::Graphics::Format::BC3_UNORM:
+		case Protean::Graphics::Format_BC3_UNORM:
 			return "BC3_UNORM";
-		case Protean::Graphics::Format::BC3_UNORM_SRGB:
+		case Protean::Graphics::Format_BC3_UNORM_SRGB:
 			return "BC3_UNORM_SRGB";
-		case Protean::Graphics::Format::BC4_UNORM:
+		case Protean::Graphics::Format_BC4_UNORM:
 			return "BC4_UNORM";
-		case Protean::Graphics::Format::BC4_SNORM:
+		case Protean::Graphics::Format_BC4_SNORM:
 			return "BC4_SNORM";
-		case Protean::Graphics::Format::BC5_UNORM:
+		case Protean::Graphics::Format_BC5_UNORM:
 			return "BC5_UNORM";
-		case Protean::Graphics::Format::BC5_SNORM:
+		case Protean::Graphics::Format_BC5_SNORM:
 			return "BC5_SNORM";
-		case Protean::Graphics::Format::BC6H_UF16:
+		case Protean::Graphics::Format_BC6H_UF16:
 			return "BC6H_UF16";
-		case Protean::Graphics::Format::BC6H_SF16:
+		case Protean::Graphics::Format_BC6H_SF16:
 			return "BC6H_SF16";
-		case Protean::Graphics::Format::BC7_UNORM:
+		case Protean::Graphics::Format_BC7_UNORM:
 			return "BC7_UNORM";
-		case Protean::Graphics::Format::BC7_UNORM_SRGB:
+		case Protean::Graphics::Format_BC7_UNORM_SRGB:
 			return "BC7_UNORM_SRGB";
-		case Protean::Graphics::Format::NV12:
+		case Protean::Graphics::Format_NV12:
 			return "NV12";
 		default:
 			return "";
@@ -1805,27 +1789,27 @@ namespace Protean::Graphics
 		switch (format)
 		{
 		default:
-		case Format::R32_UINT:
-			return IndexBufferFormat::UINT32;
-		case Format::R16_UINT:
-			return IndexBufferFormat::UINT16;
+		case Format_R32_UINT:
+			return IndexBufferFormat_UINT32;
+		case Format_R16_UINT:
+			return IndexBufferFormat_UINT16;
 		}
 	}
 	constexpr IndexBufferFormat GetIndexBufferFormat(uint32_t vertex_count)
 	{
-		return vertex_count > 65536 ? IndexBufferFormat::UINT32 : IndexBufferFormat::UINT16;
+		return vertex_count > 65536 ? IndexBufferFormat_UINT32 : IndexBufferFormat_UINT16;
 	}
 	constexpr Format GetIndexBufferFormatRaw(uint32_t vertex_count)
 	{
-		return vertex_count > 65536 ? Format::R32_UINT : Format::R16_UINT;
+		return vertex_count > 65536 ? Format_R32_UINT : Format_R16_UINT;
 	}
 	constexpr uint32_t GetIndexStride(IndexBufferFormat format)
 	{
 		switch (format) {
 			default:
-			case IndexBufferFormat::UINT32:
+			case IndexBufferFormat_UINT32:
 				return sizeof(uint32_t);
-			case IndexBufferFormat::UINT16:
+			case IndexBufferFormat_UINT16:
 				return sizeof(uint16_t);
 		}
 	}
@@ -1834,9 +1818,9 @@ namespace Protean::Graphics
 		switch (format)
 		{
 		default:
-		case IndexBufferFormat::UINT32:
+		case IndexBufferFormat_UINT32:
 			return "UINT32";
-		case IndexBufferFormat::UINT16:
+		case IndexBufferFormat_UINT16:
 			return "UINT16";
 		}
 	}
@@ -1846,17 +1830,17 @@ namespace Protean::Graphics
 		switch (value)
 		{
 		default:
-		case Protean::Graphics::ComponentSwizzle::R:
+		case Protean::Graphics::ComponentSwizzle_R:
 			return 'R';
-		case Protean::Graphics::ComponentSwizzle::G:
+		case Protean::Graphics::ComponentSwizzle_G:
 			return 'G';
-		case Protean::Graphics::ComponentSwizzle::B:
+		case Protean::Graphics::ComponentSwizzle_B:
 			return 'B';
-		case Protean::Graphics::ComponentSwizzle::A:
+		case Protean::Graphics::ComponentSwizzle_A:
 			return 'A';
-		case Protean::Graphics::ComponentSwizzle::ZERO:
+		case Protean::Graphics::ComponentSwizzle_ZERO:
 			return '0';
-		case Protean::Graphics::ComponentSwizzle::ONE:
+		case Protean::Graphics::ComponentSwizzle_ONE:
 			return '1';
 		}
 	}
@@ -1889,31 +1873,31 @@ namespace Protean::Graphics
 			case 'R':
 			case 'x':
 			case 'X':
-				*comp = ComponentSwizzle::R;
+				*comp = ComponentSwizzle_R;
 				break;
 			case 'g':
 			case 'G':
 			case 'y':
 			case 'Y':
-				*comp = ComponentSwizzle::G;
+				*comp = ComponentSwizzle_G;
 				break;
 			case 'b':
 			case 'B':
 			case 'z':
 			case 'Z':
-				*comp = ComponentSwizzle::B;
+				*comp = ComponentSwizzle_B;
 				break;
 			case 'a':
 			case 'A':
 			case 'w':
 			case 'W':
-				*comp = ComponentSwizzle::A;
+				*comp = ComponentSwizzle_A;
 				break;
 			case '0':
-				*comp = ComponentSwizzle::ZERO;
+				*comp = ComponentSwizzle_ZERO;
 				break;
 			case '1':
-				*comp = ComponentSwizzle::ONE;
+				*comp = ComponentSwizzle_ONE;
 				break;
 			case 0:
 				return swizzle;
@@ -1950,12 +1934,12 @@ namespace Protean::Graphics
 	{
 		switch (aspect)
 		{
-		case Protean::Graphics::ImageAspect::COLOR:
-		case Protean::Graphics::ImageAspect::DEPTH:
-		case Protean::Graphics::ImageAspect::LUMINANCE:
+		case Protean::Graphics::ImageAspect_COLOR:
+		case Protean::Graphics::ImageAspect_DEPTH:
+		case Protean::Graphics::ImageAspect_LUMINANCE:
 			return 0;
-		case Protean::Graphics::ImageAspect::STENCIL:
-		case Protean::Graphics::ImageAspect::CHROMINANCE:
+		case Protean::Graphics::ImageAspect_STENCIL:
+		case Protean::Graphics::ImageAspect_CHROMINANCE:
 			return 1;
 		default:
 			assert(0); // invalid aspect
@@ -1969,13 +1953,13 @@ namespace Protean::Graphics
 	{
 		switch (format)
 		{
-		case Format::D24_UNORM_S8_UINT:
-		case Format::D32_FLOAT_S8X24_UINT:
-			return plane == 0 ? ImageAspect::DEPTH : ImageAspect::STENCIL;
-		case Format::NV12:
-			return plane == 0 ? ImageAspect::LUMINANCE : ImageAspect::CHROMINANCE;
+		case Format_D24_UNORM_S8_UINT:
+		case Format_D32_FLOAT_S8X24_UINT:
+			return plane == 0 ? ImageAspect_DEPTH : ImageAspect_STENCIL;
+		case Format_NV12:
+			return plane == 0 ? ImageAspect_LUMINANCE : ImageAspect_CHROMINANCE;
 		default:
-			return IsFormatDepthSupport(format) ? ImageAspect::DEPTH : ImageAspect::COLOR;
+			return IsFormatDepthSupport(format) ? ImageAspect_DEPTH : ImageAspect_COLOR;
 		}
 	}
 
@@ -2026,7 +2010,7 @@ namespace Protean::Graphics
 		// GPU resource has not been built yet) has an UNKNOWN format and no
 		// memory footprint. Return early so we don't hit GetFormatStride's
 		// unhandled- format assert on a legitimately empty descriptor.
-		if (desc.format == Format::UNKNOWN)
+		if (desc.format == Format_UNKNOWN)
 		{
 			return 0;
 		}
@@ -2095,48 +2079,44 @@ namespace Protean::Graphics
 	// Deprecated, kept for back-compat:
 	struct [[deprecated]] RenderPassAttachment
 	{
-		enum class Type
-		{
-			RENDERTARGET,
-			DEPTH_STENCIL,
-			RESOLVE, // resolve render target (color)
-			RESOLVE_DEPTH,
-			SHADING_RATE_SOURCE
-		} type = Type::RENDERTARGET;
-		enum class LoadOp
-		{
-			LOAD,
-			CLEAR,
-			DONTCARE,
-		} loadop = LoadOp::LOAD;
+		enum Type {
+			Type_RENDERTARGET,
+			Type_DEPTH_STENCIL,
+			Type_RESOLVE, // resolve render target (color)
+			Type_RESOLVE_DEPTH,
+			Type_SHADING_RATE_SOURCE
+		} type = Type_RENDERTARGET;
+		enum LoadOp {
+			LoadOp_LOAD,
+			LoadOp_CLEAR,
+			LoadOp_DONTCARE,
+		} loadop = LoadOp_LOAD;
 		Texture texture;
 		int subresource = -1;
-		enum class StoreOp
-		{
-			STORE,
-			DONTCARE,
-		} storeop = StoreOp::STORE;
-		ResourceState initial_layout = ResourceState::UNDEFINED;	// layout before the render pass
-		ResourceState subpass_layout = ResourceState::UNDEFINED;	// layout within the render pass
-		ResourceState final_layout = ResourceState::UNDEFINED;		// layout after the render pass
-		enum class DepthResolveMode
-		{
-			Min,
-			Max,
-		} depth_resolve_mode = DepthResolveMode::Min;
+		enum StoreOp {
+			StoreOp_STORE,
+			StoreOp_DONTCARE,
+		} storeop = StoreOp_STORE;
+		ResourceState initial_layout = ResourceState_UNDEFINED;	// layout before the render pass
+		ResourceState subpass_layout = ResourceState_UNDEFINED;	// layout within the render pass
+		ResourceState final_layout = ResourceState_UNDEFINED;		// layout after the render pass
+		enum DepthResolveMode {
+			DepthResolveMode_Min,
+			DepthResolveMode_Max,
+		} depth_resolve_mode = DepthResolveMode_Min;
 
 		static RenderPassAttachment RenderTarget(
 			const Texture& resource,
-			LoadOp load_op = LoadOp::LOAD,
-			StoreOp store_op = StoreOp::STORE,
-			ResourceState initial_layout = ResourceState::SHADER_RESOURCE,
-			ResourceState subpass_layout = ResourceState::RENDERTARGET,
-			ResourceState final_layout = ResourceState::SHADER_RESOURCE,
+			LoadOp load_op = LoadOp_LOAD,
+			StoreOp store_op = StoreOp_STORE,
+			ResourceState initial_layout = ResourceState_SHADER_RESOURCE,
+			ResourceState subpass_layout = ResourceState_RENDERTARGET,
+			ResourceState final_layout = ResourceState_SHADER_RESOURCE,
 			int subresource_RTV = -1
 		)
 		{
 			RenderPassAttachment attachment;
-			attachment.type = Type::RENDERTARGET;
+			attachment.type = Type_RENDERTARGET;
 			attachment.texture = resource;
 			attachment.loadop = load_op;
 			attachment.storeop = store_op;
@@ -2149,16 +2129,16 @@ namespace Protean::Graphics
 
 		static RenderPassAttachment DepthStencil(
 			const Texture& resource,
-			LoadOp load_op = LoadOp::LOAD,
-			StoreOp store_op = StoreOp::STORE,
-			ResourceState initial_layout = ResourceState::DEPTHSTENCIL,
-			ResourceState subpass_layout = ResourceState::DEPTHSTENCIL,
-			ResourceState final_layout = ResourceState::DEPTHSTENCIL,
+			LoadOp load_op = LoadOp_LOAD,
+			StoreOp store_op = StoreOp_STORE,
+			ResourceState initial_layout = ResourceState_DEPTHSTENCIL,
+			ResourceState subpass_layout = ResourceState_DEPTHSTENCIL,
+			ResourceState final_layout = ResourceState_DEPTHSTENCIL,
 			int subresource_DSV = -1
 		)
 		{
 			RenderPassAttachment attachment;
-			attachment.type = Type::DEPTH_STENCIL;
+			attachment.type = Type_DEPTH_STENCIL;
 			attachment.texture = resource;
 			attachment.loadop = load_op;
 			attachment.storeop = store_op;
@@ -2171,13 +2151,13 @@ namespace Protean::Graphics
 
 		static RenderPassAttachment Resolve(
 			const Texture& resource,
-			ResourceState initial_layout = ResourceState::SHADER_RESOURCE,
-			ResourceState final_layout = ResourceState::SHADER_RESOURCE,
+			ResourceState initial_layout = ResourceState_SHADER_RESOURCE,
+			ResourceState final_layout = ResourceState_SHADER_RESOURCE,
 			int subresource_SRV = -1
 		)
 		{
 			RenderPassAttachment attachment;
-			attachment.type = Type::RESOLVE;
+			attachment.type = Type_RESOLVE;
 			attachment.texture = resource;
 			attachment.initial_layout = initial_layout;
 			attachment.final_layout = final_layout;
@@ -2187,14 +2167,14 @@ namespace Protean::Graphics
 
 		static RenderPassAttachment ResolveDepth(
 			const Texture& resource,
-			DepthResolveMode depth_resolve_mode = DepthResolveMode::Min,
-			ResourceState initial_layout = ResourceState::SHADER_RESOURCE,
-			ResourceState final_layout = ResourceState::SHADER_RESOURCE,
+			DepthResolveMode depth_resolve_mode = DepthResolveMode_Min,
+			ResourceState initial_layout = ResourceState_SHADER_RESOURCE,
+			ResourceState final_layout = ResourceState_SHADER_RESOURCE,
 			int subresource_SRV = -1
 		)
 		{
 			RenderPassAttachment attachment;
-			attachment.type = Type::RESOLVE_DEPTH;
+			attachment.type = Type_RESOLVE_DEPTH;
 			attachment.texture = resource;
 			attachment.initial_layout = initial_layout;
 			attachment.final_layout = final_layout;
@@ -2205,15 +2185,15 @@ namespace Protean::Graphics
 
 		static RenderPassAttachment ShadingRateSource(
 			const Texture& resource,
-			ResourceState initial_layout = ResourceState::SHADING_RATE_SOURCE,
-			ResourceState final_layout = ResourceState::SHADING_RATE_SOURCE
+			ResourceState initial_layout = ResourceState_SHADING_RATE_SOURCE,
+			ResourceState final_layout = ResourceState_SHADING_RATE_SOURCE
 		)
 		{
 			RenderPassAttachment attachment;
-			attachment.type = Type::SHADING_RATE_SOURCE;
+			attachment.type = Type_SHADING_RATE_SOURCE;
 			attachment.texture = resource;
 			attachment.initial_layout = initial_layout;
-			attachment.subpass_layout = ResourceState::SHADING_RATE_SOURCE;
+			attachment.subpass_layout = ResourceState_SHADING_RATE_SOURCE;
 			attachment.final_layout = final_layout;
 			return attachment;
 		}
@@ -2224,53 +2204,53 @@ namespace Protean::Graphics
 			switch (type)
 			{
 			default:
-			case Type::RENDERTARGET:
-				image.type = RenderPassImage::Type::RENDERTARGET;
+			case Type_RENDERTARGET:
+				image.type = RenderPassImage::Type_RENDERTARGET;
 				break;
-			case Type::DEPTH_STENCIL:
-				image.type = RenderPassImage::Type::DEPTH_STENCIL;
+			case Type_DEPTH_STENCIL:
+				image.type = RenderPassImage::Type_DEPTH_STENCIL;
 				break;
-			case Type::RESOLVE:
-				image.type = RenderPassImage::Type::RESOLVE;
+			case Type_RESOLVE:
+				image.type = RenderPassImage::Type_RESOLVE;
 				break;
-			case Type::RESOLVE_DEPTH:
-				image.type = RenderPassImage::Type::RESOLVE_DEPTH;
+			case Type_RESOLVE_DEPTH:
+				image.type = RenderPassImage::Type_RESOLVE_DEPTH;
 				break;
-			case Type::SHADING_RATE_SOURCE:
-				image.type = RenderPassImage::Type::SHADING_RATE_SOURCE;
+			case Type_SHADING_RATE_SOURCE:
+				image.type = RenderPassImage::Type_SHADING_RATE_SOURCE;
 				break;
 			}
 			switch (depth_resolve_mode)
 			{
 			default:
-			case DepthResolveMode::Min:
-				image.depth_resolve_mode = RenderPassImage::DepthResolveMode::Min;
+			case DepthResolveMode_Min:
+				image.depth_resolve_mode = RenderPassImage::DepthResolveMode_Min;
 				break;
-			case DepthResolveMode::Max:
-				image.depth_resolve_mode = RenderPassImage::DepthResolveMode::Max;
+			case DepthResolveMode_Max:
+				image.depth_resolve_mode = RenderPassImage::DepthResolveMode_Max;
 				break;
 			}
 			switch (loadop)
 			{
-			case RenderPassAttachment::LoadOp::LOAD:
-				image.loadop = RenderPassImage::LoadOp::LOAD;
+			case RenderPassAttachment::LoadOp_LOAD:
+				image.loadop = RenderPassImage::LoadOp_LOAD;
 				break;
-			case RenderPassAttachment::LoadOp::CLEAR:
-				image.loadop = RenderPassImage::LoadOp::CLEAR;
+			case RenderPassAttachment::LoadOp_CLEAR:
+				image.loadop = RenderPassImage::LoadOp_CLEAR;
 				break;
-			case RenderPassAttachment::LoadOp::DONTCARE:
-				image.loadop = RenderPassImage::LoadOp::DONTCARE;
+			case RenderPassAttachment::LoadOp_DONTCARE:
+				image.loadop = RenderPassImage::LoadOp_DONTCARE;
 				break;
 			default:
 				break;
 			}
 			switch (storeop)
 			{
-			case RenderPassAttachment::StoreOp::STORE:
-				image.storeop = RenderPassImage::StoreOp::STORE;
+			case RenderPassAttachment::StoreOp_STORE:
+				image.storeop = RenderPassImage::StoreOp_STORE;
 				break;
-			case RenderPassAttachment::StoreOp::DONTCARE:
-				image.storeop = RenderPassImage::StoreOp::DONTCARE;
+			case RenderPassAttachment::StoreOp_DONTCARE:
+				image.storeop = RenderPassImage::StoreOp_DONTCARE;
 				break;
 			default:
 				break;
@@ -2286,12 +2266,11 @@ namespace Protean::Graphics
 	// Deprecated, kept for back-compat:
 	struct [[deprecated]] RenderPassDesc
 	{
-		enum class Flags
-		{
-			EMPTY = 0,
-			ALLOW_UAV_WRITES = 1 << 0,
+		enum Flags {
+			Flags_EMPTY = 0,
+			Flags_ALLOW_UAV_WRITES = 1 << 0,
 		};
-		Flags flags = Flags::EMPTY;
+		Flags flags = Flags_EMPTY;
 		Protean::vector<RenderPassAttachment> attachments;
 	};
 	// Deprecated, kept for back-compat:

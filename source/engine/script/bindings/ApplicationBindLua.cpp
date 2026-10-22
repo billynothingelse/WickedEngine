@@ -109,7 +109,7 @@ namespace Protean::Lua
 		{
 			float fadeSeconds = 0;
 			Protean::Color fadeColor = Protean::Color(0, 0, 0, 255);
-			Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType::FadeToColor;
+			Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType_FadeToColor;
 			if (argc > 1)
 			{
 				fadeSeconds = Protean::Lua::SGetFloat(L, 2);
@@ -407,7 +407,7 @@ namespace Protean::Lua
 
 		float fadeSeconds = 1;
 		Protean::Color fadeColor = Protean::Color(0, 0, 0, 255);
-		Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType::FadeToColor;
+		Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType_FadeToColor;
 
 		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
@@ -450,7 +450,7 @@ namespace Protean::Lua
 			fadeSeconds = Protean::Lua::SGetFloat(L, 1);
 		}
 
-		component->Fade(fadeSeconds, Protean::Color::Black(), Protean::FadeManager::FadeType::CrossFade);
+		component->Fade(fadeSeconds, Protean::Color::Black(), Protean::FadeManager::FadeType_CrossFade);
 		return 0;
 	}
 

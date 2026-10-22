@@ -244,12 +244,12 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	});
 	AddWidget(&cursorButton);
 
-	fontColorPicker.Create("font color", Protean::Gui::Window::WindowControls::NONE);
+	fontColorPicker.Create("font color", Protean::Gui::Window::WindowControls_NONE);
 	fontColorPicker.SetSize(XMFLOAT2(256, 256));
 	fontColorPicker.SetPickColor(exe_customization.font_color);
 	AddWidget(&fontColorPicker);
 
-	backgroundColorPicker.Create("background color", Protean::Gui::Window::WindowControls::NONE);
+	backgroundColorPicker.Create("background color", Protean::Gui::Window::WindowControls_NONE);
 	backgroundColorPicker.SetSize(XMFLOAT2(256, 256));
 	backgroundColorPicker.SetPickColor(exe_customization.background_color);
 	AddWidget(&backgroundColorPicker);

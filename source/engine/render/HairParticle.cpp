@@ -125,12 +125,12 @@ namespace Protean
 		if (particleCount > 0)
 		{
 			GPUBufferDesc bd;
-			bd.usage = Usage::DEFAULT;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::INDEX_BUFFER;
-			bd.misc_flags = ResourceMiscFlag::BUFFER_RAW | ResourceMiscFlag::TYPED_FORMAT_CASTING | ResourceMiscFlag::INDIRECT_ARGS | ResourceMiscFlag::NO_DEFAULT_DESCRIPTORS;
-			if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+			bd.usage = Usage_DEFAULT;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS | BindFlag_INDEX_BUFFER;
+			bd.misc_flags = ResourceMiscFlag_BUFFER_RAW | ResourceMiscFlag_TYPED_FORMAT_CASTING | ResourceMiscFlag_INDIRECT_ARGS | ResourceMiscFlag_NO_DEFAULT_DESCRIPTORS;
+			if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING))
 			{
-				bd.misc_flags |= ResourceMiscFlag::RAY_TRACING;
+				bd.misc_flags |= ResourceMiscFlag_RAY_TRACING;
 			}
 
 			const size_t position_stride = GetFormatStride(position_format);
@@ -176,91 +176,91 @@ namespace Protean
 			const uint32_t indirect_stride = sizeof(IndirectDrawArgsIndexedInstanced);
 			buffer_offset = align(buffer_offset, alignment);
 			indirect_view.offset = buffer_offset;
-			indirect_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, indirect_view.offset, indirect_view.size, nullptr, &indirect_stride);
-			indirect_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, indirect_view.offset, indirect_view.size, nullptr, &indirect_stride);
-			indirect_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, indirect_view.subresource_srv);
-			indirect_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, indirect_view.subresource_uav);
+			indirect_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, indirect_view.offset, indirect_view.size, nullptr, &indirect_stride);
+			indirect_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, indirect_view.offset, indirect_view.size, nullptr, &indirect_stride);
+			indirect_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, indirect_view.subresource_srv);
+			indirect_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, indirect_view.subresource_uav);
 			buffer_offset += indirect_view.size;
 
 			const uint32_t simulation_stride = sizeof(PatchSimulationData);
 			buffer_offset = align(buffer_offset, alignment);
 			simulation_view.offset = buffer_offset;
-			simulation_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, simulation_view.offset, simulation_view.size, nullptr, &simulation_stride);
-			simulation_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, simulation_view.offset, simulation_view.size, nullptr, &simulation_stride);
-			simulation_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, simulation_view.subresource_srv);
-			simulation_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, simulation_view.subresource_uav);
+			simulation_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, simulation_view.offset, simulation_view.size, nullptr, &simulation_stride);
+			simulation_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, simulation_view.offset, simulation_view.size, nullptr, &simulation_stride);
+			simulation_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, simulation_view.subresource_srv);
+			simulation_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, simulation_view.subresource_uav);
 			buffer_offset += simulation_view.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_pos[0].offset = buffer_offset;
-			vb_pos[0].subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_pos[0].offset, vb_pos[0].size, &position_format);
-			vb_pos[0].subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_pos[0].offset, vb_pos[0].size, &position_format);
-			vb_pos[0].descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_pos[0].subresource_srv);
-			vb_pos[0].descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_pos[0].subresource_uav);
+			vb_pos[0].subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_pos[0].offset, vb_pos[0].size, &position_format);
+			vb_pos[0].subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_pos[0].offset, vb_pos[0].size, &position_format);
+			vb_pos[0].descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_pos[0].subresource_srv);
+			vb_pos[0].descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_pos[0].subresource_uav);
 			buffer_offset += vb_pos[0].size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_pos[1].offset = buffer_offset;
-			vb_pos[1].subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_pos[1].offset, vb_pos[1].size, &position_format);
-			vb_pos[1].subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_pos[1].offset, vb_pos[1].size, &position_format);
-			vb_pos[1].descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_pos[1].subresource_srv);
-			vb_pos[1].descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_pos[1].subresource_uav);
+			vb_pos[1].subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_pos[1].offset, vb_pos[1].size, &position_format);
+			vb_pos[1].subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_pos[1].offset, vb_pos[1].size, &position_format);
+			vb_pos[1].descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_pos[1].subresource_srv);
+			vb_pos[1].descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_pos[1].subresource_uav);
 			buffer_offset += vb_pos[1].size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_nor.offset = buffer_offset;
-			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-			vb_nor.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
-			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_nor.subresource_srv);
-			vb_nor.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_nor.subresource_uav);
+			vb_nor.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+			vb_nor.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_nor.offset, vb_nor.size, &MeshComponent::Vertex_NOR::FORMAT);
+			vb_nor.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_nor.subresource_srv);
+			vb_nor.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_nor.subresource_uav);
 			buffer_offset += vb_nor.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_uvs.offset = buffer_offset;
-			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
-			vb_uvs.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
-			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, vb_uvs.subresource_srv);
-			vb_uvs.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_uvs.subresource_uav);
+			vb_uvs.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
+			vb_uvs.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_uvs.offset, vb_uvs.size, &MeshComponent::Vertex_UVS::FORMAT);
+			vb_uvs.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, vb_uvs.subresource_srv);
+			vb_uvs.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_uvs.subresource_uav);
 			buffer_offset += vb_uvs.size;
 
-			constexpr Format wetmap_fmt = Format::R16_UNORM;
+			constexpr Format wetmap_fmt = Format_R16_UNORM;
 			buffer_offset = align(buffer_offset, alignment);
 			wetmap.offset = buffer_offset;
-			wetmap.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, wetmap.offset, wetmap.size, &wetmap_fmt);
-			wetmap.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, wetmap.offset, wetmap.size, &wetmap_fmt);
-			wetmap.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, wetmap.subresource_srv);
-			wetmap.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, wetmap.subresource_uav);
+			wetmap.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, wetmap.offset, wetmap.size, &wetmap_fmt);
+			wetmap.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, wetmap.offset, wetmap.size, &wetmap_fmt);
+			wetmap.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, wetmap.subresource_srv);
+			wetmap.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, wetmap.subresource_uav);
 			buffer_offset += wetmap.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			ib_culled.offset = buffer_offset;
-			ib_culled.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, ib_culled.offset, ib_culled.size, &ib_format);
-			ib_culled.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, ib_culled.offset, ib_culled.size, &ib_format);
-			ib_culled.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, ib_culled.subresource_srv);
-			ib_culled.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, ib_culled.subresource_uav);
+			ib_culled.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, ib_culled.offset, ib_culled.size, &ib_format);
+			ib_culled.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, ib_culled.offset, ib_culled.size, &ib_format);
+			ib_culled.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, ib_culled.subresource_srv);
+			ib_culled.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, ib_culled.subresource_uav);
 			buffer_offset += ib_culled.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			prim_view.offset = buffer_offset;
-			prim_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType::SRV, prim_view.offset, prim_view.size, &ib_format);
-			prim_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, prim_view.offset, prim_view.size, &ib_format);
-			prim_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType::SRV, prim_view.subresource_srv);
-			prim_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, prim_view.subresource_uav);
+			prim_view.subresource_srv = device->CreateSubresource(&generalBuffer, SubresourceType_SRV, prim_view.offset, prim_view.size, &ib_format);
+			prim_view.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, prim_view.offset, prim_view.size, &ib_format);
+			prim_view.descriptor_srv = device->GetDescriptorIndex(&generalBuffer, SubresourceType_SRV, prim_view.subresource_srv);
+			prim_view.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, prim_view.subresource_uav);
 			buffer_offset += prim_view.size;
 
 			buffer_offset = align(buffer_offset, alignment);
 			vb_pos_raytracing.offset = buffer_offset;
-			vb_pos_raytracing.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType::UAV, vb_pos_raytracing.offset, vb_pos_raytracing.size, &position_format);
-			vb_pos_raytracing.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_pos_raytracing.subresource_uav);
+			vb_pos_raytracing.subresource_uav = device->CreateSubresource(&generalBuffer, SubresourceType_UAV, vb_pos_raytracing.offset, vb_pos_raytracing.size, &position_format);
+			vb_pos_raytracing.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType_UAV, vb_pos_raytracing.subresource_uav);
 			buffer_offset += vb_pos_raytracing.size;
 
 		}
 
 		GPUBufferDesc bd;
-		bd.usage = Usage::DEFAULT;
+		bd.usage = Usage_DEFAULT;
 		bd.size = sizeof(HairParticleCB);
-		bd.bind_flags = BindFlag::CONSTANT_BUFFER;
-		bd.misc_flags = ResourceMiscFlag::NONE;
+		bd.bind_flags = BindFlag_CONSTANT_BUFFER;
+		bd.misc_flags = ResourceMiscFlag_NONE;
 		device->CreateBuffer(&bd, nullptr, &constantBuffer);
 		device->SetName(&constantBuffer, "HairParticleSystem::constantBuffer");
 
@@ -274,9 +274,9 @@ namespace Protean
 					std::memcpy(vertex_lengths_packed + i, &packed, sizeof(uint8_t));
 				}
 			};
-			bd.misc_flags = ResourceMiscFlag::NONE;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE;
-			bd.format = Format::R8_UNORM;
+			bd.misc_flags = ResourceMiscFlag_NONE;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE;
+			bd.format = Format_R8_UNORM;
 			bd.stride = sizeof(uint8_t);
 			bd.size = bd.stride * vertex_lengths.size();
 			device->CreateBuffer2(&bd, pack_lengths, &vertexBuffer_length);
@@ -284,9 +284,9 @@ namespace Protean
 		}
 		if (!indices.empty())
 		{
-			bd.misc_flags = ResourceMiscFlag::NONE;
-			bd.bind_flags = BindFlag::SHADER_RESOURCE;
-			bd.format = Format::R32_UINT;
+			bd.misc_flags = ResourceMiscFlag_NONE;
+			bd.bind_flags = BindFlag_SHADER_RESOURCE;
+			bd.format = Format_R32_UINT;
 			bd.stride = sizeof(uint32_t);
 			bd.size = bd.stride * indices.size();
 			device->CreateBuffer(&bd, indices.data(), &indexBuffer);
@@ -297,10 +297,10 @@ namespace Protean
 	{
 		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING) && prim_view.IsValid())
+		if (device->CheckCapability(GraphicsDeviceCapability_RAYTRACING) && prim_view.IsValid())
 		{
 			RaytracingAccelerationStructureDesc desc;
-			desc.type = RaytracingAccelerationStructureDesc::Type::BOTTOMLEVEL;
+			desc.type = RaytracingAccelerationStructureDesc::Type_BOTTOMLEVEL;
 			// Grass is heavily traced by GI rays, so prefer a traversal-optimized
 			// BVH (FAST_TRACE) over a cheap-to-build one. Animation is handled by
 			// per-frame refits (ALLOW_UPDATE) plus a periodic full rebuild on the
@@ -310,14 +310,14 @@ namespace Protean
 
 			desc.bottom_level.geometries.emplace_back();
 			auto& geometry = desc.bottom_level.geometries.back();
-			geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type::TRIANGLES;
+			geometry.type = RaytracingAccelerationStructureDesc::BottomLevel::Geometry::Type_TRIANGLES;
 			geometry.triangles.vertex_buffer = generalBuffer;
 			geometry.triangles.index_buffer = generalBuffer;
 			geometry.triangles.index_format = GetIndexBufferFormat(GetVertexCount());
 			geometry.triangles.index_count = GetIndexCount();
 			geometry.triangles.index_offset = prim_view.offset / GetFormatStride(GetIndexBufferFormatRaw(GetVertexCount()));
 			geometry.triangles.vertex_count = (uint32_t)(vb_pos_raytracing.size / GetFormatStride(position_format));
-			geometry.triangles.vertex_format = position_format == Format::R32G32B32A32_FLOAT ? Format::R32G32B32_FLOAT : position_format;
+			geometry.triangles.vertex_format = position_format == Format_R32G32B32A32_FLOAT ? Format_R32G32B32_FLOAT : position_format;
 			geometry.triangles.vertex_stride = GetFormatStride(position_format);
 			geometry.triangles.vertex_byte_offset = vb_pos_raytracing.offset;
 
@@ -394,7 +394,7 @@ namespace Protean
 			{
 				hair.gpu_initialized = true;
 				device->ClearUAV(&hair.generalBuffer, 0, cmd);
-				Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::COPY_DST));
+				Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_COPY_DST));
 			}
 		}
 		Protean::Renderer::FlushBarriers(cmd);
@@ -494,7 +494,7 @@ namespace Protean
 			// Only upload the constant buffer when its contents changed since
 			// the last frame. For static grass this is almost never, which
 			// avoids a per-hair GPU copy and barrier every frame. The buffer is
-			// Usage::DEFAULT, so its previous contents persist when skipped. A
+			// Usage_DEFAULT, so its previous contents persist when skipped. A
 			// raw byte compare is safe here: HairParticleCB is explicitly
 			// padded (no indeterminate bytes) and both operands are value-
 			// initialized, so equal bytes mean the GPU already holds this exact
@@ -505,7 +505,7 @@ namespace Protean
 			{
 				hair.constantBufferData = hcb;
 				device->UpdateBuffer(&hair.constantBuffer, &hcb, cmd);
-				Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.constantBuffer, ResourceState::COPY_DST, ResourceState::CONSTANT_BUFFER));
+				Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.constantBuffer, ResourceState_COPY_DST, ResourceState_CONSTANT_BUFFER));
 			}
 
 			IndirectDrawArgsIndexedInstanced args = {};
@@ -515,7 +515,7 @@ namespace Protean
 			args.StartIndexLocation = 0;
 			args.StartInstanceLocation = 0;
 			device->UpdateBuffer(&hair.generalBuffer, &args, cmd, sizeof(args), hair.indirect_view.offset);
-			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::COPY_DST, ResourceState::UNORDERED_ACCESS));
+			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState_COPY_DST, ResourceState_UNORDERED_ACCESS));
 
 			if (hair.regenerate_frame)
 			{
@@ -570,7 +570,7 @@ namespace Protean
 
 			device->Dispatch((hair.strandCount + THREADCOUNT_SIMULATEHAIR - 1) / THREADCOUNT_SIMULATEHAIR, 1, 1, cmd);
 
-			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::INDIRECT_ARGUMENT | ResourceState::INDEX_BUFFER | ResourceState::SHADER_RESOURCE));
+			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&hair.generalBuffer, ResourceState_UNORDERED_ACCESS, ResourceState_INDIRECT_ARGUMENT | ResourceState_INDEX_BUFFER | ResourceState_SHADER_RESOURCE));
 		}
 
 		Protean::Renderer::FlushBarriers(cmd);
@@ -760,15 +760,15 @@ namespace Protean
 	{
 		void LoadShaders()
 		{
-			Protean::Renderer::LoadShader(ShaderStage::VS, vs, "hairparticleVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, vs, "hairparticleVS.cso");
 
-			Protean::Renderer::LoadShader(ShaderStage::PS, ps_simple, "hairparticlePS_simple.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, ps_prepass, "hairparticlePS_prepass.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, ps_prepass_depthonly, "hairparticlePS_prepass_depthonly.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, ps_shadow, "hairparticlePS_shadow.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, ps, "hairparticlePS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, ps_simple, "hairparticlePS_simple.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, ps_prepass, "hairparticlePS_prepass.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, ps_prepass_depthonly, "hairparticlePS_prepass_depthonly.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, ps_shadow, "hairparticlePS_shadow.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, ps, "hairparticlePS.cso");
 
-			Protean::Renderer::LoadShader(ShaderStage::CS, cs_simulate, "hairparticle_simulateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, cs_simulate, "hairparticle_simulateCS.cso");
 
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
@@ -781,7 +781,7 @@ namespace Protean
 					desc.bs = &bs;
 					desc.rs = &ncrs;
 					desc.dss = &dss_default;
-					desc.pt = PrimitiveTopology::TRIANGLELIST;
+					desc.pt = PrimitiveTopology_TRIANGLELIST;
 
 					switch (i)
 					{
@@ -814,7 +814,7 @@ namespace Protean
 				desc.bs = &bs;
 				desc.rs = &wirers;
 				desc.dss = &dss_default;
-				desc.pt = PrimitiveTopology::TRIANGLELIST;
+				desc.pt = PrimitiveTopology_TRIANGLELIST;
 				device->CreatePipelineState(&desc, &PSO_wire);
 			}
 
@@ -827,8 +827,8 @@ namespace Protean
 		Protean::Timer timer;
 
 		RasterizerState rsd;
-		rsd.fill_mode = FillMode::SOLID;
-		rsd.cull_mode = CullMode::BACK;
+		rsd.fill_mode = FillMode_SOLID;
+		rsd.cull_mode = CullMode_BACK;
 		rsd.front_counter_clockwise = true;
 		rsd.depth_bias = 0;
 		rsd.depth_bias_clamp = 0;
@@ -838,8 +838,8 @@ namespace Protean
 		rsd.antialiased_line_enable = false;
 		rs = rsd;
 
-		rsd.fill_mode = FillMode::SOLID;
-		rsd.cull_mode = CullMode::NONE;
+		rsd.fill_mode = FillMode_SOLID;
+		rsd.cull_mode = CullMode_NONE;
 		rsd.front_counter_clockwise = true;
 		rsd.depth_bias = 0;
 		rsd.depth_bias_clamp = 0;
@@ -849,8 +849,8 @@ namespace Protean
 		rsd.antialiased_line_enable = false;
 		ncrs = rsd;
 
-		rsd.fill_mode = FillMode::WIREFRAME;
-		rsd.cull_mode = CullMode::NONE;
+		rsd.fill_mode = FillMode_WIREFRAME;
+		rsd.cull_mode = CullMode_NONE;
 		rsd.front_counter_clockwise = true;
 		rsd.depth_bias = 0;
 		rsd.depth_bias_clamp = 0;
@@ -874,8 +874,8 @@ namespace Protean
 
 		DepthStencilState dsd;
 		dsd.depth_enable = true;
-		dsd.depth_write_mask = DepthWriteMask::ALL;
-		dsd.depth_func = ComparisonFunc::GREATER;
+		dsd.depth_write_mask = DepthWriteMask_ALL;
+		dsd.depth_func = ComparisonFunc_GREATER;
 
 		dsd.stencil_enable = false;
 		dss_shadow = dsd;
@@ -883,18 +883,18 @@ namespace Protean
 		dsd.stencil_enable = true;
 		dsd.stencil_read_mask = 0xFF;
 		dsd.stencil_write_mask = 0xFF;
-		dsd.front_face.stencil_func = ComparisonFunc::ALWAYS;
-		dsd.front_face.stencil_pass_op = StencilOp::REPLACE;
-		dsd.front_face.stencil_fail_op = StencilOp::KEEP;
-		dsd.front_face.stencil_depth_fail_op = StencilOp::KEEP;
-		dsd.back_face.stencil_func = ComparisonFunc::ALWAYS;
-		dsd.back_face.stencil_pass_op = StencilOp::REPLACE;
-		dsd.back_face.stencil_fail_op = StencilOp::KEEP;
-		dsd.back_face.stencil_depth_fail_op = StencilOp::KEEP;
+		dsd.front_face.stencil_func = ComparisonFunc_ALWAYS;
+		dsd.front_face.stencil_pass_op = StencilOp_REPLACE;
+		dsd.front_face.stencil_fail_op = StencilOp_KEEP;
+		dsd.front_face.stencil_depth_fail_op = StencilOp_KEEP;
+		dsd.back_face.stencil_func = ComparisonFunc_ALWAYS;
+		dsd.back_face.stencil_pass_op = StencilOp_REPLACE;
+		dsd.back_face.stencil_fail_op = StencilOp_KEEP;
+		dsd.back_face.stencil_depth_fail_op = StencilOp_KEEP;
 		dss_default = dsd;
 
-		dsd.depth_write_mask = DepthWriteMask::ZERO;
-		dsd.depth_func = ComparisonFunc::EQUAL;
+		dsd.depth_write_mask = DepthWriteMask_ZERO;
+		dsd.depth_func = ComparisonFunc_EQUAL;
 		dsd.stencil_enable = false;
 		dss_equal = dsd;
 
@@ -904,7 +904,7 @@ namespace Protean
 		bld.alpha_to_coverage_enable = false;
 		bs = bld;
 
-		bld.render_target[0].render_target_write_mask = ColorWrite::DISABLE;
+		bld.render_target[0].render_target_write_mask = ColorWrite_DISABLE;
 		bs_shadow = bld;
 
 		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { HairParticleSystem_Internal::LoadShaders(); });

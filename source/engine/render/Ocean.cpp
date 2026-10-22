@@ -39,16 +39,16 @@ namespace Protean
 
 		void LoadShaders()
 		{
-			Protean::Renderer::LoadShader(ShaderStage::CS, updateSpectrumCS, "oceanSimulatorCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, updateSpectrumCS, "oceanSimulatorCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
 
-			Protean::Renderer::LoadShader(ShaderStage::VS, oceanSurfVS, "oceanSurfaceVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_VS, oceanSurfVS, "oceanSurfaceVS.cso");
 
-			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS, "oceanSurfacePS.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS_envmap, "oceanSurfacePS_envmap.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS_shadowmap, "oceanSurfacePS_shadowmap.cso");
-			Protean::Renderer::LoadShader(ShaderStage::PS, wireframePS, "oceanSurfaceSimplePS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, oceanSurfPS, "oceanSurfacePS.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, oceanSurfPS_envmap, "oceanSurfacePS_envmap.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, oceanSurfPS_shadowmap, "oceanSurfacePS_shadowmap.cso");
+			Protean::Renderer::LoadShader(ShaderStage_PS, wireframePS, "oceanSurfaceSimplePS.cso");
 
 
 			GraphicsDevice* device = Protean::Graphics::GetDevice();
@@ -146,9 +146,9 @@ namespace Protean
 		int output_size = hmap_dim * hmap_dim;
 
 		GPUBufferDesc buf_desc;
-		buf_desc.usage = Usage::DEFAULT;
-		buf_desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
-		buf_desc.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
+		buf_desc.usage = Usage_DEFAULT;
+		buf_desc.bind_flags = BindFlag_UNORDERED_ACCESS | BindFlag_SHADER_RESOURCE;
+		buf_desc.misc_flags = ResourceMiscFlag_BUFFER_STRUCTURED;
 
 		// RW buffer allocations
 		// H0
@@ -180,38 +180,38 @@ namespace Protean
 		tex_desc.height = hmap_dim;
 		tex_desc.array_size = 1;
 		tex_desc.sample_count = 1;
-		tex_desc.usage = Usage::DEFAULT;
-		tex_desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+		tex_desc.usage = Usage_DEFAULT;
+		tex_desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 
-		tex_desc.format = Format::R16G16B16A16_FLOAT;
+		tex_desc.format = Format_R16G16B16A16_FLOAT;
 		tex_desc.mip_levels = GetMipCount(tex_desc.width, tex_desc.height);
-		tex_desc.layout = ResourceState::SHADER_RESOURCE_COMPUTE;
+		tex_desc.layout = ResourceState_SHADER_RESOURCE_COMPUTE;
 		device->CreateTexture(&tex_desc, nullptr, &gradientMap);
 		device->SetName(&gradientMap, "gradientMap");
 
 		for (uint32_t i = 0; i < gradientMap.GetDesc().mip_levels; ++i)
 		{
 			int subresource_index;
-			subresource_index = device->CreateSubresource(&gradientMap, SubresourceType::SRV, 0, 1, i, 1);
+			subresource_index = device->CreateSubresource(&gradientMap, SubresourceType_SRV, 0, 1, i, 1);
 			assert(subresource_index == i);
-			subresource_index = device->CreateSubresource(&gradientMap, SubresourceType::UAV, 0, 1, i, 1);
+			subresource_index = device->CreateSubresource(&gradientMap, SubresourceType_UAV, 0, 1, i, 1);
 			assert(subresource_index == i);
 		}
 
 		// Half-float displacement: the values are zero-mean wave offsets, so 16-bit
 		// float's ~0.05% relative precision is ample for both rendering and the CPU
 		// buoyancy readback, while halving the texture's bandwidth and memory.
-		tex_desc.format = Format::R16G16B16A16_FLOAT;
+		tex_desc.format = Format_R16G16B16A16_FLOAT;
 		tex_desc.mip_levels = 1;
-		tex_desc.layout = ResourceState::COPY_SRC | ResourceState::SHADER_RESOURCE_COMPUTE;
+		tex_desc.layout = ResourceState_COPY_SRC | ResourceState_SHADER_RESOURCE_COMPUTE;
 		device->CreateTextureZeroed(&tex_desc, &displacementMap); // zero init the heightmap to be valid before first simulation
 		device->SetName(&displacementMap, "displacementMap");
 
 		for (uint32_t i = 0; i < arraysize(displacementMap_readback); ++i)
 		{
-			tex_desc.usage = Usage::READBACK;
-			tex_desc.bind_flags = BindFlag::NONE;
-			tex_desc.layout = ResourceState::COPY_DST;
+			tex_desc.usage = Usage_READBACK;
+			tex_desc.bind_flags = BindFlag_NONE;
+			tex_desc.layout = ResourceState_COPY_DST;
 			device->CreateTexture(&tex_desc, nullptr, &displacementMap_readback[i]);
 			device->SetName(&displacementMap_readback[i], "displacementMap_readback[i]");
 		}
@@ -392,8 +392,8 @@ namespace Protean
 		device->BindDynamicConstantBuffer(cb, CB_GETBINDSLOT(OceanCB), cmd);
 
 		GPUBarrier barriers[] = {
-			GPUBarrier::Image(&displacementMap, displacementMap.desc.layout, ResourceState::UNORDERED_ACCESS),
-			GPUBarrier::Image(&gradientMap, gradientMap.desc.layout, ResourceState::UNORDERED_ACCESS),
+			GPUBarrier::Image(&displacementMap, displacementMap.desc.layout, ResourceState_UNORDERED_ACCESS),
+			GPUBarrier::Image(&gradientMap, gradientMap.desc.layout, ResourceState_UNORDERED_ACCESS),
 		};
 		device->Barrier(barriers, arraysize(barriers), cmd);
 
@@ -407,7 +407,7 @@ namespace Protean
 			1,
 			cmd
 		);
-		device->Barrier(GPUBarrier::Image(&displacementMap, ResourceState::UNORDERED_ACCESS, displacementMap.desc.layout), cmd);
+		device->Barrier(GPUBarrier::Image(&displacementMap, ResourceState_UNORDERED_ACCESS, displacementMap.desc.layout), cmd);
 
 		// Update gradient map:
 		device->BindComputeShader(&updateGradientFoldingCS, cmd);
@@ -419,7 +419,7 @@ namespace Protean
 			1,
 			cmd
 		);
-		device->Barrier(GPUBarrier::Image(&gradientMap, ResourceState::UNORDERED_ACCESS, gradientMap.desc.layout), cmd);
+		device->Barrier(GPUBarrier::Image(&gradientMap, ResourceState_UNORDERED_ACCESS, gradientMap.desc.layout), cmd);
 
 		Protean::Renderer::GenerateMipChain(gradientMap, Protean::Renderer::MIPGENFILTER_LINEAR, cmd);
 
@@ -479,7 +479,7 @@ namespace Protean
 			}
 
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::INDEX_BUFFER;
+			desc.bind_flags = BindFlag_INDEX_BUFFER;
 			desc.size = indexbuffer_required_size;
 			device->CreateBuffer(&desc, index_data.data(), &indexBuffer_occlusionTest);
 			device->SetName(&indexBuffer_occlusionTest, "Ocean::indexBuffer_occlusionTest");
@@ -494,7 +494,7 @@ namespace Protean
 		device->BindResource(&displacementMap, 0, cmd);
 		device->BindResource(&perlinTex, 2, cmd);
 
-		device->BindIndexBuffer(&indexBuffer_occlusionTest, IndexBufferFormat::UINT16, 0, cmd);
+		device->BindIndexBuffer(&indexBuffer_occlusionTest, IndexBufferFormat_UINT16, 0, cmd);
 
 		uint32_t camera_index = 0;
 		device->PushConstants(&camera_index, sizeof(camera_index), cmd);
@@ -539,7 +539,7 @@ namespace Protean
 			}
 
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::INDEX_BUFFER;
+			desc.bind_flags = BindFlag_INDEX_BUFFER;
 			desc.size = indexbuffer_required_size;
 			device->CreateBuffer(&desc, index_data.data(), &indexBuffer_cubemap);
 			device->SetName(&indexBuffer_cubemap, "Ocean::indexBuffer_cubemap");
@@ -555,7 +555,7 @@ namespace Protean
 		device->BindResource(&gradientMap, 1, cmd);
 		device->BindResource(&perlinTex, 2, cmd);
 
-		device->BindIndexBuffer(&indexBuffer_cubemap, IndexBufferFormat::UINT16, 0, cmd);
+		device->BindIndexBuffer(&indexBuffer_cubemap, IndexBufferFormat_UINT16, 0, cmd);
 
 		uint32_t camera_index = 0;
 		device->PushConstants(&camera_index, sizeof(camera_index), cmd);
@@ -600,7 +600,7 @@ namespace Protean
 			}
 
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::INDEX_BUFFER;
+			desc.bind_flags = BindFlag_INDEX_BUFFER;
 			desc.size = indexbuffer_required_size;
 			device->CreateBuffer(&desc, index_data.data(), &indexBuffer_shadowmap);
 			device->SetName(&indexBuffer_shadowmap, "Ocean::indexBuffer_shadowmap");
@@ -616,7 +616,7 @@ namespace Protean
 		device->BindResource(&gradientMap, 1, cmd);
 		device->BindResource(&perlinTex, 2, cmd);
 
-		device->BindIndexBuffer(&indexBuffer_shadowmap, IndexBufferFormat::UINT16, 0, cmd);
+		device->BindIndexBuffer(&indexBuffer_shadowmap, IndexBufferFormat_UINT16, 0, cmd);
 
 		uint32_t camera_bits = camera_mask;
 		while (camera_bits != 0)
@@ -676,7 +676,7 @@ namespace Protean
 			}
 
 			GPUBufferDesc desc;
-			desc.bind_flags = BindFlag::INDEX_BUFFER;
+			desc.bind_flags = BindFlag_INDEX_BUFFER;
 			desc.size = indexbuffer_required_size;
 			device->CreateBuffer(&desc, index_data.data(), &indexBuffer);
 			device->SetName(&indexBuffer, "Ocean::indexBuffer");
@@ -690,7 +690,7 @@ namespace Protean
 		device->BindResource(&gradientMap, 1, cmd);
 		device->BindResource(&perlinTex, 2, cmd);
 
-		device->BindIndexBuffer(&indexBuffer, IndexBufferFormat::UINT32, 0, cmd);
+		device->BindIndexBuffer(&indexBuffer, IndexBufferFormat_UINT32, 0, cmd);
 
 		uint32_t camera_index = 0;
 		device->PushConstants(&camera_index, sizeof(camera_index), cmd);
@@ -706,8 +706,8 @@ namespace Protean
 		Protean::Timer timer;
 
 		RasterizerState ras_desc;
-		ras_desc.fill_mode = FillMode::SOLID;
-		ras_desc.cull_mode = CullMode::NONE;
+		ras_desc.fill_mode = FillMode_SOLID;
+		ras_desc.cull_mode = CullMode_NONE;
 		ras_desc.front_counter_clockwise = false;
 		ras_desc.depth_bias = 0;
 		ras_desc.slope_scaled_depth_bias = 0.0f;
@@ -718,17 +718,17 @@ namespace Protean
 
 		rasterizerState = ras_desc;
 
-		ras_desc.fill_mode = FillMode::WIREFRAME;
+		ras_desc.fill_mode = FillMode_WIREFRAME;
 		wireRS = ras_desc;
 
 		DepthStencilState depth_desc;
 		depth_desc.depth_enable = true;
-		depth_desc.depth_write_mask = DepthWriteMask::ALL;
-		depth_desc.depth_func = ComparisonFunc::GREATER;
+		depth_desc.depth_write_mask = DepthWriteMask_ALL;
+		depth_desc.depth_func = ComparisonFunc_GREATER;
 		depth_desc.stencil_enable = false;
 		depthStencilState = depth_desc;
 
-		depth_desc.depth_write_mask = DepthWriteMask::ZERO;
+		depth_desc.depth_write_mask = DepthWriteMask_ZERO;
 		depthStencilState_occlusionTest = depth_desc;
 		depthStencilState_shadowmap = depth_desc;
 
@@ -736,26 +736,26 @@ namespace Protean
 		blend_desc.alpha_to_coverage_enable = false;
 		blend_desc.independent_blend_enable = false;
 		blend_desc.render_target[0].blend_enable = true;
-		blend_desc.render_target[0].src_blend = Blend::SRC_ALPHA;
-		blend_desc.render_target[0].dest_blend = Blend::INV_SRC_ALPHA;
-		blend_desc.render_target[0].blend_op = BlendOp::ADD;
-		blend_desc.render_target[0].src_blend_alpha = Blend::ONE;
-		blend_desc.render_target[0].dest_blend_alpha = Blend::ZERO;
-		blend_desc.render_target[0].blend_op_alpha = BlendOp::ADD;
-		blend_desc.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		blend_desc.render_target[0].src_blend = Blend_SRC_ALPHA;
+		blend_desc.render_target[0].dest_blend = Blend_INV_SRC_ALPHA;
+		blend_desc.render_target[0].blend_op = BlendOp_ADD;
+		blend_desc.render_target[0].src_blend_alpha = Blend_ONE;
+		blend_desc.render_target[0].dest_blend_alpha = Blend_ZERO;
+		blend_desc.render_target[0].blend_op_alpha = BlendOp_ADD;
+		blend_desc.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		blendState = blend_desc;
 
 		blend_desc.render_target[0].blend_enable = false;
 		blendState_occlusionTest = blend_desc;
 
-		blend_desc.render_target[0].src_blend = Blend::ZERO;
-		blend_desc.render_target[0].dest_blend = Blend::SRC_COLOR;
-		blend_desc.render_target[0].blend_op = BlendOp::ADD;
-		blend_desc.render_target[0].src_blend_alpha = Blend::ONE;
-		blend_desc.render_target[0].dest_blend_alpha = Blend::ONE;
-		blend_desc.render_target[0].blend_op_alpha = BlendOp::MAX;
+		blend_desc.render_target[0].src_blend = Blend_ZERO;
+		blend_desc.render_target[0].dest_blend = Blend_SRC_COLOR;
+		blend_desc.render_target[0].blend_op = BlendOp_ADD;
+		blend_desc.render_target[0].src_blend_alpha = Blend_ONE;
+		blend_desc.render_target[0].dest_blend_alpha = Blend_ONE;
+		blend_desc.render_target[0].blend_op_alpha = BlendOp_MAX;
 		blend_desc.render_target[0].blend_enable = true;
-		blend_desc.render_target[0].render_target_write_mask = ColorWrite::ENABLE_ALL;
+		blend_desc.render_target[0].render_target_write_mask = ColorWrite_ENABLE_ALL;
 		blend_desc.alpha_to_coverage_enable = false;
 		blend_desc.independent_blend_enable = false;
 		blendState_shadowmap = blend_desc;
@@ -767,11 +767,11 @@ namespace Protean
 		Protean::FFTGenerator::LoadShaders();
 
 		TextureDesc desc;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE;
 		desc.width = 64;
 		desc.height = 64;
 		desc.mip_levels = 7;
-		desc.format = Format::R16G16B16A16_FLOAT;
+		desc.format = Format_R16G16B16A16_FLOAT;
 		const uint32_t data_stride = GetFormatStride(desc.format);
 		const uint32_t block_size = GetFormatBlockSize(desc.format);
 		SubresourceData initdata[7] = {};

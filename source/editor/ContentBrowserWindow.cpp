@@ -216,7 +216,7 @@ void ContentBrowserWindow::RefreshContent()
 		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_ALL);
 			});
-		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions_NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_ALL;
@@ -232,7 +232,7 @@ void ContentBrowserWindow::RefreshContent()
 		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_MODELS);
 			});
-		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions_NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_MODELS;
@@ -248,7 +248,7 @@ void ContentBrowserWindow::RefreshContent()
 		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_SCRIPTS);
 		});
-		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions_NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_SCRIPTS;
@@ -275,7 +275,7 @@ void ContentBrowserWindow::RefreshContent()
 		button.OnClick([this, i](Protean::Gui::EventArgs args) {
 			SetSelection((SELECTION)(SELECTION_RECENTFOLDER_BEGIN + i));
 		});
-		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions_NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = (SELECTION)(SELECTION_RECENTFOLDER_BEGIN + i);
@@ -310,7 +310,7 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 			openFolderButton.OnClick([this](Protean::Gui::EventArgs args) {
 				Protean::Helper::OpenUrl(content_folder + "scripts/");
 				});
-			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
+			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions_NONE);
 			break;
 		case SELECTION_MODELS:
 			AddItems(content_folder + "models/", "wiscene", ICON_OBJECT);
@@ -324,7 +324,7 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 			openFolderButton.OnClick([this](Protean::Gui::EventArgs args) {
 				Protean::Helper::OpenUrl(content_folder + "models/");
 				});
-			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
+			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions_NONE);
 			break;
 		case SELECTION_ALL:
 			for (size_t i = 0; i < editor->recentFilenames.size(); ++i)
@@ -386,7 +386,7 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 				openFolderButton.OnClick([folder](Protean::Gui::EventArgs args) {
 					Protean::Helper::OpenUrl(folder);
 				});
-				AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
+				AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions_NONE);
 			}
 			break;
 		}

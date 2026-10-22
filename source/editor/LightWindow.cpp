@@ -8,7 +8,7 @@ using namespace Protean;
 void LightWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_POINTLIGHT " Light", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_POINTLIGHT " Light", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(650, 940));
 
 	closeButton.SetTooltip("Delete LightComponent");
@@ -45,7 +45,7 @@ void LightWindow::Create(EditorComponent* _editor)
 		};
 	};
 
-	colorPicker.Create("Light Color", Protean::Gui::Window::WindowControls::NONE);
+	colorPicker.Create("Light Color", Protean::Gui::Window::WindowControls_NONE);
 	colorPicker.SetPos(XMFLOAT2(mod_x, y));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(false);

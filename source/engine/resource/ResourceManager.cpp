@@ -62,7 +62,7 @@ namespace Protean
 
 	struct ResourceInternal
 	{
-		ResourceManager::Flags flags = ResourceManager::Flags::NONE;
+		ResourceManager::Flags flags = ResourceManager::Flags_NONE;
 		Protean::Graphics::Texture texture;
 		int srgb_subresource = -1;
 		Protean::Audio::Sound sound;
@@ -234,7 +234,7 @@ namespace Protean
 	{
 		static std::mutex locker;
 		static Protean::unordered_map<std::string, Protean::Allocator::weak_ptr<ResourceInternal>> resources;
-		static Mode mode = Mode::NO_EMBEDDING;
+		static Mode mode = Mode_NO_EMBEDDING;
 
 		void SetMode(Mode param)
 		{
@@ -245,38 +245,37 @@ namespace Protean
 			return mode;
 		}
 
-		enum class DataType
-		{
-			IMAGE,
-			SOUND,
-			SCRIPT,
-			VIDEO_MP4,
-			VIDEO_H264_RAW,
-			FONTSTYLE,
+		enum DataType {
+			DataType_IMAGE,
+			DataType_SOUND,
+			DataType_SCRIPT,
+			DataType_VIDEO_MP4,
+			DataType_VIDEO_H264_RAW,
+			DataType_FONTSTYLE,
 		};
 		static const Protean::unordered_map<std::string, DataType> types = {
-			{"JPG", DataType::IMAGE},
-			{"JPEG", DataType::IMAGE},
-			{"PNG", DataType::IMAGE},
-			{"BMP", DataType::IMAGE},
-			{"DDS", DataType::IMAGE},
-			{"TGA", DataType::IMAGE},
-			{"HDR", DataType::IMAGE},
-			{"HEIC", DataType::IMAGE},
-			{"HEIF", DataType::IMAGE},
-			{"WAV", DataType::SOUND},
-			{"OGG", DataType::SOUND},
-			{"LUA", DataType::SCRIPT},
-			{"MP4", DataType::VIDEO_MP4},
-			{"H264", DataType::VIDEO_H264_RAW},
-			{"TTF", DataType::FONTSTYLE},
+			{"JPG", DataType_IMAGE},
+			{"JPEG", DataType_IMAGE},
+			{"PNG", DataType_IMAGE},
+			{"BMP", DataType_IMAGE},
+			{"DDS", DataType_IMAGE},
+			{"TGA", DataType_IMAGE},
+			{"HDR", DataType_IMAGE},
+			{"HEIC", DataType_IMAGE},
+			{"HEIF", DataType_IMAGE},
+			{"WAV", DataType_SOUND},
+			{"OGG", DataType_SOUND},
+			{"LUA", DataType_SCRIPT},
+			{"MP4", DataType_VIDEO_MP4},
+			{"H264", DataType_VIDEO_H264_RAW},
+			{"TTF", DataType_FONTSTYLE},
 		};
 		Protean::vector<std::string> GetSupportedImageExtensions()
 		{
 			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
-				if (x.second == DataType::IMAGE)
+				if (x.second == DataType_IMAGE)
 				{
 					ret.push_back(x.first);
 				}
@@ -288,7 +287,7 @@ namespace Protean
 			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
-				if (x.second == DataType::SOUND)
+				if (x.second == DataType_SOUND)
 				{
 					ret.push_back(x.first);
 				}
@@ -300,7 +299,7 @@ namespace Protean
 			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
-				if (x.second == DataType::VIDEO_MP4 || x.second == DataType::VIDEO_H264_RAW)
+				if (x.second == DataType_VIDEO_MP4 || x.second == DataType_VIDEO_H264_RAW)
 				{
 					ret.push_back(x.first);
 				}
@@ -312,7 +311,7 @@ namespace Protean
 			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
-				if (x.second == DataType::SCRIPT)
+				if (x.second == DataType_SCRIPT)
 				{
 					ret.push_back(x.first);
 				}
@@ -324,7 +323,7 @@ namespace Protean
 			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
-				if (x.second == DataType::FONTSTYLE)
+				if (x.second == DataType_FONTSTYLE)
 				{
 					ret.push_back(x.first);
 				}
@@ -360,7 +359,7 @@ namespace Protean
 
 			switch (type)
 			{
-			case DataType::IMAGE:
+			case DataType_IMAGE:
 			{
 				GraphicsDevice* device = Protean::Graphics::GetDevice();
 				if (!ext.compare("DDS"))
@@ -370,121 +369,121 @@ namespace Protean
 					{
 						TextureDesc desc;
 						desc.array_size = 1;
-						desc.bind_flags = BindFlag::SHADER_RESOURCE;
+						desc.bind_flags = BindFlag_SHADER_RESOURCE;
 						desc.width = header.width();
 						desc.height = header.height();
 						desc.depth = header.depth();
 						desc.mip_levels = header.mip_levels();
 						desc.array_size = header.array_size();
-						desc.format = Format::R8G8B8A8_UNORM;
-						desc.layout = ResourceState::SHADER_RESOURCE;
-						desc.misc_flags = ResourceMiscFlag::TYPED_FORMAT_CASTING;
+						desc.format = Format_R8G8B8A8_UNORM;
+						desc.layout = ResourceState_SHADER_RESOURCE;
+						desc.misc_flags = ResourceMiscFlag_TYPED_FORMAT_CASTING;
 
 						if (header.is_cubemap())
 						{
-							desc.misc_flags |= ResourceMiscFlag::TEXTURECUBE;
+							desc.misc_flags |= ResourceMiscFlag_TEXTURECUBE;
 						}
 						if (desc.mip_levels == 1 || desc.depth > 1 || desc.array_size > 1)
 						{
 							// don't allow streaming for single mip, array and 3D textures
-							flags &= ~Flags::STREAMING;
+							flags &= ~Flags_STREAMING;
 						}
 
 						auto ddsFormat = header.format();
 
 						switch (ddsFormat)
 						{
-						case dds::DXGI_FORMAT_R32G32B32A32_FLOAT: desc.format = Format::R32G32B32A32_FLOAT; break;
-						case dds::DXGI_FORMAT_R32G32B32A32_UINT: desc.format = Format::R32G32B32A32_UINT; break;
-						case dds::DXGI_FORMAT_R32G32B32A32_SINT: desc.format = Format::R32G32B32A32_SINT; break;
-						case dds::DXGI_FORMAT_R32G32B32_FLOAT: desc.format = Format::R32G32B32_FLOAT; break;
-						case dds::DXGI_FORMAT_R32G32B32_UINT: desc.format = Format::R32G32B32_UINT; break;
-						case dds::DXGI_FORMAT_R32G32B32_SINT: desc.format = Format::R32G32B32_SINT; break;
-						case dds::DXGI_FORMAT_R16G16B16A16_FLOAT: desc.format = Format::R16G16B16A16_FLOAT; break;
-						case dds::DXGI_FORMAT_R16G16B16A16_UNORM: desc.format = Format::R16G16B16A16_UNORM; break;
-						case dds::DXGI_FORMAT_R16G16B16A16_UINT: desc.format = Format::R16G16B16A16_UINT; break;
-						case dds::DXGI_FORMAT_R16G16B16A16_SNORM: desc.format = Format::R16G16B16A16_SNORM; break;
-						case dds::DXGI_FORMAT_R16G16B16A16_SINT: desc.format = Format::R16G16B16A16_SINT; break;
-						case dds::DXGI_FORMAT_R32G32_FLOAT: desc.format = Format::R32G32_FLOAT; break;
-						case dds::DXGI_FORMAT_R32G32_UINT: desc.format = Format::R32G32_UINT; break;
-						case dds::DXGI_FORMAT_R32G32_SINT: desc.format = Format::R32G32_SINT; break;
-						case dds::DXGI_FORMAT_R10G10B10A2_UNORM: desc.format = Format::R10G10B10A2_UNORM; break;
-						case dds::DXGI_FORMAT_R10G10B10A2_UINT: desc.format = Format::R10G10B10A2_UINT; break;
-						case dds::DXGI_FORMAT_R11G11B10_FLOAT: desc.format = Format::R11G11B10_FLOAT; break;
-						case dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP: desc.format = Format::R9G9B9E5_SHAREDEXP; break;
-						case dds::DXGI_FORMAT_B8G8R8X8_UNORM: desc.format = Format::B8G8R8A8_UNORM; break;
-						case dds::DXGI_FORMAT_B8G8R8A8_UNORM: desc.format = Format::B8G8R8A8_UNORM; break;
-						case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB: desc.format = Format::B8G8R8A8_UNORM_SRGB; break;
-						case dds::DXGI_FORMAT_R8G8B8A8_UNORM: desc.format = Format::R8G8B8A8_UNORM; break;
-						case dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB: desc.format = Format::R8G8B8A8_UNORM_SRGB; break;
-						case dds::DXGI_FORMAT_R8G8B8A8_UINT: desc.format = Format::R8G8B8A8_UINT; break;
-						case dds::DXGI_FORMAT_R8G8B8A8_SNORM: desc.format = Format::R8G8B8A8_SNORM; break;
-						case dds::DXGI_FORMAT_R8G8B8A8_SINT: desc.format = Format::R8G8B8A8_SINT; break;
-						case dds::DXGI_FORMAT_R16G16_FLOAT: desc.format = Format::R16G16_FLOAT; break;
-						case dds::DXGI_FORMAT_R16G16_UNORM: desc.format = Format::R16G16_UNORM; break;
-						case dds::DXGI_FORMAT_R16G16_UINT: desc.format = Format::R16G16_UINT; break;
-						case dds::DXGI_FORMAT_R16G16_SNORM: desc.format = Format::R16G16_SNORM; break;
-						case dds::DXGI_FORMAT_R16G16_SINT: desc.format = Format::R16G16_SINT; break;
-						case dds::DXGI_FORMAT_D32_FLOAT: desc.format = Format::D32_FLOAT; break;
-						case dds::DXGI_FORMAT_R32_FLOAT: desc.format = Format::R32_FLOAT; break;
-						case dds::DXGI_FORMAT_R32_UINT: desc.format = Format::R32_UINT; break;
-						case dds::DXGI_FORMAT_R32_SINT: desc.format = Format::R32_SINT; break;
-						case dds::DXGI_FORMAT_R8G8_UNORM: desc.format = Format::R8G8_UNORM; break;
-						case dds::DXGI_FORMAT_R8G8_UINT: desc.format = Format::R8G8_UINT; break;
-						case dds::DXGI_FORMAT_R8G8_SNORM: desc.format = Format::R8G8_SNORM; break;
-						case dds::DXGI_FORMAT_R8G8_SINT: desc.format = Format::R8G8_SINT; break;
-						case dds::DXGI_FORMAT_R16_FLOAT: desc.format = Format::R16_FLOAT; break;
-						case dds::DXGI_FORMAT_D16_UNORM: desc.format = Format::D16_UNORM; break;
-						case dds::DXGI_FORMAT_R16_UNORM: desc.format = Format::R16_UNORM; break;
-						case dds::DXGI_FORMAT_R16_UINT: desc.format = Format::R16_UINT; break;
-						case dds::DXGI_FORMAT_R16_SNORM: desc.format = Format::R16_SNORM; break;
-						case dds::DXGI_FORMAT_R16_SINT: desc.format = Format::R16_SINT; break;
-						case dds::DXGI_FORMAT_R8_UNORM: desc.format = Format::R8_UNORM; break;
-						case dds::DXGI_FORMAT_R8_UINT: desc.format = Format::R8_UINT; break;
-						case dds::DXGI_FORMAT_R8_SNORM: desc.format = Format::R8_SNORM; break;
-						case dds::DXGI_FORMAT_R8_SINT: desc.format = Format::R8_SINT; break;
-						case dds::DXGI_FORMAT_BC1_UNORM: desc.format = Format::BC1_UNORM; break;
-						case dds::DXGI_FORMAT_BC1_UNORM_SRGB: desc.format = Format::BC1_UNORM_SRGB; break;
-						case dds::DXGI_FORMAT_BC2_UNORM: desc.format = Format::BC2_UNORM; break;
-						case dds::DXGI_FORMAT_BC2_UNORM_SRGB: desc.format = Format::BC2_UNORM_SRGB; break;
-						case dds::DXGI_FORMAT_BC3_UNORM: desc.format = Format::BC3_UNORM; break;
-						case dds::DXGI_FORMAT_BC3_UNORM_SRGB: desc.format = Format::BC3_UNORM_SRGB; break;
-						case dds::DXGI_FORMAT_BC4_UNORM: desc.format = Format::BC4_UNORM; break;
-						case dds::DXGI_FORMAT_BC4_SNORM: desc.format = Format::BC4_SNORM; break;
-						case dds::DXGI_FORMAT_BC5_UNORM: desc.format = Format::BC5_UNORM; break;
-						case dds::DXGI_FORMAT_BC5_SNORM: desc.format = Format::BC5_SNORM; break;
-						case dds::DXGI_FORMAT_BC6H_SF16: desc.format = Format::BC6H_SF16; break;
-						case dds::DXGI_FORMAT_BC6H_UF16: desc.format = Format::BC6H_UF16; break;
-						case dds::DXGI_FORMAT_BC7_UNORM: desc.format = Format::BC7_UNORM; break;
-						case dds::DXGI_FORMAT_BC7_UNORM_SRGB: desc.format = Format::BC7_UNORM_SRGB; break;
-						case dds::D3DFMT_R8G8B8: desc.format = Format::B8G8R8A8_UNORM; break; // needs converting!
+						case dds::DXGI_FORMAT_R32G32B32A32_FLOAT: desc.format = Format_R32G32B32A32_FLOAT; break;
+						case dds::DXGI_FORMAT_R32G32B32A32_UINT: desc.format = Format_R32G32B32A32_UINT; break;
+						case dds::DXGI_FORMAT_R32G32B32A32_SINT: desc.format = Format_R32G32B32A32_SINT; break;
+						case dds::DXGI_FORMAT_R32G32B32_FLOAT: desc.format = Format_R32G32B32_FLOAT; break;
+						case dds::DXGI_FORMAT_R32G32B32_UINT: desc.format = Format_R32G32B32_UINT; break;
+						case dds::DXGI_FORMAT_R32G32B32_SINT: desc.format = Format_R32G32B32_SINT; break;
+						case dds::DXGI_FORMAT_R16G16B16A16_FLOAT: desc.format = Format_R16G16B16A16_FLOAT; break;
+						case dds::DXGI_FORMAT_R16G16B16A16_UNORM: desc.format = Format_R16G16B16A16_UNORM; break;
+						case dds::DXGI_FORMAT_R16G16B16A16_UINT: desc.format = Format_R16G16B16A16_UINT; break;
+						case dds::DXGI_FORMAT_R16G16B16A16_SNORM: desc.format = Format_R16G16B16A16_SNORM; break;
+						case dds::DXGI_FORMAT_R16G16B16A16_SINT: desc.format = Format_R16G16B16A16_SINT; break;
+						case dds::DXGI_FORMAT_R32G32_FLOAT: desc.format = Format_R32G32_FLOAT; break;
+						case dds::DXGI_FORMAT_R32G32_UINT: desc.format = Format_R32G32_UINT; break;
+						case dds::DXGI_FORMAT_R32G32_SINT: desc.format = Format_R32G32_SINT; break;
+						case dds::DXGI_FORMAT_R10G10B10A2_UNORM: desc.format = Format_R10G10B10A2_UNORM; break;
+						case dds::DXGI_FORMAT_R10G10B10A2_UINT: desc.format = Format_R10G10B10A2_UINT; break;
+						case dds::DXGI_FORMAT_R11G11B10_FLOAT: desc.format = Format_R11G11B10_FLOAT; break;
+						case dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP: desc.format = Format_R9G9B9E5_SHAREDEXP; break;
+						case dds::DXGI_FORMAT_B8G8R8X8_UNORM: desc.format = Format_B8G8R8A8_UNORM; break;
+						case dds::DXGI_FORMAT_B8G8R8A8_UNORM: desc.format = Format_B8G8R8A8_UNORM; break;
+						case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB: desc.format = Format_B8G8R8A8_UNORM_SRGB; break;
+						case dds::DXGI_FORMAT_R8G8B8A8_UNORM: desc.format = Format_R8G8B8A8_UNORM; break;
+						case dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB: desc.format = Format_R8G8B8A8_UNORM_SRGB; break;
+						case dds::DXGI_FORMAT_R8G8B8A8_UINT: desc.format = Format_R8G8B8A8_UINT; break;
+						case dds::DXGI_FORMAT_R8G8B8A8_SNORM: desc.format = Format_R8G8B8A8_SNORM; break;
+						case dds::DXGI_FORMAT_R8G8B8A8_SINT: desc.format = Format_R8G8B8A8_SINT; break;
+						case dds::DXGI_FORMAT_R16G16_FLOAT: desc.format = Format_R16G16_FLOAT; break;
+						case dds::DXGI_FORMAT_R16G16_UNORM: desc.format = Format_R16G16_UNORM; break;
+						case dds::DXGI_FORMAT_R16G16_UINT: desc.format = Format_R16G16_UINT; break;
+						case dds::DXGI_FORMAT_R16G16_SNORM: desc.format = Format_R16G16_SNORM; break;
+						case dds::DXGI_FORMAT_R16G16_SINT: desc.format = Format_R16G16_SINT; break;
+						case dds::DXGI_FORMAT_D32_FLOAT: desc.format = Format_D32_FLOAT; break;
+						case dds::DXGI_FORMAT_R32_FLOAT: desc.format = Format_R32_FLOAT; break;
+						case dds::DXGI_FORMAT_R32_UINT: desc.format = Format_R32_UINT; break;
+						case dds::DXGI_FORMAT_R32_SINT: desc.format = Format_R32_SINT; break;
+						case dds::DXGI_FORMAT_R8G8_UNORM: desc.format = Format_R8G8_UNORM; break;
+						case dds::DXGI_FORMAT_R8G8_UINT: desc.format = Format_R8G8_UINT; break;
+						case dds::DXGI_FORMAT_R8G8_SNORM: desc.format = Format_R8G8_SNORM; break;
+						case dds::DXGI_FORMAT_R8G8_SINT: desc.format = Format_R8G8_SINT; break;
+						case dds::DXGI_FORMAT_R16_FLOAT: desc.format = Format_R16_FLOAT; break;
+						case dds::DXGI_FORMAT_D16_UNORM: desc.format = Format_D16_UNORM; break;
+						case dds::DXGI_FORMAT_R16_UNORM: desc.format = Format_R16_UNORM; break;
+						case dds::DXGI_FORMAT_R16_UINT: desc.format = Format_R16_UINT; break;
+						case dds::DXGI_FORMAT_R16_SNORM: desc.format = Format_R16_SNORM; break;
+						case dds::DXGI_FORMAT_R16_SINT: desc.format = Format_R16_SINT; break;
+						case dds::DXGI_FORMAT_R8_UNORM: desc.format = Format_R8_UNORM; break;
+						case dds::DXGI_FORMAT_R8_UINT: desc.format = Format_R8_UINT; break;
+						case dds::DXGI_FORMAT_R8_SNORM: desc.format = Format_R8_SNORM; break;
+						case dds::DXGI_FORMAT_R8_SINT: desc.format = Format_R8_SINT; break;
+						case dds::DXGI_FORMAT_BC1_UNORM: desc.format = Format_BC1_UNORM; break;
+						case dds::DXGI_FORMAT_BC1_UNORM_SRGB: desc.format = Format_BC1_UNORM_SRGB; break;
+						case dds::DXGI_FORMAT_BC2_UNORM: desc.format = Format_BC2_UNORM; break;
+						case dds::DXGI_FORMAT_BC2_UNORM_SRGB: desc.format = Format_BC2_UNORM_SRGB; break;
+						case dds::DXGI_FORMAT_BC3_UNORM: desc.format = Format_BC3_UNORM; break;
+						case dds::DXGI_FORMAT_BC3_UNORM_SRGB: desc.format = Format_BC3_UNORM_SRGB; break;
+						case dds::DXGI_FORMAT_BC4_UNORM: desc.format = Format_BC4_UNORM; break;
+						case dds::DXGI_FORMAT_BC4_SNORM: desc.format = Format_BC4_SNORM; break;
+						case dds::DXGI_FORMAT_BC5_UNORM: desc.format = Format_BC5_UNORM; break;
+						case dds::DXGI_FORMAT_BC5_SNORM: desc.format = Format_BC5_SNORM; break;
+						case dds::DXGI_FORMAT_BC6H_SF16: desc.format = Format_BC6H_SF16; break;
+						case dds::DXGI_FORMAT_BC6H_UF16: desc.format = Format_BC6H_UF16; break;
+						case dds::DXGI_FORMAT_BC7_UNORM: desc.format = Format_BC7_UNORM; break;
+						case dds::DXGI_FORMAT_BC7_UNORM_SRGB: desc.format = Format_BC7_UNORM_SRGB; break;
+						case dds::D3DFMT_R8G8B8: desc.format = Format_B8G8R8A8_UNORM; break; // needs converting!
 						default:
 							assert(0); // incoming format is not supported 
 							break;
 						}
 
-						if (desc.format == Format::BC4_UNORM || desc.format == Format::BC4_SNORM)
+						if (desc.format == Format_BC4_UNORM || desc.format == Format_BC4_SNORM)
 						{
-							desc.swizzle.r = ComponentSwizzle::R;
-							desc.swizzle.g = ComponentSwizzle::R;
-							desc.swizzle.b = ComponentSwizzle::R;
-							desc.swizzle.a = ComponentSwizzle::ONE;
+							desc.swizzle.r = ComponentSwizzle_R;
+							desc.swizzle.g = ComponentSwizzle_R;
+							desc.swizzle.b = ComponentSwizzle_R;
+							desc.swizzle.a = ComponentSwizzle_ONE;
 						}
-						if (desc.format == Format::BC5_UNORM || desc.format == Format::BC5_SNORM)
+						if (desc.format == Format_BC5_UNORM || desc.format == Format_BC5_SNORM)
 						{
-							desc.swizzle.r = ComponentSwizzle::R;
-							desc.swizzle.g = ComponentSwizzle::G;
-							desc.swizzle.b = ComponentSwizzle::ONE;
-							desc.swizzle.a = ComponentSwizzle::ONE;
+							desc.swizzle.r = ComponentSwizzle_R;
+							desc.swizzle.g = ComponentSwizzle_G;
+							desc.swizzle.b = ComponentSwizzle_ONE;
+							desc.swizzle.a = ComponentSwizzle_ONE;
 						}
 
 						if (header.is_1d())
 						{
-							desc.type = TextureDesc::Type::TEXTURE_1D;
+							desc.type = TextureDesc::Type_TEXTURE_1D;
 						}
 						else if (header.is_3d())
 						{
-							desc.type = TextureDesc::Type::TEXTURE_3D;
+							desc.type = TextureDesc::Type_TEXTURE_3D;
 						}
 
 						if (IsFormatBlockCompressed(desc.format))
@@ -560,7 +559,7 @@ namespace Protean
 						}
 
 						// mipmap reduction for streaming resources:
-						if (has_flag(flags, Flags::STREAMING))
+						if (has_flag(flags, Flags_STREAMING))
 						{
 							// Remember full mipcount for streaming:
 							resource->streaming_texture.mip_count = desc.mip_levels;
@@ -590,11 +589,11 @@ namespace Protean
 						device->SetName(&resource->texture, name.c_str());
 
 						Format srgb_format = GetFormatSRGB(desc.format);
-						if (srgb_format != Format::UNKNOWN && srgb_format != desc.format)
+						if (srgb_format != Format_UNKNOWN && srgb_format != desc.format)
 						{
 							resource->srgb_subresource = device->CreateSubresource(
 								&resource->texture,
-								SubresourceType::SRV,
+								SubresourceType_SRV,
 								0, -1,
 								0, -1,
 								&srgb_format
@@ -606,7 +605,7 @@ namespace Protean
 				}
 				else if (!ext.compare("HDR"))
 				{
-					flags &= ~Flags::STREAMING; // disable streaming
+					flags &= ~Flags_STREAMING; // disable streaming
 					int height, width, channels; // stb_image
 					float* data = stbi_loadf_from_memory(filedata, (int)filesize, &width, &height, &channels, 0);
 					static constexpr bool allow_packing = true; // we now always assume that we won't need full precision float textures, so pack them for memory saving
@@ -622,7 +621,7 @@ namespace Protean
 						case 4:
 							if (allow_packing)
 							{
-								desc.format = Format::R16G16B16A16_FLOAT;
+								desc.format = Format_R16G16B16A16_FLOAT;
 								const XMFLOAT4* data_full = (const XMFLOAT4*)data;
 								XMHALF4* data_packed = (XMHALF4*)data;
 								for (int i = 0; i < width * height; ++i)
@@ -632,13 +631,13 @@ namespace Protean
 							}
 							else
 							{
-								desc.format = Format::R32G32B32A32_FLOAT;
+								desc.format = Format_R32G32B32A32_FLOAT;
 							}
 							break;
 						case 3:
 							if (allow_packing)
 							{
-								desc.format = Format::R9G9B9E5_SHAREDEXP;
+								desc.format = Format_R9G9B9E5_SHAREDEXP;
 								const XMFLOAT3* data_full = (const XMFLOAT3*)data;
 								XMFLOAT3SE* data_packed = (XMFLOAT3SE*)data;
 								for (int i = 0; i < width * height; ++i)
@@ -648,13 +647,13 @@ namespace Protean
 							}
 							else
 							{
-								desc.format = Format::R32G32B32_FLOAT;
+								desc.format = Format_R32G32B32_FLOAT;
 							}
 							break;
 						case 2:
 							if (allow_packing)
 							{
-								desc.format = Format::R16G16_FLOAT;
+								desc.format = Format_R16G16_FLOAT;
 								const XMFLOAT2* data_full = (const XMFLOAT2*)data;
 								XMHALF2* data_packed = (XMHALF2*)data;
 								for (int i = 0; i < width * height; ++i)
@@ -664,13 +663,13 @@ namespace Protean
 							}
 							else
 							{
-								desc.format = Format::R32G32_FLOAT;
+								desc.format = Format_R32G32_FLOAT;
 							}
 							break;
 						case 1:
 							if (allow_packing)
 							{
-								desc.format = Format::R16_FLOAT;
+								desc.format = Format_R16_FLOAT;
 								HALF* data_packed = (HALF*)data;
 								for (int i = 0; i < width * height; ++i)
 								{
@@ -679,11 +678,11 @@ namespace Protean
 							}
 							else
 							{
-								desc.format = Format::R32_FLOAT;
+								desc.format = Format_R32_FLOAT;
 							}
 							break;
 						}
-						desc.bind_flags = BindFlag::SHADER_RESOURCE;
+						desc.bind_flags = BindFlag_SHADER_RESOURCE;
 						desc.mip_levels = 1;
 						SubresourceData InitData;
 						InitData.data_ptr = data;
@@ -697,12 +696,12 @@ namespace Protean
 				else
 				{
 					// png, tga, jpg, etc. loader:
-					flags &= ~Flags::STREAMING; // disable streaming
+					flags &= ~Flags_STREAMING; // disable streaming
 					int height = 0, width = 0, channels = 0;
 					bool is_16bit = false;
-					Format format = Format::R8G8B8A8_UNORM;
-					Format bc_format = Format::BC3_UNORM;
-					Swizzle swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::B, ComponentSwizzle::A };
+					Format format = Format_R8G8B8A8_UNORM;
+					Format bc_format = Format_BC3_UNORM;
+					Swizzle swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_B, ComponentSwizzle_A };
 
 					void* rgba = nullptr;
 					if (!ext.compare("HEIC") || !ext.compare("HEIF"))
@@ -764,21 +763,21 @@ namespace Protean
 						CGImageRelease(image);
 #endif // _WIN32
 					}
-					else if (!has_flag(flags, Flags::IMPORT_COLORGRADINGLUT) && stbi_is_16_bit_from_memory(filedata, (int)filesize))
+					else if (!has_flag(flags, Flags_IMPORT_COLORGRADINGLUT) && stbi_is_16_bit_from_memory(filedata, (int)filesize))
 					{
 						is_16bit = true;
 						rgba = stbi_load_16_from_memory(filedata, (int)filesize, &width, &height, &channels, 0);
 						switch (channels)
 						{
 						case 1:
-							format = Format::R16_UNORM;
-							bc_format = Format::BC4_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::ONE };
+							format = Format_R16_UNORM;
+							bc_format = Format_BC4_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_ONE };
 							break;
 						case 2:
-							format = Format::R16G16_UNORM;
-							bc_format = Format::BC5_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::G };
+							format = Format_R16G16_UNORM;
+							bc_format = Format_BC5_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_G };
 							break;
 						case 3:
 						{
@@ -798,16 +797,16 @@ namespace Protean
 							}
 							free(rgba);
 							rgba = color4;
-							format = Format::R16G16B16A16_UNORM;
-							bc_format = Format::BC1_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::B, ComponentSwizzle::ONE };
+							format = Format_R16G16B16A16_UNORM;
+							bc_format = Format_BC1_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_B, ComponentSwizzle_ONE };
 						}
 						break;
 						case 4:
 						default:
-							format = Format::R16G16B16A16_UNORM;
-							bc_format = Format::BC3_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::B, ComponentSwizzle::A };
+							format = Format_R16G16B16A16_UNORM;
+							bc_format = Format_BC3_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_B, ComponentSwizzle_A };
 							break;
 						}
 					}
@@ -817,14 +816,14 @@ namespace Protean
 						switch (channels)
 						{
 						case 1:
-							format = Format::R8_UNORM;
-							bc_format = Format::BC4_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::ONE };
+							format = Format_R8_UNORM;
+							bc_format = Format_BC4_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_ONE };
 							break;
 						case 2:
-							format = Format::R8G8_UNORM;
-							bc_format = Format::BC5_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::R, ComponentSwizzle::G };
+							format = Format_R8G8_UNORM;
+							bc_format = Format_BC5_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_R, ComponentSwizzle_G };
 							break;
 						case 3:
 						{
@@ -844,16 +843,16 @@ namespace Protean
 							}
 							free(rgba);
 							rgba = color4;
-							format = Format::R8G8B8A8_UNORM;
-							bc_format = Format::BC1_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::B, ComponentSwizzle::ONE };
+							format = Format_R8G8B8A8_UNORM;
+							bc_format = Format_BC1_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_B, ComponentSwizzle_ONE };
 						}
 						break;
 						case 4:
 						default:
-							format = Format::R8G8B8A8_UNORM;
-							bc_format = Format::BC3_UNORM;
-							swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::B, ComponentSwizzle::A };
+							format = Format_R8G8B8A8_UNORM;
+							bc_format = Format_BC3_UNORM;
+							swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_B, ComponentSwizzle_A };
 							break;
 						}
 					}
@@ -863,16 +862,16 @@ namespace Protean
 						TextureDesc desc;
 						desc.height = uint32_t(height);
 						desc.width = uint32_t(width);
-						desc.layout = ResourceState::SHADER_RESOURCE;
+						desc.layout = ResourceState_SHADER_RESOURCE;
 						desc.format = format;
 						desc.swizzle = swizzle;
 
-						if (has_flag(flags, Flags::IMPORT_COLORGRADINGLUT))
+						if (has_flag(flags, Flags_IMPORT_COLORGRADINGLUT))
 						{
-							if (desc.type != TextureDesc::Type::TEXTURE_2D ||
+							if (desc.type != TextureDesc::Type_TEXTURE_2D ||
 								desc.width != 256 ||
 								desc.height != 16 ||
-								format != Format::R8G8B8A8_UNORM)
+								format != Format_R8G8B8A8_UNORM)
 							{
 								Protean::Helper::messageBox("The Dimensions must be 256 x 16 for color grading LUT and format must be RGB or RGBA!", "Error");
 							}
@@ -892,11 +891,11 @@ namespace Protean
 									}
 								}
 
-								desc.type = TextureDesc::Type::TEXTURE_3D;
+								desc.type = TextureDesc::Type_TEXTURE_3D;
 								desc.width = 16;
 								desc.height = 16;
 								desc.depth = 16;
-								desc.bind_flags = BindFlag::SHADER_RESOURCE;
+								desc.bind_flags = BindFlag_SHADER_RESOURCE;
 								SubresourceData InitData;
 								InitData.data_ptr = data;
 								InitData.row_pitch = 16 * sizeof(uint32_t);
@@ -907,11 +906,11 @@ namespace Protean
 						}
 						else
 						{
-							desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
+							desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_UNORDERED_ACCESS;
 							desc.mip_levels = GetMipCount(desc.width, desc.height);
-							desc.usage = Usage::DEFAULT;
-							desc.layout = ResourceState::SHADER_RESOURCE;
-							desc.misc_flags = ResourceMiscFlag::TYPED_FORMAT_CASTING;
+							desc.usage = Usage_DEFAULT;
+							desc.layout = ResourceState_SHADER_RESOURCE;
+							desc.misc_flags = ResourceMiscFlag_TYPED_FORMAT_CASTING;
 
 							uint32_t mipwidth = width;
 							SubresourceData init_data[16];
@@ -928,11 +927,11 @@ namespace Protean
 
 							// This part must be AFTER mip level subresource creation:
 							Format srgb_format = GetFormatSRGB(desc.format);
-							if (srgb_format != Format::UNKNOWN && srgb_format != desc.format)
+							if (srgb_format != Format_UNKNOWN && srgb_format != desc.format)
 							{
 								resource->srgb_subresource = device->CreateSubresource(
 									&resource->texture,
-									SubresourceType::SRV,
+									SubresourceType_SRV,
 									0, -1,
 									0, -1,
 									&srgb_format
@@ -941,7 +940,7 @@ namespace Protean
 
 							Protean::Renderer::AddDeferredMIPGen(resource->texture, true);
 
-							if (has_flag(flags, Flags::IMPORT_BLOCK_COMPRESSED))
+							if (has_flag(flags, Flags_IMPORT_BLOCK_COMPRESSED))
 							{
 								// Schedule additional task to compress into BC format and replace resource texture:
 								Texture uncompressed_src = std::move(resource->texture);
@@ -949,13 +948,13 @@ namespace Protean
 
 								desc.format = bc_format;
 
-								if (has_flag(flags, Flags::IMPORT_NORMALMAP))
+								if (has_flag(flags, Flags_IMPORT_NORMALMAP))
 								{
-									desc.format = Format::BC5_UNORM;
-									desc.swizzle = { ComponentSwizzle::R, ComponentSwizzle::G, ComponentSwizzle::ONE, ComponentSwizzle::ONE };
+									desc.format = Format_BC5_UNORM;
+									desc.swizzle = { ComponentSwizzle_R, ComponentSwizzle_G, ComponentSwizzle_ONE, ComponentSwizzle_ONE };
 								}
 
-								desc.bind_flags = BindFlag::SHADER_RESOURCE;
+								desc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 								const uint32_t block_size = GetFormatBlockSize(desc.format);
 								desc.width = align(desc.width, block_size);
@@ -967,11 +966,11 @@ namespace Protean
 
 								// This part must be AFTER mip level subresource creation:
 								Format srgb_format = GetFormatSRGB(desc.format);
-								if (srgb_format != Format::UNKNOWN && srgb_format != desc.format)
+								if (srgb_format != Format_UNKNOWN && srgb_format != desc.format)
 								{
 									resource->srgb_subresource = device->CreateSubresource(
 										&resource->texture,
-										SubresourceType::SRV,
+										SubresourceType_SRV,
 										0, -1,
 										0, -1,
 										&srgb_format
@@ -987,13 +986,13 @@ namespace Protean
 			}
 			break;
 
-			case DataType::SOUND:
+			case DataType_SOUND:
 			{
 				success = Protean::Audio::CreateSound(filedata, filesize, &resource->sound);
 			}
 			break;
 
-			case DataType::SCRIPT:
+			case DataType_SCRIPT:
 			{
 				resource->script.resize(filesize);
 				std::memcpy(resource->script.data(), filedata, filesize);
@@ -1002,19 +1001,19 @@ namespace Protean
 			}
 			break;
 
-			case DataType::VIDEO_MP4:
+			case DataType_VIDEO_MP4:
 			{
 				success = Protean::Video::CreateVideoMP4(filedata, filesize, &resource->video);
 			}
 			break;
 
-			case DataType::VIDEO_H264_RAW:
+			case DataType_VIDEO_H264_RAW:
 			{
 				success = Protean::Video::CreateVideoH264RAW(filedata, filesize, &resource->video);
 			}
 			break;
 
-			case DataType::FONTSTYLE:
+			case DataType_FONTSTYLE:
 			{
 				resource->font_style = Protean::Font::AddFontStyle(name, filedata, filesize, true);
 				success = resource->font_style >= 0;
@@ -1023,7 +1022,7 @@ namespace Protean
 
 			};
 
-			if (!resource->filedata.empty() && !has_flag(flags, Flags::IMPORT_RETAIN_FILEDATA) && !has_flag(flags, Flags::IMPORT_DELAY))
+			if (!resource->filedata.empty() && !has_flag(flags, Flags_IMPORT_RETAIN_FILEDATA) && !has_flag(flags, Flags_IMPORT_DELAY))
 			{
 				// file data can be discarded:
 				resource->filedata.clear();
@@ -1075,7 +1074,7 @@ namespace Protean
 				resource->container_filesize = filesize;
 				resource->container_fileoffset = container_fileoffset;
 
-				if (filedata != nullptr && resource->filedata.empty() && (has_flag(flags, Flags::IMPORT_RETAIN_FILEDATA) || has_flag(flags, Flags::IMPORT_DELAY)))
+				if (filedata != nullptr && resource->filedata.empty() && (has_flag(flags, Flags_IMPORT_RETAIN_FILEDATA) || has_flag(flags, Flags_IMPORT_DELAY)))
 				{
 					// resource was loaded with external filedata, and we want to retain filedata
 					//	this must also happen when using IMPORT_DELAY!
@@ -1085,11 +1084,11 @@ namespace Protean
 			}
 			else
 			{
-				if (!has_flag(flags, Flags::IMPORT_DELAY) && has_flag(resource->flags, Flags::IMPORT_DELAY))
+				if (!has_flag(flags, Flags_IMPORT_DELAY) && has_flag(resource->flags, Flags_IMPORT_DELAY))
 				{
 					// If this is not an IMPORT_DELAY load, but this resource load was incomplete, using IMPORT_DELAY,
 					//	then continue loading it as normal from existing file data and remove IMPORT_DELAY flag from it
-					resource->flags &= ~Flags::IMPORT_DELAY;
+					resource->flags &= ~Flags_IMPORT_DELAY;
 				}
 				else
 				{
@@ -1120,7 +1119,7 @@ namespace Protean
 
 			bool success = false;
 
-			if (has_flag(flags, Flags::IMPORT_DELAY))
+			if (has_flag(flags, Flags_IMPORT_DELAY))
 			{
 				success = true;
 			}
@@ -1209,7 +1208,7 @@ namespace Protean
 			{
 				Protean::Allocator::weak_ptr<ResourceInternal>& weak_resource = x.second;
 				Protean::Allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
-				if (resource != nullptr && resource->texture.IsValid() && has_flag(resource->flags, Flags::STREAMING) && resource->streaming_texture.mip_count > 1)
+				if (resource != nullptr && resource->texture.IsValid() && has_flag(resource->flags, Flags_STREAMING) && resource->streaming_texture.mip_count > 1)
 				{
 					const TextureDesc& desc = resource->texture.desc;
 					const float mip_offset = float(resource->streaming_texture.mip_count - desc.mip_levels);
@@ -1225,7 +1224,7 @@ namespace Protean
 
 					device->CreateSubresource(
 						&resource->texture,
-						SubresourceType::SRV,
+						SubresourceType_SRV,
 						0, -1,
 						0, -1,
 						nullptr,
@@ -1236,11 +1235,11 @@ namespace Protean
 					resource->srgb_subresource = -1;
 
 					Format srgb_format = GetFormatSRGB(desc.format);
-					if (srgb_format != Format::UNKNOWN && srgb_format != desc.format)
+					if (srgb_format != Format_UNKNOWN && srgb_format != desc.format)
 					{
 						resource->srgb_subresource = device->CreateSubresource(
 							&resource->texture,
-							SubresourceType::SRV,
+							SubresourceType_SRV,
 							0, -1,
 							0, -1,
 							&srgb_format,
@@ -1292,7 +1291,7 @@ namespace Protean
 				return;
 
 			// One low priority thread will be responsible for streaming, to not cause any hitching while rendering:
-			streaming_ctx.priority = Protean::JobSystem::Priority::Streaming;
+			streaming_ctx.priority = Protean::JobSystem::Priority_Streaming;
 			Protean::JobSystem::Execute(streaming_ctx, [](Protean::JobSystem::JobArgs args) {
 				for(auto& resource : streaming_texture_jobs)
 				{
@@ -1387,11 +1386,11 @@ namespace Protean
 						device->SetName(&replace.texture, resource->filename.c_str());
 
 						Format srgb_format = GetFormatSRGB(desc.format);
-						if (srgb_format != Format::UNKNOWN && srgb_format != desc.format)
+						if (srgb_format != Format_UNKNOWN && srgb_format != desc.format)
 						{
 							replace.srgb_subresource = device->CreateSubresource(
 								&replace.texture,
-								SubresourceType::SRV,
+								SubresourceType_SRV,
 								0, -1,
 								0, -1,
 								&srgb_format
@@ -1452,12 +1451,12 @@ namespace Protean
 						}
 						else
 						{
-							Protean::Backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, Protean::Backlog::LogLevel::Error);
+							Protean::Backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, Protean::Backlog::LogLevel_Error);
 						}
 					}
 					else
 					{
-						Protean::Backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, Protean::Backlog::LogLevel::Error);
+						Protean::Backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, Protean::Backlog::LogLevel_Error);
 					}
 				}
 			}
@@ -1473,23 +1472,23 @@ namespace Protean
 					continue;
 
 				bool valid = false;
-				if (has_flag(types, ResourceType::TEXTURE) && resourceinternal->texture.IsValid())
+				if (has_flag(types, ResourceType_TEXTURE) && resourceinternal->texture.IsValid())
 				{
 					valid = true;
 				}
-				else if (has_flag(types, ResourceType::VIDEO) && resourceinternal->video.IsValid())
+				else if (has_flag(types, ResourceType_VIDEO) && resourceinternal->video.IsValid())
 				{
 					valid = true;
 				}
-				else if (has_flag(types, ResourceType::SOUND) && resourceinternal->sound.IsValid())
+				else if (has_flag(types, ResourceType_SOUND) && resourceinternal->sound.IsValid())
 				{
 					valid = true;
 				}
-				else if (has_flag(types, ResourceType::SCRIPT) && resourceinternal->script_hash != 0)
+				else if (has_flag(types, ResourceType_SCRIPT) && resourceinternal->script_hash != 0)
 				{
 					valid = true;
 				}
-				else if (has_flag(types, ResourceType::FONT) && resourceinternal->font_style >= 0)
+				else if (has_flag(types, ResourceType_FONT) && resourceinternal->font_style >= 0)
 				{
 					valid = true;
 				}
@@ -1526,7 +1525,7 @@ namespace Protean
 			temp_resources.resize(serializable_count);
 
 			Protean::JobSystem::context ctx;
-			ctx.priority = Protean::JobSystem::Priority::Low;
+			ctx.priority = Protean::JobSystem::Priority_Low;
 
 			for (size_t i = 0; i < serializable_count; ++i)
 			{
@@ -1555,11 +1554,11 @@ namespace Protean
 				// "Loading" the resource can happen asynchronously to serialization of file data, to improve performance
 				Protean::JobSystem::Execute(ctx, [i, &temp_resources, &seri, &archive, file_offset](Protean::JobSystem::JobArgs args) {
 					auto& tmp_resource = temp_resources[i];
-					Flags flags = Flags::IMPORT_DELAY;
+					Flags flags = Flags_IMPORT_DELAY;
 					if (archive.IsCompressionEnabled())
 					{
 						// If compressed archive, cannot stream from it, retain file data in memory:
-						flags |= Flags::IMPORT_RETAIN_FILEDATA;
+						flags |= Flags_IMPORT_RETAIN_FILEDATA;
 					}
 					auto res = Load(
 						tmp_resource.name,
@@ -1586,7 +1585,7 @@ namespace Protean
 			locker.lock();
 			size_t serializable_count = 0;
 
-			if (mode == Mode::NO_EMBEDDING)
+			if (mode == Mode_NO_EMBEDDING)
 			{
 				// Simply not serialize any embedded resources
 				serializable_count = 0;
@@ -1648,9 +1647,9 @@ namespace Protean
 							if (archive.IsCompressionEnabled())
 							{
 								// Compressed archive: retain file data to keep resource streamable
-								resource->flags |= Flags::IMPORT_RETAIN_FILEDATA;
+								resource->flags |= Flags_IMPORT_RETAIN_FILEDATA;
 							}
-							if (!has_flag(resource->flags, Flags::IMPORT_RETAIN_FILEDATA))
+							if (!has_flag(resource->flags, Flags_IMPORT_RETAIN_FILEDATA))
 							{
 								resource->filedata.clear();
 								resource->filedata.shrink_to_fit();

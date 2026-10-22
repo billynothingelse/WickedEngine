@@ -5,7 +5,7 @@ using namespace Protean;
 void GaussianSplatWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Protean::Gui::Window::Create(ICON_GAUSSIAN_SPLAT " Gaussian Splats", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_GAUSSIAN_SPLAT " Gaussian Splats", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(600, 1000));
 
 	closeButton.SetTooltip("Delete Gaussian Splats");

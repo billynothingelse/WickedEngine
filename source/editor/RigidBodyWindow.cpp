@@ -6,7 +6,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	Protean::Gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", Protean::Gui::Window::WindowControls_COLLAPSE | Protean::Gui::Window::WindowControls_CLOSE | Protean::Gui::Window::WindowControls_FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete RigidBodyPhysicsComponent");
@@ -284,9 +284,9 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	AddWidget(&vehicleLabel);
 
 	vehicleCombo.Create(ICON_VEHICLE " Vehicle physics: ");
-	vehicleCombo.AddItem("None", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type::None);
-	vehicleCombo.AddItem("Car", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type::Car);
-	vehicleCombo.AddItem("Motorcycle", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle);
+	vehicleCombo.AddItem("None", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type_None);
+	vehicleCombo.AddItem("Car", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type_Car);
+	vehicleCombo.AddItem("Motorcycle", (uint64_t)RigidBodyPhysicsComponent::Vehicle::Type_Motorcycle);
 	vehicleCombo.OnSelect(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
 		physicscomponent->vehicle.type = (RigidBodyPhysicsComponent::Vehicle::Type)args.userdata;
 	}));
@@ -294,9 +294,9 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 
 
 	vehicleCollisionCombo.Create("Vehicle collision: ");
-	vehicleCollisionCombo.AddItem("Ray", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode::Ray);
-	vehicleCollisionCombo.AddItem("Sphere", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode::Sphere);
-	vehicleCollisionCombo.AddItem("Cylinder", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode::Cylinder);
+	vehicleCollisionCombo.AddItem("Ray", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode_Ray);
+	vehicleCollisionCombo.AddItem("Sphere", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode_Sphere);
+	vehicleCollisionCombo.AddItem("Cylinder", (uint64_t)RigidBodyPhysicsComponent::Vehicle::CollisionMode_Cylinder);
 	vehicleCollisionCombo.OnSelect(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
 		physicscomponent->vehicle.collision_mode = (RigidBodyPhysicsComponent::Vehicle::CollisionMode)args.userdata;
 	}));
@@ -755,7 +755,7 @@ void RigidBodyWindow::ResizeLayout()
 		RigidBodyPhysicsComponent::Vehicle::Type type = (RigidBodyPhysicsComponent::Vehicle::Type)vehicleCombo.GetSelectedUserdata();
 		switch (type)
 		{
-		case Protean::RigidBodyPhysicsComponent::Vehicle::Type::Car:
+		case Protean::RigidBodyPhysicsComponent::Vehicle::Type_Car:
 			motorcycleFBrakeSuspensionAngleSlider.SetVisible(false);
 			motorcycleFBrakeTorqueSlider.SetVisible(false);
 			motorcycleRBrakeTorqueSlider.SetVisible(false);
@@ -772,7 +772,7 @@ void RigidBodyWindow::ResizeLayout()
 			motorleanCheckbox.SetVisible(false);
 			layout.add_right(fourwheelCheckbox);
 			break;
-		case Protean::RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle:
+		case Protean::RigidBodyPhysicsComponent::Vehicle::Type_Motorcycle:
 			motorcycleFBrakeSuspensionAngleSlider.SetVisible(true);
 			motorcycleFBrakeTorqueSlider.SetVisible(true);
 			motorcycleRBrakeTorqueSlider.SetVisible(true);

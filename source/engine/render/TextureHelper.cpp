@@ -100,11 +100,11 @@ namespace Protean::TextureHelper
 			texDesc.height = height;
 			texDesc.mip_levels = 1;
 			texDesc.array_size = 6;
-			texDesc.format = Format::R8G8B8A8_UNORM;
+			texDesc.format = Format_R8G8B8A8_UNORM;
 			texDesc.sample_count = 1;
-			texDesc.usage = Usage::DEFAULT;
-			texDesc.bind_flags = BindFlag::SHADER_RESOURCE;
-			texDesc.misc_flags = ResourceMiscFlag::TEXTURECUBE;
+			texDesc.usage = Usage_DEFAULT;
+			texDesc.bind_flags = BindFlag_SHADER_RESOURCE;
+			texDesc.misc_flags = ResourceMiscFlag_TEXTURECUBE;
 
 			SubresourceData pData[6];
 			Protean::Color d[6][width * height] = {}; // 6 images initialized to 0 (transparent black)
@@ -123,7 +123,7 @@ namespace Protean::TextureHelper
 		// UINT4:
 		{
 			uint8_t data[16] = {};
-			CreateTexture(helperTextures[HELPERTEXTURE_UINT4], data, 1, 1, Format::R32G32B32A32_UINT);
+			CreateTexture(helperTextures[HELPERTEXTURE_UINT4], data, 1, 1, Format_R32G32B32A32_UINT);
 			device->SetName(&helperTextures[HELPERTEXTURE_UINT4], "HELPERTEXTURE_UINT4");
 		}
 
@@ -144,7 +144,7 @@ namespace Protean::TextureHelper
 				}
 			}
 
-			CreateTexture(helperTextures[HELPERTEXTURE_BLUENOISE], bluenoise.data(), 128, 128, Format::R8G8B8A8_UNORM);
+			CreateTexture(helperTextures[HELPERTEXTURE_BLUENOISE], bluenoise.data(), 128, 128, Format_R8G8B8A8_UNORM);
 			device->SetName(&helperTextures[HELPERTEXTURE_BLUENOISE], "HELPERTEXTURE_BLUENOISE");
 		}
 
@@ -154,9 +154,9 @@ namespace Protean::TextureHelper
 			desc.width = 64;
 			desc.height = 64;
 			desc.mip_levels = 7;
-			desc.format = Format::BC5_UNORM;
-			desc.swizzle = { ComponentSwizzle::R,ComponentSwizzle::G,ComponentSwizzle::ONE,ComponentSwizzle::ONE };
-			desc.bind_flags = BindFlag::SHADER_RESOURCE;
+			desc.format = Format_BC5_UNORM;
+			desc.swizzle = { ComponentSwizzle_R,ComponentSwizzle_G,ComponentSwizzle_ONE,ComponentSwizzle_ONE };
+			desc.bind_flags = BindFlag_SHADER_RESOURCE;
 
 			const uint32_t data_stride = GetFormatStride(desc.format);
 			const uint32_t block_size = GetFormatBlockSize(desc.format);
@@ -181,7 +181,7 @@ namespace Protean::TextureHelper
 				Protean::Color(127,127,127,255), Protean::Color(255,255,255,255),
 			};
 
-			CreateTexture(helperTextures[HELPERTEXTURE_CHECKERBOARD], checker, 2, 2, Format::R8G8B8A8_UNORM);
+			CreateTexture(helperTextures[HELPERTEXTURE_CHECKERBOARD], checker, 2, 2, Format_R8G8B8A8_UNORM);
 			device->SetName(&helperTextures[HELPERTEXTURE_CHECKERBOARD], "HELPERTEXTURE_CHECKERBOARD");
 		}
 
@@ -277,7 +277,7 @@ namespace Protean::TextureHelper
 		desc.array_size = 1;
 		desc.format = format;
 		desc.sample_count = 1;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE;
 		desc.swizzle = swizzle;
 
 		SubresourceData InitData;
@@ -303,7 +303,7 @@ namespace Protean::TextureHelper
 	{
 		Protean::vector<uint8_t> data;
 		Protean::vector<uint16_t> data16;
-		if (has_flag(flags, GradientFlags::R16Unorm))
+		if (has_flag(flags, GradientFlags_R16Unorm))
 		{
 			data16.resize(width * height);
 		}
@@ -312,7 +312,7 @@ namespace Protean::TextureHelper
 			data.resize(width * height);
 		}
 		Protean::Noise::Perlin perlin;
-		if (has_flag(flags, GradientFlags::PerlinNoise))
+		if (has_flag(flags, GradientFlags_PerlinNoise))
 		{
 			perlin.init(perlin_seed);
 		}
@@ -322,7 +322,7 @@ namespace Protean::TextureHelper
 		switch (type)
 		{
 		default:
-		case GradientType::Linear:
+		case GradientType_Linear:
 		{
 			const XMVECTOR a = XMLoadFloat2(&uv_start);
 			const XMVECTOR b = XMLoadFloat2(&uv_end);
@@ -335,20 +335,20 @@ namespace Protean::TextureHelper
 					const XMVECTOR point_on_line = Protean::Math::ClosestPointOnLineSegment(a, b, XMLoadFloat2(&uv));
 					const float uv_distance = XMVectorGetX(XMVector3Length(point_on_line - a));
 					float gradient = saturate(Protean::Math::InverseLerp(0, distance, uv_distance));
-					if (has_flag(flags, GradientFlags::Inverse))
+					if (has_flag(flags, GradientFlags_Inverse))
 					{
 						gradient = 1 - gradient;
 					}
-					if (has_flag(flags, GradientFlags::Smoothstep))
+					if (has_flag(flags, GradientFlags_Smoothstep))
 					{
 						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
-					if (has_flag(flags, GradientFlags::PerlinNoise))
+					if (has_flag(flags, GradientFlags_PerlinNoise))
 					{
 						gradient *= perlin.compute(uv.x * perlin_scale2.x, uv.y * perlin_scale2.y, 0, perlin_octaves, perlin_persistence) * 0.5f + 0.5f;
 					}
 					gradient = saturate(gradient);
-					if (has_flag(flags, GradientFlags::R16Unorm))
+					if (has_flag(flags, GradientFlags_R16Unorm))
 					{
 						data16[x + y * width] = uint16_t(gradient * 65535);
 					}
@@ -361,7 +361,7 @@ namespace Protean::TextureHelper
 		}
 		break;
 
-		case GradientType::Circular:
+		case GradientType_Circular:
 		{
 			const XMVECTOR a = XMLoadFloat2(&uv_start);
 			const XMVECTOR b = XMLoadFloat2(&uv_end);
@@ -373,20 +373,20 @@ namespace Protean::TextureHelper
 					const XMFLOAT2 uv = XMFLOAT2((float(x) + 0.5f) / float(width), (float(y) + 0.5f) / float(height));
 					const float uv_distance = Protean::Math::Clamp(XMVectorGetX(XMVector3Length(XMLoadFloat2(&uv) - a)), 0, distance);
 					float gradient = saturate(Protean::Math::InverseLerp(0, distance, uv_distance));
-					if (has_flag(flags, GradientFlags::Inverse))
+					if (has_flag(flags, GradientFlags_Inverse))
 					{
 						gradient = 1 - gradient;
 					}
-					if (has_flag(flags, GradientFlags::Smoothstep))
+					if (has_flag(flags, GradientFlags_Smoothstep))
 					{
 						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
-					if (has_flag(flags, GradientFlags::PerlinNoise))
+					if (has_flag(flags, GradientFlags_PerlinNoise))
 					{
 						gradient *= perlin.compute(uv.x * perlin_scale2.x, uv.y * perlin_scale2.y, 0, perlin_octaves, perlin_persistence) * 0.5f + 0.5f;
 					}
 					gradient = saturate(gradient);
-					if (has_flag(flags, GradientFlags::R16Unorm))
+					if (has_flag(flags, GradientFlags_R16Unorm))
 					{
 						data16[x + y * width] = uint16_t(gradient * 65535);
 					}
@@ -399,7 +399,7 @@ namespace Protean::TextureHelper
 		}
 		break;
 
-		case GradientType::Angular:
+		case GradientType_Angular:
 		{
 			XMFLOAT2 direction;
 			XMStoreFloat2(&direction, XMVector2Normalize(XMLoadFloat2(&uv_end) - XMLoadFloat2(&uv_start)));
@@ -410,20 +410,20 @@ namespace Protean::TextureHelper
 					const XMFLOAT2 uv = XMFLOAT2((float(x) + 0.5f) / float(width), (float(y) + 0.5f) / float(height));
 					const XMFLOAT2 coord = XMFLOAT2(uv.x - uv_start.x, uv.y - uv_start.y);
 					float gradient = Protean::Math::GetAngle(direction, coord) / XM_2PI;
-					if (has_flag(flags, GradientFlags::Inverse))
+					if (has_flag(flags, GradientFlags_Inverse))
 					{
 						gradient = 1 - gradient;
 					}
-					if (has_flag(flags, GradientFlags::Smoothstep))
+					if (has_flag(flags, GradientFlags_Smoothstep))
 					{
 						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
-					if (has_flag(flags, GradientFlags::PerlinNoise))
+					if (has_flag(flags, GradientFlags_PerlinNoise))
 					{
 						gradient *= perlin.compute(uv.x * perlin_scale2.x, uv.y * perlin_scale2.y, 0, perlin_octaves, perlin_persistence) * 0.5f + 0.5f;
 					}
 					gradient = saturate(gradient);
-					if (has_flag(flags, GradientFlags::R16Unorm))
+					if (has_flag(flags, GradientFlags_R16Unorm))
 					{
 						data16[x + y * width] = uint16_t(gradient * 65535);
 					}
@@ -439,13 +439,13 @@ namespace Protean::TextureHelper
 		}
 
 		Texture texture;
-		if (has_flag(flags, GradientFlags::R16Unorm))
+		if (has_flag(flags, GradientFlags_R16Unorm))
 		{
-			CreateTexture(texture, (const uint8_t*)data16.data(), width, height, Format::R16_UNORM, swizzle);
+			CreateTexture(texture, (const uint8_t*)data16.data(), width, height, Format_R16_UNORM, swizzle);
 		}
 		else
 		{
-			CreateTexture(texture, data.data(), width, height, Format::R8_UNORM, swizzle);
+			CreateTexture(texture, data.data(), width, height, Format_R8_UNORM, swizzle);
 		}
 		return texture;
 	}
@@ -474,7 +474,7 @@ namespace Protean::TextureHelper
 		}
 
 		Texture texture;
-		CreateTexture(texture, data.data(), width, height, Format::R8_UNORM, swizzle);
+		CreateTexture(texture, data.data(), width, height, Format_R8_UNORM, swizzle);
 		return texture;
 	}
 
@@ -523,7 +523,7 @@ namespace Protean::TextureHelper
 		}
 
 		Texture texture;
-		CreateTexture(texture, data.data(), width, height, Format::R16G16_UNORM);
+		CreateTexture(texture, data.data(), width, height, Format_R16G16_UNORM);
 		return texture;
 	}
 

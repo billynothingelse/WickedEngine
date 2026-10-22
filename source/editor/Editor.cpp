@@ -15,103 +15,101 @@ ApplicationExeCustomization exe_customization = {
 
 using namespace Protean::Graphics;
 using namespace Protean;
-enum class FileType
-{
-	INVALID,
-	LUA,
-	WISCENE,
-	OBJ,
-	GLTF,
-	GLB,
-	VRM,
-	VRMA,
-	FBX,
-	PLY,
-	IMAGE,
-	VIDEO,
-	SOUND,
-	TEXT,
-	HEADER,
-	CPP,
+enum FileType {
+	FileType_INVALID,
+	FileType_LUA,
+	FileType_WISCENE,
+	FileType_OBJ,
+	FileType_GLTF,
+	FileType_GLB,
+	FileType_VRM,
+	FileType_VRMA,
+	FileType_FBX,
+	FileType_PLY,
+	FileType_IMAGE,
+	FileType_VIDEO,
+	FileType_SOUND,
+	FileType_TEXT,
+	FileType_HEADER,
+	FileType_CPP,
 };
 static Protean::unordered_map<std::string, FileType> filetypes = {
-	{"LUA", FileType::LUA},
-	{"WISCENE", FileType::WISCENE},
-	{"OBJ", FileType::OBJ},
-	{"GLTF", FileType::GLTF},
-	{"GLB", FileType::GLB},
-	{"VRM", FileType::VRM},
-	{"VRMA", FileType::VRMA},
-	{"FBX", FileType::FBX},
-	{"PLY", FileType::PLY},
-	{"H", FileType::HEADER},
-	{"CPP", FileType::CPP},
-	{"TXT", FileType::TEXT},
+	{"LUA", FileType_LUA},
+	{"WISCENE", FileType_WISCENE},
+	{"OBJ", FileType_OBJ},
+	{"GLTF", FileType_GLTF},
+	{"GLB", FileType_GLB},
+	{"VRM", FileType_VRM},
+	{"VRMA", FileType_VRMA},
+	{"FBX", FileType_FBX},
+	{"PLY", FileType_PLY},
+	{"H", FileType_HEADER},
+	{"CPP", FileType_CPP},
+	{"TXT", FileType_TEXT},
 };
 
-enum class EditorActions
-{
+enum EditorActions {
 	// Camera movement
-	MOVE_CAMERA_FORWARD,
-	MOVE_CAMERA_BACKWARD,
-	MOVE_CAMERA_LEFT,
-	MOVE_CAMERA_RIGHT,
-	MOVE_CAMERA_UP,
-	MOVE_CAMERA_DOWN,
+	EditorActions_MOVE_CAMERA_FORWARD,
+	EditorActions_MOVE_CAMERA_BACKWARD,
+	EditorActions_MOVE_CAMERA_LEFT,
+	EditorActions_MOVE_CAMERA_RIGHT,
+	EditorActions_MOVE_CAMERA_UP,
+	EditorActions_MOVE_CAMERA_DOWN,
 
 	// Entity actions
-	DUPLICATE_ENTITY,
+	EditorActions_DUPLICATE_ENTITY,
 
 	// Selection actions
-	SELECT_ALL_ENTITIES,
-	DESELECT_ALL_ENTITIES,
-	FOCUS_ON_SELECTION,
-	RENAME_SELECTED,
+	EditorActions_SELECT_ALL_ENTITIES,
+	EditorActions_DESELECT_ALL_ENTITIES,
+	EditorActions_FOCUS_ON_SELECTION,
+	EditorActions_RENAME_SELECTED,
 
 	// Edit actions
-	UNDO_ACTION,
-	REDO_ACTION,
-	COPY_ACTION,
-	CUT_ACTION,
-	PASTE_ACTION,
-	DELETE_ACTION,
+	EditorActions_UNDO_ACTION,
+	EditorActions_REDO_ACTION,
+	EditorActions_COPY_ACTION,
+	EditorActions_CUT_ACTION,
+	EditorActions_PASTE_ACTION,
+	EditorActions_DELETE_ACTION,
 
 	// User actions
-	MOVE_TOGGLE_ACTION,
-	ROTATE_TOGGLE_ACTION,
-	SCALE_TOGGLE_ACTION,
-	LOCAL_GLOBAL_TOGGLE_ACTION,
+	EditorActions_MOVE_TOGGLE_ACTION,
+	EditorActions_ROTATE_TOGGLE_ACTION,
+	EditorActions_SCALE_TOGGLE_ACTION,
+	EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION,
 
 	// Engine actions
-	SCREENSHOT,
-	SCREENSHOT_NOGUI,
-	SCREENSHOT_ALPHA,
-	SCREENSHOT_ALPHA_SELECTION,
-	INSPECTOR_MODE,
-	PLACE_INSTANCES,
+	EditorActions_SCREENSHOT,
+	EditorActions_SCREENSHOT_NOGUI,
+	EditorActions_SCREENSHOT_ALPHA,
+	EditorActions_SCREENSHOT_ALPHA_SELECTION,
+	EditorActions_INSPECTOR_MODE,
+	EditorActions_PLACE_INSTANCES,
 
 	// Scene actions
-	SAVE_SCENE_AS,
-	SAVE_SCENE,
+	EditorActions_SAVE_SCENE_AS,
+	EditorActions_SAVE_SCENE,
 
 	// Transform actions
-	ENABLE_TRANSFORM_TOOL,
+	EditorActions_ENABLE_TRANSFORM_TOOL,
 
 	// View mode actions
-	WIREFRAME_MODE,
+	EditorActions_WIREFRAME_MODE,
 
 	// Effect actions
-	DEPTH_OF_FIELD_REFOCUS_TO_POINT,
-	COLOR_GRADING_REFERENCE,
+	EditorActions_DEPTH_OF_FIELD_REFOCUS_TO_POINT,
+	EditorActions_COLOR_GRADING_REFERENCE,
 
 	// Other actions
-	RAGDOLL_AND_PHYSICS_IMPULSE_TESTER,
-	ORTHO_CAMERA,
-	HIERARCHY_SELECT,
-	ADD_TO_SPLINE,
-	RELOAD_TERRAIN_PROPS,
+	EditorActions_RAGDOLL_AND_PHYSICS_IMPULSE_TESTER,
+	EditorActions_ORTHO_CAMERA,
+	EditorActions_HIERARCHY_SELECT,
+	EditorActions_ADD_TO_SPLINE,
+	EditorActions_RELOAD_TERRAIN_PROPS,
 
-	COUNT
+	EditorActions_COUNT
 };
 struct HotkeyInfo
 {
@@ -120,7 +118,7 @@ struct HotkeyInfo
 	bool control = false;
 	bool shift = false;
 };
-HotkeyInfo hotkeyActions[size_t(EditorActions::COUNT)] = {
+HotkeyInfo hotkeyActions[size_t(EditorActions_COUNT)] = {
 	{Protean::Input::BUTTON('W'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_FORWARD,
 	{Protean::Input::BUTTON('S'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_BACKWARD,
 	{Protean::Input::BUTTON('A'),					/*press=*/ false,		/*control=*/ false,		/*shift=*/ false},	//MOVE_CAMERA_LEFT,
@@ -160,7 +158,7 @@ HotkeyInfo hotkeyActions[size_t(EditorActions::COUNT)] = {
 	{Protean::Input::BUTTON('E'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//ADD_TO_SPLINE,
 	{Protean::Input::BUTTON('R'),					/*press=*/ true,		/*control=*/ true,		/*shift=*/ false},	//RELOAD_TERRAIN_PROPS,
 };
-static_assert(arraysize(hotkeyActions) == size_t(EditorActions::COUNT));
+static_assert(arraysize(hotkeyActions) == size_t(EditorActions_COUNT));
 bool CheckInput(EditorActions action)
 {
 	const HotkeyInfo& hotkey = hotkeyActions[size_t(action)];
@@ -200,44 +198,44 @@ std::string GetInputString(EditorActions action)
 void HotkeyRemap(Editor* main)
 {
 	static const Protean::unordered_map<std::string, EditorActions> actionMap = {
-		{"MOVE_CAMERA_FORWARD", EditorActions::MOVE_CAMERA_FORWARD},
-		{"MOVE_CAMERA_BACKWARD", EditorActions::MOVE_CAMERA_BACKWARD},
-		{"MOVE_CAMERA_LEFT", EditorActions::MOVE_CAMERA_LEFT},
-		{"MOVE_CAMERA_RIGHT", EditorActions::MOVE_CAMERA_RIGHT},
-		{"MOVE_CAMERA_UP", EditorActions::MOVE_CAMERA_UP},
-		{"MOVE_CAMERA_DOWN", EditorActions::MOVE_CAMERA_DOWN},
-		{"DUPLICATE_ENTITY", EditorActions::DUPLICATE_ENTITY},
-		{"SELECT_ALL_ENTITIES", EditorActions::SELECT_ALL_ENTITIES},
-		{"DESELECT_ALL_ENTITIES", EditorActions::DESELECT_ALL_ENTITIES},
-		{"FOCUS_ON_SELECTION", EditorActions::FOCUS_ON_SELECTION},
-		{"RENAME_SELECTED", EditorActions::RENAME_SELECTED},
-		{"UNDO_ACTION", EditorActions::UNDO_ACTION},
-		{"REDO_ACTION", EditorActions::REDO_ACTION},
-		{"COPY_ACTION", EditorActions::COPY_ACTION},
-		{"CUT_ACTION", EditorActions::CUT_ACTION},
-		{"PASTE_ACTION", EditorActions::PASTE_ACTION},
-		{"DELETE_ACTION", EditorActions::DELETE_ACTION},
-		{"MOVE_TOGGLE_ACTION", EditorActions::MOVE_TOGGLE_ACTION},
-		{"ROTATE_TOGGLE_ACTION", EditorActions::ROTATE_TOGGLE_ACTION},
-		{"SCALE_TOGGLE_ACTION", EditorActions::SCALE_TOGGLE_ACTION},
-		{"LOCAL_GLOBAL_TOGGLE_ACTION", EditorActions::LOCAL_GLOBAL_TOGGLE_ACTION},
-		{"MAKE_NEW_SCREENSHOT", EditorActions::SCREENSHOT},
-		{"MAKE_NEW_SCREENSHOT_NOGUI", EditorActions::SCREENSHOT_NOGUI},
-		{"MAKE_NEW_SCREENSHOT_ALPHA", EditorActions::SCREENSHOT_ALPHA},
-		{"MAKE_NEW_SCREENSHOT_ALPHA_SELECTION", EditorActions::SCREENSHOT_ALPHA_SELECTION},
-		{"INSPECTOR_MODE", EditorActions::INSPECTOR_MODE},
-		{"PLACE_INSTANCES", EditorActions::PLACE_INSTANCES},
-		{"SAVE_SCENE_AS", EditorActions::SAVE_SCENE_AS},
-		{"SAVE_SCENE", EditorActions::SAVE_SCENE},
-		{"ENABLE_TRANSFORM_TOOL", EditorActions::ENABLE_TRANSFORM_TOOL},
-		{"WIREFRAME_MODE", EditorActions::WIREFRAME_MODE},
-		{"DEPTH_OF_FIELD_REFOCUS_TO_POINT", EditorActions::DEPTH_OF_FIELD_REFOCUS_TO_POINT},
-		{"COLOR_GRADING_REFERENCE", EditorActions::COLOR_GRADING_REFERENCE},
-		{"RAGDOLL_AND_PHYSICS_IMPULSE_TESTER", EditorActions::RAGDOLL_AND_PHYSICS_IMPULSE_TESTER},
-		{"ORTHO_CAMERA", EditorActions::ORTHO_CAMERA},
-		{"HIERARCHY_SELECT", EditorActions::HIERARCHY_SELECT},
-		{"ADD_TO_SPLINE", EditorActions::ADD_TO_SPLINE},
-		{"RELOAD_TERRAIN_PROPS", EditorActions::RELOAD_TERRAIN_PROPS},
+		{"MOVE_CAMERA_FORWARD", EditorActions_MOVE_CAMERA_FORWARD},
+		{"MOVE_CAMERA_BACKWARD", EditorActions_MOVE_CAMERA_BACKWARD},
+		{"MOVE_CAMERA_LEFT", EditorActions_MOVE_CAMERA_LEFT},
+		{"MOVE_CAMERA_RIGHT", EditorActions_MOVE_CAMERA_RIGHT},
+		{"MOVE_CAMERA_UP", EditorActions_MOVE_CAMERA_UP},
+		{"MOVE_CAMERA_DOWN", EditorActions_MOVE_CAMERA_DOWN},
+		{"DUPLICATE_ENTITY", EditorActions_DUPLICATE_ENTITY},
+		{"SELECT_ALL_ENTITIES", EditorActions_SELECT_ALL_ENTITIES},
+		{"DESELECT_ALL_ENTITIES", EditorActions_DESELECT_ALL_ENTITIES},
+		{"FOCUS_ON_SELECTION", EditorActions_FOCUS_ON_SELECTION},
+		{"RENAME_SELECTED", EditorActions_RENAME_SELECTED},
+		{"UNDO_ACTION", EditorActions_UNDO_ACTION},
+		{"REDO_ACTION", EditorActions_REDO_ACTION},
+		{"COPY_ACTION", EditorActions_COPY_ACTION},
+		{"CUT_ACTION", EditorActions_CUT_ACTION},
+		{"PASTE_ACTION", EditorActions_PASTE_ACTION},
+		{"DELETE_ACTION", EditorActions_DELETE_ACTION},
+		{"MOVE_TOGGLE_ACTION", EditorActions_MOVE_TOGGLE_ACTION},
+		{"ROTATE_TOGGLE_ACTION", EditorActions_ROTATE_TOGGLE_ACTION},
+		{"SCALE_TOGGLE_ACTION", EditorActions_SCALE_TOGGLE_ACTION},
+		{"LOCAL_GLOBAL_TOGGLE_ACTION", EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION},
+		{"MAKE_NEW_SCREENSHOT", EditorActions_SCREENSHOT},
+		{"MAKE_NEW_SCREENSHOT_NOGUI", EditorActions_SCREENSHOT_NOGUI},
+		{"MAKE_NEW_SCREENSHOT_ALPHA", EditorActions_SCREENSHOT_ALPHA},
+		{"MAKE_NEW_SCREENSHOT_ALPHA_SELECTION", EditorActions_SCREENSHOT_ALPHA_SELECTION},
+		{"INSPECTOR_MODE", EditorActions_INSPECTOR_MODE},
+		{"PLACE_INSTANCES", EditorActions_PLACE_INSTANCES},
+		{"SAVE_SCENE_AS", EditorActions_SAVE_SCENE_AS},
+		{"SAVE_SCENE", EditorActions_SAVE_SCENE},
+		{"ENABLE_TRANSFORM_TOOL", EditorActions_ENABLE_TRANSFORM_TOOL},
+		{"WIREFRAME_MODE", EditorActions_WIREFRAME_MODE},
+		{"DEPTH_OF_FIELD_REFOCUS_TO_POINT", EditorActions_DEPTH_OF_FIELD_REFOCUS_TO_POINT},
+		{"COLOR_GRADING_REFERENCE", EditorActions_COLOR_GRADING_REFERENCE},
+		{"RAGDOLL_AND_PHYSICS_IMPULSE_TESTER", EditorActions_RAGDOLL_AND_PHYSICS_IMPULSE_TESTER},
+		{"ORTHO_CAMERA", EditorActions_ORTHO_CAMERA},
+		{"HIERARCHY_SELECT", EditorActions_HIERARCHY_SELECT},
+		{"ADD_TO_SPLINE", EditorActions_ADD_TO_SPLINE},
+		{"RELOAD_TERRAIN_PROPS", EditorActions_RELOAD_TERRAIN_PROPS},
 	};
 	static const Protean::unordered_map<std::string, Protean::Input::BUTTON> buttonMap = {
 		{"ESC", Protean::Input::KEYBOARD_BUTTON_ESCAPE},
@@ -354,24 +352,24 @@ void Editor::Initialize()
 		}
 		renderComponent.setMSAASampleCount(msaa);
 		renderComponent.Load();
-		ActivatePath(&renderComponent, 0.5f, Protean::Color::Black(), Protean::FadeManager::FadeType::CrossFade);
+		ActivatePath(&renderComponent, 0.5f, Protean::Color::Black(), Protean::FadeManager::FadeType_CrossFade);
 
 		Protean::Lua::EnableEditorFunctionality(this, &renderComponent);
 
 		auto ext_video = Protean::ResourceManager::GetSupportedVideoExtensions();
 		for (auto& x : ext_video)
 		{
-			filetypes[x] = FileType::VIDEO;
+			filetypes[x] = FileType_VIDEO;
 		}
 		auto ext_sound = Protean::ResourceManager::GetSupportedSoundExtensions();
 		for (auto& x : ext_sound)
 		{
-			filetypes[x] = FileType::SOUND;
+			filetypes[x] = FileType_SOUND;
 		}
 		auto ext_image = Protean::ResourceManager::GetSupportedImageExtensions();
 		for (auto& x : ext_image)
 		{
-			filetypes[x] = FileType::IMAGE;
+			filetypes[x] = FileType_IMAGE;
 		}
 	}
 }
@@ -459,7 +457,7 @@ void Editor::HotReload()
 
 	static Protean::JobSystem::context hotreload_ctx;
 	Protean::JobSystem::Wait(hotreload_ctx);
-	hotreload_ctx.priority = Protean::JobSystem::Priority::Streaming;
+	hotreload_ctx.priority = Protean::JobSystem::Priority_Streaming;
 
 	if (Protean::ShaderCompiler::GetRegisteredShaderCount() > 0 && !Protean::Renderer::IsPipelineCreationActive())
 	{
@@ -511,8 +509,8 @@ void EditorComponent::ResizeBuffers()
 	TextureDesc desc;
 	desc.width = GetPhysicalWidth();
 	desc.height = GetPhysicalHeight();
-	desc.format = Format::R10G10B10A2_UNORM;
-	desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+	desc.format = Format_R10G10B10A2_UNORM;
+	desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 	GetDevice()->CreateTexture(&desc, nullptr, &gui_background_effect);
 	GetDevice()->SetName(&gui_background_effect, "editor.gui_background_effect");
 }
@@ -555,7 +553,7 @@ void EditorComponent::Load()
 
 	Protean::Gui::CheckBox::SetCheckTextGlobal(ICON_CHECK);
 
-	loadmodel_workload.priority = Protean::JobSystem::Priority::Low;
+	loadmodel_workload.priority = Protean::JobSystem::Priority_Low;
 
 	loadmodel_font.SetText("Loading model...");
 	loadmodel_font.anim.typewriter.time = 2;
@@ -575,7 +573,7 @@ void EditorComponent::Load()
 	terrain_generation_font.params.v_align = Protean::Font::WIFALIGN_TOP;
 	AddFont(&terrain_generation_font);
 
-	topmenuWnd.Create("", Protean::Gui::Window::WindowControls::NONE);
+	topmenuWnd.Create("", Protean::Gui::Window::WindowControls_NONE);
 	topmenuWnd.SetShadowRadius(2);
 	GetGUI().AddWidget(&topmenuWnd);
 	topmenuWnd.scrollbar_horizontal.Detach();
@@ -591,7 +589,7 @@ void EditorComponent::Load()
 	});
 	generalButton.SetShadowRadius(0);
 	generalButton.SetTooltip("General options");
-	generalButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	generalButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	GetGUI().AddWidget(&generalButton);
 
 	graphicsButton.Create(ICON_GRAPHICSOPTIONS);
@@ -604,7 +602,7 @@ void EditorComponent::Load()
 	});
 	graphicsButton.SetShadowRadius(0);
 	graphicsButton.SetTooltip("Graphics options");
-	graphicsButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	graphicsButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	GetGUI().AddWidget(&graphicsButton);
 
 	cameraButton.Create(ICON_CAMERAOPTIONS);
@@ -617,7 +615,7 @@ void EditorComponent::Load()
 	});
 	cameraButton.SetShadowRadius(0);
 	cameraButton.SetTooltip("Camera options");
-	cameraButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	cameraButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	GetGUI().AddWidget(&cameraButton);
 
 	materialsButton.Create(ICON_MATERIALBROWSER);
@@ -634,7 +632,7 @@ void EditorComponent::Load()
 	});
 	materialsButton.SetShadowRadius(0);
 	materialsButton.SetTooltip("Material browser");
-	materialsButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	materialsButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	GetGUI().AddWidget(&materialsButton);
 
 	paintToolButton.Create(ICON_PAINTTOOL);
@@ -647,7 +645,7 @@ void EditorComponent::Load()
 	});
 	paintToolButton.SetShadowRadius(0);
 	paintToolButton.SetTooltip("Paint tool");
-	paintToolButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	paintToolButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	GetGUI().AddWidget(&paintToolButton);
 
 	graphicsWnd.Create(this);
@@ -666,7 +664,7 @@ void EditorComponent::Load()
 	GetGUI().AddWidget(&generalWnd);
 
 	newSceneButton.Create("+");
-	newSceneButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	newSceneButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	newSceneButton.SetTooltip("New scene");
 	newSceneButton.OnClick([this](Protean::Gui::EventArgs args) {
 		NewScene();
@@ -1006,7 +1004,7 @@ void EditorComponent::Load()
 	{
 		scaleButton.SetShadowRadius(2);
 		scaleButton.SetTooltip("Scale\nHotkey: 3");
-		scaleButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+		scaleButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 		scaleButton.OnClick([this](Protean::Gui::EventArgs args) {
 			translator.isScalator = true;
 			translator.isTranslator = false;
@@ -1016,7 +1014,7 @@ void EditorComponent::Load()
 
 		rotateButton.SetShadowRadius(2);
 		rotateButton.SetTooltip("Rotate\nHotkey: 2");
-		rotateButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+		rotateButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 		rotateButton.OnClick([this](Protean::Gui::EventArgs args) {
 			translator.isRotator = true;
 			translator.isScalator = false;
@@ -1026,7 +1024,7 @@ void EditorComponent::Load()
 
 		translateButton.SetShadowRadius(2);
 		translateButton.SetTooltip("Translate/Move (Ctrl + T)\nHotkey: 1");
-		translateButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+		translateButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 		translateButton.OnClick([this](Protean::Gui::EventArgs args) {
 			translator.isTranslator = true;
 			translator.isScalator = false;
@@ -1037,7 +1035,7 @@ void EditorComponent::Load()
 
 	localGlobalButton.Create(ICON_GLOBAL_SPACE);
 	localGlobalButton.SetShadowRadius(2);
-	localGlobalButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	localGlobalButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	UpdateLocalGlobalButton();
 	localGlobalButton.OnClick([this](Protean::Gui::EventArgs args) {
 		translator.isLocalSpace = !translator.isLocalSpace;
@@ -1068,7 +1066,7 @@ void EditorComponent::Load()
 	dummyButton.Create(ICON_DUMMY);
 	dummyButton.SetShadowRadius(2);
 	dummyButton.SetTooltip("Toggle reference dummy visualizer\n - Use the reference dummy to get an idea about object sizes compared to a human character size.\n - Position the dummy by clicking on something with the middle mouse button while the dummy is active.\n - Pressing this button while Ctrl key is held down will reset dummy position to the origin.\n - Pressing this button while the Shift key is held down will switch between male and female dummies.");
-	dummyButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	dummyButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	dummyButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCONTROL))
 		{
@@ -1088,7 +1086,7 @@ void EditorComponent::Load()
 	navtestButton.Create(ICON_NAVIGATION);
 	navtestButton.SetShadowRadius(2);
 	navtestButton.SetTooltip("Toggle navigation testing. When enabled, you can visualize path finding results.\nYou can put down START and GOAL waypoints inside voxel grids to test path finding.\nControls:\n----------\nF5 + middle click: put START to surface\nF6 + middle click: put GOAL to surface\nF7 + middle click: put START to air\nF8 + middle click: put GOAL to air");
-	navtestButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	navtestButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	navtestButton.OnClick([this](Protean::Gui::EventArgs args) {
 		navtest_enabled = !navtest_enabled;
 	});
@@ -1097,7 +1095,7 @@ void EditorComponent::Load()
 	playButton.Create(ICON_PLAY);
 	playButton.font.params.shadowColor = Protean::Color::Transparent();
 	playButton.SetShadowRadius(2);
-	playButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	playButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	playButton.SetTooltip("Execute the last used (standalone) script.\nTo use a new script, use the Open button.");
 	playButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (last_script_path.empty() || !Protean::Helper::FileExists(last_script_path))
@@ -1123,7 +1121,7 @@ void EditorComponent::Load()
 
 
 	stopButton.Create(ICON_STOP);
-	stopButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	stopButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	stopButton.font.params.shadowColor = Protean::Color::Transparent();
 	stopButton.SetShadowRadius(2);
 	stopButton.SetTooltip("Stops every script background processes that are still running.");
@@ -1135,7 +1133,7 @@ void EditorComponent::Load()
 
 
 	projectCreatorButton.Create(ICON_PROJECT_CREATE);
-	projectCreatorButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	projectCreatorButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	projectCreatorButton.font.params.shadowColor = Protean::Color::Transparent();
 	projectCreatorButton.SetShadowRadius(2);
 	projectCreatorButton.SetTooltip("Create a new project.");
@@ -1147,7 +1145,7 @@ void EditorComponent::Load()
 
 
 	saveButton.Create("Save");
-	saveButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	saveButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	saveButton.font.params.shadowColor = Protean::Color::Transparent();
 	saveButton.SetShadowRadius(2);
 	saveButton.SetTooltip("Save the current scene to a new file (Ctrl + Shift + S)\nBy default, the scene will be saved into .wiscene, but you can specify .gltf or .glb extensions to export into GLTF.\nYou can also use Ctrl + S to quicksave, without browsing.");
@@ -1160,7 +1158,7 @@ void EditorComponent::Load()
 
 
 	openButton.Create("Open");
-	openButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	openButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	openButton.SetShadowRadius(2);
 	openButton.font.params.shadowColor = Protean::Color::Transparent();
 	openButton.SetTooltip("Open a scene, import an asset or execute a Lua script...\nSupported file types: .wiscene, .obj, .gltf, .glb, .vrm, .fbx, .lua, images, videos, sounds, etc.");
@@ -1223,7 +1221,7 @@ void EditorComponent::Load()
 
 
 	contentBrowserButton.Create("Content Browser");
-	contentBrowserButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	contentBrowserButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	contentBrowserButton.SetShadowRadius(2);
 	contentBrowserButton.font.params.shadowColor = Protean::Color::Transparent();
 	contentBrowserButton.SetTooltip("Browse content.");
@@ -1240,7 +1238,7 @@ void EditorComponent::Load()
 
 
 	logButton.Create("Backlog");
-	logButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	logButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	logButton.SetShadowRadius(2);
 	logButton.font.params.shadowColor = Protean::Color::Transparent();
 	logButton.SetTooltip("Open the backlog (toggle with HOME button)");
@@ -1253,7 +1251,7 @@ void EditorComponent::Load()
 
 
 	profilerButton.Create("Profiler");
-	profilerButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	profilerButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	profilerButton.SetShadowRadius(2);
 	profilerButton.font.params.shadowColor = Protean::Color::Transparent();
 	profilerButton.SetTooltip("View the profiler frame timings");
@@ -1267,7 +1265,7 @@ void EditorComponent::Load()
 
 
 	cinemaButton.Create(ICON_CINEMA_MODE);
-	cinemaButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	cinemaButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	cinemaButton.SetShadowRadius(2);
 	cinemaButton.font.params.shadowColor = Protean::Color::Transparent();
 	cinemaButton.SetTooltip("Enter cinema mode (all HUD disabled). Press ESC to return to normal.");
@@ -1305,7 +1303,7 @@ void EditorComponent::Load()
 	GetGUI().AddWidget(&cinemaButton);
 
 	fullscreenButton.Create("Full screen");
-	fullscreenButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	fullscreenButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	fullscreenButton.SetShadowRadius(2);
 	fullscreenButton.font.params.shadowColor = Protean::Color::Transparent();
 	fullscreenButton.SetTooltip("Toggle full screen");
@@ -1326,7 +1324,7 @@ void EditorComponent::Load()
 
 
 	bugButton.Create("Bug report");
-	bugButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	bugButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	bugButton.SetShadowRadius(2);
 	bugButton.font.params.shadowColor = Protean::Color::Transparent();
 	bugButton.SetTooltip("Opens a browser window where you can report a bug or an issue.\nURL: https://github.com/turanszkij/WickedEngine/issues/new");
@@ -1339,7 +1337,7 @@ void EditorComponent::Load()
 
 
 	aboutButton.Create("About");
-	aboutButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	aboutButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	aboutButton.SetShadowRadius(2);
 	aboutButton.font.params.shadowColor = Protean::Color::Transparent();
 	aboutButton.SetTooltip("About...");
@@ -1359,7 +1357,7 @@ void EditorComponent::Load()
 		ss += "\nDiscord chat: https://discord.gg/CFjRYmE";
 		ss += "\n\nControls\n";
 		ss += "------------\n";
-		ss += "Move camera: " + GetInputString(EditorActions::MOVE_CAMERA_FORWARD) + ", " + GetInputString(EditorActions::MOVE_CAMERA_LEFT) + ", " + GetInputString(EditorActions::MOVE_CAMERA_BACKWARD) + ", " + GetInputString(EditorActions::MOVE_CAMERA_RIGHT) + ", or Controller left stick or D - pad\n";
+		ss += "Move camera: " + GetInputString(EditorActions_MOVE_CAMERA_FORWARD) + ", " + GetInputString(EditorActions_MOVE_CAMERA_LEFT) + ", " + GetInputString(EditorActions_MOVE_CAMERA_BACKWARD) + ", " + GetInputString(EditorActions_MOVE_CAMERA_RIGHT) + ", or Controller left stick or D - pad\n";
 		ss += "Look: Right mouse button / arrow keys / controller right stick\n";
 		ss += "Select: Left mouse button\n";
 		ss += "Select top-level parent: Alt + Left mouse button\n";
@@ -1367,40 +1365,40 @@ void EditorComponent::Load()
 		ss += "Faster camera: Left Shift button or controller R2/RT\n";
 		ss += "Snap to grid transform: Ctrl (hold while transforming)\n";
 		ss += "Snap to surface transform: Shift (hold while transforming)\n";
-		ss += "Camera up: " + GetInputString(EditorActions::MOVE_CAMERA_UP) + "\n";
-		ss += "Camera down: " + GetInputString(EditorActions::MOVE_CAMERA_DOWN) + "\n";
-		ss += "Orthographic camera: " + GetInputString(EditorActions::ORTHO_CAMERA) + "\n";
-		ss += "Select whole hierarchy of selected: " + GetInputString(EditorActions::HIERARCHY_SELECT) + "\n";
-		ss += "Duplicate entity: " + GetInputString(EditorActions::DUPLICATE_ENTITY) + "\n";
-		ss += "Select All: " + GetInputString(EditorActions::SELECT_ALL_ENTITIES) + "\n";
-		ss += "Deselect All: " + GetInputString(EditorActions::DESELECT_ALL_ENTITIES) + "\n";
-		ss += "Rename Selected: " + GetInputString(EditorActions::RENAME_SELECTED) + " (this hotkey is temporary, will be F2 in the future)" + "\n";
-		ss += "Undo: " + GetInputString(EditorActions::UNDO_ACTION) + "\n";
-		ss += "Redo: " + GetInputString(EditorActions::REDO_ACTION) + "\n";
-		ss += "Copy: " + GetInputString(EditorActions::COPY_ACTION) + "\n";
-		ss += "Cut: " + GetInputString(EditorActions::CUT_ACTION) + "\n";
-		ss += "Paste: " + GetInputString(EditorActions::PASTE_ACTION) + "\n";
+		ss += "Camera up: " + GetInputString(EditorActions_MOVE_CAMERA_UP) + "\n";
+		ss += "Camera down: " + GetInputString(EditorActions_MOVE_CAMERA_DOWN) + "\n";
+		ss += "Orthographic camera: " + GetInputString(EditorActions_ORTHO_CAMERA) + "\n";
+		ss += "Select whole hierarchy of selected: " + GetInputString(EditorActions_HIERARCHY_SELECT) + "\n";
+		ss += "Duplicate entity: " + GetInputString(EditorActions_DUPLICATE_ENTITY) + "\n";
+		ss += "Select All: " + GetInputString(EditorActions_SELECT_ALL_ENTITIES) + "\n";
+		ss += "Deselect All: " + GetInputString(EditorActions_DESELECT_ALL_ENTITIES) + "\n";
+		ss += "Rename Selected: " + GetInputString(EditorActions_RENAME_SELECTED) + " (this hotkey is temporary, will be F2 in the future)" + "\n";
+		ss += "Undo: " + GetInputString(EditorActions_UNDO_ACTION) + "\n";
+		ss += "Redo: " + GetInputString(EditorActions_REDO_ACTION) + "\n";
+		ss += "Copy: " + GetInputString(EditorActions_COPY_ACTION) + "\n";
+		ss += "Cut: " + GetInputString(EditorActions_CUT_ACTION) + "\n";
+		ss += "Paste: " + GetInputString(EditorActions_PASTE_ACTION) + "\n";
 		ss += "Delete: Delete button\n";
-		ss += "Save As: " + GetInputString(EditorActions::SAVE_SCENE_AS) + "\n";
-		ss += "Save: " + GetInputString(EditorActions::SAVE_SCENE) + "\n";
-		ss += "Transform: " + GetInputString(EditorActions::ENABLE_TRANSFORM_TOOL) + "\n";
-		ss += "Move Toggle: " + GetInputString(EditorActions::MOVE_TOGGLE_ACTION) + "\n";
-		ss += "Rotate Toggle: " + GetInputString(EditorActions::ROTATE_TOGGLE_ACTION) + "\n";
-		ss += "Scale Toggle: " + GetInputString(EditorActions::SCALE_TOGGLE_ACTION) + "\n";
-		ss += "Local/Global Toggle: " + GetInputString(EditorActions::LOCAL_GLOBAL_TOGGLE_ACTION) + "\n";
-		ss += "Reload terrain props: " + GetInputString(EditorActions::RELOAD_TERRAIN_PROPS) + "\n";
-		ss += "Wireframe mode: " + GetInputString(EditorActions::WIREFRAME_MODE) + "\n";
-		ss += "Screenshot (saved into Editor's screenshots folder): " + GetInputString(EditorActions::SCREENSHOT) + "\n";
-		ss += "Screenshot without GUI (saved into Editor's screenshots folder): " + GetInputString(EditorActions::SCREENSHOT_NOGUI) + "\n";
-		ss += "Screenshot with background as transparency (saved into Editor's screenshots folder): " + GetInputString(EditorActions::SCREENSHOT_ALPHA) + "\n";
-		ss += "Screenshot selection with everything else as transparency (saved into Editor's screenshots folder): " + GetInputString(EditorActions::SCREENSHOT_ALPHA_SELECTION) + "\n";
-		ss += "Depth of field refocus to point: " + GetInputString(EditorActions::DEPTH_OF_FIELD_REFOCUS_TO_POINT) + " + left mouse button" + "\n";
-		ss += "Color grading reference: " + GetInputString(EditorActions::COLOR_GRADING_REFERENCE) + " (color grading palette reference will be displayed in top left corner)\n";
-		ss += "Focus on selected: " + GetInputString(EditorActions::FOCUS_ON_SELECTION) + " button, this will make the camera jump to selection.\n";
-		ss += "Inspector mode: " + GetInputString(EditorActions::INSPECTOR_MODE) + " button (hold), hovered entity information will be displayed near mouse position.\n";
-		ss += "Place Instances: " + GetInputString(EditorActions::PLACE_INSTANCES) + " (place clipboard onto clicked surface)\n";
-		ss += "Ragdoll and physics impulse tester: Hold " + GetInputString(EditorActions::RAGDOLL_AND_PHYSICS_IMPULSE_TESTER) + " and click on ragdoll or rigid body physics entity with middle mouse.\n";
-		ss += "Add new node to spline: " + GetInputString(EditorActions::ADD_TO_SPLINE) + " while a spline is selected.\n";
+		ss += "Save As: " + GetInputString(EditorActions_SAVE_SCENE_AS) + "\n";
+		ss += "Save: " + GetInputString(EditorActions_SAVE_SCENE) + "\n";
+		ss += "Transform: " + GetInputString(EditorActions_ENABLE_TRANSFORM_TOOL) + "\n";
+		ss += "Move Toggle: " + GetInputString(EditorActions_MOVE_TOGGLE_ACTION) + "\n";
+		ss += "Rotate Toggle: " + GetInputString(EditorActions_ROTATE_TOGGLE_ACTION) + "\n";
+		ss += "Scale Toggle: " + GetInputString(EditorActions_SCALE_TOGGLE_ACTION) + "\n";
+		ss += "Local/Global Toggle: " + GetInputString(EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION) + "\n";
+		ss += "Reload terrain props: " + GetInputString(EditorActions_RELOAD_TERRAIN_PROPS) + "\n";
+		ss += "Wireframe mode: " + GetInputString(EditorActions_WIREFRAME_MODE) + "\n";
+		ss += "Screenshot (saved into Editor's screenshots folder): " + GetInputString(EditorActions_SCREENSHOT) + "\n";
+		ss += "Screenshot without GUI (saved into Editor's screenshots folder): " + GetInputString(EditorActions_SCREENSHOT_NOGUI) + "\n";
+		ss += "Screenshot with background as transparency (saved into Editor's screenshots folder): " + GetInputString(EditorActions_SCREENSHOT_ALPHA) + "\n";
+		ss += "Screenshot selection with everything else as transparency (saved into Editor's screenshots folder): " + GetInputString(EditorActions_SCREENSHOT_ALPHA_SELECTION) + "\n";
+		ss += "Depth of field refocus to point: " + GetInputString(EditorActions_DEPTH_OF_FIELD_REFOCUS_TO_POINT) + " + left mouse button" + "\n";
+		ss += "Color grading reference: " + GetInputString(EditorActions_COLOR_GRADING_REFERENCE) + " (color grading palette reference will be displayed in top left corner)\n";
+		ss += "Focus on selected: " + GetInputString(EditorActions_FOCUS_ON_SELECTION) + " button, this will make the camera jump to selection.\n";
+		ss += "Inspector mode: " + GetInputString(EditorActions_INSPECTOR_MODE) + " button (hold), hovered entity information will be displayed near mouse position.\n";
+		ss += "Place Instances: " + GetInputString(EditorActions_PLACE_INSTANCES) + " (place clipboard onto clicked surface)\n";
+		ss += "Ragdoll and physics impulse tester: Hold " + GetInputString(EditorActions_RAGDOLL_AND_PHYSICS_IMPULSE_TESTER) + " and click on ragdoll or rigid body physics entity with middle mouse.\n";
+		ss += "Add new node to spline: " + GetInputString(EditorActions_ADD_TO_SPLINE) + " while a spline is selected.\n";
 		ss += "Script Console / backlog: HOME button\n";
 		ss += "Bone picking: First select an armature, only then bone picking becomes available. As long as you have an armature or bone selected, bone picking will remain active.\n";
 		ss += "\n";
@@ -1434,8 +1432,8 @@ void EditorComponent::Load()
 		aboutLabel.SetLocalizationEnabled(false);
 		aboutWindow.AddWidget(&aboutLabel);
 
-		auto wctrl = Protean::Gui::Window::WindowControls::ALL;
-		wctrl &= ~Protean::Gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
+		auto wctrl = Protean::Gui::Window::WindowControls_ALL;
+		wctrl &= ~Protean::Gui::Window::WindowControls_RESIZE_BOTTOMLEFT;
 		aboutWindow.Create("About", wctrl);
 		aboutWindow.SetVisible(false);
 		aboutWindow.SetPos(XMFLOAT2(100, 100));
@@ -1465,7 +1463,7 @@ void EditorComponent::Load()
 	}
 
 	exitButton.Create("Exit");
-	exitButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	exitButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	exitButton.SetShadowRadius(2);
 	exitButton.font.params.shadowColor = Protean::Color::Transparent();
 	exitButton.SetTooltip("Exit");
@@ -1572,7 +1570,7 @@ void EditorComponent::Load()
 		spline_gradient,
 		arraysize(spline_gradient),
 		1,
-		Format::R8_UNORM,
+		Format_R8_UNORM,
 		SwizzleFromString("111r")
 	);
 	assert(success);
@@ -1590,7 +1588,7 @@ void EditorComponent::Load()
 		spline_gradient,
 		arraysize(spline_gradient),
 		1,
-		Format::R8_UNORM,
+		Format_R8_UNORM,
 		SwizzleFromString("111r")
 	);
 	assert(success);
@@ -1691,21 +1689,21 @@ void EditorComponent::Update(float dt)
 	}
 
 	// screenshot is done next frame update to capture current frame render and the alpha modes also disable debug draw for just this frame
-	if (CheckInput(EditorActions::SCREENSHOT_NOGUI)) // shift priority
+	if (CheckInput(EditorActions_SCREENSHOT_NOGUI)) // shift priority
 	{
 		screenshot_nogui = true;
 		Protean::Renderer::SetDebugDrawEnabled(false);
 	}
-	else if (CheckInput(EditorActions::SCREENSHOT_ALPHA_SELECTION)) // shift priority
+	else if (CheckInput(EditorActions_SCREENSHOT_ALPHA_SELECTION)) // shift priority
 	{
 		screenshot_alpha_selection = true;
 		Protean::Renderer::SetDebugDrawEnabled(false);
 	}
-	else if (CheckInput(EditorActions::SCREENSHOT))
+	else if (CheckInput(EditorActions_SCREENSHOT))
 	{
 		screenshot = true;
 	}
-	else if (CheckInput(EditorActions::SCREENSHOT_ALPHA))
+	else if (CheckInput(EditorActions_SCREENSHOT_ALPHA))
 	{
 		screenshot_alpha = true;
 		Protean::Renderer::SetDebugDrawEnabled(false);
@@ -1758,7 +1756,7 @@ void EditorComponent::Update(float dt)
 	save_text_alpha = std::max(0.0f, save_text_alpha - std::min(dt, 0.033f)); // after saving, dt can become huge
 
 	bool clear_selected = false;
-	if (CheckInput(EditorActions::DESELECT_ALL_ENTITIES))
+	if (CheckInput(EditorActions_DESELECT_ALL_ENTITIES))
 	{
 		if (!GetGUI().IsVisible())
 		{
@@ -1841,7 +1839,7 @@ void EditorComponent::Update(float dt)
 				}
 				drive_orbit_horizontal += Protean::Input::GetAnalog(Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_R).x * XM_PI * dt;
 
-				if (CheckInput(EditorActions::MOVE_CAMERA_FORWARD))
+				if (CheckInput(EditorActions_MOVE_CAMERA_FORWARD))
 				{
 					if (velocityAmount >= 0)
 					{
@@ -1852,7 +1850,7 @@ void EditorComponent::Update(float dt)
 						brake = 1;
 					}
 				}
-				else if (CheckInput(EditorActions::MOVE_CAMERA_BACKWARD))
+				else if (CheckInput(EditorActions_MOVE_CAMERA_BACKWARD))
 				{
 					if (velocityAmount > 0.001f)
 					{
@@ -1863,11 +1861,11 @@ void EditorComponent::Update(float dt)
 						forward = -1;
 					}
 				}
-				if (CheckInput(EditorActions::MOVE_CAMERA_LEFT))
+				if (CheckInput(EditorActions_MOVE_CAMERA_LEFT))
 				{
 					drive_steering_smoothed -= dt * 2;
 				}
-				else if (CheckInput(EditorActions::MOVE_CAMERA_RIGHT))
+				else if (CheckInput(EditorActions_MOVE_CAMERA_RIGHT))
 				{
 					drive_steering_smoothed += dt * 2;
 				}
@@ -1925,7 +1923,7 @@ void EditorComponent::Update(float dt)
 		drive_orbit_horizontal = lerp(drive_orbit_horizontal, 0.0f, dt);
 	}
 
-	if (!GetGUI().IsTyping() && !translator.selected.empty() && CheckInput(EditorActions::RENAME_SELECTED))
+	if (!GetGUI().IsTyping() && !translator.selected.empty() && CheckInput(EditorActions_RENAME_SELECTED))
 	{
 		for (auto& x : translator.selected)
 		{
@@ -1940,7 +1938,7 @@ void EditorComponent::Update(float dt)
 	}
 
 	// Duplicate Entity
-	if (!GetGUI().IsTyping() && CheckInput(EditorActions::DUPLICATE_ENTITY))
+	if (!GetGUI().IsTyping() && CheckInput(EditorActions_DUPLICATE_ENTITY))
 	{
 		Protean::Archive& archive = AdvanceHistory();
 		archive << HISTORYOP_ADD;
@@ -1977,7 +1975,7 @@ void EditorComponent::Update(float dt)
 	// Camera control:
 	if (!drive_mode && !Protean::Backlog::isActive() && !GetGUI().HasFocus())
 	{
-		deleting = CheckInput(EditorActions::DELETE_ACTION);
+		deleting = CheckInput(EditorActions_DELETE_ACTION);
 		currentMouse = Protean::Input::GetPointer();
 		if (camControlStart)
 		{
@@ -2069,14 +2067,14 @@ void EditorComponent::Update(float dt)
 		yDif *= cameraWnd.rotationspeedSlider.GetValue();
 
 
-		if (CheckInput(EditorActions::ORTHO_CAMERA))
+		if (CheckInput(EditorActions_ORTHO_CAMERA))
 		{
 			camera.SetOrtho(!camera.IsOrtho());
 			camera.ortho_vertical_size = camera.ComputeOrthoVerticalSizeFromPerspective(Protean::Math::Length(camera.Eye)); // camera distance from origin
 			cameraWnd.orthoCheckBox.SetCheck(camera.IsOrtho());
 		}
 
-		if (CheckInput(EditorActions::HIERARCHY_SELECT))
+		if (CheckInput(EditorActions_HIERARCHY_SELECT))
 		{
 			Protean::vector<Entity> children;
 			for (auto& x : translator.selectedEntitiesNonRecursive)
@@ -2089,12 +2087,12 @@ void EditorComponent::Update(float dt)
 			}
 		}
 
-		if (CheckInput(EditorActions::ADD_TO_SPLINE) && componentsWnd.splineWnd.entity != INVALID_ENTITY)
+		if (CheckInput(EditorActions_ADD_TO_SPLINE) && componentsWnd.splineWnd.entity != INVALID_ENTITY)
 		{
 			componentsWnd.splineWnd.NewNode();
 		}
 
-		if (CheckInput(EditorActions::RELOAD_TERRAIN_PROPS))
+		if (CheckInput(EditorActions_RELOAD_TERRAIN_PROPS))
 		{
 			ReloadTerrainProps();
 		}
@@ -2111,12 +2109,12 @@ void EditorComponent::Update(float dt)
 			if (!Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL))
 			{
 				// Only move camera if control not pressed
-				if (CheckInput(EditorActions::MOVE_CAMERA_LEFT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_RIGHT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_FORWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 1, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_BACKWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, -1, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_UP) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_DOWN) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_LEFT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_RIGHT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_FORWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_BACKWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, -1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_UP) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_DOWN) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
 				moveNew = XMVector3Normalize(moveNew);
 			}
 			moveNew += XMVectorSet(leftStick.x, 0, leftStick.y, 0);
@@ -2177,12 +2175,12 @@ void EditorComponent::Update(float dt)
 			if (!Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL))
 			{
 				// Only move camera if control not pressed
-				if (CheckInput(EditorActions::MOVE_CAMERA_LEFT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_RIGHT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_FORWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 0, 1, 0); camera.ortho_vertical_size -= 0.1f; }
-				if (CheckInput(EditorActions::MOVE_CAMERA_BACKWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, 0, -1, 0); camera.ortho_vertical_size += 0.1f; }
-				if (CheckInput(EditorActions::MOVE_CAMERA_UP) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
-				if (CheckInput(EditorActions::MOVE_CAMERA_DOWN) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_LEFT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_LEFT)) { moveNew += XMVectorSet(-1, 0, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_RIGHT) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_RIGHT)) { moveNew += XMVectorSet(1, 0, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_FORWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_UP)) { moveNew += XMVectorSet(0, 0, 1, 0); camera.ortho_vertical_size -= 0.1f; }
+				if (CheckInput(EditorActions_MOVE_CAMERA_BACKWARD) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_DOWN)) { moveNew += XMVectorSet(0, 0, -1, 0); camera.ortho_vertical_size += 0.1f; }
+				if (CheckInput(EditorActions_MOVE_CAMERA_UP) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_2)) { moveNew += XMVectorSet(0, 1, 0, 0); }
+				if (CheckInput(EditorActions_MOVE_CAMERA_DOWN) || Protean::Input::Down(Protean::Input::GAMEPAD_BUTTON_1)) { moveNew += XMVectorSet(0, -1, 0, 0); }
 				moveNew += XMVectorSet(0, 0, pinch.delta_scale, 0);
 				moveNew = XMVector3Normalize(moveNew);
 			}
@@ -2271,12 +2269,12 @@ void EditorComponent::Update(float dt)
 			editorscene.camera_transform.UpdateTransform_Parented(editorscene.camera_target);
 		}
 
-		if (!translator.selected.empty() && CheckInput(EditorActions::FOCUS_ON_SELECTION))
+		if (!translator.selected.empty() && CheckInput(EditorActions_FOCUS_ON_SELECTION))
 		{
 			FocusCameraOnSelected();
 		}
 
-		inspector_mode = CheckInput(EditorActions::INSPECTOR_MODE);
+		inspector_mode = CheckInput(EditorActions_INSPECTOR_MODE);
 
 		// Begin picking:
 		pickRay = Protean::Renderer::GetPickRay((long)currentMouse.x, (long)currentMouse.y, *renderPath, camera);
@@ -2292,7 +2290,7 @@ void EditorComponent::Update(float dt)
 				return dis > 0.01f && dis < Protean::Math::Distance(position, pickRay.origin) * required_dist && dis < hovered.distance;
 			};
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Light))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Light))
 			{
 				for (size_t i = 0; i < scene.lights.GetCount(); ++i)
 				{
@@ -2342,7 +2340,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Constraint))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Constraint))
 			{
 				for (size_t i = 0; i < scene.constraints.GetCount(); ++i)
 				{
@@ -2361,7 +2359,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Spline))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Spline))
 			{
 				for (size_t i = 0; i < scene.splines.GetCount(); ++i)
 				{
@@ -2394,7 +2392,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Decal))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Decal))
 			{
 				for (size_t i = 0; i < scene.decals.GetCount(); ++i)
 				{
@@ -2413,7 +2411,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Force))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Force))
 			{
 				for (size_t i = 0; i < scene.forces.GetCount(); ++i)
 				{
@@ -2432,7 +2430,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Emitter))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Emitter))
 			{
 				for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 				{
@@ -2451,7 +2449,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Hairparticle))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Hairparticle))
 			{
 				for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 				{
@@ -2470,7 +2468,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::EnvironmentProbe))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_EnvironmentProbe))
 			{
 				for (size_t i = 0; i < scene.probes.GetCount(); ++i)
 				{
@@ -2491,7 +2489,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Camera))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Camera))
 			{
 				for (size_t i = 0; i < scene.cameras.GetCount(); ++i)
 				{
@@ -2510,7 +2508,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Armature))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Armature))
 			{
 				for (size_t i = 0; i < scene.armatures.GetCount(); ++i)
 				{
@@ -2529,7 +2527,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Sound))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Sound))
 			{
 				for (size_t i = 0; i < scene.sounds.GetCount(); ++i)
 				{
@@ -2548,7 +2546,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Video))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Video))
 			{
 				for (size_t i = 0; i < scene.videos.GetCount(); ++i)
 				{
@@ -2567,7 +2565,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::VoxelGrid))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_VoxelGrid))
 			{
 				for (size_t i = 0; i < scene.voxel_grids.GetCount(); ++i)
 				{
@@ -2586,7 +2584,7 @@ void EditorComponent::Update(float dt)
 					}
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Metadata))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Metadata))
 			{
 				for (size_t i = 0; i < scene.metadatas.GetCount(); ++i)
 				{
@@ -2638,7 +2636,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		if (hovered.entity != INVALID_ENTITY &&
-			CheckInput(EditorActions::DEPTH_OF_FIELD_REFOCUS_TO_POINT) &&
+			CheckInput(EditorActions_DEPTH_OF_FIELD_REFOCUS_TO_POINT) &&
 			Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT))
 		{
 			camera.focal_length = hovered.distance;
@@ -2651,7 +2649,7 @@ void EditorComponent::Update(float dt)
 		bool interact_pick_allowed = true;
 		{
 			// Interact:
-			if (CheckInput(EditorActions::RAGDOLL_AND_PHYSICS_IMPULSE_TESTER))
+			if (CheckInput(EditorActions_RAGDOLL_AND_PHYSICS_IMPULSE_TESTER))
 			{
 				if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_MIDDLE))
 				{
@@ -2766,7 +2764,7 @@ void EditorComponent::Update(float dt)
 										}
 										ForceFieldComponent& force = scene.forces.Create(grass_interaction_entity);
 										TransformComponent& transform = scene.transforms.Create(grass_interaction_entity);
-										force.type = ForceFieldComponent::Type::Point;
+										force.type = ForceFieldComponent::Type_Point;
 										force.gravity = -40;
 										force.range = 2;
 										transform.Translate(P);
@@ -2881,7 +2879,7 @@ void EditorComponent::Update(float dt)
 		bool isShiftDown = Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LSHIFT) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RSHIFT);
 
 		// Color Grading helper
-		if (CheckInput(EditorActions::COLOR_GRADING_REFERENCE))
+		if (CheckInput(EditorActions_COLOR_GRADING_REFERENCE))
 		{
 			main->infoDisplay.colorgrading_helper = true;
 		}
@@ -2891,7 +2889,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Toggle wireframe mode
-		if (CheckInput(EditorActions::WIREFRAME_MODE))
+		if (CheckInput(EditorActions_WIREFRAME_MODE))
 		{
 			Protean::Renderer::WIREFRAME_MODE currentMode = Protean::Renderer::GetWireframeMode();
 			Protean::Renderer::WIREFRAME_MODE mode;
@@ -2913,16 +2911,16 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Enable transform tool
-		if (CheckInput(EditorActions::ENABLE_TRANSFORM_TOOL))
+		if (CheckInput(EditorActions_ENABLE_TRANSFORM_TOOL))
 		{
 			translator.SetEnabled(!translator.IsEnabled());
 		}
 
-		if (CheckInput(EditorActions::SAVE_SCENE_AS))
+		if (CheckInput(EditorActions_SAVE_SCENE_AS))
 		{
 			SaveAs();
 		}
-		else if (CheckInput(EditorActions::SAVE_SCENE))
+		else if (CheckInput(EditorActions_SAVE_SCENE))
 		{
 			if (!GetCurrentEditorScene().path.empty())
 			{
@@ -2935,13 +2933,13 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Select All
-		if (CheckInput(EditorActions::SELECT_ALL_ENTITIES))
+		if (CheckInput(EditorActions_SELECT_ALL_ENTITIES))
 		{
 			selectAll = true;
 		}
 
 		// Copy
-		if (CheckInput(EditorActions::COPY_ACTION))
+		if (CheckInput(EditorActions_COPY_ACTION))
 		{
 			auto& prevSel = translator.selectedEntitiesNonRecursive;
 
@@ -2955,7 +2953,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Cut
-		if (CheckInput(EditorActions::CUT_ACTION))
+		if (CheckInput(EditorActions_CUT_ACTION))
 		{
 			auto& prevSel = translator.selectedEntitiesNonRecursive;
 
@@ -2971,7 +2969,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Paste
-		if (CheckInput(EditorActions::PASTE_ACTION))
+		if (CheckInput(EditorActions_PASTE_ACTION))
 		{
 			Protean::Archive& archive = AdvanceHistory();
 			archive << HISTORYOP_ADD;
@@ -2987,7 +2985,7 @@ void EditorComponent::Update(float dt)
 			for (size_t i = 0; i < count; ++i)
 			{
 				Protean::PickResult picked;
-				picked.entity = scene.Entity_Serialize(clipboard, seri, INVALID_ENTITY, Scene::EntitySerializeFlags::RECURSIVE);
+				picked.entity = scene.Entity_Serialize(clipboard, seri, INVALID_ENTITY, Scene::EntitySerializeFlags_RECURSIVE);
 				AddSelected(picked);
 				addedEntities.push_back(picked.entity);
 			}
@@ -2999,7 +2997,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Duplicate/Put Instances
-		if (CheckInput(EditorActions::PLACE_INSTANCES))
+		if (CheckInput(EditorActions_PLACE_INSTANCES))
 		{
 			Protean::vector<Entity> addedEntities;
 			EntitySerializer seri;
@@ -3008,7 +3006,7 @@ void EditorComponent::Update(float dt)
 			clipboard >> count;
 			for (size_t i = 0; i < count; ++i)
 			{
-				Entity entity = scene.Entity_Serialize(clipboard, seri, INVALID_ENTITY, Scene::EntitySerializeFlags::RECURSIVE | Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES);
+				Entity entity = scene.Entity_Serialize(clipboard, seri, INVALID_ENTITY, Scene::EntitySerializeFlags_RECURSIVE | Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES);
 				const HierarchyComponent* hier = scene.hierarchy.GetComponent(entity);
 				if (hier != nullptr)
 				{
@@ -3046,7 +3044,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Undo
-		if (CheckInput(EditorActions::UNDO_ACTION))
+		if (CheckInput(EditorActions_UNDO_ACTION))
 		{
 			ConsumeHistoryOperation(true);
 
@@ -3054,7 +3052,7 @@ void EditorComponent::Update(float dt)
 		}
 
 		// Redo
-		if (CheckInput(EditorActions::REDO_ACTION))
+		if (CheckInput(EditorActions_REDO_ACTION))
 		{
 			ConsumeHistoryOperation(false);
 
@@ -3065,25 +3063,25 @@ void EditorComponent::Update(float dt)
 	// These keys work but for some reason in my keyboard 1 returns TAB and 2 returns TILDE keys.
 	if (!Protean::Backlog::isActive() && !GetGUI().IsTyping())
 	{
-		if (CheckInput(EditorActions::MOVE_TOGGLE_ACTION))
+		if (CheckInput(EditorActions_MOVE_TOGGLE_ACTION))
 		{
 			translator.isTranslator = !translator.isTranslator;
 			translator.isScalator = false;
 			translator.isRotator = false;
 		}
-		else if (CheckInput(EditorActions::ROTATE_TOGGLE_ACTION))
+		else if (CheckInput(EditorActions_ROTATE_TOGGLE_ACTION))
 		{
 			translator.isRotator = !translator.isRotator;
 			translator.isScalator = false;
 			translator.isTranslator = false;
 		}
-		else if (CheckInput(EditorActions::SCALE_TOGGLE_ACTION))
+		else if (CheckInput(EditorActions_SCALE_TOGGLE_ACTION))
 		{
 			translator.isScalator = !translator.isScalator;
 			translator.isTranslator = false;
 			translator.isRotator = false;
 		}
-		else if (CheckInput(EditorActions::LOCAL_GLOBAL_TOGGLE_ACTION))
+		else if (CheckInput(EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION))
 		{
 			translator.isLocalSpace = !translator.isLocalSpace;
 			UpdateLocalGlobalButton();
@@ -3557,11 +3555,11 @@ void EditorComponent::PostUpdate()
 				XMVECTOR P = vehicle_transform->GetPositionV();
 				XMVECTOR Q = vehicle_transform->GetRotationV();
 				XMMATRIX W = XMMatrixIdentity();
-				if (rigidbody->vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Car)
+				if (rigidbody->vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Car)
 				{
 					W = XMMatrixTranslation(0, 0.5f, -drive_cam_dist) * XMMatrixRotationX(XM_PI * 0.08f) * XMMatrixRotationY(drive_orbit_horizontal) * XMMatrixRotationQuaternion(Q) * XMMatrixTranslationFromVector(P);
 				}
-				else if (rigidbody->vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle)
+				else if (rigidbody->vehicle.type == RigidBodyPhysicsComponent::Vehicle::Type_Motorcycle)
 				{
 					W = XMMatrixTranslation(0, 1.5f, -drive_cam_dist) * XMMatrixRotationX(XM_PI * 0.1f) * XMMatrixRotationY(drive_orbit_horizontal) * XMMatrixRotationQuaternion(Q) * XMMatrixTranslationFromVector(P);
 				}
@@ -3749,14 +3747,14 @@ void EditorComponent::Render() const
 					RenderPassImage rp[] = {
 						RenderPassImage::RenderTarget(
 							&rt_selectionOutline_MSAA,
-							RenderPassImage::LoadOp::CLEAR,
-							RenderPassImage::StoreOp::DONTCARE
+							RenderPassImage::LoadOp_CLEAR,
+							RenderPassImage::StoreOp_DONTCARE
 						),
 						RenderPassImage::Resolve(&rt_selectionOutline[0]),
 						RenderPassImage::DepthStencil(
 							renderPath->GetDepthStencil(),
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3764,11 +3762,11 @@ void EditorComponent::Render() const
 				else
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rt_selectionOutline[0], RenderPassImage::LoadOp::CLEAR),
+						RenderPassImage::RenderTarget(&rt_selectionOutline[0], RenderPassImage::LoadOp_CLEAR),
 						RenderPassImage::DepthStencil(
 							renderPath->GetDepthStencil(),
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3786,12 +3784,12 @@ void EditorComponent::Render() const
 				if (renderPath->getMSAASampleCount() > 1)
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rt_selectionOutline_MSAA, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE),
+						RenderPassImage::RenderTarget(&rt_selectionOutline_MSAA, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE),
 						RenderPassImage::Resolve(&rt_selectionOutline[1]),
 						RenderPassImage::DepthStencil(
 							renderPath->GetDepthStencil(),
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3799,11 +3797,11 @@ void EditorComponent::Render() const
 				else
 				{
 					RenderPassImage rp[] = {
-						RenderPassImage::RenderTarget(&rt_selectionOutline[1], RenderPassImage::LoadOp::CLEAR),
+						RenderPassImage::RenderTarget(&rt_selectionOutline[1], RenderPassImage::LoadOp_CLEAR),
 						RenderPassImage::DepthStencil(
 							renderPath->GetDepthStencil(),
-							RenderPassImage::LoadOp::LOAD,
-							RenderPassImage::StoreOp::STORE
+							RenderPassImage::LoadOp_LOAD,
+							RenderPassImage::StoreOp_STORE
 						),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3824,7 +3822,7 @@ void EditorComponent::Render() const
 		{
 			device->EventBegin("Reference Dummy", cmd);
 			RenderPassImage rp[] = {
-				RenderPassImage::RenderTarget(&rt_dummyOutline, RenderPassImage::LoadOp::CLEAR),
+				RenderPassImage::RenderTarget(&rt_dummyOutline, RenderPassImage::LoadOp_CLEAR),
 			};
 			device->RenderPassBegin(rp, arraysize(rp), cmd);
 
@@ -3846,13 +3844,13 @@ void EditorComponent::Render() const
 			device->EventEnd(cmd);
 		}
 
-		if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Metadata) && scene.metadatas.GetCount() > 0)
+		if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Metadata) && scene.metadatas.GetCount() > 0)
 		{
 			device->EventBegin("Metadata Dummy", cmd);
 			if (renderPath->getMSAASampleCount() > 1)
 			{
 				RenderPassImage rp[] = {
-					RenderPassImage::RenderTarget(&rt_metadataDummies_MSAA, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::DONTCARE, ResourceState::RENDERTARGET, ResourceState::RENDERTARGET),
+					RenderPassImage::RenderTarget(&rt_metadataDummies_MSAA, RenderPassImage::LoadOp_CLEAR, RenderPassImage::StoreOp_DONTCARE, ResourceState_RENDERTARGET, ResourceState_RENDERTARGET),
 					RenderPassImage::Resolve(&rt_metadataDummies),
 					RenderPassImage::DepthStencil(renderPath->GetDepthStencil()),
 				};
@@ -3861,7 +3859,7 @@ void EditorComponent::Render() const
 			else
 			{
 				RenderPassImage rp[] = {
-					RenderPassImage::RenderTarget(&rt_metadataDummies, RenderPassImage::LoadOp::CLEAR),
+					RenderPassImage::RenderTarget(&rt_metadataDummies, RenderPassImage::LoadOp_CLEAR),
 					RenderPassImage::DepthStencil(renderPath->GetDepthStencil()),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3899,46 +3897,46 @@ void EditorComponent::Render() const
 				{
 				default:
 					break;
-				case MetadataComponent::Preset::Waypoint:
+				case MetadataComponent::Preset_Waypoint:
 					fp.position.y += 1;
 					fp.color = Protean::Color::fromFloat4(XMFLOAT4(1, 0.2f, 0.5f, 1));
 					Protean::Font::Draw("Waypoint", fp, cmd);
 					dummy::draw_waypoint(XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::Enemy:
+				case MetadataComponent::Preset_Enemy:
 					fp.position.y += 2;
 					fp.color = Protean::Color::fromFloat4(XMFLOAT4(0.8f, 0.2f, 0.2f, 1));
 					Protean::Font::Draw("Enemy", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					dummy::draw_soldier(XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::Player:
+				case MetadataComponent::Preset_Player:
 					fp.position.y += 2;
 					fp.color = Protean::Color::fromFloat4(XMFLOAT4(0.2f, 0.8f, 0.6f, 1));
 					Protean::Font::Draw("Player", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					dummy::draw_male(XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::NPC:
+				case MetadataComponent::Preset_NPC:
 					fp.position.y += 1.8f;
 					fp.color = Protean::Color::fromFloat4(XMFLOAT4(0.2f, 0.6f, 0.8f, 1));
 					Protean::Font::Draw("NPC", fp, cmd);
 					dummy::draw_direction(XMMatrixRotationY(XM_PI) * XMMatrixTranslation(0, 0.1f, 0) * XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					dummy::draw_female(XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::Pickup:
+				case MetadataComponent::Preset_Pickup:
 					fp.position.y += 1;
 					fp.color = Protean::Color::fromFloat4(XMFLOAT4(1, 0.8f, 0.4f, 1));
 					Protean::Font::Draw("Pickup", fp, cmd);
 					dummy::draw_pickup(XMMatrixScaling(sca, sca, sca) * XMMatrixTranslation(0, 0.5f, 0) * XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::Vehicle:
+				case MetadataComponent::Preset_Vehicle:
 					fp.position.y += 1.6f;
 					fp.color = Protean::Color(255, 133, 76, 255);
 					Protean::Font::Draw("Vehicle", fp, cmd);
 					dummy::draw_vehicle(XMLoadFloat4x4(&transform.world), VP, fp.color, true, cmd, camera.frustum);
 					break;
-				case MetadataComponent::Preset::PointOfInterest:
+				case MetadataComponent::Preset_PointOfInterest:
 					fp.position.y += 1.0f;
 					fp.color = Protean::Color(176, 91, 255, 255);
 					Protean::Font::Draw("Point of interest", fp, cmd);
@@ -3959,16 +3957,16 @@ void EditorComponent::Render() const
 				RenderPassImage rp[] = {
 					RenderPassImage::RenderTarget(
 						&editor_rendertarget,
-						RenderPassImage::LoadOp::CLEAR,
-						RenderPassImage::StoreOp::DONTCARE,
-						ResourceState::RENDERTARGET,
-						ResourceState::RENDERTARGET
+						RenderPassImage::LoadOp_CLEAR,
+						RenderPassImage::StoreOp_DONTCARE,
+						ResourceState_RENDERTARGET,
+						ResourceState_RENDERTARGET
 					),
 					RenderPassImage::Resolve(&render_result_2D),
 					RenderPassImage::DepthStencil(
 						&editor_depthbuffer,
-						RenderPassImage::LoadOp::CLEAR,
-						RenderPassImage::StoreOp::DONTCARE
+						RenderPassImage::LoadOp_CLEAR,
+						RenderPassImage::StoreOp_DONTCARE
 					),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -3978,12 +3976,12 @@ void EditorComponent::Render() const
 				RenderPassImage rp[] = {
 					RenderPassImage::RenderTarget(
 						&render_result_2D,
-						RenderPassImage::LoadOp::CLEAR
+						RenderPassImage::LoadOp_CLEAR
 					),
 					RenderPassImage::DepthStencil(
 						&editor_depthbuffer,
-						RenderPassImage::LoadOp::CLEAR,
-						RenderPassImage::StoreOp::DONTCARE
+						RenderPassImage::LoadOp_CLEAR,
+						RenderPassImage::StoreOp_DONTCARE
 					),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), cmd);
@@ -4048,7 +4046,7 @@ void EditorComponent::Render() const
 			fp.shadowColor = backgroundEntityColor;
 			fp.shadow_softness = 1;
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Light))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Light))
 			{
 				for (size_t i = 0; i < scene.lights.GetCount(); ++i)
 				{
@@ -4109,7 +4107,7 @@ void EditorComponent::Render() const
 								desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEFAULT);
 								desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 								desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-								desc.pt = PrimitiveTopology::TRIANGLELIST;
+								desc.pt = PrimitiveTopology_TRIANGLELIST;
 								Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &pso);
 							};
 							static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
@@ -4199,7 +4197,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Constraint))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Constraint))
 			{
 				for (size_t i = 0; i < scene.constraints.GetCount(); ++i)
 				{
@@ -4231,7 +4229,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Spline))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Spline))
 			{
 				for (size_t i = 0; i < scene.splines.GetCount(); ++i)
 				{
@@ -4284,7 +4282,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Decal))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Decal))
 			{
 				for (size_t i = 0; i < scene.decals.GetCount(); ++i)
 				{
@@ -4316,7 +4314,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Force))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Force))
 			{
 				for (size_t i = 0; i < scene.forces.GetCount(); ++i)
 				{
@@ -4347,7 +4345,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Camera))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Camera))
 			{
 				for (size_t i = 0; i < scene.cameras.GetCount(); ++i)
 				{
@@ -4378,7 +4376,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Armature))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Armature))
 			{
 				for (size_t i = 0; i < scene.armatures.GetCount(); ++i)
 				{
@@ -4409,7 +4407,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Emitter))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Emitter))
 			{
 				for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 				{
@@ -4440,7 +4438,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Hairparticle))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Hairparticle))
 			{
 				for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 				{
@@ -4471,7 +4469,7 @@ void EditorComponent::Render() const
 				}
 			}
 
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Sound))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Sound))
 			{
 				for (size_t i = 0; i < scene.sounds.GetCount(); ++i)
 				{
@@ -4501,7 +4499,7 @@ void EditorComponent::Render() const
 					Protean::Font::Draw(ICON_SOUND, fp, cmd);
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Video))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Video))
 			{
 				for (size_t i = 0; i < scene.videos.GetCount(); ++i)
 				{
@@ -4531,7 +4529,7 @@ void EditorComponent::Render() const
 					Protean::Font::Draw(ICON_VIDEO, fp, cmd);
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::VoxelGrid))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_VoxelGrid))
 			{
 				for (size_t i = 0; i < scene.voxel_grids.GetCount(); ++i)
 				{
@@ -4560,7 +4558,7 @@ void EditorComponent::Render() const
 					Protean::Font::Draw(ICON_VOXELGRID, fp, cmd);
 				}
 			}
-			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter::Metadata))
+			if (has_flag(componentsWnd.filter, ComponentsWindow::Filter_Metadata))
 			{
 				if (scene.metadatas.GetCount() > 0)
 				{
@@ -4615,7 +4613,7 @@ void EditorComponent::Render() const
 						desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
 						desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 						desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
-						desc.pt = PrimitiveTopology::TRIANGLELIST;
+						desc.pt = PrimitiveTopology_TRIANGLELIST;
 						Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &pso);
 					};
 					static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
@@ -4749,7 +4747,7 @@ void EditorComponent::Render() const
 						mem.offset,
 					};
 					device->BindVertexBuffers(vbs, 0, arraysize(vbs), strides, offsets, cmd);
-					device->BindIndexBuffer(&mem.buffer, IndexBufferFormat::UINT32, mem.offset + vb_size, cmd);
+					device->BindIndexBuffer(&mem.buffer, IndexBufferFormat_UINT32, mem.offset + vb_size, cmd);
 
 					device->DrawIndexed(index_count, 0, 0, cmd);
 					device->EventEnd(cmd);
@@ -4933,7 +4931,7 @@ void EditorComponent::Compose(CommandList cmd) const
 		params.v_align = Protean::Font::WIFALIGN_CENTER;
 		params.size = 30;
 		params.shadow_softness = 1;
-		if (colorspace != ColorSpace::SRGB)
+		if (colorspace != ColorSpace_SRGB)
 		{
 			params.enableLinearOutputMapping(9);
 		}
@@ -5028,8 +5026,8 @@ void EditorComponent::ResizeViewport3D()
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 
-			desc.format = Format::R8_UNORM;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+			desc.format = Format_R8_UNORM;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 			if (renderPath->getMSAASampleCount() > 1)
 			{
 				desc.sample_count = renderPath->getMSAASampleCount();
@@ -5055,12 +5053,12 @@ void EditorComponent::ResizeViewport3D()
 			TextureDesc desc;
 			desc.width = renderResultDesc.width;
 			desc.height = renderResultDesc.height;
-			desc.format = Format::R8_UNORM;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc.swizzle.r = ComponentSwizzle::R;
-			desc.swizzle.g = ComponentSwizzle::R;
-			desc.swizzle.b = ComponentSwizzle::R;
-			desc.swizzle.a = ComponentSwizzle::R;
+			desc.format = Format_R8_UNORM;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
+			desc.swizzle.r = ComponentSwizzle_R;
+			desc.swizzle.g = ComponentSwizzle_R;
+			desc.swizzle.b = ComponentSwizzle_R;
+			desc.swizzle.a = ComponentSwizzle_R;
 			device->CreateTexture(&desc, nullptr, &rt_dummyOutline);
 			device->SetName(&rt_dummyOutline, "editor.rt_dummyOutline");
 		}
@@ -5069,20 +5067,20 @@ void EditorComponent::ResizeViewport3D()
 			TextureDesc desc;
 			desc.width = renderResultDesc.width;
 			desc.height = renderResultDesc.height;
-			desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
+			desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
 			desc.sample_count = getMSAASampleCount();
 
-			desc.format = Format::D32_FLOAT;
-			desc.bind_flags = BindFlag::DEPTH_STENCIL;
-			desc.layout = ResourceState::DEPTHSTENCIL;
+			desc.format = Format_D32_FLOAT;
+			desc.bind_flags = BindFlag_DEPTH_STENCIL;
+			desc.layout = ResourceState_DEPTHSTENCIL;
 			device->CreateTexture(&desc, nullptr, &editor_depthbuffer);
 			device->SetName(&editor_depthbuffer, "editor.editor_depthbuffer");
 
 			if (getMSAASampleCount() > 1)
 			{
 				desc.format = renderResultDesc.format;
-				desc.bind_flags = BindFlag::RENDER_TARGET;
-				desc.layout = ResourceState::RENDERTARGET;
+				desc.bind_flags = BindFlag_RENDER_TARGET;
+				desc.layout = ResourceState_RENDERTARGET;
 				device->CreateTexture(&desc, nullptr, &editor_rendertarget);
 				device->SetName(&editor_rendertarget, "editor.editor_rendertarget");
 			}
@@ -5093,16 +5091,16 @@ void EditorComponent::ResizeViewport3D()
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			desc.format = renderResultDesc.format;
-			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
+			desc.bind_flags = BindFlag_RENDER_TARGET | BindFlag_SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &rt_metadataDummies);
 			device->SetName(&rt_metadataDummies, "editor.rt_metadataDummies");
 
 			if (renderPath->getMSAASampleCount() > 1)
 			{
 				desc.sample_count = renderPath->getMSAASampleCount();
-				desc.bind_flags = BindFlag::RENDER_TARGET;
-				desc.misc_flags = ResourceMiscFlag::TRANSIENT_ATTACHMENT;
-				desc.layout = ResourceState::RENDERTARGET;
+				desc.bind_flags = BindFlag_RENDER_TARGET;
+				desc.misc_flags = ResourceMiscFlag_TRANSIENT_ATTACHMENT;
+				desc.layout = ResourceState_RENDERTARGET;
 				device->CreateTexture(&desc, nullptr, &rt_metadataDummies_MSAA);
 				device->SetName(&rt_metadataDummies_MSAA, "editor.rt_metadataDummies_MSAA");
 			}
@@ -5376,7 +5374,7 @@ void EditorComponent::ConsumeHistoryOperation(bool undo)
 				for (size_t i = 0; i < modifiedSplineEntities.size(); ++i)
 				{
 					scene.Entity_Remove(modifiedSplineEntities[i], false); // no recursive!!!
-					scene.Entity_Serialize(archive, seri, INVALID_ENTITY, Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES); // no recursive!!!
+					scene.Entity_Serialize(archive, seri, INVALID_ENTITY, Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES); // no recursive!!!
 				}
 			}
 
@@ -5567,16 +5565,16 @@ void EditorComponent::Open(std::string filename)
 		return;
 	std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(filename));
 
-	FileType type = FileType::INVALID;
+	FileType type = FileType_INVALID;
 	auto it = filetypes.find(extension);
 	if (it != filetypes.end())
 	{
 		type = it->second;
 	}
-	if (type == FileType::INVALID)
+	if (type == FileType_INVALID)
 		return;
 
-	if (type == FileType::LUA)
+	if (type == FileType_LUA)
 	{
 		last_script_path = filename;
 		main->config.Set("last_script_path", last_script_path);
@@ -5587,19 +5585,19 @@ void EditorComponent::Open(std::string filename)
 		RegisterRecentlyUsed(filename);
 		return;
 	}
-	if (type == FileType::VIDEO)
+	if (type == FileType_VIDEO)
 	{
 		GetCurrentScene().Entity_CreateVideo(Protean::Helper::GetFileNameFromPath(filename), filename);
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
-	if (type == FileType::SOUND)
+	if (type == FileType_SOUND)
 	{
 		GetCurrentScene().Entity_CreateSound(Protean::Helper::GetFileNameFromPath(filename), filename);
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
-	if (type == FileType::TEXT)
+	if (type == FileType_TEXT)
 	{
 		Entity entity = CreateEntity();
 		Protean::SpriteFont& font = GetCurrentScene().fonts.Create(entity);
@@ -5621,7 +5619,7 @@ void EditorComponent::Open(std::string filename)
 		componentsWnd.RefreshEntityTree();
 		return;
 	}
-	if (type == FileType::IMAGE)
+	if (type == FileType_IMAGE)
 	{
 		Scene& scene = GetCurrentScene();
 		Entity entity = CreateEntity();
@@ -5653,23 +5651,23 @@ void EditorComponent::Open(std::string filename)
 	Protean::JobSystem::Execute(loadmodel_workload, [=] (Protean::JobSystem::JobArgs) {
 		Protean::Backlog::post("[Editor] started loading model: " + filename);
 		Protean::Allocator::shared_ptr<Scene> scene = Protean::Allocator::make_shared_single<Scene>();
-		if (type == FileType::WISCENE)
+		if (type == FileType_WISCENE)
 		{
 			Protean::LoadModel(*scene, filename);
 		}
-		else if (type == FileType::OBJ)
+		else if (type == FileType_OBJ)
 		{
 			ImportModel_OBJ(filename, *scene);
 		}
-		else if (type == FileType::GLTF || type == FileType::GLB || type == FileType::VRM || type == FileType::VRMA)
+		else if (type == FileType_GLTF || type == FileType_GLB || type == FileType_VRM || type == FileType_VRMA)
 		{
 			ImportModel_GLTF(filename, *scene);
 		}
-		else if (type == FileType::FBX)
+		else if (type == FileType_FBX)
 		{
 			ImportModel_FBX(filename, *scene);
 		}
-		else if (type == FileType::PLY)
+		else if (type == FileType_PLY)
 		{
 			ImportModel_PLY(filename, *scene);
 		}
@@ -5684,7 +5682,7 @@ void EditorComponent::Open(std::string filename)
 			const size_t camera_count_prev = target_scene.cameras.GetCount();
 			const size_t transform_count_prev = target_scene.transforms.GetCount();
 
-			if (type == FileType::WISCENE && target_editorscene.path.empty())
+			if (type == FileType_WISCENE && target_editorscene.path.empty())
 			{
 				target_editorscene.path = filename;
 			}
@@ -5692,7 +5690,7 @@ void EditorComponent::Open(std::string filename)
 			target_scene.Merge(*scene);
 
 			// Place the imported model in front of the camera:
-			if (type != FileType::WISCENE && generalWnd.placeInFrontOfCameraCheckBox.GetCheck())
+			if (type != FileType_WISCENE && generalWnd.placeInFrontOfCameraCheckBox.GetCheck())
 			{
 				// Imported models always have a root transform entity
 				if (transform_count_prev < target_scene.transforms.GetCount())
@@ -5763,19 +5761,19 @@ void EditorComponent::Save(const std::string& filename)
 
 	const std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(filename));
 
-	auto type = FileType::INVALID;
+	auto type = FileType_INVALID;
 	const auto it = filetypes.find(extension);
 	if (it != filetypes.end())
 	{
 		type = it->second;
 	}
-	if (type == FileType::INVALID)
+	if (type == FileType_INVALID)
 		return;
 
-	if (type == FileType::WISCENE || type == FileType::HEADER || type == FileType::CPP)
+	if (type == FileType_WISCENE || type == FileType_HEADER || type == FileType_CPP)
 	{
-		const bool dump_to_header = type == FileType::HEADER;
-		const bool dump_to_cpp = type == FileType::CPP;
+		const bool dump_to_header = type == FileType_HEADER;
+		const bool dump_to_cpp = type == FileType_CPP;
 
 		Protean::Archive archive = (dump_to_header || dump_to_cpp) ? Protean::Archive() : Protean::Archive(filename, false);
 		if (archive.IsOpen())
@@ -5843,7 +5841,7 @@ void EditorComponent::Save(const std::string& filename)
 			return;
 		}
 	}
-	else if (type == FileType::GLTF || type == FileType::GLB)
+	else if (type == FileType_GLTF || type == FileType_GLB)
 	{
 		ExportModel_GLTF(filename, GetCurrentScene());
 	}
@@ -5905,11 +5903,11 @@ Texture EditorComponent::CreateThumbnail(Texture texture, uint32_t target_width,
 	// Crop target:
 	{
 		TextureDesc desc = thumbnail.desc;
-		desc.format = Format::R8G8B8A8_UNORM;
+		desc.format = Format_R8G8B8A8_UNORM;
 		desc.width = current_width;
 		desc.height = current_height;
 		desc.mip_levels = mipmaps? 0 : 1;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET | BindFlag::UNORDERED_ACCESS;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET | BindFlag_UNORDERED_ACCESS;
 		Texture upsized;
 		device->CreateTexture(&desc, nullptr, &upsized);
 		device->SetName(&upsized, "editor.crop.upsized");
@@ -5919,7 +5917,7 @@ Texture EditorComponent::CreateThumbnail(Texture texture, uint32_t target_width,
 		vp.height = (float)desc.height;
 		device->BindViewports(1, &vp, cmd);
 
-		RenderPassImage rp = RenderPassImage::RenderTarget(&upsized, RenderPassImage::LoadOp::CLEAR);
+		RenderPassImage rp = RenderPassImage::RenderTarget(&upsized, RenderPassImage::LoadOp_CLEAR);
 		device->RenderPassBegin(&rp, 1, cmd);
 
 		Protean::Canvas canvas;
@@ -5962,11 +5960,11 @@ Texture EditorComponent::CreateThumbnail(Texture texture, uint32_t target_width,
 	while (thumbnail.desc.width > target_width || thumbnail.desc.height > target_height)
 	{
 		TextureDesc desc = thumbnail.desc;
-		desc.format = Format::R8G8B8A8_UNORM;
+		desc.format = Format_R8G8B8A8_UNORM;
 		desc.width = std::max(target_width, desc.width / 4u);
 		desc.height = std::max(target_height, desc.height / 4u);
 		desc.mip_levels = mipmaps ? 0 : 1;
-		desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::RENDER_TARGET | BindFlag::UNORDERED_ACCESS;
+		desc.bind_flags = BindFlag_SHADER_RESOURCE | BindFlag_RENDER_TARGET | BindFlag_UNORDERED_ACCESS;
 		Texture downsized;
 		device->CreateTexture(&desc, nullptr, &downsized);
 		device->SetName(&downsized, "editor.crop.downsized");
@@ -6194,7 +6192,7 @@ void EditorComponent::CheckBonePickingEnabled()
 						const HierarchyComponent* hierarchy = scene.hierarchy.GetComponent(child);
 						if (hierarchy != nullptr && hierarchy->parentID == entity && scene.transforms.Contains(child))
 						{
-							if (bodypart == int(HumanoidComponent::HumanoidBone::Hips))
+							if (bodypart == int(HumanoidComponent::HumanoidBone_Hips))
 							{
 								// skip root-hip connection
 								child_found = true;
@@ -6264,12 +6262,12 @@ void EditorComponent::UpdateLocalGlobalButton()
 	if (translator.isLocalSpace)
 	{
 		localGlobalButton.SetText(ICON_LOCAL_SPACE);
-		localGlobalButton.SetTooltip("Toggle from Local coordinate space to Global for Translate and Rotate\nHotkey: " + GetInputString(EditorActions::LOCAL_GLOBAL_TOGGLE_ACTION));
+		localGlobalButton.SetTooltip("Toggle from Local coordinate space to Global for Translate and Rotate\nHotkey: " + GetInputString(EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION));
 	}
 	else
 	{
 		localGlobalButton.SetText(ICON_GLOBAL_SPACE);
-		localGlobalButton.SetTooltip("Toggle from Global coordinate space to Local for Translate and Rotate\nHotkey: " + GetInputString(EditorActions::LOCAL_GLOBAL_TOGGLE_ACTION));
+		localGlobalButton.SetTooltip("Toggle from Global coordinate space to Local for Translate and Rotate\nHotkey: " + GetInputString(EditorActions_LOCAL_GLOBAL_TOGGLE_ACTION));
 	}
 }
 
@@ -6286,10 +6284,10 @@ void EditorComponent::UpdateDynamicWidgets()
 
 	static std::string tmp;
 
-	if (saveButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Save) != nullptr)
+	if (saveButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Save) != nullptr)
 	{
 		tmp = ICON_SAVE " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Save);
+		tmp += current_localization.Get((size_t)EditorLocalization_Save);
 		saveButton.SetText(tmp);
 	}
 	else
@@ -6297,10 +6295,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		saveButton.SetText(saveButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE ? ICON_SAVE " Save" : ICON_SAVE);
 	}
 
-	if (openButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Open) != nullptr)
+	if (openButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Open) != nullptr)
 	{
 		tmp = ICON_OPEN " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Open);
+		tmp += current_localization.Get((size_t)EditorLocalization_Open);
 		openButton.SetText(tmp);
 	}
 	else
@@ -6308,10 +6306,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		openButton.SetText(openButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE ? ICON_OPEN " Open" : ICON_OPEN);
 	}
 
-	if (contentBrowserButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::ContentBrowser) != nullptr)
+	if (contentBrowserButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_ContentBrowser) != nullptr)
 	{
 		tmp = ICON_CONTENT_BROWSER " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::ContentBrowser);
+		tmp += current_localization.Get((size_t)EditorLocalization_ContentBrowser);
 		contentBrowserButton.SetText(tmp);
 	}
 	else
@@ -6320,10 +6318,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 
 
-	if (logButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Backlog) != nullptr)
+	if (logButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Backlog) != nullptr)
 	{
 		tmp = ICON_BACKLOG " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Backlog);
+		tmp += current_localization.Get((size_t)EditorLocalization_Backlog);
 		logButton.SetText(tmp);
 	}
 	else
@@ -6331,10 +6329,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		logButton.SetText(logButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE ? ICON_BACKLOG " Backlog" : ICON_BACKLOG);
 	}
 
-	if (profilerButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Profiler) != nullptr)
+	if (profilerButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Profiler) != nullptr)
 	{
 		tmp = ICON_PROFILER " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Profiler);
+		tmp += current_localization.Get((size_t)EditorLocalization_Profiler);
 		profilerButton.SetText(tmp);
 	}
 	else
@@ -6342,10 +6340,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		profilerButton.SetText(profilerButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE ? ICON_PROFILER " Profiler" : ICON_PROFILER);
 	}
 
-	if (bugButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::BugReport) != nullptr)
+	if (bugButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_BugReport) != nullptr)
 	{
 		tmp = ICON_BUG " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::BugReport);
+		tmp += current_localization.Get((size_t)EditorLocalization_BugReport);
 		bugButton.SetText(tmp);
 	}
 	else
@@ -6355,10 +6353,10 @@ void EditorComponent::UpdateDynamicWidgets()
 
 	if (fullscreen)
 	{
-		if (fullscreenButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Windowed) != nullptr)
+		if (fullscreenButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Windowed) != nullptr)
 		{
 			tmp = ICON_WINDOWED " ";
-			tmp += current_localization.Get((size_t)EditorLocalization::Windowed);
+			tmp += current_localization.Get((size_t)EditorLocalization_Windowed);
 			fullscreenButton.SetText(tmp);
 		}
 		else
@@ -6368,10 +6366,10 @@ void EditorComponent::UpdateDynamicWidgets()
 	}
 	else
 	{
-		if (fullscreenButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::FullScreen) != nullptr)
+		if (fullscreenButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_FullScreen) != nullptr)
 		{
 			tmp = ICON_FULLSCREEN " ";
-			tmp += current_localization.Get((size_t)EditorLocalization::FullScreen);
+			tmp += current_localization.Get((size_t)EditorLocalization_FullScreen);
 			fullscreenButton.SetText(tmp);
 		}
 		else
@@ -6380,10 +6378,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		}
 	}
 
-	if (aboutButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::About) != nullptr)
+	if (aboutButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_About) != nullptr)
 	{
 		tmp = ICON_HELP " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::About);
+		tmp += current_localization.Get((size_t)EditorLocalization_About);
 		aboutButton.SetText(tmp);
 	}
 	else
@@ -6391,10 +6389,10 @@ void EditorComponent::UpdateDynamicWidgets()
 		aboutButton.SetText(aboutButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE ? ICON_HELP " About" : ICON_HELP);
 	}
 
-	if (exitButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization::Exit) != nullptr)
+	if (exitButton.GetState() > Protean::Gui::WIDGETSTATE::IDLE && current_localization.Get((size_t)EditorLocalization_Exit) != nullptr)
 	{
 		tmp = ICON_EXIT " ";
-		tmp += current_localization.Get((size_t)EditorLocalization::Exit);
+		tmp += current_localization.Get((size_t)EditorLocalization_Exit);
 		exitButton.SetText(tmp);
 	}
 	else
@@ -6566,30 +6564,30 @@ void EditorComponent::UpdateDynamicWidgets()
 
 
 
-	if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel::Error)
+	if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel_Error)
 	{
 		const float pulse = std::sin(outlineTimer * XM_2PI * 1.5f) * 0.5f + 0.5f;
 		const XMFLOAT4 alertColor = Protean::Math::Lerp( Protean::Color::Error(), XMFLOAT4(0, 0, 0, 1), pulse * 0.6f);
 		logButton.sprites[Protean::Gui::IDLE].params.color = alertColor;
-		logButton.sprites[Protean::Gui::IDLE].params.gradient = Protean::Image::Params::Gradient::None;
+		logButton.sprites[Protean::Gui::IDLE].params.gradient = Protean::Image::Params::Gradient_None;
 		logButton.sprites[Protean::Gui::FOCUS].params.color = alertColor;
-		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient::None;
+		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient_None;
 	}
-	else if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel::Warning)
+	else if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel_Warning)
 	{
 		const float pulse = std::sin(outlineTimer * XM_2PI * 1.5f) * 0.5f + 0.5f;
 		const XMFLOAT4 alertColor = Protean::Math::Lerp(Protean::Color::Warning(), XMFLOAT4(0, 0, 0, 1), pulse * 0.6f);
 		logButton.sprites[Protean::Gui::IDLE].params.color = alertColor;
-		logButton.sprites[Protean::Gui::IDLE].params.gradient = Protean::Image::Params::Gradient::None;
+		logButton.sprites[Protean::Gui::IDLE].params.gradient = Protean::Image::Params::Gradient_None;
 		logButton.sprites[Protean::Gui::FOCUS].params.color = alertColor;
-		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient::None;
+		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient_None;
 	}
 	else
 	{
 		logButton.sprites[Protean::Gui::IDLE].params.color = color_off;
-		logButton.sprites[Protean::Gui::IDLE].params.gradient = generalWnd.disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient::None : Protean::Image::Params::Gradient::Linear;
+		logButton.sprites[Protean::Gui::IDLE].params.gradient = generalWnd.disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient_None : Protean::Image::Params::Gradient_Linear;
 		logButton.sprites[Protean::Gui::FOCUS].params.color = color_on;
-		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient::None;
+		logButton.sprites[Protean::Gui::FOCUS].params.gradient = Protean::Image::Params::Gradient_None;
 	}
 
 	ofs = padding;
@@ -6722,9 +6720,9 @@ void EditorComponent::RefreshSceneList()
 		std::string tabText;
 		if (editorscene->path.empty())
 		{
-			if (current_localization.Get((size_t)EditorLocalization::UntitledScene))
+			if (current_localization.Get((size_t)EditorLocalization_UntitledScene))
 			{
-				tabText = current_localization.Get((size_t)EditorLocalization::UntitledScene);
+				tabText = current_localization.Get((size_t)EditorLocalization_UntitledScene);
 			}
 			else
 			{
@@ -6871,7 +6869,7 @@ bool EditorComponent::CheckUnsavedChanges(int scene_index)
 	std::string message = sceneName.empty() ? "Do you want to save the untitled scene?" : "Do you want to save changes to \"" + sceneName + "\"?";
 	Protean::Helper::MessageBoxResult result = Protean::Helper::messageBoxCustom(message, "Unsaved changes", "YesNoCancel");
 
-	if (result == Protean::Helper::MessageBoxResult::Yes)
+	if (result == Protean::Helper::MessageBoxResult_Yes)
 	{
 		// User wants to save
 		if (editorscene.path.empty())
@@ -6887,12 +6885,12 @@ bool EditorComponent::CheckUnsavedChanges(int scene_index)
 			return true;
 		}
 	}
-	else if (result == Protean::Helper::MessageBoxResult::No)
+	else if (result == Protean::Helper::MessageBoxResult_No)
 	{
 		// User doesn't want to save, proceed
 		return true;
 	}
-	else if (result == Protean::Helper::MessageBoxResult::OK)
+	else if (result == Protean::Helper::MessageBoxResult_OK)
 	{
 		// IOS default OK return since we don't have messagebox yet
 		return true;
@@ -7020,7 +7018,7 @@ void EditorComponent::ReloadTerrainProps()
 				archive,
 				seri,
 				prop.source_entity,
-				Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+				Protean::Scene::EntitySerializeFlags_RECURSIVE | Protean::Scene::EntitySerializeFlags_KEEP_INTERNAL_ENTITY_REFERENCES
 			);
 			archive.WriteData(prop.data);
 			any_reloaded = true;
@@ -7034,7 +7032,7 @@ void EditorComponent::ReloadTerrainProps()
 
 	if (any_reloaded)
 	{
-		Protean::Backlog::post("Terrain props reloaded", Protean::Backlog::LogLevel::Default);
+		Protean::Backlog::post("Terrain props reloaded", Protean::Backlog::LogLevel_Default);
 	}
 }
 
