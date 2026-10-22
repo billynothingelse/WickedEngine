@@ -86,7 +86,10 @@ New enums use PascalCase value names (`MyEnum_Value1`). Enums converted from Wic
 their original value spelling (`Format_R8G8B8A8_UNORM`).
 
 Bit flag enums opt into the type safe operators with `enable_bitmask_operators` (see
-`core/CommonInclude.h`).
+`core/common_include.h`).
+When a flag combines other flags inside the enum body, cast them to `int`
+(`MyFlags_ALL = (int)MyFlags_A | (int)MyFlags_B`). MSVC otherwise instantiates
+`enable_bitmask_operators` before it is specialized and fails with C2908.
 
 ## Structs
 

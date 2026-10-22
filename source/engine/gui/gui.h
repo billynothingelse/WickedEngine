@@ -103,7 +103,7 @@ namespace Protean::Gui
 		LocalizationEnabled_Items = 1 << 2,		// ComboBox items
 		LocalizationEnabled_Children = 1 << 3,	// Window children
 
-		LocalizationEnabled_All = LocalizationEnabled_Text | LocalizationEnabled_Tooltip | LocalizationEnabled_Items | LocalizationEnabled_Children,
+		LocalizationEnabled_All = (int)LocalizationEnabled_Text | (int)LocalizationEnabled_Tooltip | (int)LocalizationEnabled_Items | (int)LocalizationEnabled_Children,
 	};
 
 	struct Theme
@@ -926,9 +926,9 @@ namespace Protean::Gui
 			WindowControls_DISABLE_TITLE_BAR = 1 << 11,
 			WindowControls_FIT_ALL_WIDGETS_VERTICAL = 1 << 12, // auto resize window vertically to fit all widgets that are in it
 
-			WindowControls_RESIZE = WindowControls_RESIZE_LEFT | WindowControls_RESIZE_TOP | WindowControls_RESIZE_RIGHT | WindowControls_RESIZE_BOTTOM | WindowControls_RESIZE_TOPLEFT | WindowControls_RESIZE_TOPRIGHT | WindowControls_RESIZE_BOTTOMLEFT | WindowControls_RESIZE_BOTTOMRIGHT,
-			WindowControls_CLOSE_AND_COLLAPSE = WindowControls_CLOSE | WindowControls_COLLAPSE,
-			WindowControls_ALL = WindowControls_RESIZE | WindowControls_MOVE | WindowControls_CLOSE | WindowControls_COLLAPSE,
+			WindowControls_RESIZE = (int)WindowControls_RESIZE_LEFT | (int)WindowControls_RESIZE_TOP | (int)WindowControls_RESIZE_RIGHT | (int)WindowControls_RESIZE_BOTTOM | (int)WindowControls_RESIZE_TOPLEFT | (int)WindowControls_RESIZE_TOPRIGHT | (int)WindowControls_RESIZE_BOTTOMLEFT | (int)WindowControls_RESIZE_BOTTOMRIGHT,
+			WindowControls_CLOSE_AND_COLLAPSE = (int)WindowControls_CLOSE | (int)WindowControls_COLLAPSE,
+			WindowControls_ALL = (int)WindowControls_RESIZE | (int)WindowControls_MOVE | (int)WindowControls_CLOSE | (int)WindowControls_COLLAPSE,
 		};
 		void Create(const std::string& name, WindowControls window_controls = WindowControls_ALL);
 

@@ -126,7 +126,7 @@ namespace Protean
 			ResourceType_SCRIPT		= 1 << 3,
 			ResourceType_FONT		= 1 << 4,
 
-			ResourceType_ALL = ResourceType_TEXTURE | ResourceType_VIDEO | ResourceType_SOUND | ResourceType_SCRIPT | ResourceType_FONT
+			ResourceType_ALL = (int)ResourceType_TEXTURE | (int)ResourceType_VIDEO | (int)ResourceType_SOUND | (int)ResourceType_SCRIPT | (int)ResourceType_FONT
 		};
 
 		// Returns a collection of all resources that are alive

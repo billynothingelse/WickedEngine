@@ -355,6 +355,11 @@ inline long long AtomicLoad(const volatile long long* ptr)
 
 // Enable enum flags:
 //	https://www.justsoftwaresolutions.co.uk/cplusplus/using-enum-classes-as-bitfields.html
+//	template<> struct enable_bitmask_operators<MyFlags> : std::true_type {};
+// When an enumerator combines other enumerators inside the enum body, cast them to int:
+//	MyFlags_ALL = (int)MyFlags_A | (int)MyFlags_B
+// MSVC gives enumerators the enum type inside the body, so the bitmask operators below would
+// be considered there and enable_bitmask_operators<MyFlags> instantiated before it is specialized.
 template<typename E>
 struct enable_bitmask_operators : std::false_type {};
 
