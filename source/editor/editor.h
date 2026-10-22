@@ -12,6 +12,7 @@
 #include "paint_tool_window.h"
 #include "general_window.h"
 #include "icon_definitions.h"
+#include "game_play.h"
 
 class Editor;
 class EditorComponent : public Protean::RenderPath2D
@@ -47,6 +48,16 @@ public:
 	Protean::PickResult navtest_goal_pick;
 	Protean::PathQuery navtest_pathquery;
 
+	// Game module: Play / Pause / Stop
+	Protean::Gui::Button gamePlayButton;
+	Protean::Gui::Button gamePauseButton;
+	Protean::Gui::Button gameStopButton;
+	EditorGamePlay gamePlay;
+	void PlayGame();
+	void PauseGame();
+	void StopGame();
+
+	// Lua scripts: run last script / kill running scripts
 	Protean::Gui::Button playButton;
 	Protean::Gui::Button stopButton;
 	Protean::Gui::Button projectCreatorButton;

@@ -103,28 +103,43 @@ workspace "Protean"
 
 	filter {}
 
--- Shared settings for anything that links the engine
+local DEV = "configurations:Debug or configurations:Development"
+local SHIPPING = "configurations:Shipping"
+
+local APPLE_FRAMEWORKS = {
+	"Metal.framework", "MetalFX.framework", "QuartzCore.framework", "Cocoa.framework",
+	"IOKit.framework", "GameController.framework", "AudioToolbox.framework",
+	"CoreAudio.framework", "VideoToolbox.framework", "CoreMedia.framework", "CoreVideo.framework",
+}
+
+-- Shared settings for anything that links the engine.
+--	Debug/Development: the engine is a shared library (Protean.dll / libProtean.so), so the editor, the
+--	launcher and the game module all share one engine instance.
+--	Shipping: the engine and its dependencies are linked statically.
 function UseEngine()
 	includedirs { SOURCE .. "/engine", EXTERNAL }
-	links { "Engine", "Jolt", "External" }
+	links { "Engine" }
+	filter (SHIPPING)
+		links { "Jolt" }
+	filter {}
+	-- Small stateless helper libraries (meshoptimizer, stb, ...) are also used directly by applications
+	links { "External" }
 
 	filter "system:windows"
 		-- system libraries are pulled in with #pragma comment(lib) in the engine sources
 		postbuildcommands {
 			'{COPYFILE} "' .. EXTERNAL .. '/dxc/bin/dxcompiler.dll" "%{cfg.targetdir}"',
 		}
+	filter { "system:linux", SHIPPING }
+		links { "FAudio" }
 	filter "system:linux"
-		links { "FAudio", "SDL2", "dl", "pthread" }
+		links { "SDL2", "dl", "pthread" }
 		linkoptions { "-Wl,--export-dynamic", "-Wl,-rpath,'$$ORIGIN'" }
 		postbuildcommands {
 			'{COPYFILE} "' .. EXTERNAL .. '/dxc/bin/libdxcompiler.so" "%{cfg.targetdir}"',
 		}
-	filter "system:macosx"
-		links {
-			"Metal.framework", "MetalFX.framework", "QuartzCore.framework", "Cocoa.framework",
-			"IOKit.framework", "GameController.framework", "AudioToolbox.framework",
-			"CoreAudio.framework", "VideoToolbox.framework", "CoreMedia.framework", "CoreVideo.framework",
-		}
+	filter { "system:macosx", SHIPPING }
+		links (APPLE_FRAMEWORKS)
 	filter {}
 end
 
@@ -178,7 +193,6 @@ end
 group "Engine"
 
 project "Engine"
-	kind "StaticLib"
 	location (ROOT .. "/build/projects/Engine")
 	targetname "Protean"
 	includedirs { SOURCE .. "/engine", EXTERNAL }
@@ -198,9 +212,36 @@ project "Engine"
 		includedirs { EXTERNAL .. "/FAudio/include" }
 	filter "system:macosx"
 		files { SOURCE .. "/engine/**.mm" }
+
+	filter (SHIPPING)
+		kind "StaticLib"
+
+	filter (DEV)
+		kind "SharedLib"
+		links { "Jolt", "External" }
+	-- Windows: export every engine symbol through a generated .def file (no dllexport annotations needed)
+	filter { DEV, "system:windows" }
+		dependson { "DefGenerator" }
+		prelinkcommands {
+			'"' .. path.translate(BIN .. "/def_generator.exe", "\\") .. '" "' .. TEMP .. '/Protean.def" Protean "' .. TEMP .. '"',
+		}
+		linkoptions { '/DEF:"' .. TEMP .. '/Protean.def"' }
+	filter { DEV, "system:linux" }
+		links { "FAudio", "SDL2", "dl", "pthread" }
+	filter { DEV, "system:macosx" }
+		links (APPLE_FRAMEWORKS)
 	filter {}
 
 group "Tools"
+
+-- Writes the export definitions of the engine DLL from its object files (Windows)
+project "DefGenerator"
+	kind "ConsoleApp"
+	location (ROOT .. "/build/projects/Tools")
+	targetname "def_generator"
+	exceptionhandling "Default"
+	rtti "Default"
+	files { SOURCE .. "/tools/def_generator/**.cpp" }
 
 project "ShaderCompiler"
 	kind "ConsoleApp"
@@ -215,7 +256,7 @@ project "Editor"
 	kind "WindowedApp"
 	location (ROOT .. "/build/projects/Editor")
 	targetname "ProteanEditor"
-	includedirs { SOURCE .. "/editor" }
+	includedirs { SOURCE .. "/editor", SOURCE .. "/game" }
 	files {
 		SOURCE .. "/editor/*.h", SOURCE .. "/editor/*.cpp",
 		EXTERNAL .. "/xatlas/xatlas.cpp", EXTERNAL .. "/miniply/miniply.cpp", -- ufbx.c is included by model_importer_fbx.cpp
@@ -224,6 +265,11 @@ project "Editor"
 	pchheader "stdafx.h"
 	pchsource (SOURCE .. "/editor/stdafx.cpp")
 	UseEngine()
+	-- Play / Pause / Stop of the game module needs the shared engine
+	filter (DEV)
+		defines { "PROTEAN_EDITOR_GAME_MODULE" }
+		dependson { "Game" }
+	filter {}
 	filter "files:../external/**"
 		enablepch "Off"
 		warnings "Off"
@@ -235,38 +281,36 @@ project "Editor"
 		files { SOURCE .. "/editor/main_macos.mm" }
 	filter {}
 
--- The game module. In Debug/Development it is a shared library (with the engine linked into it)
--- loaded by the Launcher, in Shipping it is a standalone executable.
+-- The game module.
+--	Debug/Development: shared library (Game.dll / libGame.so) linking the engine shared library, hosted by
+--	the Launcher or by the Editor (Play / Pause / Stop).
+--	Shipping: standalone executable with the engine linked statically.
 project "Game"
 	location (ROOT .. "/build/projects/Game")
 	debugdir (DATA)
 	includedirs { SOURCE .. "/game" }
-	files { SOURCE .. "/game/**.h", SOURCE .. "/game/**.cpp" }
-	removefiles { SOURCE .. "/game/launcher/**" }
+	files { SOURCE .. "/game/*.h", SOURCE .. "/game/*.cpp" }
 	UseEngine()
-	filter "configurations:Debug or configurations:Development"
+	filter (DEV)
 		kind "SharedLib"
 		defines { "PROTEAN_GAME_DLL" }
-		removefiles { SOURCE .. "/game/main/**" }
-	filter "configurations:Shipping"
+	filter (SHIPPING)
 		kind "WindowedApp"
 		targetname "ProteanGame"
+		files { SOURCE .. "/game/host/**", SOURCE .. "/game/main/**" }
 	filter {}
 
 project "Launcher"
 	location (ROOT .. "/build/projects/Game")
 	targetname "ProteanGame"
-	debugdir (DATA)
-	includedirs { SOURCE .. "/engine", SOURCE .. "/game" }
-	files { SOURCE .. "/game/launcher/**.h", SOURCE .. "/game/launcher/**.cpp" }
-	dependson { "Game" }
 	kind "WindowedApp"
+	debugdir (DATA)
+	includedirs { SOURCE .. "/game" }
+	files { SOURCE .. "/game/host/**", SOURCE .. "/game/launcher/**" }
+	dependson { "Game" }
+	UseEngine()
 	-- Shipping builds the game as a standalone executable, no launcher needed
 	removeconfigurations { "Shipping" }
-	filter "system:linux"
-		links { "dl" }
-		linkoptions { "-Wl,-rpath,'$$ORIGIN'" }
-	filter {}
 
 group "Samples"
 

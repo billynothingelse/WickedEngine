@@ -72,36 +72,60 @@ cd data/editor && ../../binaries/linux-x64-development/ProteanEditor
 
 ### Configurations
 
-| Configuration | Optimised | Game module                                              |
-|---------------|-----------|----------------------------------------------------------|
-| Debug         | no        | `Game` shared library, started by the `Launcher` exe      |
-| Development   | yes       | `Game` shared library, started by the `Launcher` exe      |
-| Shipping      | yes       | `Game` is a standalone executable, engine linked statically |
+| Configuration | Optimised | Engine                         | Game module                                         |
+|---------------|-----------|--------------------------------|-----------------------------------------------------|
+| Debug         | no        | shared library (`Protean.dll`) | `Game.dll`, hosted by the Launcher or the Editor    |
+| Development   | yes       | shared library (`Protean.dll`) | `Game.dll`, hosted by the Launcher or the Editor    |
+| Shipping      | yes       | static library                 | linked into the standalone `ProteanGame` executable |
+
+In Debug and Development the editor, the launcher and the game module all link the same engine
+shared library, so they share one engine state (scene registry, graphics device, job system,
+allocators, ...). On Windows the DLL exports are generated from the engine's object files by
+`source/tools/def_generator` (no `__declspec(dllexport)` annotations needed); on Linux the
+`libProtean.so` exports everything by default.
 
 ### Game module
 
-Game code lives in `source/game`. `game.h/.cpp` hold the game itself (an `Application` plus a
-`RenderPath3D`), `game_platform.cpp` owns the window and main loop, and `game_module.h` defines the
-`ProteanGameMain` entry point shared by both build modes:
+Game code lives in `source/game`:
 
-- Debug / Development: `Game` builds as `Game.dll` / `libGame.so` (with the engine linked into it)
-  and `ProteanGame` (the `Launcher` project) loads it and calls `ProteanGameMain`.
-- Shipping: `Game` builds as a single executable; `source/game/main/main.cpp` calls
-  `ProteanGameMain` directly.
+- `game_module.h`: the interface between the game and its host. A game implements
+  `Protean::GameModule` (`OnStart`, `OnStop`, `OnUpdate`, `OnFixedUpdate`) and exports
+  `ProteanCreateGameModule` / `ProteanDestroyGameModule`. `OnStart` receives a `GameContext` with the
+  scene, camera and render path to use.
+- `game.h/.cpp`: the game itself.
+- `host/`: the standalone host (window, main loop, `Application`) used by the launcher and by Shipping.
+- `launcher/`: `ProteanGame` for Debug/Development, loads `Game.dll` / `libGame.so` and hosts it.
+- `main/`: the Shipping entry point.
 
 Run it from the `data` folder: `cd data && ../binaries/linux-x64-development/ProteanGame`.
+
+### Playing the game in the editor
+
+In Debug and Development builds the editor's top bar has **Play**, **Pause** and **Stop**:
+
+- **Play** loads `Game.dll` / `libGame.so` from the editor's folder, snapshots the current scene and calls
+  `OnStart` with that scene (`GameContext::InEditor` is true; the editor keeps control of its camera).
+  Physics simulation is switched on while playing. Pressing Play while paused resumes.
+- **Pause** stops calling the game and the physics simulation.
+- **Stop** calls `OnStop`, unloads the game module and restores the scene snapshot, so the game can be
+  rebuilt while the editor keeps running. Play also stops when switching, closing or opening a scene.
+
+The game must release anything it registered with the engine (event subscriptions, callbacks, running
+jobs) in `OnStop`, because its code is unloaded afterwards. The script buttons next to them run and stop
+the last Lua script, as before.
 
 ## Projects
 
 | Project        | Kind                         | Notes                                        |
 |----------------|------------------------------|----------------------------------------------|
-| Engine         | static library (`Protean`)   | `source/engine`                              |
+| Engine         | `Protean` shared library (Debug/Development), static library (Shipping) | `source/engine` |
 | External       | static library               | small third party libraries + Lua            |
 | Jolt           | static library               | physics                                      |
 | FAudio         | static library (Linux only)  | audio backend                                |
 | Editor         | executable (`ProteanEditor`) | `source/editor`                              |
 | Game           | shared library / executable  | `source/game`                                |
-| Launcher       | executable (`ProteanGame`)   | loads the Game module, Debug/Development only |
+| Launcher       | executable (`ProteanGame`)   | hosts the Game module, Debug/Development only |
+| DefGenerator   | executable (`def_generator`) | writes the engine DLL exports on Windows      |
 | ShaderCompiler | executable                   | offline shader compilation                   |
 | Tests          | executable                   | engine feature tests                         |
 

@@ -38,6 +38,18 @@ rhi/d3d12/d3d12_cmd_list.cpp   command list recording
 
 Vulkan and Metal follow the same pattern.
 
+## Engine state
+
+The engine is a shared library in Debug/Development, used by the editor, the launcher and the game
+module at the same time. Mutable global state must therefore live in exactly one place:
+
+- Never put a `static` variable inside an `inline` function in a header, or an `inline` mutable
+  variable at namespace scope. Each module would get its own copy on Windows. Declare a function
+  in the header and define it (with its static) in a .cpp, like `GetScene()` or `CreateEntity()`.
+- Read-only constants (`constexpr`, `inline static const`) are fine.
+- Applications only call engine functions; they do not access engine global variables directly
+  (data can not be imported from a DLL without `__declspec(dllimport)`).
+
 ## Files and includes
 
 - File and folder names are lower case snake_case, without prefixes: `render/renderer.h`,

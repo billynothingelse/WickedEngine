@@ -28,6 +28,18 @@ using namespace Protean;
 
 namespace Protean
 {
+	Scene& GetScene()
+	{
+		static Scene scene;
+		return scene;
+	}
+
+	CameraComponent& GetCamera()
+	{
+		static CameraComponent camera;
+		return camera;
+	}
+
 	static constexpr uint32_t small_subtask_groupsize = 256u;
 
 	void Scene::Update(float dt)

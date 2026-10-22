@@ -1,20 +1,69 @@
-// Platform window + main loop for the game. Shared by the DLL and the Shipping executable.
-#include "game.h"
+#include "game_host.h"
+
+namespace Protean
+{
+	void GameHostRenderPath::Start()
+	{
+		RenderPath3D::Start();
+
+		GameContext context;
+		context.Scene = &GetScene();
+		context.Camera = &GetCamera();
+		context.RenderPath = this;
+		context.InEditor = false;
+		Module->OnStart(context);
+	}
+
+	void GameHostRenderPath::Stop()
+	{
+		Module->OnStop();
+		RenderPath3D::Stop();
+	}
+
+	void GameHostRenderPath::Update(f32 dt)
+	{
+		Module->OnUpdate(dt);
+		RenderPath3D::Update(dt);
+	}
+
+	void GameHostRenderPath::FixedUpdate()
+	{
+		Module->OnFixedUpdate();
+		RenderPath3D::FixedUpdate();
+	}
+
+	GameHost::GameHost(GameModule* module)
+	{
+		renderPath.Module = module;
+	}
+
+	void GameHost::Initialize()
+	{
+		Application::Initialize();
+
+		infoDisplay.active = true;
+		infoDisplay.watermark = true;
+		infoDisplay.resolution = true;
+		infoDisplay.fpsinfo = true;
+
+		ActivatePath(&renderPath);
+	}
+}
 
 #if defined(PLATFORM_WINDOWS_DESKTOP)
 
 namespace Protean
 {
-	static Game* game = nullptr;
+	static GameHost* host = nullptr;
 
-	static LRESULT CALLBACK GameWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	static LRESULT CALLBACK GameHostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
 		{
 		case WM_SIZE:
 		case WM_DPICHANGED:
-			if (game != nullptr && game->is_window_active)
-				game->SetWindow(hWnd);
+			if (host != nullptr && host->is_window_active)
+				host->SetWindow(hWnd);
 			break;
 		case WM_CHAR:
 			switch (wParam)
@@ -33,12 +82,12 @@ namespace Protean
 			Input::RawInput::ParseMessage((void*)lParam);
 			break;
 		case WM_KILLFOCUS:
-			if (game != nullptr)
-				game->is_window_active = false;
+			if (host != nullptr)
+				host->is_window_active = false;
 			break;
 		case WM_SETFOCUS:
-			if (game != nullptr)
-				game->is_window_active = true;
+			if (host != nullptr)
+				host->is_window_active = true;
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
@@ -49,10 +98,10 @@ namespace Protean
 		return 0;
 	}
 
-	i32 RunGame(i32 argc, char** argv)
+	i32 RunGameHost(i32 argc, char** argv, GameModule* module)
 	{
-		static Game instance;
-		game = &instance;
+		static GameHost instance(module);
+		host = &instance;
 
 		SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
@@ -60,7 +109,7 @@ namespace Protean
 		WNDCLASSEXW wcex = {};
 		wcex.cbSize = sizeof(WNDCLASSEX);
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc = GameWndProc;
+		wcex.lpfnWndProc = GameHostWndProc;
 		wcex.hInstance = hInstance;
 		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -70,7 +119,7 @@ namespace Protean
 		HWND hWnd = CreateWindowW(wcex.lpszClassName, L"Protean", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, 1920, 1080, nullptr, nullptr, hInstance, nullptr);
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 
-		game->SetWindow(hWnd);
+		host->SetWindow(hWnd);
 		Arguments::Parse(argc, argv);
 
 		MSG msg = {};
@@ -83,12 +132,12 @@ namespace Protean
 			}
 			else
 			{
-				game->Run();
+				host->Run();
 			}
 		}
 
 		JobSystem::ShutDown();
-		game = nullptr;
+		host = nullptr;
 		return (i32)msg.wParam;
 	}
 }
@@ -100,9 +149,9 @@ namespace Protean
 
 namespace Protean
 {
-	i32 RunGame(i32 argc, char** argv)
+	i32 RunGameHost(i32 argc, char** argv, GameModule* module)
 	{
-		static Game game;
+		static GameHost host(module);
 
 		sdl2::sdlsystem_ptr_t system = sdl2::make_sdlsystem(SDL_INIT_EVERYTHING | SDL_INIT_EVENTS);
 		sdl2::window_ptr_t window = sdl2::make_window(
@@ -113,14 +162,14 @@ namespace Protean
 		if (!window)
 			return 1;
 
-		game.SetWindow(window.get());
+		host.SetWindow(window.get());
 		Arguments::Parse(argc, argv);
 
 		bool quit = false;
 		while (!quit)
 		{
 			SDL_PumpEvents();
-			game.Run();
+			host.Run();
 
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
@@ -134,7 +183,7 @@ namespace Protean
 					if (event.window.event == SDL_WINDOWEVENT_CLOSE)
 						quit = true;
 					else if (event.window.event == SDL_WINDOWEVENT_RESIZED)
-						game.SetWindow(game.window);
+						host.SetWindow(host.window);
 					break;
 				default:
 					break;
@@ -149,5 +198,5 @@ namespace Protean
 }
 
 #else
-#error "Protean game: no platform layer for this target"
+#error "Protean game host: no platform layer for this target"
 #endif

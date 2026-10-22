@@ -1,28 +1,19 @@
 #pragma once
-#include "../engine/protean.h"
+#include "game_module.h"
 
 namespace Protean
 {
-	// The game's 3D view: owns the scene setup and per-frame game logic.
-	struct GameRenderPath : RenderPath3D
+	// The game itself: sets up a small scene and animates it
+	struct Game : GameModule
 	{
-		void Start() override;
-		void Update(f32 dt) override;
+		void OnStart(const GameContext& context) override;
+		void OnStop() override;
+		void OnUpdate(f32 dt) override;
 
 	private:
-		Entity cameraEntity = INVALID_ENTITY;
+		GameContext context;
 		Entity cubeEntity = INVALID_ENTITY;
+		Entity cameraEntity = INVALID_ENTITY;
 		f32 time = 0;
 	};
-
-	struct Game : Application
-	{
-		void Initialize() override;
-
-	private:
-		GameRenderPath renderPath;
-	};
-
-	// Creates the platform window and runs the main loop.
-	i32 RunGame(i32 argc, char** argv);
 }

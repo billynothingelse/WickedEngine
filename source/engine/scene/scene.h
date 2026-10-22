@@ -648,19 +648,11 @@ namespace Protean
 
 	// Helper that manages a global scene
 	//	(You don't need to use it, but it's an option for simplicity)
-	inline Scene& GetScene()
-	{
-		static Scene scene;
-		return scene;
-	}
+	Scene& GetScene();
 
 	// Helper that manages a global camera
 	//	(You don't need to use it, but it's an option for simplicity)
-	inline CameraComponent& GetCamera()
-	{
-		static CameraComponent camera;
-		return camera;
-	}
+	CameraComponent& GetCamera();
 
 	// Helper function to open a wiscene file and add the contents to the global scene
 	//	fileName		:	file path

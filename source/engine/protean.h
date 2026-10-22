@@ -10,6 +10,7 @@
 
 // High-level interface:
 #include "core/application.h"
+#include "core/shared_library.h"
 #include "render/render_path.h"
 #include "render/render_path_2d.h"
 #include "render/render_path_3d.h"

@@ -25,11 +25,8 @@ namespace Protean
 	using Entity = uint64_t;
 	inline static constexpr Entity INVALID_ENTITY = 0;
 	// Runtime can create a new entity with this
-	inline Entity CreateEntity()
-	{
-		static std::atomic<Entity> next{ INVALID_ENTITY + 1 };
-		return next.fetch_add(1);
-	}
+	// Defined in ecs.cpp so all modules share one entity counter
+	Entity CreateEntity();
 	inline static constexpr size_t INVALID_INDEX = ~0ull;
 
 	class ComponentLibrary;

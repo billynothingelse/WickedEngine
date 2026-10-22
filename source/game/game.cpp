@@ -1,50 +1,61 @@
 #include "game.h"
-#include "game_module.h"
 
 namespace Protean
 {
-	void GameRenderPath::Start()
+	void Game::OnStart(const GameContext& gameContext)
 	{
-		RenderPath3D::Start();
+		context = gameContext;
+		time = 0;
+		Scene& scene = *context.Scene;
 
-		Scene& scene = GetScene();
-		scene.weather.ambient = XMFLOAT3(0.2f, 0.2f, 0.25f);
-
-		Entity sun = scene.Entity_CreateLight("Sun", XMFLOAT3(0, 10, 0), XMFLOAT3(1, 0.95f, 0.9f), 8, 1000, LightComponent::DIRECTIONAL);
-		if (TransformComponent* transform = scene.transforms.GetComponent(sun))
+		// In the editor the game plays inside the scene that is being edited,
+		// standalone it starts from an empty scene and builds its own
+		if (!context.InEditor)
 		{
-			transform->RotateRollPitchYaw(XMFLOAT3(XM_PIDIV4, 0, XM_PIDIV4));
-			transform->UpdateTransform();
-		}
-		if (LightComponent* light = scene.lights.GetComponent(sun))
-		{
-			light->SetCastShadow(true);
+			scene.weather.ambient = XMFLOAT3(0.2f, 0.2f, 0.25f);
+
+			Entity sun = scene.Entity_CreateLight("Sun", XMFLOAT3(0, 10, 0), XMFLOAT3(1, 0.95f, 0.9f), 8, 1000, LightComponent::DIRECTIONAL);
+			if (TransformComponent* transform = scene.transforms.GetComponent(sun))
+			{
+				transform->RotateRollPitchYaw(XMFLOAT3(XM_PIDIV4, 0, XM_PIDIV4));
+				transform->UpdateTransform();
+			}
+			if (LightComponent* light = scene.lights.GetComponent(sun))
+			{
+				light->SetCastShadow(true);
+			}
+
+			Entity ground = scene.Entity_CreatePlane("Ground");
+			if (TransformComponent* transform = scene.transforms.GetComponent(ground))
+			{
+				transform->Scale(XMFLOAT3(20, 1, 20));
+				transform->UpdateTransform();
+			}
+
+			cameraEntity = CreateEntity();
+			scene.transforms.Create(cameraEntity);
+			if (TransformComponent* transform = scene.transforms.GetComponent(cameraEntity))
+			{
+				transform->Translate(XMFLOAT3(0, 3, -8));
+				transform->RotateRollPitchYaw(XMFLOAT3(0.3f, 0, 0));
+				transform->UpdateTransform();
+			}
 		}
 
-		Entity ground = scene.Entity_CreatePlane("Ground");
-		if (TransformComponent* transform = scene.transforms.GetComponent(ground))
-		{
-			transform->Scale(XMFLOAT3(20, 1, 20));
-			transform->UpdateTransform();
-		}
-
-		cubeEntity = scene.Entity_CreateCube("Cube");
-
-		cameraEntity = CreateEntity();
-		scene.transforms.Create(cameraEntity);
-		if (TransformComponent* transform = scene.transforms.GetComponent(cameraEntity))
-		{
-			transform->Translate(XMFLOAT3(0, 3, -8));
-			transform->RotateRollPitchYaw(XMFLOAT3(0.3f, 0, 0));
-			transform->UpdateTransform();
-		}
+		cubeEntity = scene.Entity_CreateCube("Game Cube");
 	}
 
-	void GameRenderPath::Update(f32 dt)
+	void Game::OnStop()
+	{
+		cubeEntity = INVALID_ENTITY;
+		cameraEntity = INVALID_ENTITY;
+	}
+
+	void Game::OnUpdate(f32 dt)
 	{
 		time += dt;
+		Scene& scene = *context.Scene;
 
-		Scene& scene = GetScene();
 		if (TransformComponent* transform = scene.transforms.GetComponent(cubeEntity))
 		{
 			transform->ClearTransform();
@@ -53,30 +64,24 @@ namespace Protean
 			transform->UpdateTransform();
 		}
 
-		if (const TransformComponent* transform = scene.transforms.GetComponent(cameraEntity))
+		// The editor keeps control of its own camera
+		if (!context.InEditor && context.Camera != nullptr)
 		{
-			CameraComponent& camera = GetCamera();
-			camera.TransformCamera(*transform);
-			camera.UpdateCamera();
+			if (const TransformComponent* transform = scene.transforms.GetComponent(cameraEntity))
+			{
+				context.Camera->TransformCamera(*transform);
+				context.Camera->UpdateCamera();
+			}
 		}
-
-		RenderPath3D::Update(dt);
-	}
-
-	void Game::Initialize()
-	{
-		Application::Initialize();
-
-		infoDisplay.active = true;
-		infoDisplay.watermark = true;
-		infoDisplay.resolution = true;
-		infoDisplay.fpsinfo = true;
-
-		ActivatePath(&renderPath);
 	}
 }
 
-PROTEAN_GAME_API int ProteanGameMain(int argc, char** argv)
+PROTEAN_GAME_API Protean::GameModule* ProteanCreateGameModule()
 {
-	return Protean::RunGame(argc, argv);
+	return new Protean::Game;
+}
+
+PROTEAN_GAME_API void ProteanDestroyGameModule(Protean::GameModule* module)
+{
+	delete module;
 }

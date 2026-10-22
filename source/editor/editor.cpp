@@ -1092,7 +1092,40 @@ void EditorComponent::Load()
 	});
 	GetGUI().AddWidget(&navtestButton);
 
-	playButton.Create(ICON_PLAY);
+	gamePlayButton.Create(ICON_PLAY);
+	gamePlayButton.font.params.shadowColor = Protean::Color::Transparent();
+	gamePlayButton.SetShadowRadius(2);
+	gamePlayButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
+	gamePlayButton.SetTooltip(EditorGamePlay::IsAvailable() ?
+		"Play the game module (Game) in the current scene, or resume it when paused.\nThe scene is restored when the game is stopped." :
+		"Playing the game module needs a Debug or Development build of the editor.");
+	gamePlayButton.OnClick([this](Protean::Gui::EventArgs args) {
+		PlayGame();
+	});
+	topmenuWnd.AddWidget(&gamePlayButton);
+
+	gamePauseButton.Create(ICON_PAUSE);
+	gamePauseButton.font.params.shadowColor = Protean::Color::Transparent();
+	gamePauseButton.SetShadowRadius(2);
+	gamePauseButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
+	gamePauseButton.SetTooltip("Pause the game.");
+	gamePauseButton.OnClick([this](Protean::Gui::EventArgs args) {
+		PauseGame();
+	});
+	topmenuWnd.AddWidget(&gamePauseButton);
+
+	gameStopButton.Create(ICON_STOP);
+	gameStopButton.font.params.shadowColor = Protean::Color::Transparent();
+	gameStopButton.SetShadowRadius(2);
+	gameStopButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
+	gameStopButton.SetTooltip("Stop the game and restore the scene.");
+	gameStopButton.OnClick([this](Protean::Gui::EventArgs args) {
+		StopGame();
+	});
+	topmenuWnd.AddWidget(&gameStopButton);
+
+
+	playButton.Create(ICON_SCRIPT);
 	playButton.font.params.shadowColor = Protean::Color::Transparent();
 	playButton.SetShadowRadius(2);
 	playButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
@@ -1120,7 +1153,7 @@ void EditorComponent::Load()
 	playButton.SetScriptTip("dofile(\"" + last_script_path + "\")");
 
 
-	stopButton.Create(ICON_STOP);
+	stopButton.Create(ICON_FA_BAN);
 	stopButton.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled_Tooltip);
 	stopButton.font.params.shadowColor = Protean::Color::Transparent();
 	stopButton.SetShadowRadius(2);
@@ -1622,6 +1655,7 @@ void EditorComponent::FixedUpdate()
 {
 	RenderPath2D::FixedUpdate();
 
+	gamePlay.FixedUpdate();
 	renderPath->FixedUpdate();
 }
 void EditorComponent::Update(float dt)
@@ -3382,6 +3416,7 @@ void EditorComponent::Update(float dt)
 
 	ResizeViewport3D();
 	renderPath->colorspace = colorspace;
+	gamePlay.Update(dt);
 	renderPath->Update(dt);
 
 	if (navtest_enabled)
@@ -5563,6 +5598,7 @@ void EditorComponent::Open(std::string filename)
 {
 	if (main->IsScriptReplacement())
 		return;
+	StopGame();
 	std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(filename));
 
 	FileType type = FileType_INVALID;
@@ -6432,6 +6468,12 @@ void EditorComponent::UpdateDynamicWidgets()
 	stopButton.SetPos(XMFLOAT2(projectCreatorButton.GetPos().x - playButton.GetSize().x - padding, y));
 	playButton.SetSize(XMFLOAT2(wid_idle * 0.75f, hei));
 	playButton.SetPos(XMFLOAT2(stopButton.GetPos().x - playButton.GetSize().x - padding, y));
+	gameStopButton.SetSize(XMFLOAT2(wid_idle * 0.75f, hei));
+	gameStopButton.SetPos(XMFLOAT2(playButton.GetPos().x - gameStopButton.GetSize().x - 20, y));
+	gamePauseButton.SetSize(XMFLOAT2(wid_idle * 0.75f, hei));
+	gamePauseButton.SetPos(XMFLOAT2(gameStopButton.GetPos().x - gamePauseButton.GetSize().x - padding, y));
+	gamePlayButton.SetSize(XMFLOAT2(wid_idle * 0.75f, hei));
+	gamePlayButton.SetPos(XMFLOAT2(gamePauseButton.GetPos().x - gamePlayButton.GetSize().x - padding, y));
 
 	float ofs = 0;
 	wid_idle = 105;
@@ -6515,6 +6557,9 @@ void EditorComponent::UpdateDynamicWidgets()
 
 	XMFLOAT4 color_on = playButton.sprites[Protean::Gui::FOCUS].params.color;
 	XMFLOAT4 color_off = playButton.sprites[Protean::Gui::IDLE].params.color;
+
+	gamePlayButton.sprites[Protean::Gui::IDLE].params.color = gamePlay.GetState() == EditorGamePlay::State_Playing ? color_on : color_off;
+	gamePauseButton.sprites[Protean::Gui::IDLE].params.color = gamePlay.GetState() == EditorGamePlay::State_Paused ? color_on : color_off;
 
 	if (translator.isTranslator)
 	{
@@ -6696,6 +6741,10 @@ void EditorComponent::UpdateDynamicWidgets()
 
 void EditorComponent::SetCurrentScene(int index)
 {
+	if (index != current_scene)
+	{
+		StopGame(); // the game plays in the current scene only
+	}
 	current_scene = index;
 	this->renderPath->scene = &scenes[current_scene].get()->scene;
 	this->renderPath->camera = &scenes[current_scene].get()->camera;
@@ -6753,6 +6802,7 @@ void EditorComponent::RefreshSceneList()
 				return;
 			}
 
+			StopGame();
 			Protean::Lua::KillProcesses();
 
 			translator.selected.clear();
@@ -7078,4 +7128,35 @@ void EditorComponent::Set2DMode(bool value)
 	}
 
 	main->config.Set("2D_mode", is_2D_mode);
+}
+
+void EditorComponent::PlayGame()
+{
+	EditorScene& editorscene = GetCurrentEditorScene();
+	if (gamePlay.IsStopped())
+	{
+		ClearSelected();
+	}
+	if (gamePlay.Play(editorscene.scene, editorscene.camera, *renderPath))
+	{
+		componentsWnd.RefreshEntityTree();
+	}
+	else
+	{
+		PostSaveText(gamePlay.GetErrorMessage());
+	}
+}
+
+void EditorComponent::PauseGame()
+{
+	gamePlay.Pause();
+}
+
+void EditorComponent::StopGame()
+{
+	if (gamePlay.IsStopped())
+		return;
+	ClearSelected();
+	gamePlay.Stop();
+	componentsWnd.RefreshEntityTree();
 }

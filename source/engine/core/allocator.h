@@ -107,16 +107,12 @@ namespace Protean::Allocator
 		virtual bool try_inc_refcount(void* ptr) = 0;
 	};
 
-	// The per-type block allocators can be indexed with bottom 8 bits of the shared_ptr's handle:
-	inline SharedAllocator* shared_allocators[256] = {};
-	inline std::atomic<uint8_t> next_allocator_id{ 0 };
-	inline uint8_t register_shared_allocator(SharedAllocator* allocator)
-	{
-		uint8_t id = next_allocator_id.fetch_add(1);
-		shared_allocators[id] = allocator;
-		return id;
-	}
-	inline uint8_t get_shared_allocator_count() { return next_allocator_id.load(); }
+	// The per-type block allocators can be indexed with bottom 8 bits of the shared_ptr's handle.
+	//	The registry lives in the engine (allocator.cpp) so that every module (engine, editor, game)
+	//	shares one table when the engine is built as a shared library.
+	uint8_t register_shared_allocator(SharedAllocator* allocator);
+	uint8_t get_shared_allocator_count();
+	SharedAllocator* get_shared_allocator(uint8_t id);
 
 	// Custom shared_ptr that has compact handle size, supports block allocation for pooling many objects, or heap allocation for single objects. Not feature-complete with std:: but a minimal simplified implementation.
 	template<typename T>
@@ -127,7 +123,7 @@ namespace Protean::Allocator
 		constexpr bool IsValid() const { return handle != 0; }
 
 		constexpr T* get_ptr() const { return (T*)(handle & (~0ull << 8ull)); }
-		constexpr SharedAllocator* get_allocator() const { return shared_allocators[handle & 0xFF]; }
+		SharedAllocator* get_allocator() const { return get_shared_allocator(uint8_t(handle & 0xFF)); }
 
 		constexpr T* operator->() const { return get_ptr(); }
 		constexpr operator T* () const { return get_ptr(); }
@@ -182,7 +178,7 @@ namespace Protean::Allocator
 		constexpr bool IsValid() const { return handle != 0; }
 
 		constexpr T* get_ptr() const { return (T*)(handle & (~0ull << 8ull)); }
-		constexpr SharedAllocator* get_allocator() const { return shared_allocators[handle & 0xFF]; }
+		SharedAllocator* get_allocator() const { return get_shared_allocator(uint8_t(handle & 0xFF)); }
 
 		template<typename U>
 		operator weak_ptr<U>& () const { return *(weak_ptr<U>*)this; }
