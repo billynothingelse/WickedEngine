@@ -6,7 +6,8 @@ towards it step by step (see "Migration status" at the bottom).
 ## Layout
 
 ```
-build/            premake5.lua, generated projects (build/projects), intermediates (build/temp)
+build/            workspace premake5.lua, generated projects (build/projects), intermediates (build/temp)
+Protean.slnx      generated solution in the repository root (Makefile on Linux)
 binaries/         build output per target, e.g. binaries/windows-x64-debug
 data/             runtime data: data/editor (editor working directory), data/content (sample content)
 docs/             documentation
@@ -49,6 +50,11 @@ module at the same time. Mutable global state must therefore live in exactly one
 - Read-only constants (`constexpr`, `inline static const`) are fine.
 - Applications only call engine functions; they do not access engine global variables directly
   (data can not be imported from a DLL without `__declspec(dllimport)`).
+
+## Build scripts
+
+Every project has a `premake5.lua` in its own folder (e.g. `source/engine/premake5.lua`), included by
+`build/premake5.lua`, which holds the workspace wide settings and helpers such as `UseEngine()`.
 
 ## Files and includes
 

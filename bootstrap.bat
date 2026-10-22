@@ -9,7 +9,8 @@ rem  premake 5.0.0+ is expected at build\premake5.exe and downloaded if missing.
 rem  The Visual Studio version is detected with vswhere unless given explicitly.
 rem
 rem  Output:
-rem    build\projects\Protean.slnx  generated solution (Protean.sln for --vs2022)
+rem    Protean.slnx                 generated solution in the repository root (Protean.sln for --vs2022)
+rem    build\projects\              generated project files
 rem    build\temp\                  intermediate files
 rem    binaries\windows-x64-<config>\  executables and libraries
 rem ---------------------------------------------------------------------------
@@ -56,8 +57,8 @@ set RESULT=%errorlevel%
 popd
 if not "%RESULT%"=="0" goto :error
 
-set SOLUTION=%ROOT%\build\projects\Protean.slnx
-if "%VS_ACTION%"=="vs2022" set SOLUTION=%ROOT%\build\projects\Protean.sln
+set SOLUTION=%ROOT%\Protean.slnx
+if "%VS_ACTION%"=="vs2022" set SOLUTION=%ROOT%\Protean.sln
 
 if "%GENERATE_ONLY%"=="1" (
 	echo [Protean] Solution generated: !SOLUTION!

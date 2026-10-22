@@ -31,10 +31,10 @@ echo "[Protean] Generating makefiles..."
 (cd "$ROOT/build" && "$PREMAKE" gmake)
 
 if [ "$GENERATE_ONLY" = 1 ]; then
-	echo "[Protean] Makefiles generated: build/projects/Makefile"
+	echo "[Protean] Makefiles generated: Makefile (repository root)"
 	exit 0
 fi
 
 echo "[Protean] Building $CONFIG..."
-make -C "$ROOT/build/projects" -j"$(nproc)" config="${CONFIG}_x64"
+make -C "$ROOT" -j"$(nproc)" config="${CONFIG}_x64"
 echo "[Protean] Done: binaries/linux-x64-$CONFIG/"

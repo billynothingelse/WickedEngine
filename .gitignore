@@ -236,6 +236,10 @@ pso_cache_vulkan
 # Protean build output
 /build/temp/
 /build/projects/
+# generated solution / makefile in the repository root
+/Protean.sln
+/Protean.slnx
+/Makefile
 /binaries/
 /build/premake5
 /build/premake5.exe

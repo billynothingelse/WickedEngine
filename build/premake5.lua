@@ -1,14 +1,16 @@
--- Protean project-wide build script.
+-- Protean workspace build script: shared settings for every project.
+-- Each project lives in the premake5.lua next to its sources and is included at the bottom.
 --
 -- Requires premake 5.0.0 or newer (bootstrap downloads it to build/premake5[.exe]).
 --
---   Windows: bootstrap.bat            (generates build/projects/Protean.slnx and builds it)
---   Linux:   ./bootstrap.sh           (generates build/projects/Makefile and builds it)
+--   Windows: bootstrap.bat            (generates Protean.slnx in the repository root and builds it)
+--   Linux:   ./bootstrap.sh           (generates the Makefile in the repository root and builds it)
 --
 -- Manual usage from this folder: premake5 vs2026 | premake5 vs2022 | premake5 gmake | premake5 xcode4
 --
 -- Layout:
---   build/projects                     generated solutions / makefiles
+--   Protean.slnx / Makefile             generated solution, in the repository root
+--   build/projects                     generated project files
 --   build/temp/<system>-<arch>-<config> intermediate object files
 --   binaries/<system>-<arch>-<config>   executables and libraries, e.g. binaries/windows-x64-debug
 --
@@ -17,16 +19,20 @@
 --   Development  optimised, game is a DLL loaded by the launcher
 --   Shipping     optimised, game is a single executable with the engine linked statically
 
+-- Globals shared with the project scripts
 ROOT = path.getabsolute("..")
-local SOURCE = ROOT .. "/source"
-local EXTERNAL = ROOT .. "/external"
-local DATA = ROOT .. "/data"
-local OUTPUT = "%{cfg.system}-%{cfg.platform}-%{cfg.buildcfg:lower()}"
-local BIN = ROOT .. "/binaries/" .. OUTPUT
-local TEMP = ROOT .. "/build/temp/" .. OUTPUT .. "/%{prj.name}"
+SOURCE = ROOT .. "/source"
+EXTERNAL = ROOT .. "/external"
+DATA = ROOT .. "/data"
+PROJECTS = ROOT .. "/build/projects"
+OUTPUT = "%{cfg.system}-%{cfg.platform}-%{cfg.buildcfg:lower()}"
+BIN = ROOT .. "/binaries/" .. OUTPUT
+TEMP = ROOT .. "/build/temp/" .. OUTPUT .. "/%{prj.name}"
+DEV = "configurations:Debug or configurations:Development"
+SHIPPING = "configurations:Shipping"
 
 workspace "Protean"
-	location (ROOT .. "/build/projects")
+	location (ROOT)
 	configurations { "Debug", "Development", "Shipping" }
 	platforms { "x64" }
 	startproject "Editor"
@@ -103,10 +109,7 @@ workspace "Protean"
 
 	filter {}
 
-local DEV = "configurations:Debug or configurations:Development"
-local SHIPPING = "configurations:Shipping"
-
-local APPLE_FRAMEWORKS = {
+APPLE_FRAMEWORKS = {
 	"Metal.framework", "MetalFX.framework", "QuartzCore.framework", "Cocoa.framework",
 	"IOKit.framework", "GameController.framework", "AudioToolbox.framework",
 	"CoreAudio.framework", "VideoToolbox.framework", "CoreMedia.framework", "CoreVideo.framework",
@@ -143,193 +146,17 @@ function UseEngine()
 	filter {}
 end
 
+-- Projects
 group "External"
-
-project "External"
-	kind "StaticLib"
-	location (ROOT .. "/build/projects/External")
-	warnings "Off"
-	includedirs { EXTERNAL }
-	-- Header-only libraries are compiled by their <lib>/<lib>.cpp implementation files.
-	-- Libraries only used by the editor (ufbx, xatlas, miniply) are compiled by the Editor project.
-	files {
-		EXTERNAL .. "/bluenoise/*.cpp",
-		EXTERNAL .. "/lodepng/*.cpp", EXTERNAL .. "/lodepng/*.h",
-		EXTERNAL .. "/lua/*.c", EXTERNAL .. "/lua/*.h",
-		EXTERNAL .. "/meshoptimizer/*.cpp", EXTERNAL .. "/meshoptimizer/*.h",
-		EXTERNAL .. "/minimp4/*.cpp", EXTERNAL .. "/minimp4/*.h",
-		EXTERNAL .. "/offset_allocator/*.cpp", EXTERNAL .. "/offset_allocator/*.hpp",
-		EXTERNAL .. "/pugixml/*.cpp", EXTERNAL .. "/pugixml/*.hpp",
-		EXTERNAL .. "/spirv_reflect/*.c", EXTERNAL .. "/spirv_reflect/*.h",
-		EXTERNAL .. "/stb/*.cpp", EXTERNAL .. "/stb/*.c", EXTERNAL .. "/stb/*.h",
-		EXTERNAL .. "/zstd/zstd.cpp", EXTERNAL .. "/zstd/*.h",
-	}
-	removefiles {
-		EXTERNAL .. "/lua/lua.c",         -- standalone interpreter
-	}
-	filter "system:linux or system:macosx"
-		defines { "LUA_USE_POSIX=1" }
-	filter {}
-
-project "Jolt"
-	kind "StaticLib"
-	location (ROOT .. "/build/projects/External")
-	includedirs { EXTERNAL }
-	files { EXTERNAL .. "/Jolt/**.cpp", EXTERNAL .. "/Jolt/**.h", EXTERNAL .. "/Jolt/**.inl" }
-	filter "system:linux"
-		buildoptions { "-Wno-stringop-overflow" }
-	filter {}
-
-if os.target() == "linux" then
-project "FAudio"
-	kind "StaticLib"
-	language "C"
-	location (ROOT .. "/build/projects/External")
-	warnings "Off"
-	includedirs { EXTERNAL .. "/FAudio/include", EXTERNAL .. "/FAudio/src" }
-	files { EXTERNAL .. "/FAudio/src/*.c", EXTERNAL .. "/FAudio/src/*.h", EXTERNAL .. "/FAudio/include/*.h" }
-end
-
+	include (EXTERNAL)
 group "Engine"
-
-project "Engine"
-	location (ROOT .. "/build/projects/Engine")
-	targetname "Protean"
-	includedirs { SOURCE .. "/engine", EXTERNAL }
-	-- Used to locate shader sources for runtime compilation in non-shipping builds
-	defines { 'PROTEAN_SHADER_SOURCE_PATH="' .. SOURCE .. '/engine/render/shaders/"' }
-	files {
-		SOURCE .. "/engine/**.h",
-		SOURCE .. "/engine/**.cpp",
-		SOURCE .. "/engine/**.hlsl",
-		SOURCE .. "/engine/**.hlsli",
-		SOURCE .. "/engine/**.natvis",
-	}
-	-- Shaders are compiled at runtime (or offline by the ShaderCompiler tool)
-	filter "files:**.hlsl or files:**.hlsli"
-		buildaction "None"
-	filter "system:linux"
-		includedirs { EXTERNAL .. "/FAudio/include" }
-	filter "system:macosx"
-		files { SOURCE .. "/engine/**.mm" }
-
-	filter (SHIPPING)
-		kind "StaticLib"
-
-	filter (DEV)
-		kind "SharedLib"
-		links { "Jolt", "External" }
-	-- Windows: export every engine symbol through a generated .def file (no dllexport annotations needed)
-	filter { DEV, "system:windows" }
-		dependson { "DefGenerator" }
-		prelinkcommands {
-			'"' .. path.translate(BIN .. "/def_generator.exe", "\\") .. '" "' .. TEMP .. '/Protean.def" Protean "' .. TEMP .. '"',
-		}
-		linkoptions { '/DEF:"' .. TEMP .. '/Protean.def"' }
-	filter { DEV, "system:linux" }
-		links { "FAudio", "SDL2", "dl", "pthread" }
-	filter { DEV, "system:macosx" }
-		links (APPLE_FRAMEWORKS)
-	filter {}
-
+	include (SOURCE .. "/engine")
 group "Tools"
-
--- Writes the export definitions of the engine DLL from its object files (Windows)
-project "DefGenerator"
-	kind "ConsoleApp"
-	location (ROOT .. "/build/projects/Tools")
-	targetname "def_generator"
-	exceptionhandling "Default"
-	rtti "Default"
-	files { SOURCE .. "/tools/def_generator/**.cpp" }
-
-project "ShaderCompiler"
-	kind "ConsoleApp"
-	location (ROOT .. "/build/projects/Tools")
-	debugdir (SOURCE .. "/engine")
-	files { SOURCE .. "/tools/shader_compiler/**.cpp" }
-	UseEngine()
-
+	include (SOURCE .. "/tools/def_generator")
+	include (SOURCE .. "/tools/shader_compiler")
 group "Applications"
-
-project "Editor"
-	kind "WindowedApp"
-	location (ROOT .. "/build/projects/Editor")
-	targetname "ProteanEditor"
-	includedirs { SOURCE .. "/editor", SOURCE .. "/game" }
-	files {
-		SOURCE .. "/editor/*.h", SOURCE .. "/editor/*.cpp",
-		EXTERNAL .. "/xatlas/xatlas.cpp", EXTERNAL .. "/miniply/miniply.cpp", -- ufbx.c is included by model_importer_fbx.cpp
-	}
-	removefiles { SOURCE .. "/editor/main_*" }
-	pchheader "stdafx.h"
-	pchsource (SOURCE .. "/editor/stdafx.cpp")
-	UseEngine()
-	-- Play / Pause / Stop of the game module needs the shared engine
-	filter (DEV)
-		defines { "PROTEAN_EDITOR_GAME_MODULE" }
-		dependson { "Game" }
-	filter {}
-	filter "files:../external/**"
-		enablepch "Off"
-		warnings "Off"
-	filter "system:windows"
-		files { SOURCE .. "/editor/main_windows.cpp", SOURCE .. "/editor/editor.rc", SOURCE .. "/editor/editor.manifest" }
-	filter "system:linux"
-		files { SOURCE .. "/editor/main_sdl2.cpp" }
-	filter "system:macosx"
-		files { SOURCE .. "/editor/main_macos.mm" }
-	filter {}
-
--- The game module.
---	Debug/Development: shared library (Game.dll / libGame.so) linking the engine shared library, hosted by
---	the Launcher or by the Editor (Play / Pause / Stop).
---	Shipping: standalone executable with the engine linked statically.
-project "Game"
-	location (ROOT .. "/build/projects/Game")
-	debugdir (DATA)
-	includedirs { SOURCE .. "/game" }
-	files { SOURCE .. "/game/*.h", SOURCE .. "/game/*.cpp" }
-	UseEngine()
-	filter (DEV)
-		kind "SharedLib"
-		defines { "PROTEAN_GAME_DLL" }
-	filter (SHIPPING)
-		kind "WindowedApp"
-		targetname "ProteanGame"
-		files { SOURCE .. "/game/host/**", SOURCE .. "/game/main/**" }
-	filter {}
-
-project "Launcher"
-	location (ROOT .. "/build/projects/Game")
-	targetname "ProteanGame"
-	kind "WindowedApp"
-	debugdir (DATA)
-	includedirs { SOURCE .. "/game" }
-	files { SOURCE .. "/game/host/**", SOURCE .. "/game/launcher/**" }
-	dependson { "Game" }
-	UseEngine()
-	-- Shipping builds the game as a standalone executable, no launcher needed
-	removeconfigurations { "Shipping" }
-
+	include (SOURCE .. "/editor")
+	include (SOURCE .. "/game")
 group "Samples"
-
-project "Tests"
-	kind "WindowedApp"
-	location (ROOT .. "/build/projects/Samples")
-	debugdir (SOURCE .. "/samples/tests")
-	files { SOURCE .. "/samples/tests/*.h", SOURCE .. "/samples/tests/*.cpp" }
-	removefiles { SOURCE .. "/samples/tests/main_*", SOURCE .. "/samples/tests/custom_shader_lifecycle_test.cpp" }
-	UseEngine()
-	filter "system:windows"
-		files { SOURCE .. "/samples/tests/main_windows.cpp", SOURCE .. "/samples/tests/tests.rc" }
-	filter "system:linux"
-		files { SOURCE .. "/samples/tests/main_sdl2.cpp" }
-	filter {}
-
--- Headless unit test, run it from any directory
-project "CustomShaderLifecycleTest"
-	kind "ConsoleApp"
-	location (ROOT .. "/build/projects/Samples")
-	files { SOURCE .. "/samples/tests/custom_shader_lifecycle_test.cpp" }
-	UseEngine()
+	include (SOURCE .. "/samples/tests")
+group ""

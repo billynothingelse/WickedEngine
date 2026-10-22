@@ -12,9 +12,10 @@ codebase: new layout, new build, new code style, and a rebuilt editor.
 ## Repository layout
 
 ```
+Protean.slnx      generated solution (Makefile on Linux)          (generated, not committed)
 build/
-  premake5.lua    project-wide build script
-  projects/       generated solutions / makefiles   (generated, not committed)
+  premake5.lua    workspace build script: shared settings, includes every project's premake5.lua
+  projects/       generated project files                          (generated, not committed)
   temp/           intermediate object files          (generated, not committed)
 binaries/
   <system>-<arch>-<config>/  executables and libraries, e.g. windows-x64-debug (generated, not committed)
@@ -50,7 +51,7 @@ bootstrap.bat --generate-only     :: only generate the solution
 
 `bootstrap.bat` downloads premake 5.0.0 to `build/premake5.exe` on first run, detects the
 Visual Studio version (override with `--vs2022` / `--vs2026`), generates
-`build/projects/Protean.slnx` (`Protean.sln` with `--vs2022`) and builds it with MSBuild. Open the solution to work in the IDE;
+`Protean.slnx` in the repository root (`Protean.sln` with `--vs2022`) and builds it with MSBuild. Open the solution to work in the IDE;
 the Editor is the startup project and runs with `data/editor` as its working directory.
 
 ### Linux
@@ -115,6 +116,11 @@ jobs) in `OnStop`, because its code is unloaded afterwards. The script buttons n
 the last Lua script, as before.
 
 ## Projects
+
+Every project has its own `premake5.lua` next to its sources (`external/`, `source/engine/`,
+`source/editor/`, `source/game/`, `source/tools/*/`, `source/samples/tests/`). `build/premake5.lua`
+defines the workspace, configurations, compiler settings and the `UseEngine()` helper, and includes
+them. To add a project, create its folder with a `premake5.lua` and add an `include` line there.
 
 | Project        | Kind                         | Notes                                        |
 |----------------|------------------------------|----------------------------------------------|
