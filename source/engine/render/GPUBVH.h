@@ -1,6 +1,6 @@
 #pragma once
 #include "core/CommonInclude.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "scene/SceneDecl.h"
 
 namespace Protean

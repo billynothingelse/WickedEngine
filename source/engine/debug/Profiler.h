@@ -1,5 +1,5 @@
 #pragma once
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "render/Canvas.h"
 #include "math/Color.h"
 

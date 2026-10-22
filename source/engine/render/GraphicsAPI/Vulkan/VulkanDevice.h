@@ -7,7 +7,7 @@
 #endif // PLATFORM_WINDOWS_DESKTOP || PLATFORM_LINUX
 
 #ifdef WICKEDENGINE_BUILD_VULKAN
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "core/UnorderedMap.h"
 #include "core/Vector.h"
 #include "core/SpinLock.h"
@@ -89,7 +89,7 @@ namespace std
 
 namespace Protean::Graphics
 {
-	class GraphicsDevice_Vulkan final : public GraphicsDevice
+	class VulkanDevice final : public GraphicsDevice
 	{
 		friend struct CommandQueue;
 	public:
@@ -248,7 +248,7 @@ namespace Protean::Graphics
 			void clear();
 			void signal(VkSemaphore semaphore);
 			void wait(VkSemaphore semaphore);
-			void submit(GraphicsDevice_Vulkan* device, VkFence fence);
+			void submit(VulkanDevice* device, VkFence fence);
 
 		} queues[QUEUE_COUNT];
 
@@ -257,7 +257,7 @@ namespace Protean::Graphics
 
 		struct CopyAllocator
 		{
-			GraphicsDevice_Vulkan* device = nullptr;
+			VulkanDevice* device = nullptr;
 			std::mutex locker;
 
 			struct CopyCMD
@@ -273,7 +273,7 @@ namespace Protean::Graphics
 			std::deque<CopyCMD> async_worklist;
 			Protean::vector<VkSemaphore> async_semaphore_recycle[BUFFERCOUNT];
 
-			void init(GraphicsDevice_Vulkan* device);
+			void init(VulkanDevice* device);
 			void destroy();
 			CopyCMD allocate(uint64_t staging_size);
 			void submit(CopyCMD cmd, bool wait_cpu = true);
@@ -297,7 +297,7 @@ namespace Protean::Graphics
 		struct DescriptorBinder
 		{
 			DescriptorBindingTable table;
-			GraphicsDevice_Vulkan* device = nullptr;
+			VulkanDevice* device = nullptr;
 			VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 
 			enum DIRTY_FLAGS
@@ -310,7 +310,7 @@ namespace Protean::Graphics
 			};
 			uint32_t dirty = DIRTY_NONE;
 
-			void init(GraphicsDevice_Vulkan* device)
+			void init(VulkanDevice* device)
 			{
 				this->device = device;
 			}
@@ -327,12 +327,12 @@ namespace Protean::Graphics
 		{
 			static constexpr uint32_t set_count = 256;
 			static constexpr uint32_t set_batch = 32;
-			GraphicsDevice_Vulkan* device = nullptr;
+			VulkanDevice* device = nullptr;
 			Protean::vector<VkDescriptorPool> pools;
 			Protean::vector<Protean::vector<VkDescriptorSet>> free_sets;
 			Protean::vector<Protean::vector<VkDescriptorSet>> work_sets;
 
-			void init(GraphicsDevice_Vulkan* device)
+			void init(VulkanDevice* device)
 			{
 				this->device = device;
 			}
@@ -544,8 +544,8 @@ namespace Protean::Graphics
 		void set_semaphore_name(VkSemaphore semaphore, const char* name);
 
 	public:
-		GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
-		~GraphicsDevice_Vulkan() override;
+		VulkanDevice(Protean::Platform::window_type window, ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
+		~VulkanDevice() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
@@ -729,7 +729,7 @@ namespace Protean::Graphics
 				Protean::vector<int> freelist;
 				std::mutex locker;
 
-				void init(GraphicsDevice_Vulkan* device, VkDescriptorType type, uint32_t descriptorCount)
+				void init(VulkanDevice* device, VkDescriptorType type, uint32_t descriptorCount)
 				{
 					descriptorCount = std::min(descriptorCount, 500000u);
 

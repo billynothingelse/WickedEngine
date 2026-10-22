@@ -7,7 +7,7 @@
 #endif // _WIN32
 
 #ifdef WICKEDENGINE_BUILD_DX12
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "core/UnorderedMap.h"
 #include "core/Vector.h"
 #include "core/SpinLock.h"
@@ -41,7 +41,7 @@
 
 namespace Protean::Graphics
 {
-	class GraphicsDevice_DX12 final : public GraphicsDevice
+	class D3D12Device final : public GraphicsDevice
 	{
 	protected:
 #ifndef PLATFORM_XBOX
@@ -109,7 +109,7 @@ namespace Protean::Graphics
 
 		struct CopyAllocator
 		{
-			GraphicsDevice_DX12* device = nullptr;
+			D3D12Device* device = nullptr;
 			Microsoft::WRL::ComPtr<ID3D12CommandQueue> queue; // create separate copy queue to reduce interference with main QUEUE_COPY
 			std::mutex locker;
 
@@ -125,7 +125,7 @@ namespace Protean::Graphics
 			Protean::vector<CopyCMD> freelist;
 			std::deque<CopyCMD> async_worklist;
 
-			void init(GraphicsDevice_DX12* device);
+			void init(D3D12Device* device);
 			CopyCMD allocate(uint64_t staging_size);
 			void submit(CopyCMD cmd, bool wait_cpu = true);
 		};
@@ -137,14 +137,14 @@ namespace Protean::Graphics
 		struct DescriptorBinder
 		{
 			DescriptorBindingTable table;
-			GraphicsDevice_DX12* device = nullptr;
+			D3D12Device* device = nullptr;
 
 			const void* optimizer_graphics = nullptr;
 			uint64_t dirty_graphics = 0ull; // 1 dirty bit flag per root parameter
 			const void* optimizer_compute = nullptr;
 			uint64_t dirty_compute = 0ull; // 1 dirty bit flag per root parameter
 
-			void init(GraphicsDevice_DX12* device);
+			void init(D3D12Device* device);
 			void reset();
 			void flush(bool graphics, CommandList cmd);
 		};
@@ -298,8 +298,8 @@ namespace Protean::Graphics
 		void predispatch(CommandList cmd);
 
 	public:
-		GraphicsDevice_DX12(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
-		~GraphicsDevice_DX12() override;
+		D3D12Device(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
+		~D3D12Device() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc * desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
@@ -508,14 +508,14 @@ namespace Protean::Graphics
 
 			struct DescriptorAllocator
 			{
-				GraphicsDevice_DX12* device = nullptr;
+				D3D12Device* device = nullptr;
 				std::mutex locker;
 				D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 				Protean::vector<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>> heaps;
 				uint32_t descriptor_size = 0;
 				Protean::vector<D3D12_CPU_DESCRIPTOR_HANDLE> freelist;
 
-				void init(GraphicsDevice_DX12* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptorsPerBlock)
+				void init(D3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptorsPerBlock)
 				{
 					this->device = device;
 					desc.Type = type;

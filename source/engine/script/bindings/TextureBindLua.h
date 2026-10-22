@@ -1,7 +1,7 @@
 #pragma once
 #include "script/Lua.h"
 #include "script/Luna.h"
-#include "render/GraphicsAPI/Graphics.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "resource/ResourceManager.h"
 
 namespace Protean::Lua

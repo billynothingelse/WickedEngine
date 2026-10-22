@@ -3,7 +3,7 @@
 #include "core/Vector.h"
 #include "math/Math.h"
 #include "math/Primitive.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "io/Archive.h"
 #include "core/ECS.h"
 #include "scene/SceneDecl.h"

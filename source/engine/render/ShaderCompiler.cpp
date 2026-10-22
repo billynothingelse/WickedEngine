@@ -189,23 +189,23 @@ namespace Protean::ShaderCompiler
 			args.push_back(L"-fspv-target-env=vulkan1.3");
 			args.push_back(L"-fvk-use-dx-layout");
 			args.push_back(L"-fvk-use-dx-position-w");
-			args.push_back(L"-fvk-b-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_B)); args.push_back(L"0");
-			args.push_back(L"-fvk-t-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_T)); args.push_back(L"0");
-			args.push_back(L"-fvk-u-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_U)); args.push_back(L"0");
-			args.push_back(L"-fvk-s-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_S)); args.push_back(L"0");
+			args.push_back(L"-fvk-b-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::VULKAN_BINDING_SHIFT_B)); args.push_back(L"0");
+			args.push_back(L"-fvk-t-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::VULKAN_BINDING_SHIFT_T)); args.push_back(L"0");
+			args.push_back(L"-fvk-u-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::VULKAN_BINDING_SHIFT_U)); args.push_back(L"0");
+			args.push_back(L"-fvk-s-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::VULKAN_BINDING_SHIFT_S)); args.push_back(L"0");
 
 			// These require mutable descriptor extension which have issues on linux so it's not used:
-			//args.push_back(L"-fvk-bind-sampler-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
-			//args.push_back(L"-fvk-bind-resource-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_RESOURCE));
+			//args.push_back(L"-fvk-bind-sampler-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_SAMPLER));
+			//args.push_back(L"-fvk-bind-resource-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_RESOURCE));
 
 			// Non-mutable bindless descriptor heap bind points:
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLER=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_SAMPLER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE=" + std::to_wstring((int)Protean::Graphics::VulkanDevice::DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE));
 
 			args.push_back(L"-Vd"); // compiler issue
 
@@ -636,20 +636,20 @@ namespace Protean::ShaderCompiler
 					
 					static IRDescriptorRange1 binding_resources[] =
 					{
-						{ .RangeType = IRDescriptorRangeTypeCBV, .BaseShaderRegister = arraysize(GraphicsDevice_Metal::RootLayout::root_cbvs), .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = (arraysize(DescriptorBindingTable::CBV) - arraysize(GraphicsDevice_Metal::RootLayout::root_cbvs)), .Flags = IRDescriptorRangeFlagDataStaticWhileSetAtExecute },
+						{ .RangeType = IRDescriptorRangeTypeCBV, .BaseShaderRegister = arraysize(MetalDevice::RootLayout::root_cbvs), .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = (arraysize(DescriptorBindingTable::CBV) - arraysize(MetalDevice::RootLayout::root_cbvs)), .Flags = IRDescriptorRangeFlagDataStaticWhileSetAtExecute },
 						{ .RangeType = IRDescriptorRangeTypeSRV, .BaseShaderRegister = 0, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(DescriptorBindingTable::SRV), .Flags = IRDescriptorRangeFlagDataStaticWhileSetAtExecute },
 						{ .RangeType = IRDescriptorRangeTypeUAV, .BaseShaderRegister = 0, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(DescriptorBindingTable::UAV), .Flags = IRDescriptorRangeFlagDataStaticWhileSetAtExecute },
 					};
 					static IRDescriptorRange1 binding_samplers[] =
 					{
 						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = 0, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(DescriptorBindingTable::SAM), .Flags = IRDescriptorRangeFlagDescriptorsVolatile },
-						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = Protean::Graphics::STATIC_SAMPLER_SLOT_BEGIN, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(GraphicsDevice_Metal::StaticSamplerDescriptors::samplers), .Flags = IRDescriptorRangeFlagDescriptorsVolatile }, // static samplers workaround (**)
+						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = Protean::Graphics::STATIC_SAMPLER_SLOT_BEGIN, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(MetalDevice::StaticSamplerDescriptors::samplers), .Flags = IRDescriptorRangeFlagDescriptorsVolatile }, // static samplers workaround (**)
 					};
 					static IRRootParameter1 root_parameters[] =
 					{
 						{
 							.ParameterType = IRRootParameterType32BitConstants,
-							.Constants = { .ShaderRegister = 999, .Num32BitValues = arraysize(GraphicsDevice_Metal::RootLayout::constants), .RegisterSpace = 0 },
+							.Constants = { .ShaderRegister = 999, .Num32BitValues = arraysize(MetalDevice::RootLayout::constants), .RegisterSpace = 0 },
 							.ShaderVisibility = IRShaderVisibilityAll
 						},
 						{
@@ -787,7 +787,7 @@ namespace Protean::ShaderCompiler
 						IRShaderReflection* reflection = IRShaderReflectionCreate();
 						bool success = IRObjectGetReflection(pOutIR, irstage, reflection);
 						assert(success);
-						Protean::Graphics::GraphicsDevice_Metal::ShaderAdditionalData reflection_append = {};
+						Protean::Graphics::MetalDevice::ShaderAdditionalData reflection_append = {};
 						if (input.stage == ShaderStage_VS)
 						{
 							IRVersionedVSInfo vs_info = {};

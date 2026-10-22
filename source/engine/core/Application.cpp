@@ -764,7 +764,7 @@ namespace Protean
 			graphicsDevice = std::make_unique<GraphicsDevice_PS5>(validationMode);
 #elif defined(PLATFORM_APPLE)
 			Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "metal/");
-			graphicsDevice = std::make_unique<GraphicsDevice_Metal>(validationMode, preference);
+			graphicsDevice = std::make_unique<MetalDevice>(validationMode, preference);
 
 #else
 			bool use_dx12 = Protean::Arguments::HasArgument("dx12");
@@ -800,7 +800,7 @@ namespace Protean
 			{
 #ifdef WICKEDENGINE_BUILD_VULKAN
 				Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "spirv/");
-				graphicsDevice = std::make_unique<GraphicsDevice_Vulkan>(window, validationMode, preference);
+				graphicsDevice = std::make_unique<VulkanDevice>(window, validationMode, preference);
 #endif
 			}
 			else if (use_dx12)
@@ -811,7 +811,7 @@ namespace Protean
 #else
 				Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "hlsl6/");
 #endif // PLATFORM_XBOX
-				graphicsDevice = std::make_unique<GraphicsDevice_DX12>(validationMode, preference);
+				graphicsDevice = std::make_unique<D3D12Device>(validationMode, preference);
 #endif
 			}
 #endif // PLATFORM_PS5

@@ -4,7 +4,7 @@
 #include "resource/ResourceManager.h"
 #include "math/Color.h"
 #include "render/FadeManager.h"
-#include "render/GraphicsAPI/Graphics.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "core/EventHandler.h"
 #include "render/Canvas.h"
 

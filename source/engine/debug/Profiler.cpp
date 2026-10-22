@@ -1,5 +1,5 @@
 #include "debug/Profiler.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "render/Font.h"
 #include "render/Image.h"
 #include "core/Timer.h"

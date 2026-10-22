@@ -3,7 +3,7 @@
 #include "core/CommonInclude.h"
 #include "platform/Platform.h"
 #include "core/Allocator.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "core/UnorderedMap.h"
 
 #include <Metal/Metal.hpp>
@@ -20,7 +20,7 @@
 
 namespace Protean::Graphics
 {
-	class GraphicsDevice_Metal final : public GraphicsDevice
+	class MetalDevice final : public GraphicsDevice
 	{
 	public:
 		struct RootLayout
@@ -103,7 +103,7 @@ namespace Protean::Graphics
 		
 		struct CopyAllocator
 		{
-			GraphicsDevice_Metal* device = nullptr;
+			MetalDevice* device = nullptr;
 			NS::SharedPtr<MTL4::CommandQueue> uploadqueue;
 			std::mutex locker;
 			
@@ -123,7 +123,7 @@ namespace Protean::Graphics
 			Protean::vector<CopyCMD> freelist;
 			std::deque<CopyCMD> async_worklist;
 			
-			void init(GraphicsDevice_Metal* dev)
+			void init(MetalDevice* dev)
 			{
 				device = dev;
 				uploadqueue = NS::TransferPtr(device->device->newMTL4CommandQueue());
@@ -388,8 +388,8 @@ namespace Protean::Graphics
 		void precopy(CommandList cmd);
 
 	public:
-		GraphicsDevice_Metal(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
-		~GraphicsDevice_Metal() override;
+		MetalDevice(ValidationMode validationMode = ValidationMode_Disabled, GPUPreference preference = GPUPreference_Discrete);
+		~MetalDevice() override;
 
 		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;

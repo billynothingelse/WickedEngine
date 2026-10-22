@@ -1,6 +1,6 @@
 #pragma once
 #include "render/Image.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "resource/ResourceManager.h"
 #include "math/Random.h"
 #include "io/Archive.h"

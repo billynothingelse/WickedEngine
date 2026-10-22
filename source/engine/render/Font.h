@@ -1,6 +1,6 @@
 #pragma once 
 #include "core/CommonInclude.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "math/Color.h"
 #include "render/Canvas.h"
 #include "math/Math.h"

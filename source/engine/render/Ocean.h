@@ -1,6 +1,6 @@
 #pragma once
 #include "core/CommonInclude.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "render/FFTGenerator.h"
 #include "scene/SceneDecl.h"
 #include "math/Math.h"

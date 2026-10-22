@@ -3,7 +3,7 @@
 #include "core/UnorderedMap.h"
 #include "core/Vector.h"
 #include "scene/VoxelGrid.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "math/Primitive.h"
 
 #include <queue>

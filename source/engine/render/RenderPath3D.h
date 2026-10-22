@@ -1,7 +1,7 @@
 #pragma once
 #include "render/RenderPath2D.h"
 #include "render/Renderer.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "resource/ResourceManager.h"
 #include "scene/Scene.h"
 #include "core/UnorderedMap.h"

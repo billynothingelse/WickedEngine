@@ -1,7 +1,7 @@
 #pragma once
 #include "core/CommonInclude.h"
 #include "core/Vector.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "render/Enums.h"
 #include "scene/SceneDecl.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "core/CommonInclude.h"
 #include "audio/Audio.h"
-#include "render/GraphicsAPI/GraphicsDevice.h"
+#include "render/GraphicsAPI/GraphicsAPI.h"
 #include "core/Vector.h"
 #include "core/UnorderedSet.h"
 
