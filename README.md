@@ -16,12 +16,13 @@ build/
   premake5.lua    project-wide build script
   projects/       generated solutions / makefiles   (generated, not committed)
   temp/           intermediate object files          (generated, not committed)
-  bin/<Config>/   executables and libraries          (generated, not committed)
+binaries/
+  <system>-<arch>-<config>/  executables and libraries, e.g. windows-x64-debug (generated, not committed)
 data/
   editor/         editor runtime data, editor working directory
   content/        sample content (models, scripts, terrain)
 docs/             documentation
-external/         third party code (DirectXMath, Jolt, Lua, Vulkan/D3D12/Metal headers, stb, ...)
+external/         third party code, one folder per library (stb/, pugixml/, vma/, volk/, Jolt/, lua/, ...)
 source/
   engine/         the engine (static library)
     audio/ core/ debug/ gui/ input/ io/ math/ network/ physics/ platform/
@@ -66,7 +67,7 @@ Requirements: GCC with C++17, make, SDL2 development package (`sudo apt install 
 Run the editor from its data folder:
 
 ```
-cd data/editor && ../../build/bin/Development/ProteanEditor
+cd data/editor && ../../binaries/linux-x64-development/ProteanEditor
 ```
 
 ### Configurations
@@ -88,7 +89,7 @@ Game code lives in `source/game`. `game.h/.cpp` hold the game itself (an `Applic
 - Shipping: `Game` builds as a single executable; `source/game/main/main.cpp` calls
   `ProteanGameMain` directly.
 
-Run it from the `data` folder: `cd data && ../build/bin/Development/ProteanGame`.
+Run it from the `data` folder: `cd data && ../binaries/linux-x64-development/ProteanGame`.
 
 ## Projects
 

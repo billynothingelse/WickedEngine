@@ -4,8 +4,8 @@
 
 // ufbx Documentation: https://ufbx.github.io/
 #define UFBX_REAL_TYPE float
-#include "ufbx.h"
-#include "ufbx.c"
+#include "ufbx/ufbx.h"
+#include "ufbx/ufbx.c"
 
 using namespace Protean::Graphics;
 using namespace Protean;

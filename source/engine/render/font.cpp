@@ -16,8 +16,8 @@
 #include "math/math.h"
 #include "render/image.h"
 
-#include "liberation_sans.h"
-#include "stb_truetype.h"
+#include "fonts/liberation_sans.h"
+#include "stb/stb_truetype.h"
 
 #include <fstream>
 #include <mutex>

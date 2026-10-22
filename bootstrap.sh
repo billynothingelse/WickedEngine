@@ -37,4 +37,4 @@ fi
 
 echo "[Protean] Building $CONFIG..."
 make -C "$ROOT/build/projects" -j"$(nproc)" config="${CONFIG}_x64"
-echo "[Protean] Done: build/bin/"
+echo "[Protean] Done: binaries/linux-x64-$CONFIG/"

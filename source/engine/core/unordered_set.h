@@ -7,7 +7,7 @@
 #endif // WI_UNORDERED_SET_TYPE
 
 #if WI_UNORDERED_SET_TYPE == 1
-#include "flat_hash_map.hpp"
+#include "flat_hash_map/flat_hash_map.hpp"
 #else
 #include <unordered_set>
 #endif // WI_UNORDERED_SET_TYPE

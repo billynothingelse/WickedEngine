@@ -5,9 +5,9 @@
 
 #include <cmath>
 
-#include "minimp4.h"
-#include "h264.h"
-#include "aac.h"
+#include "minimp4/minimp4.h"
+#include "codecs/h264.h"
+#include "codecs/aac.h"
 
 //#define DEBUG_DUMP_H264
 static const int dump_frame_count = 100;

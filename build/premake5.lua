@@ -2,15 +2,15 @@
 --
 -- Requires premake 5.0.0 or newer (bootstrap downloads it to build/premake5[.exe]).
 --
---   Windows: bootstrap.bat            (generates build/projects/Protean.sln and builds it)
+--   Windows: bootstrap.bat            (generates build/projects/Protean.slnx and builds it)
 --   Linux:   ./bootstrap.sh           (generates build/projects/Makefile and builds it)
 --
 -- Manual usage from this folder: premake5 vs2026 | premake5 vs2022 | premake5 gmake | premake5 xcode4
 --
 -- Layout:
---   build/projects   generated solutions / makefiles
---   build/temp       intermediate object files
---   build/bin        executables and libraries
+--   build/projects                     generated solutions / makefiles
+--   build/temp/<system>-<arch>-<config> intermediate object files
+--   binaries/<system>-<arch>-<config>   executables and libraries, e.g. binaries/windows-x64-debug
 --
 -- Configurations:
 --   Debug        no optimisation, game is a DLL loaded by the launcher
@@ -21,8 +21,9 @@ ROOT = path.getabsolute("..")
 local SOURCE = ROOT .. "/source"
 local EXTERNAL = ROOT .. "/external"
 local DATA = ROOT .. "/data"
-local BIN = ROOT .. "/build/bin/%{cfg.buildcfg}"
-local TEMP = ROOT .. "/build/temp/%{cfg.buildcfg}/%{prj.name}"
+local OUTPUT = "%{cfg.system}-%{cfg.platform}-%{cfg.buildcfg:lower()}"
+local BIN = ROOT .. "/binaries/" .. OUTPUT
+local TEMP = ROOT .. "/build/temp/" .. OUTPUT .. "/%{prj.name}"
 
 workspace "Protean"
 	location (ROOT .. "/build/projects")
@@ -133,18 +134,23 @@ project "External"
 	kind "StaticLib"
 	location (ROOT .. "/build/projects/External")
 	warnings "Off"
+	includedirs { EXTERNAL }
+	-- Header-only libraries are compiled by their <lib>/<lib>.cpp implementation files.
+	-- Libraries only used by the editor (ufbx, xatlas, miniply) are compiled by the Editor project.
 	files {
-		EXTERNAL .. "/*.h", EXTERNAL .. "/*.hpp",
-		EXTERNAL .. "/*.cpp", EXTERNAL .. "/*.c",
-		EXTERNAL .. "/meshoptimizer/*.cpp", EXTERNAL .. "/meshoptimizer/*.h",
+		EXTERNAL .. "/bluenoise/*.cpp",
+		EXTERNAL .. "/lodepng/*.cpp", EXTERNAL .. "/lodepng/*.h",
 		EXTERNAL .. "/lua/*.c", EXTERNAL .. "/lua/*.h",
+		EXTERNAL .. "/meshoptimizer/*.cpp", EXTERNAL .. "/meshoptimizer/*.h",
+		EXTERNAL .. "/minimp4/*.cpp", EXTERNAL .. "/minimp4/*.h",
+		EXTERNAL .. "/offset_allocator/*.cpp", EXTERNAL .. "/offset_allocator/*.hpp",
+		EXTERNAL .. "/pugixml/*.cpp", EXTERNAL .. "/pugixml/*.hpp",
+		EXTERNAL .. "/spirv_reflect/*.c", EXTERNAL .. "/spirv_reflect/*.h",
+		EXTERNAL .. "/stb/*.cpp", EXTERNAL .. "/stb/*.c", EXTERNAL .. "/stb/*.h",
+		EXTERNAL .. "/zstd/zstd.cpp", EXTERNAL .. "/zstd/*.h",
 	}
 	removefiles {
-		EXTERNAL .. "/D3D12MemAlloc.cpp", -- included by the D3D12 backend
-		EXTERNAL .. "/volk.c",            -- included by volk.h
 		EXTERNAL .. "/lua/lua.c",         -- standalone interpreter
-		-- editor-only third party code, compiled by the editor
-		EXTERNAL .. "/ufbx.c", EXTERNAL .. "/xatlas.cpp", EXTERNAL .. "/miniply.cpp",
 	}
 	filter "system:linux or system:macosx"
 		defines { "LUA_USE_POSIX=1" }
@@ -212,7 +218,7 @@ project "Editor"
 	includedirs { SOURCE .. "/editor" }
 	files {
 		SOURCE .. "/editor/*.h", SOURCE .. "/editor/*.cpp",
-		EXTERNAL .. "/xatlas.cpp", EXTERNAL .. "/miniply.cpp", -- ufbx.c is included by ModelImporter_FBX.cpp
+		EXTERNAL .. "/xatlas/xatlas.cpp", EXTERNAL .. "/miniply/miniply.cpp", -- ufbx.c is included by model_importer_fbx.cpp
 	}
 	removefiles { SOURCE .. "/editor/main_*" }
 	pchheader "stdafx.h"

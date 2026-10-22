@@ -7,9 +7,9 @@
 #endif // WI_UNORDERED_MAP_TYPE
 
 #if WI_UNORDERED_MAP_TYPE == 1
-#include "flat_hash_map.hpp"
+#include "flat_hash_map/flat_hash_map.hpp"
 #elif WI_UNORDERED_MAP_TYPE == 2
-#include "robin_hood.h"
+#include "robin_hood/robin_hood.h"
 #else
 #include <unordered_map>
 #endif // WI_UNORDERED_MAP_TYPE

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "terrain_window.h"
 
-#include "stb_image.h"
+#include "stb/stb_image.h"
 
 using namespace Protean;
 ModifierWindow::ModifierWindow(const std::string& name)

@@ -24,8 +24,8 @@ DEFINE_GUID(D3D12_VIDEO_DECODE_PROFILE_HEVC_MAIN, 0x5b11d51b, 0x2f4c, 0x4452, 0x
 
 #pragma comment(lib,"dxguid.lib")
 
-#include "h264.h"
-#include "dxva.h"
+#include "codecs/h264.h"
+#include "codecs/dxva.h"
 
 #include <map>
 #include <string>

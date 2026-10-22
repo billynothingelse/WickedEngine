@@ -1,5 +1,5 @@
 #pragma once
-#include "IconsFontAwesome6.h" // icon descriptions, source: https://github.com/juliettef/IconFontCppHeaders
+#include "fonts/IconsFontAwesome6.h" // icon descriptions, source: https://github.com/juliettef/IconFontCppHeaders
 
 // These map the Font Awesome icon definitions to editor:
 //	These definitions will help to change icons that are scattered throughout the editor code

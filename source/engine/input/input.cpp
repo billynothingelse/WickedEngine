@@ -9,7 +9,7 @@
 #include "math/color.h"
 #include "core/timer.h"
 
-#include "win32ico.h"
+#include "win32ico/win32ico.h"
 
 #include <algorithm>
 #include <map>

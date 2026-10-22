@@ -2,7 +2,7 @@
 #include "object_window.h"
 #include "scene/scene.h"
 
-#include "xatlas.h"
+#include "xatlas/xatlas.h"
 
 using namespace Protean;
 static void SetPixel(uint8_t *dest, int destWidth, int x, int y, const uint8_t *color)

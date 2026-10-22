@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "mesh_window.h"
 
-#include "stb_image.h"
+#include "stb/stb_image.h"
 #include "meshoptimizer/meshoptimizer.h"
 
 using namespace Protean;

@@ -4,7 +4,7 @@
 #ifdef WICKEDENGINE_BUILD_DX12
 
 // The allocator implementation is compiled once, here, after the D3D12 headers (D3D12MA_D3D12_HEADERS_ALREADY_INCLUDED)
-#include "D3D12MemAlloc.cpp" // include this here because we use D3D12MA_D3D12_HEADERS_ALREADY_INCLUDED
+#include "d3d12ma/D3D12MemAlloc.cpp" // include this here because we use D3D12MA_D3D12_HEADERS_ALREADY_INCLUDED
 
 namespace Protean::Graphics
 {

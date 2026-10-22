@@ -2,7 +2,7 @@
 #include "core/helper.h"
 #include "debug/backlog.h"
 
-#include "pugixml.hpp"
+#include "pugixml/pugixml.hpp"
 
 namespace Protean
 {

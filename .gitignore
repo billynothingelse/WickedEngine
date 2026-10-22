@@ -236,7 +236,7 @@ pso_cache_vulkan
 # Protean build output
 /build/temp/
 /build/projects/
-/build/bin/
+/binaries/
 /build/premake5
 /build/premake5.exe
 /build/premake.zip

@@ -3,15 +3,15 @@
 #include "model_importer.h"
 #include "math/random.h"
 
-#include "stb_image.h"
-#include "dds.h"
+#include "stb/stb_image.h"
+#include "dds/dds.h"
 #include "core/helper.h"
 #include "core/unordered_set.h"
 
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_STB_IMAGE
 #define TINYGLTF_NO_STB_IMAGE_WRITE
-#include "tiny_gltf.h"
+#include "tinygltf/tiny_gltf.h"
 
 #ifndef _WIN32
 #  include <wordexp.h>

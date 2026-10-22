@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "project_creator_window.h"
 
-#include "win32ico.h"
+#include "win32ico/win32ico.h"
 
 using namespace Protean;
 void ProjectCreatorWindow::Create(EditorComponent* _editor)

@@ -6,8 +6,8 @@
 #include "debug/backlog.h"
 #include "core/job_system.h"
 
-#include "stb_image.h"
-#include "dds.h"
+#include "stb/stb_image.h"
+#include "dds/dds.h"
 
 #include <algorithm>
 #include <mutex>

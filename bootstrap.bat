@@ -11,7 +11,7 @@ rem
 rem  Output:
 rem    build\projects\Protean.slnx  generated solution (Protean.sln for --vs2022)
 rem    build\temp\                  intermediate files
-rem    build\bin\<Config>\          executables
+rem    binaries\windows-x64-<config>\  executables and libraries
 rem ---------------------------------------------------------------------------
 setlocal EnableDelayedExpansion
 
@@ -78,7 +78,7 @@ echo [Protean] Building %CONFIG%^|x64...
 "%MSBUILD%" "%SOLUTION%" /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=x64
 if errorlevel 1 goto :error
 
-echo [Protean] Done: build\bin\%CONFIG%\
+echo [Protean] Done: binaries\windows-x64-%CONFIG%\
 exit /b 0
 
 :error

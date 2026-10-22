@@ -6,14 +6,14 @@
 #include "render/image.h"
 #include "render/renderer.h"
 
-#include "lodepng.h"
-#include "dds.h"
-#include "stb_image_write.h"
+#include "lodepng/lodepng.h"
+#include "dds/dds.h"
+#include "stb/stb_image_write.h"
 #include "zstd/zstd.h"
-#include "win32ico.h"
+#include "win32ico/win32ico.h"
 
 #if !defined(__SCE__) && !defined(PLATFORM_XBOX)
-#include "portable-file-dialogs.h"
+#include "portable_file_dialogs/portable-file-dialogs.h"
 #endif // !defined(__SCE__) && !defined(PLATFORM_XBOX)
 
 #include <thread>

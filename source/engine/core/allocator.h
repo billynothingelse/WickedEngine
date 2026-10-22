@@ -3,7 +3,7 @@
 #include "core/vector.h"
 #include "core/spin_lock.h"
 
-#include "offsetAllocator.hpp"
+#include "offset_allocator/offsetAllocator.hpp"
 
 #include <mutex>
 #include <atomic>

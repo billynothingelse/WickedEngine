@@ -30,7 +30,7 @@
 #ifdef PLATFORM_XBOX
 #define D3D12MA_OPTIONS16_SUPPORTED 0
 #endif // PLATFORM_XBOX
-#include "D3D12MemAlloc.h"
+#include "d3d12ma/D3D12MemAlloc.h"
 
 #include <deque>
 #include <atomic>

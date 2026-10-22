@@ -1,4 +1,4 @@
-// This file should contain implementations of header-only utility libraries
+// Implementation of the stb header-only library, compiled once for the whole engine.
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif // _CRT_SECURE_NO_WARNINGS
@@ -19,12 +19,6 @@ extern "C" {
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
-
-#define MINIMP4_IMPLEMENTATION
-#include "minimp4.h"
-#undef RETURN_ERROR
-
-#include "zstd/zstd.c"
 
 #ifndef __SCE__
 }

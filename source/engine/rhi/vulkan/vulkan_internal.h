@@ -11,15 +11,15 @@
 #include "core/timer.h"
 #include "core/unordered_set.h"
 
-#include "spirv_reflect.h"
+#include "spirv_reflect/spirv_reflect.h"
 #include "vulkan/vk_video/vulkan_video_codec_h264std_decode.h"
-#include "h264.h"
+#include "codecs/h264.h"
 
-#include "volk.h"
+#include "volk/volk.h"
 
 #define VMA_STATIC_VULKAN_FUNCTIONS 0
 #define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
-#include "vk_mem_alloc.h"
+#include "vma/vk_mem_alloc.h"
 
 #ifdef SDL2
 #include <SDL2/SDL_vulkan.h>

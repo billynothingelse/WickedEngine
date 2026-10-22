@@ -6,7 +6,8 @@ towards it step by step (see "Migration status" at the bottom).
 ## Layout
 
 ```
-build/            premake5.lua, generated projects (build/projects), intermediates (build/temp), binaries (build/bin)
+build/            premake5.lua, generated projects (build/projects), intermediates (build/temp)
+binaries/         build output per target, e.g. binaries/windows-x64-debug
 data/             runtime data: data/editor (editor working directory), data/content (sample content)
 docs/             documentation
 external/         third party code, never reformatted

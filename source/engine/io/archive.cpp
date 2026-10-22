@@ -2,7 +2,7 @@
 #include "core/helper.h"
 #include "render/texture_helper.h"
 
-#include "stb_image.h"
+#include "stb/stb_image.h"
 
 // Archive memory layout:
 // - Header (offset = 0, size = uint64_t * 2)

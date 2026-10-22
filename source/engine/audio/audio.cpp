@@ -5,8 +5,8 @@
 #include "core/vector.h"
 
 #define STB_VORBIS_HEADER_ONLY
-#include "stb_vorbis.c"
-#include "aac.h"
+#include "stb/stb_vorbis.c"
+#include "codecs/aac.h"
 
 #include <sstream>
 #include <cstring>
@@ -1588,7 +1588,7 @@ namespace Protean::Audio
 #define MA_DR_FLAC_NO_NEON
 #define MA_API static
 
-#include "miniaudio.h"
+#include "miniaudio/miniaudio.h"
 
 // iOS miniaudio calls these directly. macOS loads them with dlopen.
 #if TARGET_OS_IOS

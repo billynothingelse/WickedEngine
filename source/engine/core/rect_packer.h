@@ -2,7 +2,7 @@
 #include "core/common_include.h"
 #include "core/vector.h"
 
-#include "stb_rect_pack.h"
+#include "stb/stb_rect_pack.h"
 
 namespace Protean::RectPacker
 {

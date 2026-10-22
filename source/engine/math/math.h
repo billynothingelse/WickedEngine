@@ -7,7 +7,7 @@
 
 #ifdef __APPLE__
 #define __EMULATE_UUID
-#include "NeonIntrinsicsAppleShim.h"
+#include "DirectXMath/NeonIntrinsicsAppleShim.h"
 #endif // __APPLE__
 
 #if __has_include(<DirectXMath.h>)

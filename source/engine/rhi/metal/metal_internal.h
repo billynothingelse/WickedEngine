@@ -19,7 +19,7 @@ __asm__(".linker_option \"-framework\", \"CoreVideo\"");
 __asm__(".linker_option \"-framework\", \"CoreMedia\"");
 __asm__(".linker_option \"-framework\", \"VideoToolbox\"");
 
-#include "h264.h"
+#include "codecs/h264.h"
 
 namespace Protean::Graphics
 {

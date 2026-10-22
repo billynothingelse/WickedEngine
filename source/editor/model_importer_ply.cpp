@@ -2,7 +2,7 @@
 #include "scene/scene.h"
 #include "model_importer.h"
 
-#include "miniply.h"
+#include "miniply/miniply.h"
 
 using namespace miniply;
 

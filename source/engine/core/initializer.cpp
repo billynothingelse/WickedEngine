@@ -6,7 +6,7 @@
 
 #if !defined(_M_ARM64) && (defined(PLATFORM_WINDOWS_DESKTOP) || defined(PLATFORM_LINUX))
 #define CPUINFO_AVAILABLE
-#include "cpuinfo.hpp"
+#include "cpuinfo/cpuinfo.hpp"
 #endif // defined(PLATFORM_WINDOWS_DESKTOP) || defined(PLATFORM_LINUX)
 
 namespace Protean::Initializer
