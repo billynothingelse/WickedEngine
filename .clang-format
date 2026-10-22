@@ -1,0 +1,17 @@
+# Protean formatting rules. Third party code in external/ is excluded (see external/.clang-format).
+BasedOnStyle: Microsoft
+Language: Cpp
+Standard: c++17
+UseTab: ForIndentation
+TabWidth: 4
+IndentWidth: 4
+ColumnLimit: 0
+BreakBeforeBraces: Allman
+AccessModifierOffset: -4
+NamespaceIndentation: All
+IndentCaseLabels: true
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortEnumsOnASingleLine: false
+SortIncludes: Never

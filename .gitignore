@@ -8,15 +8,10 @@
 *.sln.docstates
 
 # Build results
-[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
 x64/
-[Bb]uild/
 cmake-build-*/
 bld/
-[Bb]in/
-[Oo]bj/
 
 # Roslyn cache directories
 *.ide/
@@ -237,3 +232,13 @@ log.txt
 wicked-editor-crash-log.txt
 pso_cache_vulkan
 .DS_Store
+
+# Protean build output
+/build/temp/
+/build/projects/
+/build/bin/
+/build/tools/
+# runtime shader cache written next to the working directory
+/data/editor/shaders/
+/data/shaders/
+/source/samples/*/shaders/
