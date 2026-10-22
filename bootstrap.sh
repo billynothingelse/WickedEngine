@@ -4,14 +4,14 @@
 #   ./bootstrap.sh [debug|development|shipping] [--generate-only]
 #
 # Requires: g++ (C++17), make, SDL2 development headers (libsdl2-dev).
+# premake 5.0.0+ is expected at build/premake5 and downloaded if missing.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG=development
 GENERATE_ONLY=0
-PREMAKE_VERSION=5.0.0-beta7
-PREMAKE_DIR="$ROOT/build/tools"
-PREMAKE="$PREMAKE_DIR/premake5"
+PREMAKE_VERSION=5.0.0
+PREMAKE="$ROOT/build/premake5"
 
 for arg in "$@"; do
 	case "${arg,,}" in
@@ -21,12 +21,11 @@ for arg in "$@"; do
 	esac
 done
 
-if ! command -v premake5 >/dev/null 2>&1 && [ ! -x "$PREMAKE" ]; then
+if [ ! -x "$PREMAKE" ]; then
 	echo "[Protean] Downloading premake $PREMAKE_VERSION..."
-	mkdir -p "$PREMAKE_DIR"
-	curl -fsSL "https://github.com/premake/premake-core/releases/download/v$PREMAKE_VERSION/premake-$PREMAKE_VERSION-linux.tar.gz" | tar -xz -C "$PREMAKE_DIR"
+	curl -fsSL "https://github.com/premake/premake-core/releases/download/v$PREMAKE_VERSION/premake-$PREMAKE_VERSION-linux.tar.gz" | tar -xz -C "$ROOT/build" premake5
+	chmod +x "$PREMAKE"
 fi
-[ -x "$PREMAKE" ] || PREMAKE="$(command -v premake5)"
 
 echo "[Protean] Generating makefiles..."
 (cd "$ROOT/build" && "$PREMAKE" gmake)

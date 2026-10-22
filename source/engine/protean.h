@@ -1,0 +1,78 @@
+#ifndef PROTEAN_H
+#define PROTEAN_H
+
+// NOTE:
+// The purpose of this file is to expose all engine features.
+// It should be included in the engine's implementing application not the engine itself!
+// It should be included in the precompiled header if available.
+
+#include "core/common_include.h"
+
+// High-level interface:
+#include "core/application.h"
+#include "render/render_path.h"
+#include "render/render_path_2d.h"
+#include "render/render_path_3d.h"
+#include "render/render_path_3d_path_tracing.h"
+#include "render/loading_screen.h"
+
+// Engine-level systems
+#include "core/version.h"
+#include "platform/platform.h"
+#include "debug/backlog.h"
+#include "math/primitive.h"
+#include "render/image.h"
+#include "render/font.h"
+#include "render/sprite.h"
+#include "render/sprite_font.h"
+#include "scene/scene.h"
+#include "core/ecs.h"
+#include "render/emitted_particle.h"
+#include "render/hair_particle.h"
+#include "render/renderer.h"
+#include "math/math.h"
+#include "audio/audio.h"
+#include "resource/resource_manager.h"
+#include "core/timer.h"
+#include "core/helper.h"
+#include "input/input.h"
+#include "input/raw_input.h"
+#include "input/xinput.h"
+#include "input/sdl_input.h"
+#include "render/texture_helper.h"
+#include "math/random.h"
+#include "math/color.h"
+#include "physics/physics.h"
+#include "render/enums.h"
+#include "core/initializer.h"
+#include "script/lua.h"
+#include "rhi/rhi.h"
+#include "gui/gui.h"
+#include "io/archive.h"
+#include "core/spin_lock.h"
+#include "core/rect_packer.h"
+#include "debug/profiler.h"
+#include "render/ocean.h"
+#include "render/fft_generator.h"
+#include "core/arguments.h"
+#include "render/gpu_bvh.h"
+#include "render/gpu_sort_lib.h"
+#include "core/job_system.h"
+#include "network/network.h"
+#include "core/event_handler.h"
+#include "render/shader_compiler.h"
+#include "render/canvas.h"
+#include "core/unordered_map.h"
+#include "core/unordered_set.h"
+#include "core/vector.h"
+#include "math/noise.h"
+#include "io/config.h"
+#include "scene/terrain.h"
+#include "core/localization.h"
+#include "render/video.h"
+#include "scene/voxel_grid.h"
+#include "scene/path_query.h"
+#include "render/trail_renderer.h"
+#include "render/gaussian_splat_model.h"
+
+#endif // PROTEAN_H

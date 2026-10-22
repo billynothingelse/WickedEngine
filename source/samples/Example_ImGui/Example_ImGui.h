@@ -1,5 +1,5 @@
 #pragma once
-#include "Protean.h"
+#include "../../engine/protean.h"
 
 
 class Example_ImGuiRenderer : public Protean::RenderPath3D

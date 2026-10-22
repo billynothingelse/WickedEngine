@@ -25,7 +25,7 @@ external/         third party code (DirectXMath, Jolt, Lua, Vulkan/D3D12/Metal h
 source/
   engine/         the engine (static library)
     audio/ core/ debug/ gui/ input/ io/ math/ network/ physics/ platform/
-    render/ render/GraphicsAPI/{D3D12,Vulkan,Metal}/ resource/ scene/ script/
+    render/ resource/ rhi/ rhi/{d3d12,vulkan,metal}/ scene/ script/
   editor/         the editor
   game/           the game module
   tools/          offline tools (shader compiler)
@@ -38,17 +38,18 @@ bootstrap.sh      generate + build on Linux
 
 ### Windows
 
-Requirements: Visual Studio 2022 or newer with the "Desktop development with C++" workload.
+Requirements: Visual Studio 2026 (or 2022) with the "Desktop development with C++" workload.
 
 ```
 bootstrap.bat                     :: Development build
 bootstrap.bat Debug
 bootstrap.bat Shipping
-bootstrap.bat --generate-only     :: only generate build\projects\Protean.sln
+bootstrap.bat --generate-only     :: only generate the solution
 ```
 
-`bootstrap.bat` downloads premake into `build/tools` on first run, generates
-`build/projects/Protean.sln` and builds it with MSBuild. Open the solution to work in the IDE;
+`bootstrap.bat` downloads premake 5.0.0 to `build/premake5.exe` on first run, detects the
+Visual Studio version (override with `--vs2022` / `--vs2026`), generates
+`build/projects/Protean.slnx` (`Protean.sln` with `--vs2022`) and builds it with MSBuild. Open the solution to work in the IDE;
 the Editor is the startup project and runs with `data/editor` as its working directory.
 
 ### Linux
@@ -78,13 +79,13 @@ cd data/editor && ../../build/bin/Development/ProteanEditor
 
 ### Game module
 
-Game code lives in `source/game`. `Game.h/.cpp` hold the game itself (an `Application` plus a
-`RenderPath3D`), `GamePlatform.cpp` owns the window and main loop, and `GameModule.h` defines the
+Game code lives in `source/game`. `game.h/.cpp` hold the game itself (an `Application` plus a
+`RenderPath3D`), `game_platform.cpp` owns the window and main loop, and `game_module.h` defines the
 `ProteanGameMain` entry point shared by both build modes:
 
 - Debug / Development: `Game` builds as `Game.dll` / `libGame.so` (with the engine linked into it)
   and `ProteanGame` (the `Launcher` project) loads it and calls `ProteanGameMain`.
-- Shipping: `Game` builds as a single executable; `source/game/main/Main.cpp` calls
+- Shipping: `Game` builds as a single executable; `source/game/main/main.cpp` calls
   `ProteanGameMain` directly.
 
 Run it from the `data` folder: `cd data && ../build/bin/Development/ProteanGame`.
@@ -106,7 +107,7 @@ Run it from the `data` folder: `cd data && ../build/bin/Development/ProteanGame`
 ## Graphics API
 
 The default renderer is D3D12 on Windows, Vulkan on Linux and Metal on Apple platforms. The
-abstraction lives in `source/engine/render/GraphicsAPI`; include `render/GraphicsAPI/GraphicsAPI.h`.
+abstraction (render hardware interface) lives in `source/engine/rhi`; include `rhi/rhi.h`.
 
 Command line arguments (no prefix): `vulkan` (use Vulkan on Windows), `debugdevice`,
 `gpuvalidation`, `gpu_verbose`, `igpu`, `amdgpu`, `nvidiagpu`, `intelgpu`, `alwaysactive`.

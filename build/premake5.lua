@@ -1,9 +1,11 @@
 -- Protean project-wide build script.
 --
+-- Requires premake 5.0.0 or newer (bootstrap downloads it to build/premake5[.exe]).
+--
 --   Windows: bootstrap.bat            (generates build/projects/Protean.sln and builds it)
 --   Linux:   ./bootstrap.sh           (generates build/projects/Makefile and builds it)
 --
--- Manual usage from this folder: premake5 vs2022 | premake5 gmake | premake5 xcode4
+-- Manual usage from this folder: premake5 vs2026 | premake5 vs2022 | premake5 gmake | premake5 xcode4
 --
 -- Layout:
 --   build/projects   generated solutions / makefiles
@@ -36,7 +38,7 @@ workspace "Protean"
 	staticruntime "Off"
 	characterset "Unicode"
 	warnings "Default"
-	flags { "MultiProcessorCompile" }
+	multiprocessorcompile "On"
 
 	targetdir (BIN)
 	objdir (TEMP)
@@ -198,7 +200,7 @@ project "ShaderCompiler"
 	kind "ConsoleApp"
 	location (ROOT .. "/build/projects/Tools")
 	debugdir (SOURCE .. "/engine")
-	files { SOURCE .. "/tools/ShaderCompiler/**.cpp" }
+	files { SOURCE .. "/tools/shader_compiler/**.cpp" }
 	UseEngine()
 
 group "Applications"
@@ -217,14 +219,14 @@ project "Editor"
 	pchsource (SOURCE .. "/editor/stdafx.cpp")
 	UseEngine()
 	filter "files:../external/**"
-		flags { "NoPCH" }
+		enablepch "Off"
 		warnings "Off"
 	filter "system:windows"
-		files { SOURCE .. "/editor/main_Windows.cpp", SOURCE .. "/editor/Editor.rc", SOURCE .. "/editor/Editor.manifest" }
+		files { SOURCE .. "/editor/main_windows.cpp", SOURCE .. "/editor/editor.rc", SOURCE .. "/editor/editor.manifest" }
 	filter "system:linux"
-		files { SOURCE .. "/editor/main_SDL2.cpp" }
+		files { SOURCE .. "/editor/main_sdl2.cpp" }
 	filter "system:macosx"
-		files { SOURCE .. "/editor/main_MacOS.mm" }
+		files { SOURCE .. "/editor/main_macos.mm" }
 	filter {}
 
 -- The game module. In Debug/Development it is a shared library (with the engine linked into it)
@@ -265,19 +267,19 @@ group "Samples"
 project "Tests"
 	kind "WindowedApp"
 	location (ROOT .. "/build/projects/Samples")
-	debugdir (SOURCE .. "/samples/Tests")
-	files { SOURCE .. "/samples/Tests/*.h", SOURCE .. "/samples/Tests/*.cpp" }
-	removefiles { SOURCE .. "/samples/Tests/main_*", SOURCE .. "/samples/Tests/CustomShaderLifecycleTest.cpp" }
+	debugdir (SOURCE .. "/samples/tests")
+	files { SOURCE .. "/samples/tests/*.h", SOURCE .. "/samples/tests/*.cpp" }
+	removefiles { SOURCE .. "/samples/tests/main_*", SOURCE .. "/samples/tests/custom_shader_lifecycle_test.cpp" }
 	UseEngine()
 	filter "system:windows"
-		files { SOURCE .. "/samples/Tests/main_Windows.cpp", SOURCE .. "/samples/Tests/Tests.rc" }
+		files { SOURCE .. "/samples/tests/main_windows.cpp", SOURCE .. "/samples/tests/tests.rc" }
 	filter "system:linux"
-		files { SOURCE .. "/samples/Tests/main_SDL2.cpp" }
+		files { SOURCE .. "/samples/tests/main_sdl2.cpp" }
 	filter {}
 
 -- Headless unit test, run it from any directory
 project "CustomShaderLifecycleTest"
 	kind "ConsoleApp"
 	location (ROOT .. "/build/projects/Samples")
-	files { SOURCE .. "/samples/Tests/CustomShaderLifecycleTest.cpp" }
+	files { SOURCE .. "/samples/tests/custom_shader_lifecycle_test.cpp" }
 	UseEngine()

@@ -1,3 +1,3 @@
 #pragma once
-#include "Protean.h"
+#include "../../engine/protean.h"
 #include "Example_ImGui_Docking.h"

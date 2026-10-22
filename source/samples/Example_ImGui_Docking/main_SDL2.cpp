@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "platform/SDL2.h"
+#include "platform/sdl2.h"
 #include "ImGui/imgui_impl_sdl.h"
 
 Example_ImGui exampleImGui;

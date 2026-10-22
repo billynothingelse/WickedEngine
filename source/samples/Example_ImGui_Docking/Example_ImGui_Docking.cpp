@@ -23,11 +23,11 @@
 #endif
 
 
-#include "debug/Profiler.h"
-#include "debug/Backlog.h"
-#include "math/Primitive.h"
-#include "render/RenderPath3D.h"
-#include "../../editor/ModelImporter.h"
+#include "debug/profiler.h"
+#include "debug/backlog.h"
+#include "math/primitive.h"
+#include "render/render_path_3d.h"
+#include "../../editor/model_importer.h"
 
 #include <fstream>
 #include <thread>

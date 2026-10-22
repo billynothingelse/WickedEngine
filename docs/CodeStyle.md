@@ -19,30 +19,34 @@ source/samples/   samples and tests
 
 Engine subsystems live in `source/engine/<subsystem>/`:
 `audio`, `core`, `debug`, `gui`, `input`, `io`, `math`, `network`, `physics`, `platform`,
-`render`, `resource`, `scene`, `script`.
+`render`, `resource`, `rhi`, `scene`, `script`.
 
-The graphics API abstraction lives in `source/engine/render/GraphicsAPI/`. Include
-`render/GraphicsAPI/GraphicsAPI.h` to get everything that is needed to talk to the GPU. Each
-backend lives in its own folder and is split by responsibility:
+The graphics API abstraction (render hardware interface) lives in `source/engine/rhi/`. Include
+`rhi/rhi.h` to get everything that is needed to talk to the GPU. Each backend lives in its own
+folder and is split by responsibility:
 
 ```
-GraphicsAPI/D3D12/D3D12Device.h      public device class
-GraphicsAPI/D3D12/D3D12Internal.h    private, shared by the backend's .cpp files only
-GraphicsAPI/D3D12/D3D12Device.cpp    device creation, submission, frame lifetime
-GraphicsAPI/D3D12/D3D12SwapChain.cpp swap chains
-GraphicsAPI/D3D12/D3D12Resources.cpp buffers, textures, shaders, pipelines, descriptors
-GraphicsAPI/D3D12/D3D12CmdList.cpp   command list recording
+rhi/rhi.h                      the public graphics API: types, enums, GraphicsDevice interface
+rhi/d3d12/d3d12_device.h       public device class
+rhi/d3d12/d3d12_internal.h     private, shared by the backend's .cpp files only
+rhi/d3d12/d3d12_device.cpp     device creation, submission, frame lifetime
+rhi/d3d12/d3d12_swap_chain.cpp swap chains
+rhi/d3d12/d3d12_resources.cpp  buffers, textures, shaders, pipelines, descriptors
+rhi/d3d12/d3d12_cmd_list.cpp   command list recording
 ```
 
 Vulkan and Metal follow the same pattern.
 
 ## Files and includes
 
-- File names are PascalCase, without prefixes: `render/Renderer.h`, `core/JobSystem.cpp`.
-- Includes are relative to `source/engine` (`#include "render/Renderer.h"`) or to `external`
+- File and folder names are lower case snake_case, without prefixes: `render/renderer.h`,
+  `core/job_system.cpp`, `render/gpu_bvh.h`, `render/fade_manager.cpp`. Acronyms count as one
+  word (`gpu_bvh`, `d3d12_device`, `fft_generator`).
+- Shader sources in `render/shaders` keep their own names, they are referenced by name at runtime.
+- Includes are relative to `source/engine` (`#include "render/renderer.h"`) or to `external`
   (`#include "stb_image.h"`, `#include <Jolt/Jolt.h>`).
 - `#pragma once` in every header.
-- Applications include `Protean.h` to get the whole engine.
+- Applications include `protean.h` to get the whole engine.
 
 ## Namespaces
 
@@ -54,7 +58,7 @@ Vulkan and Metal follow the same pattern.
 
 ## Types
 
-Use the fixed width aliases from `core/Types.h` in new code:
+Use the fixed width aliases from `core/types.h` in new code:
 
 ```cpp
 i8 i16 i32 i64   u8 u16 u32 u64   f32 f64   usize
@@ -123,14 +127,15 @@ Done:
 - Folder layout, premake build, `bootstrap.bat` / `bootstrap.sh`.
 - `wi` namespace renamed to `Protean`, sub-namespaces PascalCase.
 - All engine/editor `enum class` types converted to prefixed plain enums.
-- Graphics backends split into multiple translation units under `render/GraphicsAPI`.
-- `core/Types.h` primitive aliases.
+- Graphics backends split into multiple translation units under `rhi/`.
+- Lower case snake_case file names, graphics API moved to `rhi/`.
+- `core/types.h` primitive aliases.
 - Game module (`source/game`) written in the new style.
 
 Still to do (in order of priority):
 - Rename struct members to the PascalCase / private-lowercase convention, subsystem by subsystem
-  (start with `render/GraphicsAPI`, its descriptor structs are the most widely used).
-- Replace `uint32_t` & co with the `core/Types.h` aliases.
+  (start with `rhi`, its descriptor structs are the most widely used).
+- Replace `uint32_t` & co with the `core/types.h` aliases.
 - Convert remaining `class` declarations to `struct`.
 - PascalCase enum values in converted enums.
 - Rebuild the editor UI.

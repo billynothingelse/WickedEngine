@@ -4,7 +4,7 @@
 #ifdef __cplusplus // not invoking shader compiler, but included in engine source
 
 // Determine shader source path:
-#include "core/Helper.h"
+#include "core/helper.h"
 #ifdef PROTEAN_SHADER_SOURCE_PATH
 // Absolute path provided by the build system (premake compiles with relative paths, so __FILE__ is not usable)
 static const std::string SHADER_INTEROP_PATH = PROTEAN_SHADER_SOURCE_PATH;
@@ -13,7 +13,7 @@ static const std::string SHADER_INTEROP_PATH = Protean::Helper::GetCurrentPath()
 #endif // PROTEAN_SHADER_SOURCE_PATH
 
 // Application-side types:
-#include "math/Math.h"
+#include "math/math.h"
 
 using float3x3 = XMFLOAT3X3;
 using float4x4 = XMFLOAT4X4;

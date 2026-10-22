@@ -13,8 +13,8 @@
 #include <cctype>
 #include <sstream>
 
-#include "Protean.h"
-#include "Editor.h"
+#include "../engine/protean.h"
+#include "editor.h"
 
 // Linked externally from EmbeddedResources.cpp:
 extern const uint8_t font_awesome_v6[];
