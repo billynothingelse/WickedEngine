@@ -1,42 +1,42 @@
 #pragma once
 class EditorComponent;
 
-class CameraPreview : public wi::gui::Widget
+class CameraPreview : public Protean::Gui::Widget
 {
 public:
-	wi::RenderPath3D renderpath;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+	Protean::RenderPath3D renderpath;
+	Protean::Entity entity = Protean::INVALID_ENTITY;
 	EditorComponent* editor = nullptr;
 
 	void RenderPreview();
 
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 };
 
-class CameraComponentWindow : public wi::gui::Window
+class CameraComponentWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Slider farPlaneSlider;
-	wi::gui::Slider nearPlaneSlider;
-	wi::gui::Slider fovSlider;
-	wi::gui::Slider focalLengthSlider;
-	wi::gui::Slider apertureSizeSlider;
-	wi::gui::Slider apertureShapeXSlider;
-	wi::gui::Slider apertureShapeYSlider;
+	Protean::Gui::Slider farPlaneSlider;
+	Protean::Gui::Slider nearPlaneSlider;
+	Protean::Gui::Slider fovSlider;
+	Protean::Gui::Slider focalLengthSlider;
+	Protean::Gui::Slider apertureSizeSlider;
+	Protean::Gui::Slider apertureShapeXSlider;
+	Protean::Gui::Slider apertureShapeYSlider;
 
-	wi::gui::Button renderButton;
+	Protean::Gui::Button renderButton;
 	bool renderEnabled = false;
-	wi::gui::Slider resolutionXSlider;
-	wi::gui::Slider resolutionYSlider;
-	wi::gui::Slider samplecountSlider;
-	wi::gui::Slider updateIntervalSlider;
-	wi::gui::CheckBox crtCheckbox;
+	Protean::Gui::Slider resolutionXSlider;
+	Protean::Gui::Slider resolutionYSlider;
+	Protean::Gui::Slider samplecountSlider;
+	Protean::Gui::Slider updateIntervalSlider;
+	Protean::Gui::CheckBox crtCheckbox;
 
 	CameraPreview preview;
 

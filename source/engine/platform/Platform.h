@@ -53,7 +53,7 @@
 typedef void* HMODULE;
 #endif // defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
 
-namespace wi::platform
+namespace Protean::Platform
 {
 #ifdef _WIN32
 	using window_type = HWND;
@@ -126,11 +126,11 @@ namespace wi::platform
 #endif // PLATFORM_LINUX
 		
 #ifdef PLATFORM_APPLE
-		XMUINT2 size = wi::apple::GetWindowSize(window);
+		XMUINT2 size = Protean::Apple::GetWindowSize(window);
 		dest->width = size.x;
 		dest->height = size.y;
-		dest->dpi = wi::apple::GetDPIForWindow(window);
-		wi::apple::GetSafeArea(window, dest->inset_left, dest->inset_right, dest->inset_top, dest->inset_bottom);
+		dest->dpi = Protean::Apple::GetDPIForWindow(window);
+		Protean::Apple::GetSafeArea(window, dest->inset_left, dest->inset_right, dest->inset_top, dest->inset_bottom);
 #endif // PLATFORM_APPLE
 	}
 
@@ -175,7 +175,7 @@ namespace wi::platform
 		SDL_SetWindowFullscreen(window, fullscreen);
 #endif
 #elif defined(__APPLE__)
-		wi::apple::SetWindowFullScreen(window, fullscreen);
+		Protean::Apple::SetWindowFullScreen(window, fullscreen);
 #endif // PLATFORM_WINDOWS_DESKTOP
 	}
 
@@ -196,7 +196,7 @@ namespace wi::platform
 		return (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) != 0;
 #endif
 #elif defined(__APPLE__)
-		return wi::apple::IsWindowFullScreen(window);
+		return Protean::Apple::IsWindowFullScreen(window);
 #else
 		return true;
 #endif

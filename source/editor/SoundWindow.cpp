@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "SoundWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean::Graphics;
+using namespace Protean;
 namespace SoundWindow_Internal
 {
 	PipelineState pso_linestrip;
@@ -12,15 +10,15 @@ namespace SoundWindow_Internal
 
 	void LoadShaders()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		PipelineStateDesc desc;
-		desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-		desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-		desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-		desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-		desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_WIRE_SMOOTH);
-		desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+		desc.vs = Protean::Renderer::GetShader(Protean::VSTYPE_VERTEXCOLOR);
+		desc.ps = Protean::Renderer::GetShader(Protean::PSTYPE_VERTEXCOLOR);
+		desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_VERTEXCOLOR);
+		desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
+		desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_WIRE_SMOOTH);
+		desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
 		desc.pt = PrimitiveTopology::LINESTRIP;
 		bool success = device->CreatePipelineState(&desc, &pso_linestrip);
 
@@ -34,13 +32,13 @@ using namespace SoundWindow_Internal;
 void SoundWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SOUND " Sound", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SOUND " Sound", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(440, 400));
 
 	closeButton.SetTooltip("Delete SoundComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -62,27 +60,27 @@ void SoundWindow::Create(EditorComponent* _editor)
 	openButton.SetTooltip("Open sound file.\nSupported extensions: WAV, OGG");
 	openButton.SetPos(XMFLOAT2(x, y));
 	openButton.SetSize(XMFLOAT2(wid, hei));
-	openButton.OnClick([this](wi::gui::EventArgs args) {
+	openButton.OnClick([this](Protean::Gui::EventArgs args) {
 		SoundComponent* sound = editor->GetCurrentScene().sounds.GetComponent(entity);
 		if (sound != nullptr)
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Sound (.wav, .ogg)";
-			params.extensions = wi::resourcemanager::GetSupportedSoundExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::scene::Scene& scene = editor->GetCurrentScene();
+			params.extensions = Protean::ResourceManager::GetSupportedSoundExtensions();
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Protean::Scene& scene = editor->GetCurrentScene();
 					for (auto& x : editor->translator.selected)
 					{
 						SoundComponent* sound = scene.sounds.GetComponent(x.entity);
 						if (sound == nullptr)
 							continue;
 						sound->filename = fileName;
-						sound->soundResource = wi::resourcemanager::Load(fileName);
-						wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+						sound->soundResource = Protean::ResourceManager::Load(fileName);
+						Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 					}
-					filenameLabel.SetText(wi::helper::GetFileNameFromPath(sound->filename));
+					filenameLabel.SetText(Protean::Helper::GetFileNameFromPath(sound->filename));
 					});
 				});
 		}
@@ -96,7 +94,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				SoundComponent* sound = scene.sounds.GetComponent(x.entity);
@@ -144,7 +142,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 	reverbCheckbox.SetSize(XMFLOAT2(hei, hei));
 	reverbCheckbox.OnClick(forEachSelected([] (auto sound, auto args) {
 		sound->soundinstance.SetEnableReverb(args.bValue);
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	AddWidget(&reverbCheckbox);
 	reverbCheckbox.SetEnabled(false);
@@ -173,8 +171,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	submixComboBox.SetPos(XMFLOAT2(x, y += step));
 	submixComboBox.SetSize(XMFLOAT2(wid, hei));
 	submixComboBox.OnSelect(forEachSelected([] (auto sound, auto args) {
-		sound->soundinstance.type = (wi::audio::SUBMIX_TYPE)args.iValue;
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		sound->soundinstance.type = (Protean::Audio::SUBMIX_TYPE)args.iValue;
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	submixComboBox.AddItem("SOUNDEFFECT");
 	submixComboBox.AddItem("MUSIC");
@@ -187,8 +185,8 @@ void SoundWindow::Create(EditorComponent* _editor)
 	reverbComboBox.Create("Reverb: ");
 	reverbComboBox.SetPos(XMFLOAT2(x, y += step));
 	reverbComboBox.SetSize(XMFLOAT2(wid, hei));
-	reverbComboBox.OnSelect([](wi::gui::EventArgs args) {
-		wi::audio::SetReverb((wi::audio::REVERB_PRESET)args.iValue);
+	reverbComboBox.OnSelect([](Protean::Gui::EventArgs args) {
+		Protean::Audio::SetReverb((Protean::Audio::REVERB_PRESET)args.iValue);
 	});
 	reverbComboBox.AddItem("DEFAULT");
 	reverbComboBox.AddItem("GENERIC");
@@ -233,7 +231,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 	beginInput.SetSize(XMFLOAT2(wid, hei));
 	beginInput.OnInputAccepted(forEachSelected([] (auto sound, auto args) {
 		sound->soundinstance.begin = args.fValue;
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	AddWidget(&beginInput);
 
@@ -243,7 +241,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 	lengthInput.SetSize(XMFLOAT2(wid, hei));
 	lengthInput.OnInputAccepted(forEachSelected([] (auto sound, auto args) {
 		sound->soundinstance.length = args.fValue;
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	AddWidget(&lengthInput);
 
@@ -253,7 +251,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 	loopBeginInput.SetSize(XMFLOAT2(wid, hei));
 	loopBeginInput.OnInputAccepted(forEachSelected([] (auto sound, auto args) {
 		sound->soundinstance.loop_begin = args.fValue;
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	AddWidget(&loopBeginInput);
 
@@ -263,7 +261,7 @@ void SoundWindow::Create(EditorComponent* _editor)
 	loopLengthInput.SetSize(XMFLOAT2(wid, hei));
 	loopLengthInput.OnInputAccepted(forEachSelected([] (auto sound, auto args) {
 		sound->soundinstance.loop_length = args.fValue;
-		wi::audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
+		Protean::Audio::CreateSoundInstance(&sound->soundResource.GetSound(), &sound->soundinstance);
 	}));
 	AddWidget(&loopLengthInput);
 
@@ -273,16 +271,16 @@ void SoundWindow::Create(EditorComponent* _editor)
 	SetEntity(INVALID_ENTITY);
 }
 
-void WaveGraph::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void WaveGraph::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = Protean::Graphics::GetDevice();
 	device->EventBegin("Sound Wave", cmd);
 
 	static bool shaders_loaded = false;
 	if (!shaders_loaded)
 	{
 		shaders_loaded = true;
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { SoundWindow_Internal::LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { SoundWindow_Internal::LoadShaders(); });
 		SoundWindow_Internal::LoadShaders();
 	}
 
@@ -311,11 +309,11 @@ void WaveGraph::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) 
 	else
 	{
 		// Vertices for [-1, 1] second range of current sound sample:
-		wi::audio::SampleInfo info = wi::audio::GetSampleInfo(&sound->soundResource.GetSound());
+		Protean::Audio::SampleInfo info = Protean::Audio::GetSampleInfo(&sound->soundResource.GetSound());
 		const uint32_t step = uint32_t(info.sample_rate * 2) / vertexCount;
 		const uint32_t instance_sample_offset = uint32_t(sound->soundinstance.begin * info.sample_rate);
 		const uint32_t instance_sample_count = uint32_t(sound->soundinstance.length > 0 ? uint32_t(sound->soundinstance.length * info.sample_rate) : uint32_t(info.sample_count));
-		uint64_t current_instance_sample = wi::audio::GetTotalSamplesPlayed(&sound->soundinstance);
+		uint64_t current_instance_sample = Protean::Audio::GetTotalSamplesPlayed(&sound->soundinstance);
 		if (sound->IsLooped())
 		{
 			float total_time = float(current_instance_sample) / float(info.sample_rate);
@@ -422,7 +420,7 @@ void SoundWindow::SetEntity(Entity entity)
 
 	if (sound != nullptr && sound->soundResource.IsValid())
 	{
-		filenameLabel.SetText(wi::helper::GetFileNameFromPath(sound->filename));
+		filenameLabel.SetText(Protean::Helper::GetFileNameFromPath(sound->filename));
 		playstopButton.SetEnabled(true);
 		loopedCheckbox.SetEnabled(true);
 		loopedCheckbox.SetCheck(sound->IsLooped());
@@ -465,7 +463,7 @@ void SoundWindow::SetEntity(Entity entity)
 
 void SoundWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 100;
 
 	layout.add_fullwidth(openButton);

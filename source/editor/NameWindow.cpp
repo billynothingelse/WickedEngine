@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "NameWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void NameWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_NAME " Name", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_NAME " Name", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(360, 60));
 
 	closeButton.SetTooltip("Delete NameComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,8 +32,8 @@ void NameWindow::Create(EditorComponent* _editor)
 	nameInput.SetDescription("Name: ");
 	nameInput.SetPos(XMFLOAT2(x, y));
 	nameInput.SetSize(XMFLOAT2(siz, hei));
-	nameInput.OnInputAccepted([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	nameInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			NameComponent* name = scene.names.GetComponent(x.entity);
@@ -78,7 +76,7 @@ void NameWindow::SetEntity(Entity entity)
 
 void NameWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	nameInput.SetPos(XMFLOAT2(60, 4));
 	nameInput.SetSize(XMFLOAT2(GetSize().x - 65, nameInput.GetSize().y));

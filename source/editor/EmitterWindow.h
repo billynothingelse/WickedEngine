@@ -3,69 +3,69 @@ class EditorComponent;
 
 class MaterialWindow;
 
-class EmitterWindow : public wi::gui::Window
+class EmitterWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
 	void UpdateData();
 
-	wi::EmittedParticleSystem* GetEmitter();
+	Protean::EmittedParticleSystem* GetEmitter();
 
-	wi::gui::Button restartButton;
-	wi::gui::Button burstButton;
-	wi::gui::TextInputField burstCountInput;
-	wi::gui::ComboBox meshComboBox;
-	wi::gui::ComboBox shaderTypeComboBox;
-	wi::gui::Label infoLabel;
-	wi::gui::Slider maxParticlesSlider;
-	wi::gui::CheckBox sortCheckBox;
-	wi::gui::CheckBox depthCollisionsCheckBox;
-	wi::gui::CheckBox sphCheckBox;
-	wi::gui::CheckBox pauseCheckBox;
-	wi::gui::CheckBox debugCheckBox;
-	wi::gui::CheckBox volumeCheckBox;
-	wi::gui::CheckBox frameBlendingCheckBox;
-	wi::gui::CheckBox collidersDisabledCheckBox;
-	wi::gui::CheckBox takeColorCheckBox;
-	wi::gui::Slider emitCountSlider;
-	wi::gui::Slider burstOnCreateSlider;
-	wi::gui::Slider emitSizeSlider;
-	wi::gui::Slider emitRotationSlider;
-	wi::gui::Slider emitNormalSlider;
-	wi::gui::Slider emitScalingSlider;
-	wi::gui::Slider emitLifeSlider;
-	wi::gui::Slider emitOpacityCurveStartSlider;
-	wi::gui::Slider emitOpacityCurveEndSlider;
-	wi::gui::Slider emitRandomnessSlider;
-	wi::gui::Slider emitLifeRandomnessSlider;
-	wi::gui::Slider emitColorRandomnessSlider;
-	wi::gui::Slider emitMotionBlurSlider;
-	wi::gui::Slider emitMassSlider;
-	wi::gui::Slider timestepSlider;
-	wi::gui::Slider dragSlider;
-	wi::gui::Slider restitutionSlider;
-	wi::gui::TextInputField VelocityXInput;
-	wi::gui::TextInputField VelocityYInput;
-	wi::gui::TextInputField VelocityZInput;
-	wi::gui::TextInputField GravityXInput;
-	wi::gui::TextInputField GravityYInput;
-	wi::gui::TextInputField GravityZInput;
+	Protean::Gui::Button restartButton;
+	Protean::Gui::Button burstButton;
+	Protean::Gui::TextInputField burstCountInput;
+	Protean::Gui::ComboBox meshComboBox;
+	Protean::Gui::ComboBox shaderTypeComboBox;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Slider maxParticlesSlider;
+	Protean::Gui::CheckBox sortCheckBox;
+	Protean::Gui::CheckBox depthCollisionsCheckBox;
+	Protean::Gui::CheckBox sphCheckBox;
+	Protean::Gui::CheckBox pauseCheckBox;
+	Protean::Gui::CheckBox debugCheckBox;
+	Protean::Gui::CheckBox volumeCheckBox;
+	Protean::Gui::CheckBox frameBlendingCheckBox;
+	Protean::Gui::CheckBox collidersDisabledCheckBox;
+	Protean::Gui::CheckBox takeColorCheckBox;
+	Protean::Gui::Slider emitCountSlider;
+	Protean::Gui::Slider burstOnCreateSlider;
+	Protean::Gui::Slider emitSizeSlider;
+	Protean::Gui::Slider emitRotationSlider;
+	Protean::Gui::Slider emitNormalSlider;
+	Protean::Gui::Slider emitScalingSlider;
+	Protean::Gui::Slider emitLifeSlider;
+	Protean::Gui::Slider emitOpacityCurveStartSlider;
+	Protean::Gui::Slider emitOpacityCurveEndSlider;
+	Protean::Gui::Slider emitRandomnessSlider;
+	Protean::Gui::Slider emitLifeRandomnessSlider;
+	Protean::Gui::Slider emitColorRandomnessSlider;
+	Protean::Gui::Slider emitMotionBlurSlider;
+	Protean::Gui::Slider emitMassSlider;
+	Protean::Gui::Slider timestepSlider;
+	Protean::Gui::Slider dragSlider;
+	Protean::Gui::Slider restitutionSlider;
+	Protean::Gui::TextInputField VelocityXInput;
+	Protean::Gui::TextInputField VelocityYInput;
+	Protean::Gui::TextInputField VelocityZInput;
+	Protean::Gui::TextInputField GravityXInput;
+	Protean::Gui::TextInputField GravityYInput;
+	Protean::Gui::TextInputField GravityZInput;
 
-	wi::gui::Slider sph_h_Slider;
-	wi::gui::Slider sph_K_Slider;
-	wi::gui::Slider sph_p0_Slider;
-	wi::gui::Slider sph_e_Slider;
+	Protean::Gui::Slider sph_h_Slider;
+	Protean::Gui::Slider sph_K_Slider;
+	Protean::Gui::Slider sph_p0_Slider;
+	Protean::Gui::Slider sph_e_Slider;
 
-	wi::gui::TextInputField frameRateInput;
-	wi::gui::TextInputField framesXInput;
-	wi::gui::TextInputField framesYInput;
-	wi::gui::TextInputField frameCountInput;
-	wi::gui::TextInputField frameStartInput;
+	Protean::Gui::TextInputField frameRateInput;
+	Protean::Gui::TextInputField framesXInput;
+	Protean::Gui::TextInputField framesYInput;
+	Protean::Gui::TextInputField frameCountInput;
+	Protean::Gui::TextInputField frameStartInput;
 
 	void ResizeLayout() override;
 };

@@ -13,10 +13,10 @@
 #include <algorithm>
 #include <mutex>
 
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi
+namespace Protean
 {
 	namespace ocean_internal
 	{
@@ -39,19 +39,19 @@ namespace wi
 
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::CS, updateSpectrumCS, "oceanSimulatorCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, updateSpectrumCS, "oceanSimulatorCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, updateDisplacementMapCS, "oceanUpdateDisplacementMapCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, updateGradientFoldingCS, "oceanUpdateGradientFoldingCS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::VS, oceanSurfVS, "oceanSurfaceVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::VS, oceanSurfVS, "oceanSurfaceVS.cso");
 
-			wi::renderer::LoadShader(ShaderStage::PS, oceanSurfPS, "oceanSurfacePS.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, oceanSurfPS_envmap, "oceanSurfacePS_envmap.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, oceanSurfPS_shadowmap, "oceanSurfacePS_shadowmap.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, wireframePS, "oceanSurfaceSimplePS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS, "oceanSurfacePS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS_envmap, "oceanSurfacePS_envmap.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, oceanSurfPS_shadowmap, "oceanSurfacePS_shadowmap.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, wireframePS, "oceanSurfaceSimplePS.cso");
 
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			{
 				PipelineStateDesc desc;
@@ -131,12 +131,12 @@ namespace wi
 			occlusionQueries[i] = -1;
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// Height map H(0)
 		int height_map_size = (params.dmap_dim + 4) * (params.dmap_dim + 1);
-		wi::vector<XMFLOAT2> h0_data(height_map_size);
-		wi::vector<float> omega_data(height_map_size);
+		Protean::vector<XMFLOAT2> h0_data(height_map_size);
+		Protean::vector<float> omega_data(height_map_size);
 		initHeightMap(h0_data.data(), omega_data.data());
 
 		int hmap_dim = params.dmap_dim;
@@ -245,10 +245,10 @@ namespace wi
 				const XMUINT2 pixel_tr = XMUINT2((uint32_t)std::ceil(fpixel.x), (uint32_t)std::floor(fpixel.y));
 				const XMUINT2 pixel_bl = XMUINT2((uint32_t)std::floor(fpixel.x), (uint32_t)std::ceil(fpixel.y));
 				const XMUINT2 pixel_br = XMUINT2((uint32_t)std::ceil(fpixel.x), (uint32_t)std::ceil(fpixel.y));
-				const XMFLOAT4 displacement_tl = wi::math::unpack_half4(((const XMUINT2*)(bytedata + pixel_tl.y * row_pitch))[pixel_tl.x]);
-				const XMFLOAT4 displacement_tr = wi::math::unpack_half4(((const XMUINT2*)(bytedata + pixel_tr.y * row_pitch))[pixel_tr.x]);
-				const XMFLOAT4 displacement_bl = wi::math::unpack_half4(((const XMUINT2*)(bytedata + pixel_bl.y * row_pitch))[pixel_bl.x]);
-				const XMFLOAT4 displacement_br = wi::math::unpack_half4(((const XMUINT2*)(bytedata + pixel_br.y * row_pitch))[pixel_br.x]);
+				const XMFLOAT4 displacement_tl = Protean::Math::unpack_half4(((const XMUINT2*)(bytedata + pixel_tl.y * row_pitch))[pixel_tl.x]);
+				const XMFLOAT4 displacement_tr = Protean::Math::unpack_half4(((const XMUINT2*)(bytedata + pixel_tr.y * row_pitch))[pixel_tr.x]);
+				const XMFLOAT4 displacement_bl = Protean::Math::unpack_half4(((const XMUINT2*)(bytedata + pixel_bl.y * row_pitch))[pixel_bl.x]);
+				const XMFLOAT4 displacement_br = Protean::Math::unpack_half4(((const XMUINT2*)(bytedata + pixel_br.y * row_pitch))[pixel_br.x]);
 				const XMFLOAT4 xxxx = XMFLOAT4(displacement_bl.x, displacement_br.x, displacement_tr.x, displacement_tl.x);
 				const XMFLOAT4 yyyy = XMFLOAT4(displacement_bl.y, displacement_br.y, displacement_tr.y, displacement_tl.y);
 				const XMFLOAT4 zzzz = XMFLOAT4(displacement_bl.z, displacement_br.z, displacement_tr.z, displacement_tl.z);
@@ -352,7 +352,7 @@ namespace wi
 
 	void Ocean::UpdateDisplacementMap(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("Ocean Simulation", cmd);
 
@@ -383,7 +383,7 @@ namespace wi
 
 
 		// ------------------------------------ Perform FFT -------------------------------------------
-		wi::fftgenerator::fft_512x512_c2c(buffer_Float_Dxyz, buffer_Float_Dxyz, buffer_Float2_Ht, cmd);
+		Protean::FFTGenerator::fft_512x512_c2c(buffer_Float_Dxyz, buffer_Float_Dxyz, buffer_Float2_Ht, cmd);
 
 
 
@@ -421,12 +421,12 @@ namespace wi
 		);
 		device->Barrier(GPUBarrier::Image(&gradientMap, ResourceState::UNORDERED_ACCESS, gradientMap.desc.layout), cmd);
 
-		wi::renderer::GenerateMipChain(gradientMap, wi::renderer::MIPGENFILTER_LINEAR, cmd);
+		Protean::Renderer::GenerateMipChain(gradientMap, Protean::Renderer::MIPGENFILTER_LINEAR, cmd);
 
 		device->EventEnd(cmd);
 	}
 
-	void Ocean::CopyDisplacementMapReadback(wi::graphics::CommandList cmd) const
+	void Ocean::CopyDisplacementMapReadback(Protean::Graphics::CommandList cmd) const
 	{
 		// Skip the full-texture GPU->CPU copy unless ocean height was queried on the
 		// CPU recently (see GetDisplacedPosition). The readback is only needed for
@@ -436,7 +436,7 @@ namespace wi
 			return;
 		displacement_readback_request--;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("Ocean Readback Copy", cmd);
 		device->CopyResource(&displacementMap_readback[displacement_readback_index], &displacementMap, cmd);
 		displacement_readback_valid[displacement_readback_index] = true;
@@ -446,7 +446,7 @@ namespace wi
 
 	void Ocean::RenderForOcclusionTest(const CameraComponent& camera, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("Ocean Occlusion Test", cmd);
 
@@ -457,7 +457,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer_occlusionTest.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint16_t> index_data(index_count);
+			Protean::vector<uint16_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint16_t x = 0; x < dim.x - 1; x++)
 			{
@@ -506,7 +506,7 @@ namespace wi
 
 	void Ocean::RenderForCubemap(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("Ocean Rendering into Cubemap", cmd);
 
@@ -517,7 +517,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer_cubemap.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint16_t> index_data(index_count);
+			Protean::vector<uint16_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint16_t x = 0; x < dim.x - 1; x++)
 			{
@@ -567,7 +567,7 @@ namespace wi
 
 	void Ocean::RenderForShadowmap(CommandList cmd, uint16_t camera_mask) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("Ocean Rendering into shadow map", cmd);
 
@@ -578,7 +578,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer_shadowmap.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint16_t> index_data(index_count);
+			Protean::vector<uint16_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint16_t x = 0; x < dim.x - 1; x++)
 			{
@@ -632,11 +632,11 @@ namespace wi
 
 	void Ocean::Render(const CameraComponent& camera, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("Ocean Rendering", cmd);
 
-		bool wire = wi::renderer::IsWireRender();
+		bool wire = Protean::Renderer::IsWireRender();
 
 		if (wire)
 		{
@@ -654,7 +654,7 @@ namespace wi
 		locker.lock(); // in case two threads draw the ocean the same time, index buffer creation must be locked
 		if (indexBuffer.GetDesc().size != indexbuffer_required_size)
 		{
-			wi::vector<uint32_t> index_data(index_count);
+			Protean::vector<uint32_t> index_data(index_count);
 			size_t counter = 0;
 			for (uint32_t x = 0; x < dim.x - 1; x++)
 			{
@@ -703,7 +703,7 @@ namespace wi
 
 	void Ocean::Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		RasterizerState ras_desc;
 		ras_desc.fill_mode = FillMode::SOLID;
@@ -761,10 +761,10 @@ namespace wi
 		blendState_shadowmap = blend_desc;
 
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); wi::fftgenerator::LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); Protean::FFTGenerator::LoadShaders(); });
 
 		LoadShaders();
-		wi::fftgenerator::LoadShaders();
+		Protean::FFTGenerator::LoadShaders();
 
 		TextureDesc desc;
 		desc.bind_flags = BindFlag::SHADER_RESOURCE;
@@ -788,7 +788,7 @@ namespace wi
 		device->CreateTexture(&desc, initdata, &perlinTex);
 		device->SetName(&perlinTex, "ocean_internal::perlinTex");
 
-		wilog("wi::Ocean Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::Ocean Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	const Texture* Ocean::getDisplacementMap() const
@@ -801,9 +801,9 @@ namespace wi
 		return &gradientMap;
 	}
 
-	const wi::primitive::AABB Ocean::GetAABB(const XMFLOAT3& camera_pos) const
+	const Protean::AABB Ocean::GetAABB(const XMFLOAT3& camera_pos) const
 	{
-		wi::primitive::AABB aabb;
+		Protean::AABB aabb;
 		aabb.createFromHalfWidth(XMFLOAT3(camera_pos.x, params.waterHeight, camera_pos.z), XMFLOAT3(1000, 10, 1000));
 		return aabb;
 	}

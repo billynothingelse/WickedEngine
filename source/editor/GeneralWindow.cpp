@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "GeneralWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
-static const std::string languages_directory = wi::helper::GetCurrentPath() + "/languages/";
+using namespace Protean::Graphics;
+using namespace Protean;
+static const std::string languages_directory = Protean::Helper::GetCurrentPath() + "/languages/";
 
 enum class Theme : uint64_t
 {
@@ -23,7 +21,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create("General", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("General", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("General Options " ICON_GENERALOPTIONS);
 
 	XMFLOAT2 size = XMFLOAT2(300, 740);
@@ -40,23 +38,23 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	masterVolumeSlider.Create(0, 2, 1, 100, "Master Volume: ");
 	if (editor->main->config.GetSection("options").Has("volume"))
 	{
-		wi::audio::SetVolume(editor->main->config.GetSection("options").GetFloat("volume"));
+		Protean::Audio::SetVolume(editor->main->config.GetSection("options").GetFloat("volume"));
 	}
-	masterVolumeSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::audio::SetVolume(args.fValue); // no specific sound instance arg: master volume
+	masterVolumeSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		Protean::Audio::SetVolume(args.fValue); // no specific sound instance arg: master volume
 		editor->main->config.GetSection("options").Set("volume", args.fValue);
 	});
-	masterVolumeSlider.SetValue(wi::audio::GetVolume());
+	masterVolumeSlider.SetValue(Protean::Audio::GetVolume());
 	AddWidget(&masterVolumeSlider);
 
 	physicsDebugCheckBox.Create("Physics visualizer: ");
 	physicsDebugCheckBox.SetTooltip("Visualize the physics world");
-	physicsDebugCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::physics::SetDebugDrawEnabled(args.bValue);
+	physicsDebugCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Physics::SetDebugDrawEnabled(args.bValue);
 		editor->componentsWnd.rigidWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 		editor->componentsWnd.constraintWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 	});
-	physicsDebugCheckBox.SetCheck(wi::physics::IsDebugDrawEnabled());
+	physicsDebugCheckBox.SetCheck(Protean::Physics::IsDebugDrawEnabled());
 	AddWidget(&physicsDebugCheckBox);
 
 	physicsDebugMaxDistanceSlider.Create(0.0f, 2000.0f, 500.0f, 100, "Physics draw distance: ");
@@ -64,11 +62,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	physicsDebugMaxDistanceSlider.SetSize(XMFLOAT2(100, 18));
 	if (editor->main->config.GetSection("options").Has("physics_max_draw_distance"))
 	{
-		wi::physics::SetDebugDrawMaxDistance(editor->main->config.GetSection("options").GetFloat("physics_max_draw_distance"));
-		physicsDebugMaxDistanceSlider.SetValue(wi::physics::GetDebugDrawMaxDistance());
+		Protean::Physics::SetDebugDrawMaxDistance(editor->main->config.GetSection("options").GetFloat("physics_max_draw_distance"));
+		physicsDebugMaxDistanceSlider.SetValue(Protean::Physics::GetDebugDrawMaxDistance());
 	}
-	physicsDebugMaxDistanceSlider.OnSlide([=](wi::gui::EventArgs args) {
-		wi::physics::SetDebugDrawMaxDistance(args.fValue);
+	physicsDebugMaxDistanceSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		Protean::Physics::SetDebugDrawMaxDistance(args.fValue);
 		editor->main->config.GetSection("options").Set("physics_max_draw_distance", args.fValue);
 		editor->main->config.Commit();
 	});
@@ -81,77 +79,77 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	aabbDebugCheckBox.Create("AABB visualizer: ");
 	aabbDebugCheckBox.SetTooltip("Visualize the scene bounding boxes");
 	aabbDebugCheckBox.SetScriptTip("SetDebugPartitionTreeEnabled(bool enabled)");
-	aabbDebugCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugPartitionTree(args.bValue);
+	aabbDebugCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugPartitionTree(args.bValue);
 		});
-	aabbDebugCheckBox.SetCheck(wi::renderer::GetToDrawDebugPartitionTree());
+	aabbDebugCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugPartitionTree());
 	AddWidget(&aabbDebugCheckBox);
 
 	boneLinesCheckBox.Create(ICON_ARMATURE " Bone line visualizer: ");
 	boneLinesCheckBox.SetTooltip("Visualize bones of armatures");
 	boneLinesCheckBox.SetScriptTip("SetDebugBonesEnabled(bool enabled)");
-	boneLinesCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugBoneLines(args.bValue);
+	boneLinesCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugBoneLines(args.bValue);
 		});
-	boneLinesCheckBox.SetCheck(wi::renderer::GetToDrawDebugBoneLines());
+	boneLinesCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugBoneLines());
 	AddWidget(&boneLinesCheckBox);
 
 	debugEmittersCheckBox.Create(ICON_EMITTER " Emitter visualizer: ");
 	debugEmittersCheckBox.SetTooltip("Visualize emitters");
 	debugEmittersCheckBox.SetScriptTip("SetDebugEmittersEnabled(bool enabled)");
-	debugEmittersCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugEmitters(args.bValue);
+	debugEmittersCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugEmitters(args.bValue);
 		});
-	debugEmittersCheckBox.SetCheck(wi::renderer::GetToDrawDebugEmitters());
+	debugEmittersCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugEmitters());
 	AddWidget(&debugEmittersCheckBox);
 
 	debugForceFieldsCheckBox.Create(ICON_FORCE " Force Field visualizer: ");
 	debugForceFieldsCheckBox.SetTooltip("Visualize force fields");
 	debugForceFieldsCheckBox.SetScriptTip("SetDebugForceFieldsEnabled(bool enabled)");
-	debugForceFieldsCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugForceFields(args.bValue);
+	debugForceFieldsCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugForceFields(args.bValue);
 		});
-	debugForceFieldsCheckBox.SetCheck(wi::renderer::GetToDrawDebugForceFields());
+	debugForceFieldsCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugForceFields());
 	AddWidget(&debugForceFieldsCheckBox);
 
 	debugRaytraceBVHCheckBox.Create("RT BVH visualizer: ");
 	debugRaytraceBVHCheckBox.SetTooltip("Visualize scene BVH if raytracing is enabled (only for software raytracing currently)");
-	debugRaytraceBVHCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetRaytraceDebugBVHVisualizerEnabled(args.bValue);
+	debugRaytraceBVHCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetRaytraceDebugBVHVisualizerEnabled(args.bValue);
 		});
-	debugRaytraceBVHCheckBox.SetCheck(wi::renderer::GetRaytraceDebugBVHVisualizerEnabled());
+	debugRaytraceBVHCheckBox.SetCheck(Protean::Renderer::GetRaytraceDebugBVHVisualizerEnabled());
 	AddWidget(&debugRaytraceBVHCheckBox);
 
 	envProbesCheckBox.Create(ICON_ENVIRONMENTPROBE " Env probe visualizer: ");
 	envProbesCheckBox.SetTooltip("Toggle visualization of environment probes as reflective spheres");
-	envProbesCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugEnvProbes(args.bValue);
+	envProbesCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugEnvProbes(args.bValue);
 		});
-	envProbesCheckBox.SetCheck(wi::renderer::GetToDrawDebugEnvProbes());
+	envProbesCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugEnvProbes());
 	AddWidget(&envProbesCheckBox);
 
 	cameraVisCheckBox.Create(ICON_CAMERA " Camera visualizer: ");
 	cameraVisCheckBox.SetTooltip("Toggle visualization of camera proxies in the scene");
-	cameraVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugCameras(args.bValue);
+	cameraVisCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugCameras(args.bValue);
 		});
-	cameraVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugCameras());
+	cameraVisCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugCameras());
 	AddWidget(&cameraVisCheckBox);
 
 	colliderVisCheckBox.Create(ICON_COLLIDER " Collider visualizer: ");
 	colliderVisCheckBox.SetTooltip("Toggle visualization of colliders in the scene");
-	colliderVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugColliders(args.bValue);
+	colliderVisCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugColliders(args.bValue);
 		});
-	colliderVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugColliders());
+	colliderVisCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugColliders());
 	AddWidget(&colliderVisCheckBox);
 
 	springVisCheckBox.Create(ICON_SPRING " Spring visualizer: ");
 	springVisCheckBox.SetTooltip("Toggle visualization of springs in the scene");
-	springVisCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugSprings(args.bValue);
+	springVisCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugSprings(args.bValue);
 		});
-	springVisCheckBox.SetCheck(wi::renderer::GetToDrawDebugSprings());
+	springVisCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugSprings());
 	AddWidget(&springVisCheckBox);
 
 	splineVisCheckBox.Create(ICON_SPLINE " Spline visualizer: ");
@@ -163,48 +161,48 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	gridHelperCheckBox.SetTooltip("Toggle showing of unit visualizer grid in the world origin");
 	if (editor->main->config.GetSection("options").Has("grid_helper"))
 	{
-		wi::renderer::SetToDrawGridHelper(editor->main->config.GetSection("options").GetBool("grid_helper"));
+		Protean::Renderer::SetToDrawGridHelper(editor->main->config.GetSection("options").GetBool("grid_helper"));
 	}
-	gridHelperCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawGridHelper(args.bValue);
+	gridHelperCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawGridHelper(args.bValue);
 		editor->main->config.GetSection("options").Set("grid_helper", args.bValue);
 		editor->main->config.Commit();
 		});
-	gridHelperCheckBox.SetCheck(wi::renderer::GetToDrawGridHelper());
+	gridHelperCheckBox.SetCheck(Protean::Renderer::GetToDrawGridHelper());
 	AddWidget(&gridHelperCheckBox);
 
 
 	freezeCullingCameraCheckBox.Create("Freeze culling camera: ");
 	freezeCullingCameraCheckBox.SetTooltip("Freeze culling camera update. Scene culling will not be updated with the view");
-	freezeCullingCameraCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetFreezeCullingCameraEnabled(args.bValue);
+	freezeCullingCameraCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetFreezeCullingCameraEnabled(args.bValue);
 		});
-	freezeCullingCameraCheckBox.SetCheck(wi::renderer::GetFreezeCullingCameraEnabled());
+	freezeCullingCameraCheckBox.SetCheck(Protean::Renderer::GetFreezeCullingCameraEnabled());
 	AddWidget(&freezeCullingCameraCheckBox);
 
 	disableAlbedoMapsCheckBox.Create("Disable albedo maps: ");
 	disableAlbedoMapsCheckBox.SetTooltip("Disables albedo maps on objects for easier lighting debugging");
-	disableAlbedoMapsCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetDisableAlbedoMaps(args.bValue);
+	disableAlbedoMapsCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetDisableAlbedoMaps(args.bValue);
 		});
-	disableAlbedoMapsCheckBox.SetCheck(wi::renderer::IsDisableAlbedoMaps());
+	disableAlbedoMapsCheckBox.SetCheck(Protean::Renderer::IsDisableAlbedoMaps());
 	AddWidget(&disableAlbedoMapsCheckBox);
 
 
 	forceDiffuseLightingCheckBox.Create("Force diffuse lighting: ");
 	forceDiffuseLightingCheckBox.SetTooltip("Sets every surface fully diffuse, with zero specularity");
-	forceDiffuseLightingCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetForceDiffuseLighting(args.bValue);
+	forceDiffuseLightingCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetForceDiffuseLighting(args.bValue);
 		});
-	forceDiffuseLightingCheckBox.SetCheck(wi::renderer::IsForceDiffuseLighting());
+	forceDiffuseLightingCheckBox.SetCheck(Protean::Renderer::IsForceDiffuseLighting());
 	AddWidget(&forceDiffuseLightingCheckBox);
 
 	forceUnlitCheckBox.Create("Force unlit: ");
 	forceUnlitCheckBox.SetTooltip("Sets every surface without lighting and shadows");
-	forceUnlitCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetForceUnlit(args.bValue);
+	forceUnlitCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetForceUnlit(args.bValue);
 		});
-	forceUnlitCheckBox.SetCheck(wi::renderer::IsForceUnlit());
+	forceUnlitCheckBox.SetCheck(Protean::Renderer::IsForceUnlit());
 	AddWidget(&forceUnlitCheckBox);
 
 
@@ -215,7 +213,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		focusModeCheckBox.SetCheck(editor->main->config.GetSection("options").GetBool("focus_mode"));
 	}
-	focusModeCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	focusModeCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("focus_mode", args.bValue);
 		// trigger themeCombo's OnSelect handler, which will enable/disable shadow highlighting
 		// according to this checkbox's state
@@ -229,7 +227,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		disableRoundCornersCheckBox.SetCheck(editor->main->config.GetSection("options").GetBool("disable_round_corners"));
 	}
-	disableRoundCornersCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	disableRoundCornersCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("disable_round_corners", args.bValue);
 		editor->main->config.Commit();
 		RefreshTheme();
@@ -242,7 +240,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		disableGradientCheckBox.SetCheck(editor->main->config.GetSection("options").GetBool("disable_gradient"));
 	}
-	disableGradientCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	disableGradientCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("disable_gradient", args.bValue);
 		editor->main->config.Commit();
 		RefreshTheme();
@@ -253,7 +251,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	versionCheckBox.SetTooltip("Toggle the engine version display text in top left corner.");
 	editor->main->infoDisplay.watermark = editor->main->config.GetSection("options").GetBool("version");
 	versionCheckBox.SetCheck(editor->main->infoDisplay.watermark);
-	versionCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	versionCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->infoDisplay.watermark = args.bValue;
 		editor->main->config.GetSection("options").Set("version", args.bValue);
 		editor->main->config.Commit();
@@ -265,7 +263,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	fpsCheckBox.SetTooltip("Toggle the FPS display text in top left corner.");
 	editor->main->infoDisplay.fpsinfo = editor->main->config.GetSection("options").GetBool("fps");
 	fpsCheckBox.SetCheck(editor->main->infoDisplay.fpsinfo);
-	fpsCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	fpsCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->infoDisplay.fpsinfo = args.bValue;
 		editor->main->config.GetSection("options").Set("fps", args.bValue);
 		editor->main->config.Commit();
@@ -284,7 +282,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	editor->main->infoDisplay.logical_size = info;
 	editor->main->infoDisplay.pipeline_count = info;
 	otherinfoCheckBox.SetCheck(info);
-	otherinfoCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	otherinfoCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->infoDisplay.heap_allocation_counter = args.bValue;
 		editor->main->infoDisplay.vram_usage = args.bValue;
 		editor->main->infoDisplay.device_name = args.bValue;
@@ -299,13 +297,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	otherinfoCheckBox.SetCheck(editor->main->infoDisplay.heap_allocation_counter);
 
 	saveModeComboBox.Create("Save Mode: ");
-	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)wi::resourcemanager::Mode::EMBED_FILE_DATA);
-	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)wi::resourcemanager::Mode::NO_EMBEDDING);
-	saveModeComboBox.SetTooltip("Choose whether to embed resources (textures, sounds...) in the scene file when saving, or keep them as separate files.\nThe Dump to header (" ICON_SAVE_HEADER ") option will use embedding and create a C++ header file with byte data of the scene to be used with wi::Archive serialization.");
-	saveModeComboBox.SetColor(wi::Color(50, 180, 100, 180), wi::gui::IDLE);
-	saveModeComboBox.SetColor(wi::Color(50, 220, 140, 255), wi::gui::FOCUS);
+	saveModeComboBox.AddItem("Embed resources " ICON_SAVE_EMBED, (uint64_t)Protean::ResourceManager::Mode::EMBED_FILE_DATA);
+	saveModeComboBox.AddItem("No embedding " ICON_SAVE_NO_EMBED, (uint64_t)Protean::ResourceManager::Mode::NO_EMBEDDING);
+	saveModeComboBox.SetTooltip("Choose whether to embed resources (textures, sounds...) in the scene file when saving, or keep them as separate files.\nThe Dump to header (" ICON_SAVE_HEADER ") option will use embedding and create a C++ header file with byte data of the scene to be used with Protean::Archive serialization.");
+	saveModeComboBox.SetColor(Protean::Color(50, 180, 100, 180), Protean::Gui::IDLE);
+	saveModeComboBox.SetColor(Protean::Color(50, 220, 140, 255), Protean::Gui::FOCUS);
 	saveModeComboBox.SetSelected(editor->main->config.GetSection("options").GetInt("save_mode"));
-	saveModeComboBox.OnSelect([=](wi::gui::EventArgs args) {
+	saveModeComboBox.OnSelect([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("save_mode", args.iValue);
 		editor->main->config.Commit();
 		});
@@ -317,7 +315,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		saveCompressionCheckBox.SetCheck(editor->main->config.GetSection("options").GetBool("save_compressed"));
 	}
-	saveCompressionCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	saveCompressionCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("save_compressed", args.bValue);
 		editor->main->config.Commit();
 	});
@@ -329,7 +327,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	entityTreeSortingComboBox.AddItem("By type", 2);
 	entityTreeSortingComboBox.SetTooltip("Choose how entities are sorted in the entity tree.\nNone: Unsorted\nBy name: Alphabetically sorted\nBy type: Grouped by component types");
 	entityTreeSortingComboBox.SetSelected(editor->main->config.GetSection("options").GetInt("entity_tree_sorting"));
-	entityTreeSortingComboBox.OnSelect([=](wi::gui::EventArgs args) {
+	entityTreeSortingComboBox.OnSelect([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("entity_tree_sorting", args.iValue);
 		editor->main->config.Commit();
 		editor->componentsWnd.RefreshEntityTree();
@@ -344,7 +342,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		transformToolOpacitySlider.SetValue(editor->main->config.GetSection("options").GetFloat("transform_tool_opacity"));
 		editor->translator.tool_opacity = transformToolOpacitySlider.GetValue();
 	}
-	transformToolOpacitySlider.OnSlide([=](wi::gui::EventArgs args) {
+	transformToolOpacitySlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->translator.tool_opacity = args.fValue;
 		editor->main->config.GetSection("options").Set("transform_tool_opacity", args.fValue);
 	});
@@ -358,7 +356,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		transformToolDarkenSlider.SetValue(editor->main->config.GetSection("options").GetFloat("transform_tool_darken_negative_axes"));
 		editor->translator.tool_darken_negative_axes = transformToolDarkenSlider.GetValue();
 	}
-	transformToolDarkenSlider.OnSlide([=](wi::gui::EventArgs args) {
+	transformToolDarkenSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->translator.tool_darken_negative_axes = args.fValue;
 		editor->main->config.GetSection("options").Set("transform_tool_darken_negative_axes", args.fValue);
 	});
@@ -372,7 +370,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		transformToolScaleSlider.SetValue(editor->main->config.GetSection("options").GetFloat("transform_tool_scale"));
 		editor->translator.tool_scale = transformToolScaleSlider.GetValue();
 	}
-	transformToolScaleSlider.OnSlide([=](wi::gui::EventArgs args) {
+	transformToolScaleSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->translator.tool_scale = args.fValue;
 		editor->main->config.GetSection("options").Set("transform_tool_scale", args.fValue);
 	});
@@ -386,7 +384,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		transformToolThicknessSlider.SetValue(editor->main->config.GetSection("options").GetFloat("transform_tool_thickness"));
 		editor->translator.tool_thickness = transformToolThicknessSlider.GetValue();
 	}
-	transformToolThicknessSlider.OnSlide([=](wi::gui::EventArgs args) {
+	transformToolThicknessSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->translator.tool_thickness = args.fValue;
 		editor->main->config.GetSection("options").Set("transform_tool_thickness", args.fValue);
 	});
@@ -407,7 +405,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		bonePickerOpacitySlider.SetValue(editor->main->config.GetSection("options").GetFloat("bone_picker_opacity"));
 	}
-	bonePickerOpacitySlider.OnSlide([=](wi::gui::EventArgs args) {
+	bonePickerOpacitySlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("bone_picker_opacity", args.fValue);
 	});
 	AddWidget(&bonePickerOpacitySlider);
@@ -420,14 +418,14 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	localizationButton.Create(ICON_LANGUAGE " Create Localization Template");
 	localizationButton.SetTooltip("Generate a file that can be used to edit localization for the Editor.\nThe template will be created from the currently selected language.");
 	localizationButton.SetSize(XMFLOAT2(100, 18));
-	localizationButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::SAVE;
+	localizationButton.OnClick([this](Protean::Gui::EventArgs args) {
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::SAVE;
 		params.description = "XML file (.xml)";
 		params.extensions.push_back("xml");
-		wi::helper::FileDialog(params, [=](std::string fileName) {
+		Protean::Helper::FileDialog(params, [=](std::string fileName) {
 			editor->GetGUI().ExportLocalization(editor->current_localization);
-			std::string filenameExt = wi::helper::ForceExtension(fileName, params.extensions.back());
+			std::string filenameExt = Protean::Helper::ForceExtension(fileName, params.extensions.back());
 			editor->current_localization.Export(filenameExt);
 			editor->PostSaveText("Localization template created: ", filenameExt);
 		});
@@ -440,7 +438,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	{
 		placeInFrontOfCameraCheckBox.SetCheck(editor->main->config.GetSection("options").GetBool("place_entities_in_front_of_camera"));
 	}
-	placeInFrontOfCameraCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	placeInFrontOfCameraCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("options").Set("place_entities_in_front_of_camera", args.bValue);
 		editor->main->config.Commit();
 	});
@@ -448,22 +446,22 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 	wireFrameComboBox.Create("Render wireframe: ");
 	wireFrameComboBox.SetTooltip("Choose wireframe rendering mode:\nDisabled: Normal rendering\nWireframe Only: Replace geometry with wireframe\nWireframe Overlay: Show wireframe on top of geometry");
-	wireFrameComboBox.AddItem("Disabled", wi::renderer::WIREFRAME_DISABLED);
-	wireFrameComboBox.AddItem("Wireframe Only", wi::renderer::WIREFRAME_ONLY);
-	wireFrameComboBox.AddItem("Wireframe Overlay", wi::renderer::WIREFRAME_OVERLAY);
-	wireFrameComboBox.OnSelect([](wi::gui::EventArgs args) {
-		wi::renderer::SetWireframeMode((wi::renderer::WIREFRAME_MODE)args.iValue);
+	wireFrameComboBox.AddItem("Disabled", Protean::Renderer::WIREFRAME_DISABLED);
+	wireFrameComboBox.AddItem("Wireframe Only", Protean::Renderer::WIREFRAME_ONLY);
+	wireFrameComboBox.AddItem("Wireframe Overlay", Protean::Renderer::WIREFRAME_OVERLAY);
+	wireFrameComboBox.OnSelect([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetWireframeMode((Protean::Renderer::WIREFRAME_MODE)args.iValue);
 	});
-	wireFrameComboBox.SetSelected((int)wi::renderer::GetWireframeMode());
+	wireFrameComboBox.SetSelected((int)Protean::Renderer::GetWireframeMode());
 	AddWidget(&wireFrameComboBox);
 
 	languageCombo.Create("Language: ");
-	languageCombo.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Text | wi::gui::LocalizationEnabled::Tooltip);
+	languageCombo.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Text | Protean::Gui::LocalizationEnabled::Tooltip);
 	languageCombo.SetTooltip("Select a language. \nYou can also create a new language option by adding an XML file to the languages folder.\nThere is a button below that you can use to create a language template.");
 	languageCombo.AddItem("English");
-	languageCombo.SetColor(wi::Color(50, 180, 100, 180), wi::gui::IDLE);
-	languageCombo.SetColor(wi::Color(50, 220, 140, 255), wi::gui::FOCUS);
-	languageCombo.OnSelect([=](wi::gui::EventArgs args) {
+	languageCombo.SetColor(Protean::Color(50, 180, 100, 180), Protean::Gui::IDLE);
+	languageCombo.SetColor(Protean::Color(50, 220, 140, 255), Protean::Gui::FOCUS);
+	languageCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		if (args.iValue == 0)
 		{
 			editor->SetLocalization(editor->default_localization);
@@ -480,24 +478,24 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::backlog::post("Couldn't import localization file: " + filename, wi::backlog::LogLevel::Warning);
+			Protean::Backlog::post("Couldn't import localization file: " + filename, Protean::Backlog::LogLevel::Warning);
 		}
 	});
 	AddWidget(&languageCombo);
 
 	auto add_language = [this](std::string filename) {
-		std::string language_name = wi::helper::GetFileNameFromPath(filename);
-		language_name = wi::helper::RemoveExtension(language_name);
+		std::string language_name = Protean::Helper::GetFileNameFromPath(filename);
+		language_name = Protean::Helper::RemoveExtension(language_name);
 		languageCombo.AddItem(language_name);
 	};
-	wi::helper::GetFileNamesInDirectory(languages_directory, add_language, "XML");
+	Protean::Helper::GetFileNamesInDirectory(languages_directory, add_language, "XML");
 
 
 	themeEditorButton.Create("themeEditorButton");
 	themeEditorButton.SetText(ICON_THEME_EDITOR);
 	themeEditorButton.SetTooltip("Open the theme editor.");
 	themeEditorButton.SetSize(XMFLOAT2(themeEditorButton.GetSize().y, themeEditorButton.GetSize().y));
-	themeEditorButton.OnClick([this](wi::gui::EventArgs args) {
+	themeEditorButton.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->themeEditorWnd.nameInput.SetText(currentTheme);
 		editor->themeEditorWnd.SetVisible(!editor->themeEditorWnd.IsVisible());
 	});
@@ -506,21 +504,21 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 	themeCombo.Create("Theme: ");
 	themeCombo.SetTooltip("Choose a color theme...");
-	themeCombo.OnSelect([=](wi::gui::EventArgs args) {
+	themeCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 
 		currentTheme = themeCombo.GetItemText(args.iValue);
 
 		// Dark theme defaults:
-		wi::Color theme_color_idle = wi::Color(30, 40, 60, 200);
-		wi::Color theme_color_focus = wi::Color(70, 150, 170, 220);
-		wi::Color theme_color_background = wi::Color(10, 10, 20, 220);
+		Protean::Color theme_color_idle = Protean::Color(30, 40, 60, 200);
+		Protean::Color theme_color_focus = Protean::Color(70, 150, 170, 220);
+		Protean::Color theme_color_background = Protean::Color(10, 10, 20, 220);
 		XMFLOAT4 theme_color_gradient = theme_color_focus;
 		XMFLOAT4 theme_color_wave = theme_color_focus;
-		wi::gui::Theme theme;
+		Protean::Gui::Theme theme;
 		theme.image.background = true;
-		theme.image.blendFlag = wi::enums::BLENDMODE_ALPHA;
-		theme.font.color = wi::Color(130, 210, 220, 255);
-		theme.shadow_color = wi::Color(80, 140, 180, 100);
+		theme.image.blendFlag = Protean::BLENDMODE_ALPHA;
+		theme.font.color = Protean::Color(130, 210, 220, 255);
+		theme.shadow_color = Protean::Color(80, 140, 180, 100);
 
 		switch ((Theme)args.userdata)
 		{
@@ -529,15 +527,15 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		case Theme::Dark:
 			editor->main->config.GetSection("options").Set("theme", "Dark");
 			editor->themeEditorWnd.imageResource = {};
-			theme_color_wave = wi::Color(99, 155, 220, 103);
+			theme_color_wave = Protean::Color(99, 155, 220, 103);
 			break;
 		case Theme::Bright:
 			editor->main->config.GetSection("options").Set("theme", "Bright");
-			theme_color_idle = wi::Color(200, 210, 220, 230);
-			theme_color_focus = wi::Color(210, 230, 255, 250);
-			theme_color_background = wi::Color(180, 180, 190, 230);
-			theme.shadow_color = wi::Color::Shadow();
-			theme.font.color = wi::Color(50, 50, 80, 255);
+			theme_color_idle = Protean::Color(200, 210, 220, 230);
+			theme_color_focus = Protean::Color(210, 230, 255, 250);
+			theme_color_background = Protean::Color(180, 180, 190, 230);
+			theme.shadow_color = Protean::Color::Shadow();
+			theme.font.color = Protean::Color(50, 50, 80, 255);
 			theme_color_gradient = XMFLOAT4(1, 1, 1, 0.66f);
 			theme_color_wave = theme_color_focus;
 			theme_color_wave.w = 0.4f;
@@ -545,11 +543,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			break;
 		case Theme::Soft:
 			editor->main->config.GetSection("options").Set("theme", "Soft");
-			theme_color_idle = wi::Color(200, 180, 190, 190);
-			theme_color_focus = wi::Color(240, 190, 200, 230);
-			theme_color_background = wi::Color(100, 80, 90, 220);
-			theme.shadow_color = wi::Color(240, 190, 200, 180);
-			theme.font.color = wi::Color(255, 230, 240, 255);
+			theme_color_idle = Protean::Color(200, 180, 190, 190);
+			theme_color_focus = Protean::Color(240, 190, 200, 230);
+			theme_color_background = Protean::Color(100, 80, 90, 220);
+			theme.shadow_color = Protean::Color(240, 190, 200, 180);
+			theme.font.color = Protean::Color(255, 230, 240, 255);
 			theme_color_gradient = theme_color_focus;
 			theme_color_wave = theme_color_focus;
 			theme_color_wave.w = 0.4f;
@@ -557,12 +555,12 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			break;
 		case Theme::Hacking:
 			editor->main->config.GetSection("options").Set("theme", "Hacking");
-			theme_color_idle = wi::Color(0, 38, 0, 255);
-			theme_color_focus = wi::Color(0, 160, 60, 255);
-			theme_color_background = wi::Color(0, 20, 0, 255);
-			theme.shadow_color = wi::Color(0, 200, 90, 200);
-			theme.font.color = wi::Color(0, 200, 90, 255);
-			theme.font.shadow_color = wi::Color::Shadow();
+			theme_color_idle = Protean::Color(0, 38, 0, 255);
+			theme_color_focus = Protean::Color(0, 160, 60, 255);
+			theme_color_background = Protean::Color(0, 20, 0, 255);
+			theme.shadow_color = Protean::Color(0, 200, 90, 200);
+			theme.font.color = Protean::Color(0, 200, 90, 255);
+			theme.font.shadow_color = Protean::Color::Shadow();
 			theme_color_gradient = theme_color_focus;
 			theme_color_wave = theme_color_focus;
 			theme_color_wave.w = 0.4f;
@@ -570,19 +568,19 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			break;
 		case Theme::Nord:
 			editor->main->config.GetSection("options").Set("theme", "Nord");
-			theme_color_idle = wi::Color(46, 52, 64, 255);
-			theme_color_focus = wi::Color(59, 66, 82, 255);
-			theme_color_background = wi::Color(36, 42, 54, 255);
-			theme.shadow_color = wi::Color(106, 112, 124, 200);
-			theme.font.color = wi::Color(236, 239, 244, 255);
+			theme_color_idle = Protean::Color(46, 52, 64, 255);
+			theme_color_focus = Protean::Color(59, 66, 82, 255);
+			theme_color_background = Protean::Color(36, 42, 54, 255);
+			theme.shadow_color = Protean::Color(106, 112, 124, 200);
+			theme.font.color = Protean::Color(236, 239, 244, 255);
 			theme_color_gradient = XMFLOAT4(1, 1, 1, 0.66f);
-			theme_color_wave = wi::Color(58, 75, 93, 153);
+			theme_color_wave = Protean::Color(58, 75, 93, 153);
 			editor->themeEditorWnd.imageResource = {};
 			break;
 		case Theme::User:
 			{
 				editor->main->config.GetSection("options").Set("theme", currentTheme);
-				wi::Archive archive(wi::helper::GetCurrentPath() + "/themes/" + currentTheme + ".witheme");
+				Protean::Archive archive(Protean::Helper::GetCurrentPath() + "/themes/" + currentTheme + ".witheme");
 				if (archive.IsOpen())
 				{
 					uint64_t version = 0;
@@ -595,13 +593,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					archive >> theme.font.shadow_color.rgba;
 					std::string imageresourcename;
 					archive >> imageresourcename;
-					wi::vector<uint8_t> imagedata;
+					Protean::vector<uint8_t> imagedata;
 					archive >> imagedata;
 
 					// New version handlers should be added at the end, so older versions can open newer themes!
 					if (version >= 2)
 					{
-						wi::Color grad;
+						Protean::Color grad;
 						archive >> grad.rgba;
 						theme_color_gradient = grad;
 					}
@@ -611,7 +609,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					}
 					if (version >= 3)
 					{
-						wi::Color wave;
+						Protean::Color wave;
 						archive >> wave.rgba;
 						theme_color_wave = wave;
 					}
@@ -628,7 +626,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					}
 					else
 					{
-						editor->themeEditorWnd.imageResource = wi::resourcemanager::Load(wi::helper::GetCurrentPath() + "/themes/" + imageresourcename, wi::resourcemanager::Flags::IMPORT_RETAIN_FILEDATA, imagedata.data(), imagedata.size());
+						editor->themeEditorWnd.imageResource = Protean::ResourceManager::Load(Protean::Helper::GetCurrentPath() + "/themes/" + imageresourcename, Protean::ResourceManager::Flags::IMPORT_RETAIN_FILEDATA, imagedata.data(), imagedata.size());
 						editor->themeEditorWnd.imageResourceName = imageresourcename;
 					}
 				}
@@ -652,11 +650,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		editor->themeEditorWnd.shadowColor = theme.shadow_color;
 		editor->themeEditorWnd.fontColor = theme.font.color;
 		editor->themeEditorWnd.fontShadowColor = theme.font.shadow_color;
-		editor->themeEditorWnd.gradientColor = wi::Color::fromFloat4(theme_color_gradient);
-		editor->themeEditorWnd.waveColor = wi::Color::fromFloat4(theme_color_wave);
+		editor->themeEditorWnd.gradientColor = Protean::Color::fromFloat4(theme_color_gradient);
+		editor->themeEditorWnd.waveColor = Protean::Color::fromFloat4(theme_color_wave);
 		editor->themeEditorWnd.UpdateColorPickerMode();
 
-		wi::renderer::SetGridHelperColor(theme.shadow_color);
+		Protean::Renderer::SetGridHelperColor(theme.shadow_color);
 
 		theme.shadow_highlight = !focusModeCheckBox.GetCheck();
 		theme.shadow_highlight_spread = 0.4f;
@@ -674,53 +672,53 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		theme.tooltipFont = theme.font;
 		theme.tooltip_shadow_color = theme.shadow_color;
 
-		wi::Color theme_color_active = wi::Color::White();
-		wi::Color theme_color_deactivating = wi::Color::lerp(theme_color_focus, wi::Color::White(), 0.5f);
+		Protean::Color theme_color_active = Protean::Color::White();
+		Protean::Color theme_color_deactivating = Protean::Color::lerp(theme_color_focus, Protean::Color::White(), 0.5f);
 
 		// Customize whole gui:
-		wi::gui::GUI& gui = editor->GetGUI();
+		Protean::Gui::GUI& gui = editor->GetGUI();
 		gui.SetTheme(theme); // set basic params to all states
 
 		// customize colors for specific states:
-		gui.SetColor(theme_color_idle, wi::gui::IDLE);
-		gui.SetColor(theme_color_focus, wi::gui::FOCUS);
-		gui.SetColor(theme_color_active, wi::gui::ACTIVE);
-		gui.SetColor(theme_color_deactivating, wi::gui::DEACTIVATING);
+		gui.SetColor(theme_color_idle, Protean::Gui::IDLE);
+		gui.SetColor(theme_color_focus, Protean::Gui::FOCUS);
+		gui.SetColor(theme_color_active, Protean::Gui::ACTIVE);
+		gui.SetColor(theme_color_deactivating, Protean::Gui::DEACTIVATING);
 
-		gui.SetImage(editor->themeEditorWnd.imageResource, wi::gui::WIDGET_ID_WINDOW_BASE);
+		gui.SetImage(editor->themeEditorWnd.imageResource, Protean::Gui::WIDGET_ID_WINDOW_BASE);
 		if (editor->themeEditorWnd.imageResource.IsValid())
 		{
-			gui.SetColor(wi::Color::lerp(wi::Color::White(), theme_color_background, saturate(editor->themeEditorWnd.imageSlider.GetValue())), wi::gui::WIDGET_ID_WINDOW_BASE);
+			gui.SetColor(Protean::Color::lerp(Protean::Color::White(), theme_color_background, saturate(editor->themeEditorWnd.imageSlider.GetValue())), Protean::Gui::WIDGET_ID_WINDOW_BASE);
 		}
 		else
 		{
-			gui.SetColor(theme_color_background, wi::gui::WIDGET_ID_WINDOW_BASE);
+			gui.SetColor(theme_color_background, Protean::Gui::WIDGET_ID_WINDOW_BASE);
 		}
 
-		gui.SetImage({}, wi::gui::WIDGET_ID_COLORPICKER_BASE);
-		gui.SetColor(theme_color_background, wi::gui::WIDGET_ID_COLORPICKER_BASE);
+		gui.SetImage({}, Protean::Gui::WIDGET_ID_COLORPICKER_BASE);
+		gui.SetColor(theme_color_background, Protean::Gui::WIDGET_ID_COLORPICKER_BASE);
 
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_TEXTINPUTFIELD_ACTIVE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_TEXTINPUTFIELD_DEACTIVATING);
+		gui.SetColor(theme_color_focus, Protean::Gui::WIDGET_ID_TEXTINPUTFIELD_ACTIVE);
+		gui.SetColor(theme_color_focus, Protean::Gui::WIDGET_ID_TEXTINPUTFIELD_DEACTIVATING);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.75f), wi::gui::WIDGET_ID_SLIDER_BASE_IDLE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.8f), wi::gui::WIDGET_ID_SLIDER_BASE_FOCUS);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.85f), wi::gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.8f), wi::gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
-		gui.SetColor(theme_color_idle, wi::gui::WIDGET_ID_SLIDER_KNOB_IDLE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_SLIDER_KNOB_FOCUS);
-		gui.SetColor(theme_color_active, wi::gui::WIDGET_ID_SLIDER_KNOB_ACTIVE);
-		gui.SetColor(theme_color_deactivating, wi::gui::WIDGET_ID_SLIDER_KNOB_DEACTIVATING);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.75f), Protean::Gui::WIDGET_ID_SLIDER_BASE_IDLE);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.8f), Protean::Gui::WIDGET_ID_SLIDER_BASE_FOCUS);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.85f), Protean::Gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.8f), Protean::Gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
+		gui.SetColor(theme_color_idle, Protean::Gui::WIDGET_ID_SLIDER_KNOB_IDLE);
+		gui.SetColor(theme_color_focus, Protean::Gui::WIDGET_ID_SLIDER_KNOB_FOCUS);
+		gui.SetColor(theme_color_active, Protean::Gui::WIDGET_ID_SLIDER_KNOB_ACTIVE);
+		gui.SetColor(theme_color_deactivating, Protean::Gui::WIDGET_ID_SLIDER_KNOB_DEACTIVATING);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.75f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_IDLE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.8f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_FOCUS);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.85f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_ACTIVE);
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.8f), wi::gui::WIDGET_ID_SCROLLBAR_BASE_DEACTIVATING);
-		gui.SetColor(theme_color_idle, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
-		gui.SetColor(theme_color_focus, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
-		gui.SetColor(theme_color_active, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.75f), Protean::Gui::WIDGET_ID_SCROLLBAR_BASE_IDLE);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.8f), Protean::Gui::WIDGET_ID_SCROLLBAR_BASE_FOCUS);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.85f), Protean::Gui::WIDGET_ID_SCROLLBAR_BASE_ACTIVE);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.8f), Protean::Gui::WIDGET_ID_SCROLLBAR_BASE_DEACTIVATING);
+		gui.SetColor(theme_color_idle, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
+		gui.SetColor(theme_color_focus, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
+		gui.SetColor(theme_color_active, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
 
-		gui.SetColor(wi::Color::lerp(theme_color_idle, theme_color_background, 0.8f), wi::gui::WIDGET_ID_COMBO_DROPDOWN);
+		gui.SetColor(Protean::Color::lerp(theme_color_idle, theme_color_background, 0.8f), Protean::Gui::WIDGET_ID_COMBO_DROPDOWN);
 
 
 		// customize individual elements:
@@ -734,21 +732,21 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		editor->componentsWnd.newComponentCombo.SetAngularHighlightColor(highlight);
 		editor->projectCreatorWnd.createButton.SetAngularHighlightColor(highlight);
 		editor->themeEditorWnd.saveButton.SetAngularHighlightColor(highlight);
-		editor->componentsWnd.materialWnd.textureSlotImage.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->componentsWnd.objectWnd.lightmapPreviewButton.SetColor(wi::Color::White());
+		editor->componentsWnd.materialWnd.textureSlotImage.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->componentsWnd.objectWnd.lightmapPreviewButton.SetColor(Protean::Color::White());
 		for (auto& x : editor->componentsWnd.objectWnd.lightmapPreviewButton.sprites)
 		{
 			x.params.disableBackground();
 		}
-		editor->componentsWnd.spriteWnd.textureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->paintToolWnd.brushTextureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->paintToolWnd.revealTextureButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->projectCreatorWnd.iconButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->projectCreatorWnd.thumbnailButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->projectCreatorWnd.splashScreenButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->projectCreatorWnd.cursorButton.SetColor(wi::Color::White(), wi::gui::IDLE);
-		editor->aboutLabel.sprites[wi::gui::FOCUS] = editor->aboutLabel.sprites[wi::gui::IDLE];
-		editor->exitButton.SetColor(wi::Color::Error(), wi::gui::FOCUS);
+		editor->componentsWnd.spriteWnd.textureButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->paintToolWnd.brushTextureButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->paintToolWnd.revealTextureButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->projectCreatorWnd.iconButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->projectCreatorWnd.thumbnailButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->projectCreatorWnd.splashScreenButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->projectCreatorWnd.cursorButton.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+		editor->aboutLabel.sprites[Protean::Gui::FOCUS] = editor->aboutLabel.sprites[Protean::Gui::IDLE];
+		editor->exitButton.SetColor(Protean::Color::Error(), Protean::Gui::FOCUS);
 		const bool gui_round_enabled = !disableRoundCornersCheckBox.GetCheck();
 		constexpr float gui_round_radius_default = 10.0f; // Default for most elements
 		constexpr float gui_round_radius_circular = 20.0f; // Circular elements
@@ -780,13 +778,13 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 			if (editor->current_scene == scene_id)
 			{
-				editorscene->tabSelectButton.sprites[wi::gui::IDLE].params.color = editor->newSceneButton.sprites[wi::gui::FOCUS].params.color;
+				editorscene->tabSelectButton.sprites[Protean::Gui::IDLE].params.color = editor->newSceneButton.sprites[Protean::Gui::FOCUS].params.color;
 			}
 			else
 			{
-				editorscene->tabSelectButton.sprites[wi::gui::IDLE].params.color = editor->newSceneButton.sprites[wi::gui::IDLE].params.color;
+				editorscene->tabSelectButton.sprites[Protean::Gui::IDLE].params.color = editor->newSceneButton.sprites[Protean::Gui::IDLE].params.color;
 			}
-			editorscene->tabCloseButton.SetColor(wi::Color::Error(), wi::gui::WIDGET_ID_FOCUS);
+			editorscene->tabCloseButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGET_ID_FOCUS);
 			scene_id++;
 		}
 
@@ -796,11 +794,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		editor->materialsButton.SetShadowRadius(1);
 		editor->paintToolButton.SetShadowRadius(1);
 
-		editor->generalButton.SetShadowColor(wi::Color::Transparent());
-		editor->graphicsButton.SetShadowColor(wi::Color::Transparent());
-		editor->cameraButton.SetShadowColor(wi::Color::Transparent());
-		editor->materialsButton.SetShadowColor(wi::Color::Transparent());
-		editor->paintToolButton.SetShadowColor(wi::Color::Transparent());
+		editor->generalButton.SetShadowColor(Protean::Color::Transparent());
+		editor->graphicsButton.SetShadowColor(Protean::Color::Transparent());
+		editor->cameraButton.SetShadowColor(Protean::Color::Transparent());
+		editor->materialsButton.SetShadowColor(Protean::Color::Transparent());
+		editor->paintToolButton.SetShadowColor(Protean::Color::Transparent());
 
 		editor->generalButton.SetShadowHighlightSpread(0.2f);
 		editor->graphicsButton.SetShadowHighlightSpread(0.2f);
@@ -812,29 +810,29 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		{
 			// When there is background image, make the entity tools not occlude a big part of it, except while it's interacted with:
 			editor->componentsWnd.entityTree.SetShadowRadius(0);
-			editor->componentsWnd.entityTree.sprites[wi::gui::IDLE].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
-			editor->componentsWnd.entityTree.sprites[wi::gui::IDLE].params.disableBackground();
-			editor->componentsWnd.entityTree.sprites[wi::gui::FOCUS].params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-			editor->componentsWnd.entityTree.sprites[wi::gui::FOCUS].params.disableBackground();
+			editor->componentsWnd.entityTree.sprites[Protean::Gui::IDLE].params.blendFlag = Protean::BLENDMODE_ALPHA;
+			editor->componentsWnd.entityTree.sprites[Protean::Gui::IDLE].params.disableBackground();
+			editor->componentsWnd.entityTree.sprites[Protean::Gui::FOCUS].params.blendFlag = Protean::BLENDMODE_OPAQUE;
+			editor->componentsWnd.entityTree.sprites[Protean::Gui::FOCUS].params.disableBackground();
 			editor->componentsWnd.entityTree.scrollbar.SetShadowRadius(0);
 
 			editor->componentsWnd.filterInput.SetShadowRadius(0);
-			editor->componentsWnd.filterInput.sprites[wi::gui::IDLE].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
-			editor->componentsWnd.filterInput.sprites[wi::gui::IDLE].params.disableBackground();
-			editor->componentsWnd.filterInput.sprites[wi::gui::FOCUS].params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-			editor->componentsWnd.filterInput.sprites[wi::gui::FOCUS].params.disableBackground();
+			editor->componentsWnd.filterInput.sprites[Protean::Gui::IDLE].params.blendFlag = Protean::BLENDMODE_ALPHA;
+			editor->componentsWnd.filterInput.sprites[Protean::Gui::IDLE].params.disableBackground();
+			editor->componentsWnd.filterInput.sprites[Protean::Gui::FOCUS].params.blendFlag = Protean::BLENDMODE_OPAQUE;
+			editor->componentsWnd.filterInput.sprites[Protean::Gui::FOCUS].params.disableBackground();
 
 			editor->componentsWnd.filterCombo.SetShadowRadius(0);
-			editor->componentsWnd.filterCombo.sprites[wi::gui::IDLE].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
-			editor->componentsWnd.filterCombo.sprites[wi::gui::IDLE].params.disableBackground();
-			editor->componentsWnd.filterCombo.sprites[wi::gui::FOCUS].params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-			editor->componentsWnd.filterCombo.sprites[wi::gui::FOCUS].params.disableBackground();
+			editor->componentsWnd.filterCombo.sprites[Protean::Gui::IDLE].params.blendFlag = Protean::BLENDMODE_ALPHA;
+			editor->componentsWnd.filterCombo.sprites[Protean::Gui::IDLE].params.disableBackground();
+			editor->componentsWnd.filterCombo.sprites[Protean::Gui::FOCUS].params.blendFlag = Protean::BLENDMODE_OPAQUE;
+			editor->componentsWnd.filterCombo.sprites[Protean::Gui::FOCUS].params.disableBackground();
 
 			editor->componentsWnd.filterCaseCheckBox.SetShadowRadius(0);
-			editor->componentsWnd.filterCaseCheckBox.sprites[wi::gui::IDLE].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
-			editor->componentsWnd.filterCaseCheckBox.sprites[wi::gui::IDLE].params.disableBackground();
-			editor->componentsWnd.filterCaseCheckBox.sprites[wi::gui::FOCUS].params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-			editor->componentsWnd.filterCaseCheckBox.sprites[wi::gui::FOCUS].params.disableBackground();
+			editor->componentsWnd.filterCaseCheckBox.sprites[Protean::Gui::IDLE].params.blendFlag = Protean::BLENDMODE_ALPHA;
+			editor->componentsWnd.filterCaseCheckBox.sprites[Protean::Gui::IDLE].params.disableBackground();
+			editor->componentsWnd.filterCaseCheckBox.sprites[Protean::Gui::FOCUS].params.blendFlag = Protean::BLENDMODE_OPAQUE;
+			editor->componentsWnd.filterCaseCheckBox.sprites[Protean::Gui::FOCUS].params.disableBackground();
 		}
 		else
 		{
@@ -969,7 +967,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 				editor->cinemaButton.sprites[i].params.disableCornerRounding();
 			}
 		}
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		for (int i = 0; i < arraysize(Protean::Gui::Widget::sprites); ++i)
 		{
 			if (gui_round_enabled) {
 				themeEditorButton.sprites[i].params.enableCornerRounding();
@@ -1031,7 +1029,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 				editor->aboutWindow.sprites[i].params.disableCornerRounding();
 			}
 		}
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		for (int i = 0; i < arraysize(Protean::Gui::Widget::sprites); ++i)
 		{
 			if (gui_round_enabled) {
 				editor->saveButton.sprites[i].params.enableCornerRounding();
@@ -1118,7 +1116,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.lightWnd.cascades)
 		{
-			x.removeButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+			x.removeButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 			for (auto& sprite : x.removeButton.sprites)
 			{
 				if (gui_round_enabled) {
@@ -1133,7 +1131,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.metadataWnd.entries)
 		{
-			x.remove.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+			x.remove.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 			for (auto& sprite : x.remove.sprites)
 			{
 				if (gui_round_enabled) {
@@ -1148,7 +1146,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.splineWnd.entries)
 		{
-			x.removeButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+			x.removeButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 			for (auto& sprite : x.removeButton.sprites)
 			{
 				if (gui_round_enabled) {
@@ -1171,7 +1169,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		editor->componentsWnd.transformWnd.resetTranslationButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetTranslationButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetTranslationButton.sprites)
 		{
 			if (gui_round_enabled) {
@@ -1183,7 +1181,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		editor->componentsWnd.transformWnd.resetScaleButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetScaleButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetScaleButton.sprites)
 		{
 			if (gui_round_enabled) {
@@ -1195,7 +1193,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		editor->componentsWnd.transformWnd.resetScaleUniformButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetScaleUniformButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetScaleUniformButton.sprites)
 		{
 			if (gui_round_enabled) {
@@ -1209,11 +1207,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : editor->componentsWnd.hairWnd.sprites)
 		{
-			x.SetColor(wi::Color::White(), wi::gui::IDLE);
+			x.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
 		}
 		for (auto& x : editor->componentsWnd.hairWnd.spriteRemoveButtons)
 		{
-			x.sprites[wi::gui::FOCUS].params.color = wi::Color::Error();
+			x.sprites[Protean::Gui::FOCUS].params.color = Protean::Color::Error();
 			for (auto& sprite : x.sprites)
 			{
 				if (gui_round_enabled) {
@@ -1225,10 +1223,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 				}
 			}
 		}
-		editor->componentsWnd.hairWnd.spriterectwnd.spriteButton.SetColor(wi::Color::White());
+		editor->componentsWnd.hairWnd.spriterectwnd.spriteButton.SetColor(Protean::Color::White());
 		editor->componentsWnd.hairWnd.spriterectwnd.SetShadowRadius(5);
 
-		editor->componentsWnd.transformWnd.resetRotationButton.SetColor(wi::Color::Error(), wi::gui::WIDGETSTATE::FOCUS);
+		editor->componentsWnd.transformWnd.resetRotationButton.SetColor(Protean::Color::Error(), Protean::Gui::WIDGETSTATE::FOCUS);
 		for (auto& sprite : editor->componentsWnd.transformWnd.resetRotationButton.sprites)
 		{
 			if (gui_round_enabled) {
@@ -1248,16 +1246,16 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		editor->save_text_color = theme.font.color;
 
-		editor->aboutLabel.SetShadowColor(wi::Color::Transparent());
-		editor->aboutLabel.SetColor(wi::Color::Transparent());
-		for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+		editor->aboutLabel.SetShadowColor(Protean::Color::Transparent());
+		editor->aboutLabel.SetColor(Protean::Color::Transparent());
+		for (int i = 0; i < arraysize(Protean::Gui::Widget::sprites); ++i)
 		{
 			editor->aboutLabel.sprites[i].params.disableBackground();
-			editor->aboutLabel.sprites[i].params.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			editor->aboutLabel.sprites[i].params.blendFlag = Protean::BLENDMODE_ALPHA;
 		}
 
 		editor->guiScalingCombo.SetShadowRadius(1);
-		editor->guiScalingCombo.SetShadowColor(wi::Color::Transparent());
+		editor->guiScalingCombo.SetShadowColor(Protean::Color::Transparent());
 		editor->guiScalingCombo.SetShadowHighlightSpread(0.2f);
 		for (auto& sprite : editor->guiScalingCombo.sprites)
 		{
@@ -1274,7 +1272,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 		}
 
 		editor->is2DModeButton.SetShadowRadius(1);
-		editor->is2DModeButton.SetShadowColor(wi::Color::Transparent());
+		editor->is2DModeButton.SetShadowColor(Protean::Color::Transparent());
 		editor->is2DModeButton.SetShadowHighlightSpread(0.2f);
 		for (auto& sprite : editor->is2DModeButton.sprites)
 		{
@@ -1305,10 +1303,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->componentsWnd.newComponentCombo.SetShadowRadius(0);
 		}
 
-		wi::image::Params::Gradient gradient = disableGradientCheckBox.GetCheck() ? wi::image::Params::Gradient::None : wi::image::Params::Gradient::Linear;
+		Protean::Image::Params::Gradient gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient::None : Protean::Image::Params::Gradient::Linear;
 		XMFLOAT2 gradient_start = XMFLOAT2(0, 0);
 		XMFLOAT2 gradient_end = XMFLOAT2(0, 0.32f);
-		for (int i = 0; i < /*arraysize(wi::gui::Widget::sprites)*/1; ++i)
+		for (int i = 0; i < /*arraysize(Protean::Gui::Widget::sprites)*/1; ++i)
 		{
 			editor->playButton.sprites[i].params.gradient = gradient;
 			editor->playButton.sprites[i].params.gradient_color = theme_color_gradient;
@@ -1371,10 +1369,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 			editor->exitButton.sprites[i].params.gradient_uv_end = gradient_end;
 		}
 
-		gradient = disableGradientCheckBox.GetCheck() ? wi::image::Params::Gradient::None : wi::image::Params::Gradient::Circular;
+		gradient = disableGradientCheckBox.GetCheck() ? Protean::Image::Params::Gradient::None : Protean::Image::Params::Gradient::Circular;
 		gradient_start = XMFLOAT2(0.9f, 0.1f);
 		gradient_end = XMFLOAT2(0.42f, 0.1f);
-		for (int i = 0; i < /*arraysize(wi::gui::Widget::sprites)*/1; ++i)
+		for (int i = 0; i < /*arraysize(Protean::Gui::Widget::sprites)*/1; ++i)
 		{
 			editor->generalButton.sprites[i].params.gradient = gradient;
 			editor->generalButton.sprites[i].params.gradient_color = theme_color_gradient;
@@ -1411,7 +1409,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	eliminateCoarseCascadesButton.Create("EliminateCoarseCascades");
 	eliminateCoarseCascadesButton.SetTooltip("Eliminate the coarse cascade mask for every object in the scene.");
 	eliminateCoarseCascadesButton.SetSize(XMFLOAT2(100, 18));
-	eliminateCoarseCascadesButton.OnClick([=](wi::gui::EventArgs args) {
+	eliminateCoarseCascadesButton.OnClick([=](Protean::Gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.objects.GetCount(); ++i)
@@ -1426,11 +1424,11 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	ddsConvButton.Create("DDS Convert");
 	ddsConvButton.SetTooltip("All material textures in the scene will be converted to DDS format.\nDDS format is optimal for GPU and can be streamed.");
 	ddsConvButton.SetSize(XMFLOAT2(100, 18));
-	ddsConvButton.OnClick([=](wi::gui::EventArgs args) {
+	ddsConvButton.OnClick([=](Protean::Gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
-		wi::unordered_map<std::string, wi::Resource> conv;
+		Protean::unordered_map<std::string, Protean::Resource> conv;
 		for (uint32_t i = 0; i < scene.materials.GetCount(); ++i)
 		{
 			MaterialComponent& material = scene.materials[i];
@@ -1440,9 +1438,9 @@ void GeneralWindow::Create(EditorComponent* _editor)
 					continue;
 				if (has_flag(x.resource.GetTexture().GetDesc().misc_flags, ResourceMiscFlag::SPARSE))
 					continue;
-				if (wi::helper::GetExtensionFromFileName(x.name).compare("DDS"))
+				if (Protean::Helper::GetExtensionFromFileName(x.name).compare("DDS"))
 				{
-					x.name = wi::helper::ReplaceExtension(x.name, "DDS");
+					x.name = Protean::Helper::ReplaceExtension(x.name, "DDS");
 					conv[x.name] = x.resource;
 				}
 			}
@@ -1450,10 +1448,10 @@ void GeneralWindow::Create(EditorComponent* _editor)
 
 		for (auto& x : conv)
 		{
-			wi::vector<uint8_t> filedata;
-			if (wi::helper::saveTextureToMemoryFile(x.second.GetTexture(), "DDS", filedata))
+			Protean::vector<uint8_t> filedata;
+			if (Protean::Helper::saveTextureToMemoryFile(x.second.GetTexture(), "DDS", filedata))
 			{
-				x.second = wi::resourcemanager::Load(x.first, wi::resourcemanager::Flags::NONE, filedata.data(), filedata.size());
+				x.second = Protean::ResourceManager::Load(x.first, Protean::ResourceManager::Flags::NONE, filedata.data(), filedata.size());
 				x.second.SetFileData(std::move(filedata));
 			}
 		}
@@ -1471,7 +1469,7 @@ void GeneralWindow::Create(EditorComponent* _editor)
 	duplicateCollidersButton.Create("Delete duplicate colliders");
 	duplicateCollidersButton.SetTooltip("Duplicate colliders will be removed from the scene.");
 	duplicateCollidersButton.SetSize(XMFLOAT2(100, 18));
-	duplicateCollidersButton.OnClick([=](wi::gui::EventArgs args) {
+	duplicateCollidersButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		scene.DeleteDuplicateColliders();
 		editor->componentsWnd.RefreshEntityTree();
@@ -1515,9 +1513,9 @@ void GeneralWindow::ReloadThemes()
 	themeCombo.AddItem("Hacking " ICON_HACKING, (uint64_t)Theme::Hacking);
 	themeCombo.AddItem("Nord " ICON_NORD, (uint64_t)Theme::Nord);
 
-	wi::vector<std::string> custom_themes;
-	wi::helper::GetFileNamesInDirectory(wi::helper::GetCurrentPath() + "/themes/", [&](std::string filename) {
-		custom_themes.push_back(wi::helper::GetFileNameFromPath(wi::helper::RemoveExtension(filename)));
+	Protean::vector<std::string> custom_themes;
+	Protean::Helper::GetFileNamesInDirectory(Protean::Helper::GetCurrentPath() + "/themes/", [&](std::string filename) {
+		custom_themes.push_back(Protean::Helper::GetFileNameFromPath(Protean::Helper::RemoveExtension(filename)));
 	}, "witheme");
 	std::sort(custom_themes.begin(), custom_themes.end(), std::less());
 	for (auto& x : custom_themes)
@@ -1563,7 +1561,7 @@ void GeneralWindow::ReloadThemes()
 
 void GeneralWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	editor->main->config.GetSection("layout").Set("options.width", GetSize().x);
 	editor->main->config.GetSection("layout").Set("options.height", GetSize().y);

@@ -36,10 +36,10 @@
 #include <atomic>
 #include <mutex>
 
-#define dx12_assert(cond, fname) { wilog_assert(cond, "DX12 error: %s failed with %s (%s:%d)", fname, wi::helper::GetPlatformErrorString(hr).c_str(), relative_path(__FILE__), __LINE__); }
+#define dx12_assert(cond, fname) { wilog_assert(cond, "DX12 error: %s failed with %s (%s:%d)", fname, Protean::Helper::GetPlatformErrorString(hr).c_str(), relative_path(__FILE__), __LINE__); }
 #define dx12_check(call) [&]() { HRESULT hr = call; dx12_assert(SUCCEEDED(hr), extract_function_name(#call).c_str()); return hr; }()
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 	class GraphicsDevice_DX12 final : public GraphicsDevice
 	{
@@ -68,9 +68,9 @@ namespace wi::graphics
 			Microsoft::WRL::ComPtr<ID3D12CommandSignature> dispatchMeshIndirectCountCommandSignature;
 		};
 		mutable std::mutex multidraw_signature_locker;
-		mutable wi::unordered_map<ID3D12RootSignature*, MultiDrawSignature> multidraw_signatures;
+		mutable Protean::unordered_map<ID3D12RootSignature*, MultiDrawSignature> multidraw_signatures;
 
-		wi::vector<GUID> video_decode_profile_list;
+		Protean::vector<GUID> video_decode_profile_list;
 
 		bool deviceRemoved = false;
 		bool tearingSupported = false;
@@ -100,7 +100,7 @@ namespace wi::graphics
 		{
 			D3D12_COMMAND_QUEUE_DESC desc = {};
 			Microsoft::WRL::ComPtr<ID3D12CommandQueue> queue;
-			wi::vector<ID3D12CommandList*> submit_cmds;
+			Protean::vector<ID3D12CommandList*> submit_cmds;
 
 			void signal(const Semaphore& semaphore);
 			void wait(const Semaphore& semaphore);
@@ -122,7 +122,7 @@ namespace wi::graphics
 				GPUBuffer uploadbuffer;
 				inline bool IsValid() const { return commandList != nullptr; }
 			};
-			wi::vector<CopyCMD> freelist;
+			Protean::vector<CopyCMD> freelist;
 			std::deque<CopyCMD> async_worklist;
 
 			void init(GraphicsDevice_DX12* device);
@@ -149,7 +149,7 @@ namespace wi::graphics
 			void flush(bool graphics, CommandList cmd);
 		};
 
-		wi::vector<Semaphore> semaphore_pool;
+		Protean::vector<Semaphore> semaphore_pool;
 		std::mutex semaphore_pool_locker;
 		Semaphore new_semaphore()
 		{
@@ -180,21 +180,21 @@ namespace wi::graphics
 
 			QUEUE_TYPE queue = {};
 			uint32_t id = 0;
-			wi::vector<Semaphore> waits;
-			wi::vector<Semaphore> signals;
+			Protean::vector<Semaphore> waits;
+			Protean::vector<Semaphore> signals;
 
 			DescriptorBinder binder;
 			GPULinearAllocator frame_allocators[BUFFERCOUNT];
 
-			wi::vector<D3D12_RESOURCE_BARRIER> frame_barriers;
+			Protean::vector<D3D12_RESOURCE_BARRIER> frame_barriers;
 			struct Discard
 			{
 				ID3D12Resource* resource = nullptr;
 				D3D12_DISCARD_REGION region = {};
 			};
-			wi::vector<Discard> discards;
+			Protean::vector<Discard> discards;
 			D3D_PRIMITIVE_TOPOLOGY prev_pt = {};
-			wi::vector<std::pair<PipelineHash, PipelineState>> pipelines_worker;
+			Protean::vector<std::pair<PipelineHash, PipelineState>> pipelines_worker;
 			PipelineHash prev_pipeline_hash = {};
 			const PipelineState* active_pso = {};
 			const Shader* active_cs = {};
@@ -203,13 +203,13 @@ namespace wi::graphics
 			const ID3D12RootSignature* active_rootsig_compute = {};
 			ShadingRate prev_shadingrate = {};
 			uint32_t prev_stencilref = 0;
-			wi::vector<const SwapChain*> swapchains;
+			Protean::vector<const SwapChain*> swapchains;
 			bool dirty_pso = {};
-			wi::vector<D3D12_RAYTRACING_GEOMETRY_DESC> accelerationstructure_build_geometries;
+			Protean::vector<D3D12_RAYTRACING_GEOMETRY_DESC> accelerationstructure_build_geometries;
 			RenderPassInfo renderpass_info;
-			wi::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_begin;
-			wi::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_begin_after_discards;
-			wi::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_end;
+			Protean::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_begin;
+			Protean::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_begin_after_discards;
+			Protean::vector<D3D12_RESOURCE_BARRIER> renderpass_barriers_end;
 			ID3D12Resource* shading_rate_image = nullptr;
 			ID3D12Resource* resolve_src[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
 			ID3D12Resource* resolve_dst[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
@@ -217,9 +217,9 @@ namespace wi::graphics
 			ID3D12Resource* resolve_src_ds = nullptr;
 			ID3D12Resource* resolve_dst_ds = nullptr;
 			DXGI_FORMAT resolve_ds_format = {};
-			wi::vector<D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS> resolve_subresources[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
-			wi::vector<D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS> resolve_subresources_dsv = {};
-			wi::vector<D3D12_RESOURCE_BARRIER> resolve_src_barriers;
+			Protean::vector<D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS> resolve_subresources[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
+			Protean::vector<D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS> resolve_subresources_dsv = {};
+			Protean::vector<D3D12_RESOURCE_BARRIER> resolve_src_barriers;
 
 			void reset(uint32_t bufferindex)
 			{
@@ -279,10 +279,10 @@ namespace wi::graphics
 				return (ID3D12VideoDecodeCommandList*)commandLists[queue].Get();
 			}
 		};
-		wi::allocator::BlockAllocator<CommandList_DX12, 64> cmd_allocator;
-		wi::vector<CommandList_DX12*> commandlists;
+		Protean::Allocator::BlockAllocator<CommandList_DX12, 64> cmd_allocator;
+		Protean::vector<CommandList_DX12*> commandlists;
 		uint32_t cmd_count = 0;
-		wi::SpinLock cmd_locker;
+		Protean::SpinLock cmd_locker;
 
 		constexpr CommandList_DX12& GetCommandList(CommandList cmd) const
 		{
@@ -290,7 +290,7 @@ namespace wi::graphics
 			return *(CommandList_DX12*)cmd.internal_state;
 		}
 
-		wi::unordered_map<PipelineHash, PipelineState> pipelines_global;
+		Protean::unordered_map<PipelineHash, PipelineState> pipelines_global;
 
 		void pso_validate(CommandList cmd);
 
@@ -301,7 +301,7 @@ namespace wi::graphics
 		GraphicsDevice_DX12(ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
 		~GraphicsDevice_DX12() override;
 
-		bool CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const override;
+		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc * desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader, const char* entrypoint = "main") const override;
@@ -511,9 +511,9 @@ namespace wi::graphics
 				GraphicsDevice_DX12* device = nullptr;
 				std::mutex locker;
 				D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-				wi::vector<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>> heaps;
+				Protean::vector<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>> heaps;
 				uint32_t descriptor_size = 0;
-				wi::vector<D3D12_CPU_DESCRIPTOR_HANDLE> freelist;
+				Protean::vector<D3D12_CPU_DESCRIPTOR_HANDLE> freelist;
 
 				void init(GraphicsDevice_DX12* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptorsPerBlock)
 				{
@@ -559,8 +559,8 @@ namespace wi::graphics
 			DescriptorAllocator descriptors_rtv;
 			DescriptorAllocator descriptors_dsv;
 
-			wi::vector<int> free_bindless_res;
-			wi::vector<int> free_bindless_sam;
+			Protean::vector<int> free_bindless_res;
+			Protean::vector<int> free_bindless_sam;
 
 			std::deque<std::pair<Microsoft::WRL::ComPtr<D3D12MA::Allocation>, uint64_t>> destroyer_allocations;
 			std::deque<std::pair<Microsoft::WRL::ComPtr<ID3D12Resource>, uint64_t>> destroyer_resources;
@@ -637,7 +637,7 @@ namespace wi::graphics
 				}
 			}
 		};
-		wi::allocator::shared_ptr<AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<AllocationHandler> allocationhandler;
 
 	};
 

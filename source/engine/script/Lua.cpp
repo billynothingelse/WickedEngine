@@ -33,7 +33,7 @@
 
 #include <memory>
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	static constexpr const char* WILUA_ERROR_PREFIX = "[Lua Error] ";
 	struct LuaInternal
@@ -54,12 +54,12 @@ namespace wi::lua
 		return luainternal;
 	}
 
-	wi::Application* editorApplication = nullptr;
-	wi::RenderPath* editorRenderPath = nullptr;
+	Protean::Application* editorApplication = nullptr;
+	Protean::RenderPath* editorRenderPath = nullptr;
 	int IsThisEditor(lua_State* L)
 	{
 		bool ret = editorApplication != nullptr && editorRenderPath != nullptr;
-		wi::lua::SSetBool(L, ret);
+		Protean::Lua::SSetBool(L, ret);
 		return 1;
 	}
 	int ReturnToEditor(lua_State* L)
@@ -68,7 +68,7 @@ namespace wi::lua
 		{
 			KillProcesses();
 			editorApplication->ActivatePath(editorRenderPath);
-			wi::input::ResetCursors();
+			Protean::Input::ResetCursors();
 		}
 		return 0;
 	}
@@ -76,94 +76,94 @@ namespace wi::lua
 	int IsPlatformWindows(lua_State* L)
 	{
 #ifdef PLATFORM_WINDOWS_DESKTOP
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_WINDOWS_DESKTOP
 		return 1;
 	}
 	int IsPlatformLinux(lua_State* L)
 	{
 #ifdef PLATFORM_LINUX
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_LINUX
 		return 1;
 	}
 	int IsPlatformMACOS(lua_State* L)
 	{
 #ifdef PLATFORM_MACOS
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_MACOS
 		return 1;
 	}
 	int IsPlatformIOS(lua_State* L)
 	{
 #ifdef PLATFORM_IOS
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_IOS
 		return 1;
 	}
 	int IsPlatformPS5(lua_State* L)
 	{
 #ifdef PLATFORM_PS5
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_PS5
 		return 1;
 	}
 	int IsPlatformXBOX(lua_State* L)
 	{
 #ifdef PLATFORM_XBOX
-		wi::lua::SSetBool(L, true);
+		Protean::Lua::SSetBool(L, true);
 #else
-		wi::lua::SSetBool(L, false);
+		Protean::Lua::SSetBool(L, false);
 #endif // PLATFORM_XBOX
 		return 1;
 	}
 
 	int FileExists(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "FileExists(string name): not enough arguments!");
+			Protean::Lua::SError(L, "FileExists(string name): not enough arguments!");
 			return 0;
 		}
-		wi::lua::SSetBool(L, wi::helper::FileExists(wi::lua::SGetString(L, 1)));
+		Protean::Lua::SSetBool(L, Protean::Helper::FileExists(Protean::Lua::SGetString(L, 1)));
 		return 1;
 	}
 	int DirectoryExists(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "DirectoryExists(string name): not enough arguments!");
+			Protean::Lua::SError(L, "DirectoryExists(string name): not enough arguments!");
 			return 0;
 		}
-		wi::lua::SSetBool(L, wi::helper::DirectoryExists(wi::lua::SGetString(L, 1)));
+		Protean::Lua::SSetBool(L, Protean::Helper::DirectoryExists(Protean::Lua::SGetString(L, 1)));
 		return 1;
 	}
 	int DirectoryCreate(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "DirectoryCreate(string name): not enough arguments!");
+			Protean::Lua::SError(L, "DirectoryCreate(string name): not enough arguments!");
 			return 0;
 		}
-		wi::helper::DirectoryCreate(wi::lua::SGetString(L, 1));
+		Protean::Helper::DirectoryCreate(Protean::Lua::SGetString(L, 1));
 		return 0;
 	}
 	int GetSaveDataPath(lua_State* L)
 	{
-		wi::lua::SSetString(L, wi::helper::GetSaveDataPath());
+		Protean::Lua::SSetString(L, Protean::Helper::GetSaveDataPath());
 		return 1;
 	}
 
@@ -177,7 +177,7 @@ namespace wi::lua
 		std::string ss;
 		ss += WILUA_ERROR_PREFIX;
 		ss += str;
-		wi::backlog::post(ss, wi::backlog::LogLevel::Error);
+		Protean::Backlog::post(ss, Protean::Backlog::LogLevel::Error);
 		lua_pop(L, 1); // remove error message
 
 		ReturnToEditor(L);
@@ -217,7 +217,7 @@ namespace wi::lua
 		std::string dynamic_inject = "--[[" + filepath + "--]]";
 		dynamic_inject += "local function script_file() return \"" + filepath + "\" end;";
 		dynamic_inject += "local function script_pid() return \"" + std::to_string(PID) + "\" end;";
-		dynamic_inject += "local function script_dir() return \"" + wi::helper::GetDirectoryFromPath(filepath) + "\" end;";
+		dynamic_inject += "local function script_dir() return \"" + Protean::Helper::GetDirectoryFromPath(filepath) + "\" end;";
 		dynamic_inject += persistent_inject;
 		script = dynamic_inject + customparameters_prepend + script + customparameters_append;
 
@@ -247,9 +247,9 @@ namespace wi::lua
 			std::string customparameters_append;
 			if(argc >= 4) customparameters_prepend = SGetString(L, 4);
 
-			wi::vector<uint8_t> filedata;
+			Protean::vector<uint8_t> filedata;
 
-			if (wi::helper::FileRead(filename, filedata))
+			if (Protean::Helper::FileRead(filename, filedata))
 			{
 				std::string command = std::string(filedata.begin(), filedata.end());
 				PID = AttachScriptParameters(command, filename, PID, customparameters_prepend, customparameters_append);
@@ -289,13 +289,13 @@ namespace wi::lua
 		if (argc > 0)
 		{
 			std::string filename = SGetString(L, 1);
-			if (wi::lua::RunBinaryFile(filename))
+			if (Protean::Lua::RunBinaryFile(filename))
 			{
 				return 0;
 			}
-			wi::lua::SError(L, "dobinaryfile(string filename): File could not be read!");
+			Protean::Lua::SError(L, "dobinaryfile(string filename): File could not be read!");
 		}
-		wi::lua::SError(L, "dobinaryfile(string filename): Not enough arguments!");
+		Protean::Lua::SError(L, "dobinaryfile(string filename): Not enough arguments!");
 		return 0;
 	}
 	int Internal_CompileBinaryFile(lua_State* L)
@@ -306,15 +306,15 @@ namespace wi::lua
 		{
 			std::string filename_src = SGetString(L, 1);
 			std::string filename_dst = SGetString(L, 2);
-			wi::vector<uint8_t> data;
-			if (wi::lua::CompileFile(filename_src, data))
+			Protean::vector<uint8_t> data;
+			if (Protean::Lua::CompileFile(filename_src, data))
 			{
-				wi::helper::FileWrite(filename_dst, data.data(), data.size());
+				Protean::Helper::FileWrite(filename_dst, data.data(), data.size());
 				return 0;
 			}
-			wi::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Source file could not be read, or compilation failed!");
+			Protean::Lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Source file could not be read, or compilation failed!");
 		}
-		wi::lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Not enough arguments!");
+		Protean::Lua::SError(L, "compilebinaryfile(string filename_src, filename_dst): Not enough arguments!");
 		return 0;
 	}
 
@@ -330,32 +330,32 @@ namespace wi::lua
 
 	int GetVersionMajor(lua_State* L)
 	{
-		SSetInt(L, wi::version::GetMajor());
+		SSetInt(L, Protean::Version::GetMajor());
 		return 1;
 	}
 	int GetVersionMinor(lua_State* L)
 	{
-		SSetInt(L, wi::version::GetMinor());
+		SSetInt(L, Protean::Version::GetMinor());
 		return 1;
 	}
 	int GetVersionRevision(lua_State* L)
 	{
-		SSetInt(L, wi::version::GetRevision());
+		SSetInt(L, Protean::Version::GetRevision());
 		return 1;
 	}
 	int GetVersionString(lua_State* L)
 	{
-		SSetString(L, wi::version::GetVersionString());
+		SSetString(L, Protean::Version::GetVersionString());
 		return 1;
 	}
 	int GetCreditsString(lua_State* L)
 	{
-		SSetString(L, wi::version::GetCreditsString());
+		SSetString(L, Protean::Version::GetCreditsString());
 		return 1;
 	}
 	int GetSupportersString(lua_State* L)
 	{
-		SSetString(L, wi::version::GetSupportersString());
+		SSetString(L, Protean::Version::GetSupportersString());
 		return 1;
 	}
 
@@ -364,7 +364,7 @@ namespace wi::lua
 		if (lua_internal().m_luaState != nullptr)
 			return; // already initialized
 
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		lua_internal().m_luaState = luaL_newstate();
 		luaL_openlibs(lua_internal().m_luaState);
@@ -405,26 +405,26 @@ namespace wi::lua
 		LoadingScreen_BindLua::Bind();
 		RenderPath3D_BindLua::Bind();
 		Texture_BindLua::Bind();
-		renderer::Bind();
+		RendererBindings::Bind();
 		Audio_BindLua::Bind();
 		Video_BindLua::Bind();
 		VideoInstance_BindLua::Bind();
 		Sprite_BindLua::Bind();
 		ImageParams_BindLua::Bind();
 		SpriteAnim_BindLua::Bind();
-		scene::Bind();
+		SceneBindings::Bind();
 		Input_BindLua::Bind();
 		SpriteFont_BindLua::Bind();
-		backlog::Bind();
+		BacklogBindings::Bind();
 		Network_BindLua::Bind();
-		primitive::Bind();
+		PrimitiveBindings::Bind();
 		Physics_BindLua::Bind();
 		VoxelGrid_BindLua::Bind();
 		PathQuery_BindLua::Bind();
 		TrailRenderer_BindLua::Bind();
 		Async_BindLua::Bind();
 
-		wilog("wi::lua Initialized [Lua %s.%s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, LUA_VERSION_RELEASE, (int)std::round(timer.elapsed()));
+		wilog("Protean::Lua Initialized [Lua %s.%s.%s] (%d ms)", LUA_VERSION_MAJOR, LUA_VERSION_MINOR, LUA_VERSION_RELEASE, (int)std::round(timer.elapsed()));
 	}
 
 	lua_State* GetLuaState()
@@ -443,8 +443,8 @@ namespace wi::lua
 	}
 	bool RunFile(const char* filename)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (Protean::Helper::FileRead(filename, filedata))
 		{
 			std::string script = std::string(filedata.begin(), filedata.end());
 			AttachScriptParameters(script, filename);
@@ -454,8 +454,8 @@ namespace wi::lua
 	}
 	bool RunBinaryFile(const char* filename)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (Protean::Helper::FileRead(filename, filedata))
 		{
 			return RunBinaryData(filedata.data(), filedata.size(), filename);
 		}
@@ -748,15 +748,15 @@ namespace wi::lua
 		{
 			ss += error;
 		}
-		wi::backlog::post(ss, wi::backlog::LogLevel::Error);
+		Protean::Backlog::post(ss, Protean::Backlog::LogLevel::Error);
 
 		ReturnToEditor(L);
 	}
 
-	bool CompileFile(const char* filename, wi::vector<uint8_t>& dst)
+	bool CompileFile(const char* filename, Protean::vector<uint8_t>& dst)
 	{
-		wi::vector<uint8_t> filedata;
-		if (wi::helper::FileRead(filename, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (Protean::Helper::FileRead(filename, filedata))
 		{
 			std::string script = std::string(filedata.begin(), filedata.end());
 			return CompileText(script.c_str(), dst);
@@ -766,14 +766,14 @@ namespace wi::lua
 
 	int writer(lua_State* L, const void* p, size_t sz, void* ud)
 	{
-		wi::vector<uint8_t>& dst = *(wi::vector<uint8_t>*)ud;
+		Protean::vector<uint8_t>& dst = *(Protean::vector<uint8_t>*)ud;
 		for (size_t i = 0; i < sz; ++i)
 		{
 			dst.push_back(((uint8_t*)p)[i]);
 		}
 		return LUA_OK;
 	}
-	bool CompileText(const char* script, wi::vector<uint8_t>& dst)
+	bool CompileText(const char* script, Protean::vector<uint8_t>& dst)
 	{
 		if(luaL_loadstring(lua_internal().m_luaState, script) != LUA_OK)
 		{
@@ -791,7 +791,7 @@ namespace wi::lua
 		return true;
 	}
 
-	void EnableEditorFunctionality(wi::Application* application, wi::RenderPath* renderpath)
+	void EnableEditorFunctionality(Protean::Application* application, Protean::RenderPath* renderpath)
 	{
 		editorApplication = application;
 		editorRenderPath = renderpath;

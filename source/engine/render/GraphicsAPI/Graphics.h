@@ -8,7 +8,7 @@
 #include <string>
 #include <limits>
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 	struct Shader;
 	struct GPUResource;
@@ -528,7 +528,7 @@ namespace wi::graphics
 			uint32_t aligned_byte_offset = APPEND_ALIGNED_ELEMENT;
 			InputClassification input_slot_class = InputClassification::PER_VERTEX_DATA;
 		};
-		wi::vector<Element> elements;
+		Protean::vector<Element> elements;
 	};
 
 	union ClearValue
@@ -843,7 +843,7 @@ namespace wi::graphics
 
 	struct Sampler
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		SamplerDesc desc;
@@ -853,7 +853,7 @@ namespace wi::graphics
 
 	struct Shader
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		ShaderStage stage = ShaderStage::Count;
@@ -861,7 +861,7 @@ namespace wi::graphics
 
 	struct GPUResource
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		// These are only valid if the resource was created with CPU access (USAGE::UPLOAD or USAGE::READBACK)
@@ -920,7 +920,7 @@ namespace wi::graphics
 
 	struct VideoDecoder
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		VideoDesc desc;
@@ -1155,7 +1155,7 @@ namespace wi::graphics
 
 	struct GPUQueryHeap
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		GPUQueryHeapDesc desc;
@@ -1165,7 +1165,7 @@ namespace wi::graphics
 
 	struct PipelineState
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		PipelineStateDesc desc;
@@ -1175,7 +1175,7 @@ namespace wi::graphics
 
 	struct SwapChain
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		SwapChainDesc desc;
@@ -1244,7 +1244,7 @@ namespace wi::graphics
 				} aabbs;
 
 			};
-			wi::vector<Geometry> geometries;
+			Protean::vector<Geometry> geometries;
 		} bottom_level;
 
 		struct TopLevel
@@ -1309,15 +1309,15 @@ namespace wi::graphics
 	};
 	struct RaytracingPipelineStateDesc
 	{
-		wi::vector<ShaderLibrary> shader_libraries;
-		wi::vector<ShaderHitGroup> hit_groups;
+		Protean::vector<ShaderLibrary> shader_libraries;
+		Protean::vector<ShaderHitGroup> hit_groups;
 		uint32_t max_trace_recursion_depth = 1;
 		uint32_t max_attribute_size_in_bytes = 0;
 		uint32_t max_payload_size_in_bytes = 0;
 	};
 	struct RaytracingPipelineState
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		RaytracingPipelineStateDesc desc;
@@ -1664,137 +1664,137 @@ namespace wi::graphics
 	{
 		switch (format)
 		{
-		case wi::graphics::Format::UNKNOWN:
+		case Protean::Graphics::Format::UNKNOWN:
 			return "UNKNOWN";
-		case wi::graphics::Format::R32G32B32A32_FLOAT:
+		case Protean::Graphics::Format::R32G32B32A32_FLOAT:
 			return "R32G32B32A32_FLOAT";
-		case wi::graphics::Format::R32G32B32A32_UINT:
+		case Protean::Graphics::Format::R32G32B32A32_UINT:
 			return "R32G32B32A32_UINT";
-		case wi::graphics::Format::R32G32B32A32_SINT:
+		case Protean::Graphics::Format::R32G32B32A32_SINT:
 			return "R32G32B32A32_SINT";
-		case wi::graphics::Format::R32G32B32_FLOAT:
+		case Protean::Graphics::Format::R32G32B32_FLOAT:
 			return "R32G32B32_FLOAT";
-		case wi::graphics::Format::R32G32B32_UINT:
+		case Protean::Graphics::Format::R32G32B32_UINT:
 			return "R32G32B32_UINT";
-		case wi::graphics::Format::R32G32B32_SINT:
+		case Protean::Graphics::Format::R32G32B32_SINT:
 			return "R32G32B32_SINT";
-		case wi::graphics::Format::R16G16B16A16_FLOAT:
+		case Protean::Graphics::Format::R16G16B16A16_FLOAT:
 			return "R16G16B16A16_FLOAT";
-		case wi::graphics::Format::R16G16B16A16_UNORM:
+		case Protean::Graphics::Format::R16G16B16A16_UNORM:
 			return "R16G16B16A16_UNORM";
-		case wi::graphics::Format::R16G16B16A16_UINT:
+		case Protean::Graphics::Format::R16G16B16A16_UINT:
 			return "R16G16B16A16_UINT";
-		case wi::graphics::Format::R16G16B16A16_SNORM:
+		case Protean::Graphics::Format::R16G16B16A16_SNORM:
 			return "R16G16B16A16_SNORM";
-		case wi::graphics::Format::R16G16B16A16_SINT:
+		case Protean::Graphics::Format::R16G16B16A16_SINT:
 			return "R16G16B16A16_SINT";
-		case wi::graphics::Format::R32G32_FLOAT:
+		case Protean::Graphics::Format::R32G32_FLOAT:
 			return "R32G32_FLOAT";
-		case wi::graphics::Format::R32G32_UINT:
+		case Protean::Graphics::Format::R32G32_UINT:
 			return "R32G32_UINT";
-		case wi::graphics::Format::R32G32_SINT:
+		case Protean::Graphics::Format::R32G32_SINT:
 			return "R32G32_SINT";
-		case wi::graphics::Format::D32_FLOAT_S8X24_UINT:
+		case Protean::Graphics::Format::D32_FLOAT_S8X24_UINT:
 			return "D32_FLOAT_S8X24_UINT";
-		case wi::graphics::Format::R10G10B10A2_UNORM:
+		case Protean::Graphics::Format::R10G10B10A2_UNORM:
 			return "R10G10B10A2_UNORM";
-		case wi::graphics::Format::R10G10B10A2_UINT:
+		case Protean::Graphics::Format::R10G10B10A2_UINT:
 			return "R10G10B10A2_UINT";
-		case wi::graphics::Format::R11G11B10_FLOAT:
+		case Protean::Graphics::Format::R11G11B10_FLOAT:
 			return "R11G11B10_FLOAT";
-		case wi::graphics::Format::R8G8B8A8_UNORM:
+		case Protean::Graphics::Format::R8G8B8A8_UNORM:
 			return "R8G8B8A8_UNORM";
-		case wi::graphics::Format::R8G8B8A8_UNORM_SRGB:
+		case Protean::Graphics::Format::R8G8B8A8_UNORM_SRGB:
 			return "R8G8B8A8_UNORM_SRGB";
-		case wi::graphics::Format::R8G8B8A8_UINT:
+		case Protean::Graphics::Format::R8G8B8A8_UINT:
 			return "R8G8B8A8_UINT";
-		case wi::graphics::Format::R8G8B8A8_SNORM:
+		case Protean::Graphics::Format::R8G8B8A8_SNORM:
 			return "R8G8B8A8_SNORM";
-		case wi::graphics::Format::R8G8B8A8_SINT:
+		case Protean::Graphics::Format::R8G8B8A8_SINT:
 			return "R8G8B8A8_SINT";
-		case wi::graphics::Format::B8G8R8A8_UNORM:
+		case Protean::Graphics::Format::B8G8R8A8_UNORM:
 			return "B8G8R8A8_UNORM";
-		case wi::graphics::Format::B8G8R8A8_UNORM_SRGB:
+		case Protean::Graphics::Format::B8G8R8A8_UNORM_SRGB:
 			return "B8G8R8A8_UNORM_SRGB";
-		case wi::graphics::Format::R16G16_FLOAT:
+		case Protean::Graphics::Format::R16G16_FLOAT:
 			return "R16G16_FLOAT";
-		case wi::graphics::Format::R16G16_UNORM:
+		case Protean::Graphics::Format::R16G16_UNORM:
 			return "R16G16_UNORM";
-		case wi::graphics::Format::R16G16_UINT:
+		case Protean::Graphics::Format::R16G16_UINT:
 			return "R16G16_UINT";
-		case wi::graphics::Format::R16G16_SNORM:
+		case Protean::Graphics::Format::R16G16_SNORM:
 			return "R16G16_SNORM";
-		case wi::graphics::Format::R16G16_SINT:
+		case Protean::Graphics::Format::R16G16_SINT:
 			return "R16G16_SINT";
-		case wi::graphics::Format::D32_FLOAT:
+		case Protean::Graphics::Format::D32_FLOAT:
 			return "D32_FLOAT";
-		case wi::graphics::Format::R32_FLOAT:
+		case Protean::Graphics::Format::R32_FLOAT:
 			return "R32_FLOAT";
-		case wi::graphics::Format::R32_UINT:
+		case Protean::Graphics::Format::R32_UINT:
 			return "R32_UINT";
-		case wi::graphics::Format::R32_SINT:
+		case Protean::Graphics::Format::R32_SINT:
 			return "R32_SINT";
-		case wi::graphics::Format::D24_UNORM_S8_UINT:
+		case Protean::Graphics::Format::D24_UNORM_S8_UINT:
 			return "D24_UNORM_S8_UINT";
-		case wi::graphics::Format::R9G9B9E5_SHAREDEXP:
+		case Protean::Graphics::Format::R9G9B9E5_SHAREDEXP:
 			return "R9G9B9E5_SHAREDEXP";
-		case wi::graphics::Format::R8G8_UNORM:
+		case Protean::Graphics::Format::R8G8_UNORM:
 			return "R8G8_UNORM";
-		case wi::graphics::Format::R8G8_UINT:
+		case Protean::Graphics::Format::R8G8_UINT:
 			return "R8G8_UINT";
-		case wi::graphics::Format::R8G8_SNORM:
+		case Protean::Graphics::Format::R8G8_SNORM:
 			return "R8G8_SNORM";
-		case wi::graphics::Format::R8G8_SINT:
+		case Protean::Graphics::Format::R8G8_SINT:
 			return "R8G8_SINT";
-		case wi::graphics::Format::R16_FLOAT:
+		case Protean::Graphics::Format::R16_FLOAT:
 			return "R16_FLOAT";
-		case wi::graphics::Format::D16_UNORM:
+		case Protean::Graphics::Format::D16_UNORM:
 			return "D16_UNORM";
-		case wi::graphics::Format::R16_UNORM:
+		case Protean::Graphics::Format::R16_UNORM:
 			return "R16_UNORM";
-		case wi::graphics::Format::R16_UINT:
+		case Protean::Graphics::Format::R16_UINT:
 			return "R16_UINT";
-		case wi::graphics::Format::R16_SNORM:
+		case Protean::Graphics::Format::R16_SNORM:
 			return "R16_SNORM";
-		case wi::graphics::Format::R16_SINT:
+		case Protean::Graphics::Format::R16_SINT:
 			return "R16_SINT";
-		case wi::graphics::Format::R8_UNORM:
+		case Protean::Graphics::Format::R8_UNORM:
 			return "R8_UNORM";
-		case wi::graphics::Format::R8_UINT:
+		case Protean::Graphics::Format::R8_UINT:
 			return "R8_UINT";
-		case wi::graphics::Format::R8_SNORM:
+		case Protean::Graphics::Format::R8_SNORM:
 			return "R8_SNORM";
-		case wi::graphics::Format::R8_SINT:
+		case Protean::Graphics::Format::R8_SINT:
 			return "R8_SINT";
-		case wi::graphics::Format::BC1_UNORM:
+		case Protean::Graphics::Format::BC1_UNORM:
 			return "BC1_UNORM";
-		case wi::graphics::Format::BC1_UNORM_SRGB:
+		case Protean::Graphics::Format::BC1_UNORM_SRGB:
 			return "BC1_UNORM_SRGB";
-		case wi::graphics::Format::BC2_UNORM:
+		case Protean::Graphics::Format::BC2_UNORM:
 			return "BC2_UNORM";
-		case wi::graphics::Format::BC2_UNORM_SRGB:
+		case Protean::Graphics::Format::BC2_UNORM_SRGB:
 			return "BC2_UNORM_SRGB";
-		case wi::graphics::Format::BC3_UNORM:
+		case Protean::Graphics::Format::BC3_UNORM:
 			return "BC3_UNORM";
-		case wi::graphics::Format::BC3_UNORM_SRGB:
+		case Protean::Graphics::Format::BC3_UNORM_SRGB:
 			return "BC3_UNORM_SRGB";
-		case wi::graphics::Format::BC4_UNORM:
+		case Protean::Graphics::Format::BC4_UNORM:
 			return "BC4_UNORM";
-		case wi::graphics::Format::BC4_SNORM:
+		case Protean::Graphics::Format::BC4_SNORM:
 			return "BC4_SNORM";
-		case wi::graphics::Format::BC5_UNORM:
+		case Protean::Graphics::Format::BC5_UNORM:
 			return "BC5_UNORM";
-		case wi::graphics::Format::BC5_SNORM:
+		case Protean::Graphics::Format::BC5_SNORM:
 			return "BC5_SNORM";
-		case wi::graphics::Format::BC6H_UF16:
+		case Protean::Graphics::Format::BC6H_UF16:
 			return "BC6H_UF16";
-		case wi::graphics::Format::BC6H_SF16:
+		case Protean::Graphics::Format::BC6H_SF16:
 			return "BC6H_SF16";
-		case wi::graphics::Format::BC7_UNORM:
+		case Protean::Graphics::Format::BC7_UNORM:
 			return "BC7_UNORM";
-		case wi::graphics::Format::BC7_UNORM_SRGB:
+		case Protean::Graphics::Format::BC7_UNORM_SRGB:
 			return "BC7_UNORM_SRGB";
-		case wi::graphics::Format::NV12:
+		case Protean::Graphics::Format::NV12:
 			return "NV12";
 		default:
 			return "";
@@ -1846,17 +1846,17 @@ namespace wi::graphics
 		switch (value)
 		{
 		default:
-		case wi::graphics::ComponentSwizzle::R:
+		case Protean::Graphics::ComponentSwizzle::R:
 			return 'R';
-		case wi::graphics::ComponentSwizzle::G:
+		case Protean::Graphics::ComponentSwizzle::G:
 			return 'G';
-		case wi::graphics::ComponentSwizzle::B:
+		case Protean::Graphics::ComponentSwizzle::B:
 			return 'B';
-		case wi::graphics::ComponentSwizzle::A:
+		case Protean::Graphics::ComponentSwizzle::A:
 			return 'A';
-		case wi::graphics::ComponentSwizzle::ZERO:
+		case Protean::Graphics::ComponentSwizzle::ZERO:
 			return '0';
-		case wi::graphics::ComponentSwizzle::ONE:
+		case Protean::Graphics::ComponentSwizzle::ONE:
 			return '1';
 		}
 	}
@@ -1950,12 +1950,12 @@ namespace wi::graphics
 	{
 		switch (aspect)
 		{
-		case wi::graphics::ImageAspect::COLOR:
-		case wi::graphics::ImageAspect::DEPTH:
-		case wi::graphics::ImageAspect::LUMINANCE:
+		case Protean::Graphics::ImageAspect::COLOR:
+		case Protean::Graphics::ImageAspect::DEPTH:
+		case Protean::Graphics::ImageAspect::LUMINANCE:
 			return 0;
-		case wi::graphics::ImageAspect::STENCIL:
-		case wi::graphics::ImageAspect::CHROMINANCE:
+		case Protean::Graphics::ImageAspect::STENCIL:
+		case Protean::Graphics::ImageAspect::CHROMINANCE:
 			return 1;
 		default:
 			assert(0); // invalid aspect
@@ -2060,7 +2060,7 @@ namespace wi::graphics
 
 	// Creates texture SubresourceData array
 	//	alignment	: it can be used to force GPU-specific rowpitch alignment for linear tile mode (in bytes)
-	inline void CreateTextureSubresourceDatas(const TextureDesc& desc, void* data_ptr, wi::vector<SubresourceData>& subresource_datas, uint32_t alignment = 1)
+	inline void CreateTextureSubresourceDatas(const TextureDesc& desc, void* data_ptr, Protean::vector<SubresourceData>& subresource_datas, uint32_t alignment = 1)
 	{
 		const uint32_t planes = GetFormatPlaneCount(desc.format);
 		const uint32_t pixels_per_block = GetFormatBlockSize(desc.format);
@@ -2292,7 +2292,7 @@ namespace wi::graphics
 			ALLOW_UAV_WRITES = 1 << 0,
 		};
 		Flags flags = Flags::EMPTY;
-		wi::vector<RenderPassAttachment> attachments;
+		Protean::vector<RenderPassAttachment> attachments;
 	};
 	// Deprecated, kept for back-compat:
 	struct [[deprecated]] RenderPass
@@ -2307,30 +2307,30 @@ namespace wi::graphics
 }
 
 template<>
-struct enable_bitmask_operators<wi::graphics::ColorWrite> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::ColorWrite> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::graphics::BindFlag> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::BindFlag> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::graphics::ResourceMiscFlag> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::ResourceMiscFlag> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::graphics::GraphicsDeviceCapability> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::GraphicsDeviceCapability> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::graphics::ResourceState> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::ResourceState> : std::true_type {};
 WI_DISABLE_DEPRECATED_BEGIN
 template<>
-struct enable_bitmask_operators<wi::graphics::RenderPassDesc::Flags> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::RenderPassDesc::Flags> : std::true_type {};
 WI_DISABLE_DEPRECATED_END
 template<>
-struct enable_bitmask_operators<wi::graphics::RenderPassFlags> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::RenderPassFlags> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::graphics::VideoDecoderSupportFlags> : std::true_type {};
+struct enable_bitmask_operators<Protean::Graphics::VideoDecoderSupportFlags> : std::true_type {};
 
 namespace std
 {
 	template <>
-	struct hash<wi::graphics::PipelineHash>
+	struct hash<Protean::Graphics::PipelineHash>
 	{
-		inline uint64_t operator()(const wi::graphics::PipelineHash& hash) const
+		inline uint64_t operator()(const Protean::Graphics::PipelineHash& hash) const
 		{
 			return hash.get_hash();
 		}

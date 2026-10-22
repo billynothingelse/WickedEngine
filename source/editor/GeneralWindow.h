@@ -1,61 +1,61 @@
 #pragma once
 class EditorComponent;
 
-class GeneralWindow : public wi::gui::Window
+class GeneralWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::gui::CheckBox versionCheckBox;
-	wi::gui::CheckBox fpsCheckBox;
-	wi::gui::CheckBox otherinfoCheckBox;
-	wi::gui::Slider masterVolumeSlider;
-	wi::gui::ComboBox themeCombo;
-	wi::gui::Button themeEditorButton;
-	wi::gui::ComboBox saveModeComboBox;
-	wi::gui::CheckBox saveCompressionCheckBox;
-	wi::gui::ComboBox entityTreeSortingComboBox;
-	wi::gui::ComboBox languageCombo;
+	Protean::Gui::CheckBox versionCheckBox;
+	Protean::Gui::CheckBox fpsCheckBox;
+	Protean::Gui::CheckBox otherinfoCheckBox;
+	Protean::Gui::Slider masterVolumeSlider;
+	Protean::Gui::ComboBox themeCombo;
+	Protean::Gui::Button themeEditorButton;
+	Protean::Gui::ComboBox saveModeComboBox;
+	Protean::Gui::CheckBox saveCompressionCheckBox;
+	Protean::Gui::ComboBox entityTreeSortingComboBox;
+	Protean::Gui::ComboBox languageCombo;
 
-	wi::gui::CheckBox physicsDebugCheckBox;
-	wi::gui::Slider physicsDebugMaxDistanceSlider;
-	wi::gui::CheckBox nameDebugCheckBox;
-	wi::gui::CheckBox gridHelperCheckBox;
-	wi::gui::CheckBox aabbDebugCheckBox;
-	wi::gui::CheckBox boneLinesCheckBox;
-	wi::gui::CheckBox debugEmittersCheckBox;
-	wi::gui::CheckBox debugForceFieldsCheckBox;
-	wi::gui::CheckBox debugRaytraceBVHCheckBox;
-	wi::gui::CheckBox placeInFrontOfCameraCheckBox;
-	wi::gui::ComboBox wireFrameComboBox;
-	wi::gui::CheckBox envProbesCheckBox;
-	wi::gui::CheckBox cameraVisCheckBox;
-	wi::gui::CheckBox colliderVisCheckBox;
-	wi::gui::CheckBox springVisCheckBox;
-	wi::gui::CheckBox splineVisCheckBox;
-	wi::gui::CheckBox freezeCullingCameraCheckBox;
-	wi::gui::CheckBox disableAlbedoMapsCheckBox;
-	wi::gui::CheckBox forceDiffuseLightingCheckBox;
-	wi::gui::CheckBox forceUnlitCheckBox;
-	wi::gui::CheckBox focusModeCheckBox;
-	wi::gui::CheckBox disableRoundCornersCheckBox;
-	wi::gui::CheckBox disableGradientCheckBox;
+	Protean::Gui::CheckBox physicsDebugCheckBox;
+	Protean::Gui::Slider physicsDebugMaxDistanceSlider;
+	Protean::Gui::CheckBox nameDebugCheckBox;
+	Protean::Gui::CheckBox gridHelperCheckBox;
+	Protean::Gui::CheckBox aabbDebugCheckBox;
+	Protean::Gui::CheckBox boneLinesCheckBox;
+	Protean::Gui::CheckBox debugEmittersCheckBox;
+	Protean::Gui::CheckBox debugForceFieldsCheckBox;
+	Protean::Gui::CheckBox debugRaytraceBVHCheckBox;
+	Protean::Gui::CheckBox placeInFrontOfCameraCheckBox;
+	Protean::Gui::ComboBox wireFrameComboBox;
+	Protean::Gui::CheckBox envProbesCheckBox;
+	Protean::Gui::CheckBox cameraVisCheckBox;
+	Protean::Gui::CheckBox colliderVisCheckBox;
+	Protean::Gui::CheckBox springVisCheckBox;
+	Protean::Gui::CheckBox splineVisCheckBox;
+	Protean::Gui::CheckBox freezeCullingCameraCheckBox;
+	Protean::Gui::CheckBox disableAlbedoMapsCheckBox;
+	Protean::Gui::CheckBox forceDiffuseLightingCheckBox;
+	Protean::Gui::CheckBox forceUnlitCheckBox;
+	Protean::Gui::CheckBox focusModeCheckBox;
+	Protean::Gui::CheckBox disableRoundCornersCheckBox;
+	Protean::Gui::CheckBox disableGradientCheckBox;
 
-	wi::gui::Label transformToolLabel;
-	wi::gui::Slider transformToolOpacitySlider;
-	wi::gui::Slider transformToolDarkenSlider;
-	wi::gui::Slider transformToolScaleSlider;
-	wi::gui::Slider transformToolThicknessSlider;
+	Protean::Gui::Label transformToolLabel;
+	Protean::Gui::Slider transformToolOpacitySlider;
+	Protean::Gui::Slider transformToolDarkenSlider;
+	Protean::Gui::Slider transformToolScaleSlider;
+	Protean::Gui::Slider transformToolThicknessSlider;
 
-	wi::gui::Slider outlineOpacitySlider;
-	wi::gui::Slider bonePickerOpacitySlider;
-	wi::gui::CheckBox skeletonsVisibleCheckBox;
+	Protean::Gui::Slider outlineOpacitySlider;
+	Protean::Gui::Slider bonePickerOpacitySlider;
+	Protean::Gui::CheckBox skeletonsVisibleCheckBox;
 
-	wi::gui::Button localizationButton;
-	wi::gui::Button eliminateCoarseCascadesButton;
-	wi::gui::Button ddsConvButton;
-	wi::gui::Button duplicateCollidersButton;
+	Protean::Gui::Button localizationButton;
+	Protean::Gui::Button eliminateCoarseCascadesButton;
+	Protean::Gui::Button ddsConvButton;
+	Protean::Gui::Button duplicateCollidersButton;
 
 	std::string currentTheme;
 

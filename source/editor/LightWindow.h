@@ -1,47 +1,47 @@
 #pragma once
 class EditorComponent;
 
-class LightWindow : public wi::gui::Window
+class LightWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	void SetLightType(wi::scene::LightComponent::LightType type);
+	void SetLightType(Protean::LightComponent::LightType type);
 
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider rangeSlider;
-	wi::gui::Slider radiusSlider;
-	wi::gui::Slider lengthSlider;
-	wi::gui::Slider heightSlider;
-	wi::gui::Slider outerConeAngleSlider;
-	wi::gui::Slider innerConeAngleSlider;
-	wi::gui::Slider volumetricBoostSlider;
-	wi::gui::CheckBox shadowCheckBox;
-	wi::gui::CheckBox haloCheckBox;
-	wi::gui::CheckBox volumetricsCheckBox;
-	wi::gui::CheckBox staticCheckBox;
-	wi::gui::CheckBox volumetricCloudsCheckBox;
-	wi::gui::ColorPicker colorPicker;
-	wi::gui::ComboBox typeSelectorComboBox;
-	wi::gui::ComboBox shadowResolutionComboBox;
-	wi::gui::ComboBox cameraComboBox;
+	Protean::Gui::Slider intensitySlider;
+	Protean::Gui::Slider rangeSlider;
+	Protean::Gui::Slider radiusSlider;
+	Protean::Gui::Slider lengthSlider;
+	Protean::Gui::Slider heightSlider;
+	Protean::Gui::Slider outerConeAngleSlider;
+	Protean::Gui::Slider innerConeAngleSlider;
+	Protean::Gui::Slider volumetricBoostSlider;
+	Protean::Gui::CheckBox shadowCheckBox;
+	Protean::Gui::CheckBox haloCheckBox;
+	Protean::Gui::CheckBox volumetricsCheckBox;
+	Protean::Gui::CheckBox staticCheckBox;
+	Protean::Gui::CheckBox volumetricCloudsCheckBox;
+	Protean::Gui::ColorPicker colorPicker;
+	Protean::Gui::ComboBox typeSelectorComboBox;
+	Protean::Gui::ComboBox shadowResolutionComboBox;
+	Protean::Gui::ComboBox cameraComboBox;
 
-	wi::gui::Label tipLabel;
+	Protean::Gui::Label tipLabel;
 
-	wi::gui::Label lensflare_Label;
-	wi::gui::Button lensflare_Button[7];
+	Protean::Gui::Label lensflare_Label;
+	Protean::Gui::Button lensflare_Button[7];
 
 	struct CascadeConfig
 	{
-		wi::gui::Slider distanceSlider;
-		wi::gui::Button removeButton;
+		Protean::Gui::Slider distanceSlider;
+		Protean::Gui::Button removeButton;
 	};
 	std::deque<CascadeConfig> cascades;
-	wi::gui::Button addCascadeButton;
+	Protean::Gui::Button addCascadeButton;
 	void RefreshCascades();
 
 	void ResizeLayout() override;

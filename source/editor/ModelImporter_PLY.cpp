@@ -6,11 +6,9 @@
 
 using namespace miniply;
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
-
-void ImportModel_PLY(const std::string& fileName, wi::scene::Scene& scene)
+using namespace Protean::Graphics;
+using namespace Protean;
+void ImportModel_PLY(const std::string& fileName, Protean::Scene& scene)
 {
 	PLYReader reader(fileName.c_str());
 	if (!reader.valid())
@@ -23,17 +21,17 @@ void ImportModel_PLY(const std::string& fileName, wi::scene::Scene& scene)
 	bool gotVerts = false;
 	bool gotFaces = false;
 
-	wi::vector<uint32_t> indices;
-	wi::vector<XMFLOAT3> positions;
-	wi::vector<XMFLOAT3> normals;
-	wi::vector<XMFLOAT2> texcoords;
+	Protean::vector<uint32_t> indices;
+	Protean::vector<XMFLOAT3> positions;
+	Protean::vector<XMFLOAT3> normals;
+	Protean::vector<XMFLOAT2> texcoords;
 
 	// splats:
-	wi::vector<XMFLOAT4> rotations;
-	wi::vector<XMFLOAT3> scales;
-	wi::vector<float> opacities;
-	wi::vector<XMFLOAT3> f_dc;
-	wi::vector<float> f_rest;
+	Protean::vector<XMFLOAT4> rotations;
+	Protean::vector<XMFLOAT3> scales;
+	Protean::vector<float> opacities;
+	Protean::vector<XMFLOAT3> f_dc;
+	Protean::vector<float> f_rest;
 
 	while (reader.has_element() && (!gotVerts || !gotFaces))
 	{
@@ -114,12 +112,12 @@ void ImportModel_PLY(const std::string& fileName, wi::scene::Scene& scene)
 	if (!positions.empty())
 	{
 		Entity entity = CreateEntity();
-		scene.names.Create(entity) = wi::helper::GetFileNameFromPath(fileName);
+		scene.names.Create(entity) = Protean::Helper::GetFileNameFromPath(fileName);
 		scene.transforms.Create(entity);
 		if (!f_rest.empty())
 		{
 			// It's a gaussian splat model:
-			wi::GaussianSplatModel& splat = scene.gaussian_splats.Create(entity);
+			Protean::GaussianSplatModel& splat = scene.gaussian_splats.Create(entity);
 			// These are flipping the model vertically, was needed on the gaussian models I tested with:
 			for (auto& x : positions)
 			{

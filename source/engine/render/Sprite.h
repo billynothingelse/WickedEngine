@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	class Sprite
 	{
@@ -31,7 +31,7 @@ namespace wi
 
 		virtual void FixedUpdate();
 		virtual void Update(float dt);
-		virtual void Draw(wi::graphics::CommandList cmd) const;
+		virtual void Draw(Protean::Graphics::CommandList cmd) const;
 
 		constexpr void SetHidden(bool value = true) { if (value) { _flags |= HIDDEN; } else { _flags &= ~HIDDEN; } }
 		constexpr bool IsHidden() const { return _flags & HIDDEN; }
@@ -43,12 +43,12 @@ namespace wi
 		constexpr bool IsCameraFacing() const { return _flags & CAMERA_FACING; }
 		constexpr bool IsCameraScaling() const { return _flags & CAMERA_SCALING; }
 
-		wi::image::Params params;
-		wi::Resource textureResource;
-		wi::Resource maskResource;
-		wi::Resource backgroundResource;
+		Protean::Image::Params params;
+		Protean::Resource textureResource;
+		Protean::Resource maskResource;
+		Protean::Resource backgroundResource;
 
-		const wi::graphics::Texture* GetTexture() const;
+		const Protean::Graphics::Texture* GetTexture() const;
 
 		struct Anim
 		{
@@ -85,15 +85,15 @@ namespace wi
 				{
 					for (int i = 0; i < 4; ++i)
 					{
-						corner_angles[i] = wi::random::GetRandom(0, 1000) / 1000.0f * XM_2PI;
-						corner_speeds[i] = wi::random::GetRandom(500, 1000) / 1000.0f;
-						if (wi::random::GetRandom(0, 1) == 0)
+						corner_angles[i] = Protean::Random::GetRandom(0, 1000) / 1000.0f * XM_2PI;
+						corner_speeds[i] = Protean::Random::GetRandom(500, 1000) / 1000.0f;
+						if (Protean::Random::GetRandom(0, 1) == 0)
 						{
 							corner_speeds[i] *= -1;
 						}
-						corner_angles2[i] = wi::random::GetRandom(0, 1000) / 1000.0f * XM_2PI;
-						corner_speeds2[i] = wi::random::GetRandom(500, 1000) / 1000.0f;
-						if (wi::random::GetRandom(0, 1) == 0)
+						corner_angles2[i] = Protean::Random::GetRandom(0, 1000) / 1000.0f * XM_2PI;
+						corner_speeds2[i] = Protean::Random::GetRandom(500, 1000) / 1000.0f;
+						if (Protean::Random::GetRandom(0, 1) == 0)
 						{
 							corner_speeds2[i] *= -1;
 						}
@@ -114,7 +114,7 @@ namespace wi
 		};
 		Anim anim;
 
-		const wi::graphics::Texture* getTexture() const
+		const Protean::Graphics::Texture* getTexture() const
 		{
 			if (textureResource.IsValid())
 			{
@@ -123,6 +123,6 @@ namespace wi
 			return nullptr;
 		}
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 	};
 }

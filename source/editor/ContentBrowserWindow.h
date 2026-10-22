@@ -1,7 +1,7 @@
 #pragma once
 class EditorComponent;
 
-class ContentBrowserWindow : public wi::gui::Window
+class ContentBrowserWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
@@ -31,11 +31,11 @@ public:
 	};
 	SELECTION current_selection = SELECTION_COUNT;
 	SORTING current_sorting = SORTING_RECENT;
-	wi::gui::Button folderButtons[SELECTION_COUNT];
-	std::deque<wi::gui::Button> itemButtons;
+	Protean::Gui::Button folderButtons[SELECTION_COUNT];
+	std::deque<Protean::Gui::Button> itemButtons;
 
-	wi::gui::Button openFolderButton;
-	wi::gui::ComboBox sortingComboBox;
+	Protean::Gui::Button openFolderButton;
+	Protean::Gui::ComboBox sortingComboBox;
 
 	struct ItemInfo
 	{
@@ -54,8 +54,8 @@ public:
 	void SortAndCreateItemButtons();
 	void CreateItemButton(const std::string& fileName, const std::string& icon);
 
-	void Update(const wi::Canvas& canvas, float dt) override;
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Update(const Protean::Canvas& canvas, float dt) override;
+	void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 	void ResizeLayout() override;
 };
 

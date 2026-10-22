@@ -4,7 +4,7 @@
 
 #include <functional>
 
-namespace wi::eventhandler
+namespace Protean::EventHandler
 {
 	inline constexpr int EVENT_THREAD_SAFE_POINT = -1;
 	inline constexpr int EVENT_RELOAD_SHADERS = -2;
@@ -12,7 +12,7 @@ namespace wi::eventhandler
 
 	struct Handle
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.get() != nullptr; }
 	};
 

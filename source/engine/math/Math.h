@@ -29,7 +29,7 @@
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-namespace wi::math
+namespace Protean::Math
 {
 	inline constexpr XMFLOAT4X4 IDENTITY_MATRIX = XMFLOAT4X4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	inline constexpr float PI = XM_PI;

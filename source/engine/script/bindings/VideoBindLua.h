@@ -4,23 +4,23 @@
 #include "audio/Audio.h"
 #include "resource/ResourceManager.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class Video_BindLua
 	{
 	public:
-		wi::Resource videoResource;
+		Protean::Resource videoResource;
 
 		inline static constexpr char className[] = "Video";
 		static Luna<Video_BindLua>::FunctionType methods[];
 		static Luna<Video_BindLua>::PropertyType properties[];
 
 		Video_BindLua(lua_State* L);
-		Video_BindLua(const wi::video::Video& video)
+		Video_BindLua(const Protean::Video::Video& video)
 		{
 			videoResource.SetVideo(video);
 		}
-		Video_BindLua(const wi::Resource resource)
+		Video_BindLua(const Protean::Resource resource)
 		{
 			videoResource = resource;
 		}
@@ -34,14 +34,14 @@ namespace wi::lua
 	class VideoInstance_BindLua
 	{
 	public:
-		wi::video::VideoInstance videoinstance;
+		Protean::Video::VideoInstance videoinstance;
 
 		inline static constexpr char className[] = "VideoInstance";
 		static Luna<VideoInstance_BindLua>::FunctionType methods[];
 		static Luna<VideoInstance_BindLua>::PropertyType properties[];
 
 		VideoInstance_BindLua(lua_State* L);
-		VideoInstance_BindLua(const wi::video::VideoInstance& instance)
+		VideoInstance_BindLua(const Protean::Video::VideoInstance& instance)
 		{
 			videoinstance = instance;
 		}

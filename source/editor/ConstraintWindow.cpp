@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "ConstraintWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void ConstraintWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_CONSTRAINT " Constraint", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_CONSTRAINT " Constraint", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete PhysicsConstraintComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -32,17 +30,17 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 
 	physicsDebugCheckBox.Create(ICON_EYE " Physics visualizer: ");
 	physicsDebugCheckBox.SetTooltip("Visualize the physics world");
-	physicsDebugCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::physics::SetDebugDrawEnabled(args.bValue);
+	physicsDebugCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Physics::SetDebugDrawEnabled(args.bValue);
 		editor->generalWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 		editor->componentsWnd.rigidWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 	});
-	physicsDebugCheckBox.SetCheck(wi::physics::IsDebugDrawEnabled());
+	physicsDebugCheckBox.SetCheck(Protean::Physics::IsDebugDrawEnabled());
 	AddWidget(&physicsDebugCheckBox);
 
 	auto forEachSelected = [this](auto func) {
 		return [this, func](auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				PhysicsConstraintComponent* physicscomponent = scene.constraints.GetComponent(x.entity);
@@ -72,9 +70,9 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 	AddWidget(&collisionCheckBox);
 
 	constraintDebugSlider.Create(0, 10, 1, 100, "Debug size: ");
-	constraintDebugSlider.SetValue(wi::physics::GetConstraintDebugSize());
-	constraintDebugSlider.OnSlide([](wi::gui::EventArgs args) {
-		wi::physics::SetConstraintDebugSize(args.fValue);
+	constraintDebugSlider.SetValue(Protean::Physics::GetConstraintDebugSize());
+	constraintDebugSlider.OnSlide([](Protean::Gui::EventArgs args) {
+		Protean::Physics::SetConstraintDebugSize(args.fValue);
 		});
 	AddWidget(&constraintDebugSlider);
 
@@ -128,13 +126,13 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 			physicscomponent->distance_constraint.min_distance = args.fValue;
 			break;
 		case PhysicsConstraintComponent::Type::Hinge:
-			physicscomponent->hinge_constraint.min_angle = wi::math::DegreesToRadians(args.fValue);
+			physicscomponent->hinge_constraint.min_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
 		case PhysicsConstraintComponent::Type::Cone:
-			physicscomponent->cone_constraint.half_cone_angle = wi::math::DegreesToRadians(args.fValue);
+			physicscomponent->cone_constraint.half_cone_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
 		case PhysicsConstraintComponent::Type::SwingTwist:
-			physicscomponent->swing_twist.min_twist_angle = wi::math::DegreesToRadians(args.fValue);
+			physicscomponent->swing_twist.min_twist_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
 		case PhysicsConstraintComponent::Type::Slider:
 			physicscomponent->slider_constraint.min_limit = args.fValue;
@@ -154,10 +152,10 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 			physicscomponent->distance_constraint.max_distance = args.fValue;
 			break;
 		case PhysicsConstraintComponent::Type::Hinge:
-			physicscomponent->hinge_constraint.max_angle = wi::math::DegreesToRadians(args.fValue);
+			physicscomponent->hinge_constraint.max_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
 		case PhysicsConstraintComponent::Type::SwingTwist:
-			physicscomponent->swing_twist.max_twist_angle = wi::math::DegreesToRadians(args.fValue);
+			physicscomponent->swing_twist.max_twist_angle = Protean::Math::DegreesToRadians(args.fValue);
 			break;
 		case PhysicsConstraintComponent::Type::Slider:
 			physicscomponent->slider_constraint.max_limit = args.fValue;
@@ -210,14 +208,14 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 
 	normalConeSlider.Create(0, 90, 1, 90, "Normal Angle: ");
 	normalConeSlider.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
-		physicscomponent->swing_twist.normal_half_cone_angle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->swing_twist.normal_half_cone_angle = Protean::Math::DegreesToRadians(args.fValue);
 		physicscomponent->SetRefreshParametersNeeded(true);
 	}));
 	AddWidget(&normalConeSlider);
 
 	planeConeSlider.Create(0, 90, 1, 90, "Plane Angle: ");
 	planeConeSlider.OnSlide(forEachSelected([](auto physicscomponent, auto args) {
-		physicscomponent->swing_twist.plane_half_cone_angle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->swing_twist.plane_half_cone_angle = Protean::Math::DegreesToRadians(args.fValue);
 		physicscomponent->SetRefreshParametersNeeded(true);
 	}));
 	AddWidget(&planeConeSlider);
@@ -307,37 +305,37 @@ void ConstraintWindow::Create(EditorComponent* _editor)
 
 	minRotationXSlider.Create(-180, 0, 1, 100000, "Min Rotation X: ");
 	minRotationXSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.minRotationAxes.x = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.minRotationAxes.x = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&minRotationXSlider);
 
 	minRotationYSlider.Create(-180, 0, 1, 100000, "Min Rotation Y: ");
 	minRotationYSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.minRotationAxes.y = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.minRotationAxes.y = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&minRotationYSlider);
 
 	minRotationZSlider.Create(-180, 0, 1, 100000, "Min Rotation Z: ");
 	minRotationZSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.minRotationAxes.z = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.minRotationAxes.z = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&minRotationZSlider);
 
 	maxRotationXSlider.Create(0, 180, 1, 100000, "Max Rotation X: ");
 	maxRotationXSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.maxRotationAxes.x = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.maxRotationAxes.x = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&maxRotationXSlider);
 
 	maxRotationYSlider.Create(0, 180, 1, 100000, "Max Rotation Y: ");
 	maxRotationYSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.maxRotationAxes.y = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.maxRotationAxes.y = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&maxRotationYSlider);
 
 	maxRotationZSlider.Create(0, 180, 1, 100000, "Max Rotation Z: ");
 	maxRotationZSlider.OnSlide(forEachSelectedWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->six_dof.maxRotationAxes.z = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->six_dof.maxRotationAxes.z = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&maxRotationZSlider);
 
@@ -389,8 +387,8 @@ void ConstraintWindow::SetEntity(Entity entity)
 			maxSlider.SetText("Max angle: ");
 			minSlider.SetRange(-180, 0);
 			maxSlider.SetRange(0, 180);
-			minSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->hinge_constraint.min_angle));
-			maxSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->hinge_constraint.max_angle));
+			minSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->hinge_constraint.min_angle));
+			maxSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->hinge_constraint.max_angle));
 			motorSlider1.SetText("Hinge Velocity: ");
 			motorSlider1.SetRange(-10, 10);
 			motorSlider1.SetValue(physicsComponent->hinge_constraint.target_angular_velocity);
@@ -398,17 +396,17 @@ void ConstraintWindow::SetEntity(Entity entity)
 		case PhysicsConstraintComponent::Type::Cone:
 			minSlider.SetText("Cone half angle: ");
 			minSlider.SetRange(0, 90);
-			minSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->cone_constraint.half_cone_angle));
+			minSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->cone_constraint.half_cone_angle));
 			break;
 		case PhysicsConstraintComponent::Type::SwingTwist:
 			minSlider.SetText("Min twist angle: ");
 			maxSlider.SetText("Max twist angle: ");
 			minSlider.SetRange(-180, 0);
 			maxSlider.SetRange(0, 180);
-			minSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->swing_twist.min_twist_angle));
-			maxSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->swing_twist.max_twist_angle));
-			normalConeSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->swing_twist.normal_half_cone_angle));
-			planeConeSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->swing_twist.plane_half_cone_angle));
+			minSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->swing_twist.min_twist_angle));
+			maxSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->swing_twist.max_twist_angle));
+			normalConeSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->swing_twist.normal_half_cone_angle));
+			planeConeSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->swing_twist.plane_half_cone_angle));
 			break;
 		default:
 			break;
@@ -441,12 +439,12 @@ void ConstraintWindow::SetEntity(Entity entity)
 		maxTranslationXSlider.SetValue(physicsComponent->six_dof.maxTranslationAxes.x);
 		maxTranslationYSlider.SetValue(physicsComponent->six_dof.maxTranslationAxes.y);
 		maxTranslationZSlider.SetValue(physicsComponent->six_dof.maxTranslationAxes.z);
-		minRotationXSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.x));
-		minRotationYSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.y));
-		minRotationZSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.z));
-		maxRotationXSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.x));
-		maxRotationYSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.y));
-		maxRotationZSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.z));
+		minRotationXSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.x));
+		minRotationYSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.y));
+		minRotationZSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.minRotationAxes.z));
+		maxRotationXSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.x));
+		maxRotationYSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.y));
+		maxRotationZSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->six_dof.maxRotationAxes.z));
 	}
 	else
 	{
@@ -458,7 +456,7 @@ void ConstraintWindow::SetEntity(Entity entity)
 
 void ConstraintWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 145;
 
 	layout.add_fullwidth(infoLabel);

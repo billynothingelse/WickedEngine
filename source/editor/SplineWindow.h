@@ -1,34 +1,34 @@
 #pragma once
 class EditorComponent;
 
-class SplineWindow : public wi::gui::Window
+class SplineWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox loopedCheck;
-	wi::gui::CheckBox filledCheck;
-	wi::gui::CheckBox alignedCheck;
-	wi::gui::Slider widthSlider;
-	wi::gui::Slider rotSlider;
-	wi::gui::Slider subdivSlider;
-	wi::gui::Slider subdivVerticalSlider;
-	wi::gui::Slider terrainSlider;
-	wi::gui::Slider terrainTexSlider;
-	wi::gui::Slider terrainPushdownSlider;
-	wi::gui::Button recenterButton;
-	wi::gui::ComboBox fillNormalsComboBox;
-	wi::gui::Button addButton;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::CheckBox loopedCheck;
+	Protean::Gui::CheckBox filledCheck;
+	Protean::Gui::CheckBox alignedCheck;
+	Protean::Gui::Slider widthSlider;
+	Protean::Gui::Slider rotSlider;
+	Protean::Gui::Slider subdivSlider;
+	Protean::Gui::Slider subdivVerticalSlider;
+	Protean::Gui::Slider terrainSlider;
+	Protean::Gui::Slider terrainTexSlider;
+	Protean::Gui::Slider terrainPushdownSlider;
+	Protean::Gui::Button recenterButton;
+	Protean::Gui::ComboBox fillNormalsComboBox;
+	Protean::Gui::Button addButton;
 
 	struct Entry
 	{
-		wi::gui::Button removeButton;
-		wi::gui::Button entityButton;
+		Protean::Gui::Button removeButton;
+		Protean::Gui::Button entityButton;
 	};
 	std::deque<Entry> entries;
 

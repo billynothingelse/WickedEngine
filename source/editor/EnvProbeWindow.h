@@ -1,26 +1,26 @@
 #pragma once
 class EditorComponent;
 
-class EnvProbeWindow : public wi::gui::Window
+class EnvProbeWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::Image preview;
-	wi::gui::CheckBox realTimeCheckBox;
-	wi::gui::CheckBox msaaCheckBox;
-	wi::gui::Slider realtimeFrameIntervalSlider;
-	wi::gui::Slider viewdistanceSlider;
-	wi::gui::Button refreshButton;
-	wi::gui::Button refreshAllButton;
-	wi::gui::Button importButton;
-	wi::gui::Button exportButton;
-	wi::gui::ComboBox resolutionCombo;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Image preview;
+	Protean::Gui::CheckBox realTimeCheckBox;
+	Protean::Gui::CheckBox msaaCheckBox;
+	Protean::Gui::Slider realtimeFrameIntervalSlider;
+	Protean::Gui::Slider viewdistanceSlider;
+	Protean::Gui::Button refreshButton;
+	Protean::Gui::Button refreshAllButton;
+	Protean::Gui::Button importButton;
+	Protean::Gui::Button exportButton;
+	Protean::Gui::ComboBox resolutionCombo;
 
 	void ResizeLayout() override;
 };

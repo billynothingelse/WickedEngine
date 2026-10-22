@@ -22,24 +22,23 @@
 #define ASAN_UNPOISON_MEMORY_REGION(ptr,size)
 #endif
 
-using namespace wi::ecs;
-using namespace wi::enums;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi::scene
+namespace Protean
 {
 	static constexpr uint32_t small_subtask_groupsize = 256u;
 
 	void Scene::Update(float dt)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		cpu_gpu_mapped_resource_index = device->GetBufferIndex(); // this is now saved so that the renderer knows the last resource index that the scene was updated with
 		this->dt = dt;
 		time += dt;
 		const bool UMA = device->CheckCapability(GraphicsDeviceCapability::CACHE_COHERENT_UMA); // Using this to determine whether upload buffers will be bound directly for Unified Memory Architecture GPU or it's better to copy them to DEFAULT
 
-		wi::jobsystem::context ctx;
+		Protean::JobSystem::context ctx;
 
 		UpdateHumanoidFacings();
 
@@ -57,7 +56,7 @@ namespace wi::scene
 			// Because this also spawns render tasks, this must not be during dt == 0 (eg. background loading)
 			for (size_t i = 0; i < terrains.GetCount(); ++i)
 			{
-				wi::terrain::Terrain& terrain = terrains[i];
+				Protean::Terrain::Terrain& terrain = terrains[i];
 				terrain.terrainEntity = terrains.GetEntity(i);
 				terrain.scene = this;
 				terrain.Generation_Update(camera);
@@ -65,9 +64,9 @@ namespace wi::scene
 		}
 
 		// voxel grid upload kick off (after script update):
-		wi::jobsystem::context voxel_gpu_ctx;
+		Protean::JobSystem::context voxel_gpu_ctx;
 		uint64_t voxel_gpu_size = 0;
-		if (voxel_grids.GetCount() > 0 && wi::renderer::GetDDGIEnabled()) // NOTE: right now only DDGI uses the voxel grid so I skip uploading it if not active
+		if (voxel_grids.GetCount() > 0 && Protean::Renderer::GetDDGIEnabled()) // NOTE: right now only DDGI uses the voxel grid so I skip uploading it if not active
 		{
 			VoxelGrid& voxelgrid = voxel_grids[0];
 			voxel_gpu_size = voxelgrid.voxels.size() * sizeof(uint64_t);
@@ -93,7 +92,7 @@ namespace wi::scene
 				device->CreateBuffer(&desc, nullptr, &voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index]);
 				device->SetName(&voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index], "voxelgrid_gpu_upload");
 			}
-			wi::jobsystem::Execute(voxel_gpu_ctx, [this, voxel_gpu_size, device](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(voxel_gpu_ctx, [this, voxel_gpu_size, device](Protean::JobSystem::JobArgs args) {
 				ScopedCPUProfiling("Voxel copy to GPU buffer");
 				const uint64_t* voxel_cpu_src = voxel_grids[0].voxels.data();
 				uint64_t* voxel_gpu_dst = (uint64_t*)voxelgrid_gpu_upload[cpu_gpu_mapped_resource_index].mapped_data;
@@ -102,7 +101,7 @@ namespace wi::scene
 		}
 
 		// count colliders in background thread before procedural anim system
-		wi::jobsystem::Execute(collider_bvh_workload, [this](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(collider_bvh_workload, [this](Protean::JobSystem::JobArgs args) {
 			CountCPUandGPUColliders();
 		});
 
@@ -218,7 +217,7 @@ namespace wi::scene
 		textureStreamingFeedbackMapped = (const uint32_t*)textureStreamingFeedbackBuffer_readback[cpu_gpu_mapped_resource_index].mapped_data;
 
 		// Occlusion culling read:
-		if(wi::renderer::GetOcclusionCullingEnabled() && !wi::renderer::GetFreezeCullingCameraEnabled())
+		if(Protean::Renderer::GetOcclusionCullingEnabled() && !Protean::Renderer::GetFreezeCullingCameraEnabled())
 		{
 			uint32_t minQueryCount = uint32_t(objects.GetCount() + lights.GetCount() + decals.GetCount() + probes.GetCount() + 1); // +1: ocean (don't know for sure if it exists yet before weather update)
 			if (queryHeap.desc.query_count < minQueryCount)
@@ -253,7 +252,7 @@ namespace wi::scene
 			// Scan objects to check if lightmap rendering is requested:
 			lightmap_request_allocator.store(0);
 			lightmap_requests.reserve(objects.GetCount());
-			wi::jobsystem::Dispatch(ctx, (uint32_t)objects.GetCount(), small_subtask_groupsize, [this](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)objects.GetCount(), small_subtask_groupsize, [this](Protean::JobSystem::JobArgs args) {
 				ObjectComponent& object = objects[args.jobIndex];
 				if (object.IsLightmapRenderRequested())
 				{
@@ -265,17 +264,17 @@ namespace wi::scene
 			// Scan mesh subset counts and skinning data sizes to allocate GPU geometry data:
 			geometryAllocator.store(0u);
 			skinningAllocator.store(0u);
-			wi::jobsystem::Dispatch(ctx, (uint32_t)meshes.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)meshes.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 				MeshComponent& mesh = meshes[args.jobIndex];
 				mesh.geometryOffset = geometryAllocator.fetch_add((uint32_t)mesh.subsets.size());
 				skinningAllocator.fetch_add(uint32_t(mesh.morph_targets.size() * sizeof(MorphTargetGPU)));
 			});
-			wi::jobsystem::Dispatch(ctx, (uint32_t)armatures.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)armatures.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 				ArmatureComponent& armature = armatures[args.jobIndex];
 				skinningAllocator.fetch_add(uint32_t(armature.boneCollection.size() * sizeof(ShaderTransform)));
 			});
 
-			wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [&](Protean::JobSystem::JobArgs args) {
 				// Must not keep inactive instances, so init them for safety:
 				for (uint32_t i = 0; i < instanceArraySize; ++i)
 				{
@@ -288,11 +287,11 @@ namespace wi::scene
 
 		RunAnimationUpdateSystem(ctx);
 
-		wi::physics::RunPhysicsUpdateSystem(ctx, *this, dt);
+		Protean::Physics::RunPhysicsUpdateSystem(ctx, *this, dt);
 
 		RunTransformUpdateSystem(ctx);
 
-		wi::jobsystem::Wait(ctx); // dependencies
+		Protean::JobSystem::Wait(ctx); // dependencies
 
 		RunHierarchyUpdateSystem(ctx);
 
@@ -320,7 +319,7 @@ namespace wi::scene
 			}
 			TLAS_instancesMapped = TLAS_instancesUpload[cpu_gpu_mapped_resource_index].mapped_data;
 
-			wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [&](Protean::JobSystem::JobArgs args) {
 				// Must not keep inactive TLAS instances, so zero them out for safety with invalid instances:
 				//	Note: instead of memsetting, I use WriteTopLevelAccelerationStructureInstance with null instance, so if device requires setup other than zeroing it will still work
 				const uint32_t instanceCount = uint32_t(TLAS_instancesUpload->desc.size / TLAS_instancesUpload->desc.stride);
@@ -417,19 +416,19 @@ namespace wi::scene
 
 		RunMaterialUpdateSystem(ctx);
 
-		wi::jobsystem::Wait(ctx); // dependencies
+		Protean::JobSystem::Wait(ctx); // dependencies
 
 		WaitBuildTopDownHierarchy();
 
 		RunProceduralAnimationUpdateSystem(ctx);
 
-		wi::physics::OverrideWehicleWheelTransforms(*this);
+		Protean::Physics::OverrideWehicleWheelTransforms(*this);
 
 		RunArmatureUpdateSystem(ctx);
 
 		RunWeatherUpdateSystem(ctx);
 
-		wi::jobsystem::Wait(ctx); // dependencies
+		Protean::JobSystem::Wait(ctx); // dependencies
 
 		RunObjectUpdateSystem(ctx);
 
@@ -453,7 +452,7 @@ namespace wi::scene
 
 		RunFontUpdateSystem(ctx);
 
-		wi::jobsystem::Wait(ctx); // dependencies
+		Protean::JobSystem::Wait(ctx); // dependencies
 
 		// Merge parallel bounds computation (depends on object update system):
 		bounds = AABB();
@@ -527,7 +526,7 @@ namespace wi::scene
 			}
 		}
 
-		if (wi::renderer::GetSurfelGIEnabled())
+		if (Protean::Renderer::GetSurfelGIEnabled())
 		{
 			if (!surfelgi.surfelBuffer.IsValid())
 			{
@@ -634,7 +633,7 @@ namespace wi::scene
 			surfelgi = {};
 		}
 
-		if (wi::renderer::GetDDGIEnabled())
+		if (Protean::Renderer::GetDDGIEnabled())
 		{
 			ddgi.frame_index++;
 			if (!TLAS.IsValid() && !BVH.IsValid())
@@ -689,7 +688,7 @@ namespace wi::scene
 				tex.misc_flags = {};
 				tex.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
 				tex.layout = ResourceState::SHADER_RESOURCE;
-				wi::vector<uint8_t> zerodata(ComputeTextureMemorySizeInBytes(tex));
+				Protean::vector<uint8_t> zerodata(ComputeTextureMemorySizeInBytes(tex));
 				SubresourceData initdata;
 				initdata.data_ptr = zerodata.data();
 				initdata.row_pitch = tex.width * GetFormatStride(tex.format);
@@ -710,15 +709,15 @@ namespace wi::scene
 			{
 				bounds_blend = 1;
 			}
-			ddgi.grid_min = wi::math::Lerp(ddgi.grid_min, grid_min, bounds_blend);
-			ddgi.grid_max = wi::math::Lerp(ddgi.grid_max, grid_max, bounds_blend);
+			ddgi.grid_min = Protean::Math::Lerp(ddgi.grid_min, grid_min, bounds_blend);
+			ddgi.grid_max = Protean::Math::Lerp(ddgi.grid_max, grid_max, bounds_blend);
 		}
 		else if (ddgi.ray_buffer.IsValid()) // if ray_buffer is valid, it means DDGI was not from serialization, so it will be deleted when DDGI is disabled
 		{
 			ddgi = {};
 		}
 
-		if (wi::renderer::GetVXGIEnabled())
+		if (Protean::Renderer::GetVXGIEnabled())
 		{
 			if(!vxgi.radiance.IsValid())
 			{
@@ -880,7 +879,7 @@ namespace wi::scene
 		{
 			for (size_t voxelgridIndex = 0; voxelgridIndex < voxel_grids.GetCount(); ++voxelgridIndex)
 			{
-				wi::VoxelGrid& voxelgrid = voxel_grids[voxelgridIndex];
+				Protean::VoxelGrid& voxelgrid = voxel_grids[voxelgridIndex];
 				Entity entity = voxel_grids.GetEntity(voxelgridIndex);
 
 				const TransformComponent* transform = transforms.GetComponent(entity);
@@ -915,7 +914,7 @@ namespace wi::scene
 				success = device->CreateBuffer(&bd, nullptr, &cloudmap_variance);
 				device->SetName(&cloudmap_variance, "cloudmap_variance");
 
-				wilog("Created volumetric cloud map: %s", wi::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc) + bd.size).c_str());
+				wilog("Created volumetric cloud map: %s", Protean::Helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc) + bd.size).c_str());
 			}
 		}
 		else
@@ -955,12 +954,12 @@ namespace wi::scene
 		if (probes.GetCount() > 0 && probes[0].texture.IsValid())
 		{
 			shaderscene.globalprobe = device->GetDescriptorIndex(&probes[0].texture, SubresourceType::SRV);
-			shaderscene.globalprobe_mipcount16f = wi::math::f32tof16(float(probes[0].texture.desc.mip_levels));
+			shaderscene.globalprobe_mipcount16f = Protean::Math::f32tof16(float(probes[0].texture.desc.mip_levels));
 		}
 		else if (global_dynamic_probe.texture.IsValid())
 		{
 			shaderscene.globalprobe = device->GetDescriptorIndex(&global_dynamic_probe.texture, SubresourceType::SRV);
-			shaderscene.globalprobe_mipcount16f = wi::math::f32tof16(float(global_dynamic_probe.texture.desc.mip_levels));
+			shaderscene.globalprobe_mipcount16f = Protean::Math::f32tof16(float(global_dynamic_probe.texture.desc.mip_levels));
 		}
 		else
 		{
@@ -983,17 +982,17 @@ namespace wi::scene
 		shaderscene.aabb_extents_rcp.y = 1.0f / shaderscene.aabb_extents.y;
 		shaderscene.aabb_extents_rcp.z = 1.0f / shaderscene.aabb_extents.z;
 
-		shaderscene.weather.sun_color = wi::math::pack_half3(weather.sunColor);
-		shaderscene.weather.sun_direction = wi::math::pack_half3(weather.sunDirection);
-		shaderscene.weather.ambient = wi::math::pack_half3(weather.ambient);
+		shaderscene.weather.sun_color = Protean::Math::pack_half3(weather.sunColor);
+		shaderscene.weather.sun_direction = Protean::Math::pack_half3(weather.sunDirection);
+		shaderscene.weather.ambient = Protean::Math::pack_half3(weather.ambient);
 		shaderscene.weather.sky_rotation_sin = std::sin(weather.sky_rotation);
 		shaderscene.weather.sky_rotation_cos = std::cos(weather.sky_rotation);
 		shaderscene.weather.fog.start = weather.fogStart;
 		shaderscene.weather.fog.density = weather.fogDensity;
 		shaderscene.weather.fog.height_start = weather.fogHeightStart;
 		shaderscene.weather.fog.height_end = weather.fogHeightEnd;
-		shaderscene.weather.horizon = wi::math::pack_half3(weather.horizon);
-		shaderscene.weather.zenith = wi::math::pack_half3(weather.zenith);
+		shaderscene.weather.horizon = Protean::Math::pack_half3(weather.horizon);
+		shaderscene.weather.zenith = Protean::Math::pack_half3(weather.zenith);
 		shaderscene.weather.sky_exposure = weather.skyExposure;
 		shaderscene.weather.wind.speed = weather.windSpeed;
 		shaderscene.weather.wind.randomness = weather.windRandomness;
@@ -1113,7 +1112,7 @@ namespace wi::scene
 		}
 		if (voxel_gpu_size > 0)
 		{
-			wi::jobsystem::Wait(voxel_gpu_ctx);
+			Protean::JobSystem::Wait(voxel_gpu_ctx);
 			if (!UMA)
 			{
 				GPUBufferCopyCommand& command = async_buffer_uploads.emplace_back();
@@ -1188,8 +1187,8 @@ namespace wi::scene
 		// Recount colliders:
 		CountCPUandGPUColliders();
 		const size_t size =
-			sizeof(wi::primitive::AABB) * collider_count_cpu +
-			sizeof(wi::primitive::AABB) * collider_count_gpu +
+			sizeof(Protean::AABB) * collider_count_cpu +
+			sizeof(Protean::AABB) * collider_count_gpu +
 			sizeof(ColliderComponent) * collider_count_cpu +
 			sizeof(ColliderComponent) * collider_count_gpu
 		;
@@ -1201,7 +1200,7 @@ namespace wi::scene
 		// we would end up at a multiple of 16.
 
 		// First, we need to make sure our current assumptions are correct
-		static_assert(sizeof(wi::primitive::AABB) % 16 == 0);
+		static_assert(sizeof(Protean::AABB) % 16 == 0);
 		static_assert(sizeof(ColliderComponent) % 32 == 0);
 		static_assert(sizeof(void*) == sizeof(uint64_t));
 
@@ -1212,7 +1211,7 @@ namespace wi::scene
 		uint64_t padding_needed = (32 - (uint64_t)collider_deinterleaved_data.data() % 32) % 32;
 		colliders_cpu = reinterpret_cast<ColliderComponent*>(collider_deinterleaved_data.data() + padding_needed);
 		colliders_gpu = colliders_cpu + collider_count_cpu;
-		aabb_colliders_cpu = reinterpret_cast<wi::primitive::AABB*>(colliders_gpu + collider_count_gpu);
+		aabb_colliders_cpu = reinterpret_cast<Protean::AABB*>(colliders_gpu + collider_count_gpu);
 		aabb_colliders_gpu = aabb_colliders_cpu + collider_count_cpu;
 
 		for (size_t i = 0; i < colliders.GetCount(); ++i)
@@ -1286,14 +1285,14 @@ namespace wi::scene
 	}
 	Entity Scene::Instantiate(Scene& prefab, bool attached)
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		// Duplicate prefab into tmp scene
 		//	Note: we directly use componentLibrary.Serialize instead of serializing whole scene
 		//	Because prefab scene's resources are already in memory, and we don't need to handle them
 		//	Also other generic scene serialization can be skipped
 		Scene tmp;
-		wi::Archive archive;
+		Protean::Archive archive;
 		EntitySerializer seri;
 
 		if (!prefab.optimized_instatiation_data.IsReadMode())
@@ -1306,7 +1305,7 @@ namespace wi::scene
 			prefab.locker.unlock();
 		}
 
-		archive = wi::Archive(prefab.optimized_instatiation_data.GetData(), prefab.optimized_instatiation_data.GetSize());
+		archive = Protean::Archive(prefab.optimized_instatiation_data.GetData(), prefab.optimized_instatiation_data.GetSize());
 
 		archive.SetReadModeAndResetPos(true);
 		tmp.componentLibrary.Serialize(archive, seri);
@@ -1333,7 +1332,7 @@ namespace wi::scene
 			tmp.RunHierarchyUpdateSystem(seri.ctx);
 		}
 
-		wi::jobsystem::Wait(seri.ctx); // wait for completion of component serializations background threads here
+		Protean::JobSystem::Wait(seri.ctx); // wait for completion of component serializations background threads here
 
 		Merge(tmp);
 
@@ -1341,7 +1340,7 @@ namespace wi::scene
 
 		return rootEntity;
 	}
-	void Scene::FindAllEntities(wi::unordered_set<wi::ecs::Entity>& entities) const
+	void Scene::FindAllEntities(Protean::unordered_set<Protean::Entity>& entities) const
 	{
 		for (auto& entry : componentLibrary.entries)
 		{
@@ -1353,7 +1352,7 @@ namespace wi::scene
 	{
 		if (recursive)
 		{
-			wi::vector<Entity> entities_to_remove;
+			Protean::vector<Entity> entities_to_remove;
 			for (size_t i = 0; i < hierarchy.GetCount(); ++i)
 			{
 				const HierarchyComponent& hier = hierarchy[i];
@@ -1402,7 +1401,7 @@ namespace wi::scene
 	}
 	Entity Scene::Entity_Duplicate(Entity entity)
 	{
-		wi::Archive archive;
+		Protean::Archive archive;
 		EntitySerializer seri;
 
 		// First write the root entity to staging area:
@@ -1415,7 +1414,7 @@ namespace wi::scene
 
 		return root;
 	}
-	bool Scene::Entity_IsDescendant(wi::ecs::Entity entity, wi::ecs::Entity ancestor) const
+	bool Scene::Entity_IsDescendant(Protean::Entity entity, Protean::Entity ancestor) const
 	{
 		const HierarchyComponent* hier = hierarchy.GetComponent(entity);
 		while (hier != nullptr)
@@ -1639,9 +1638,9 @@ namespace wi::scene
 		{
 			SoundComponent& sound = sounds.Create(entity);
 			sound.filename = filename;
-			sound.soundResource = wi::resourcemanager::Load(filename);
+			sound.soundResource = Protean::ResourceManager::Load(filename);
 			sound.soundinstance.SetLooped(sound.IsLooped());
-			wi::audio::CreateSoundInstance(&sound.soundResource.GetSound(), &sound.soundinstance);
+			Protean::Audio::CreateSoundInstance(&sound.soundResource.GetSound(), &sound.soundinstance);
 		}
 
 		TransformComponent& transform = transforms.Create(entity);
@@ -1663,10 +1662,10 @@ namespace wi::scene
 		{
 			VideoComponent& video = videos.Create(entity);
 			video.filename = filename;
-			video.videoResource = wi::resourcemanager::Load(filename);
+			video.videoResource = Protean::ResourceManager::Load(filename);
 			if (video.videoResource.IsValid())
 			{
-				wi::video::CreateVideoInstance(&video.videoResource.GetVideo(), &video.videoinstance);
+				Protean::Video::CreateVideoInstance(&video.videoResource.GetVideo(), &video.videoinstance);
 			}
 		}
 
@@ -2060,7 +2059,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void Scene::Component_TransformWorldToHierarchy(wi::ecs::Entity entity)
+	void Scene::Component_TransformWorldToHierarchy(Protean::Entity entity)
 	{
 		const HierarchyComponent* hier = hierarchy.GetComponent(entity);
 		if (hier == nullptr)
@@ -2078,7 +2077,7 @@ namespace wi::scene
 		transform_child->ApplyTransform();
 	}
 
-	void Scene::GatherChildren(Entity parent, wi::vector<Entity>& children) const
+	void Scene::GatherChildren(Entity parent, Protean::vector<Entity>& children) const
 	{
 		for (size_t i = 0; i < hierarchy.GetCount(); ++i)
 		{
@@ -2090,13 +2089,13 @@ namespace wi::scene
 		}
 	}
 
-	void Scene::RunAnimationUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunAnimationUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Animations");
+		auto range = Protean::Profiler::BeginRangeCPU("Animations");
 
-		wi::jobsystem::Wait(animation_dependency_scan_workload);
+		Protean::JobSystem::Wait(animation_dependency_scan_workload);
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)animation_queue_count, 1, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)animation_queue_count, 1, [&](Protean::JobSystem::JobArgs args) {
 
 			AnimationQueue& animation_queue = animation_queues[args.jobIndex];
 			for (size_t animation_index = 0; animation_index < animation_queue.animations.size(); ++animation_index)
@@ -2395,7 +2394,7 @@ namespace wi::scene
 						case AnimationComponent::AnimationSampler::Mode::STEP:
 						{
 							// Nearest neighbor method:
-							const int key = wi::math::InverseLerp(timeLeft, timeRight, animation.timer) > 0.5f ? keyRight : keyLeft;
+							const int key = Protean::Math::InverseLerp(timeLeft, timeRight, animation.timer) > 0.5f ? keyRight : keyLeft;
 							switch (path_data_type)
 							{
 							default:
@@ -2457,7 +2456,7 @@ namespace wi::scene
 								assert(animationdata->keyframe_data.size() == animationdata->keyframe_times.size());
 								float vLeft = animationdata->keyframe_data[keyLeft];
 								float vRight = animationdata->keyframe_data[keyRight];
-								float vAnim = wi::math::Lerp(vLeft, vRight, t);
+								float vAnim = Protean::Math::Lerp(vLeft, vRight, t);
 								interpolator.f = vAnim;
 							}
 							break;
@@ -2507,7 +2506,7 @@ namespace wi::scene
 								{
 									float vLeft = animationdata->keyframe_data[keyLeft * animation.morph_weights_temp.size() + j];
 									float vRight = animationdata->keyframe_data[keyRight * animation.morph_weights_temp.size() + j];
-									float vAnim = wi::math::Lerp(vLeft, vRight, t);
+									float vAnim = Protean::Math::Lerp(vLeft, vRight, t);
 									animation.morph_weights_temp[j] = vAnim;
 								}
 							}
@@ -2610,7 +2609,7 @@ namespace wi::scene
 					const float t = animation.amount;
 
 					// CheckIf this channel is the root motion bone or not.
-					const bool isRootBone = (animation.IsRootMotion() && animation.rootMotionBone != wi::ecs::INVALID_ENTITY && (target_transform == transforms.GetComponent(animation.rootMotionBone)));
+					const bool isRootBone = (animation.IsRootMotion() && animation.rootMotionBone != Protean::INVALID_ENTITY && (target_transform == transforms.GetComponent(animation.rootMotionBone)));
 
 					if (target_transform != nullptr)
 					{
@@ -2766,7 +2765,7 @@ namespace wi::scene
 					{
 						for (size_t j = 0; j < target_mesh->morph_targets.size(); ++j)
 						{
-							target_mesh->morph_targets[j].weight = wi::math::Lerp(target_mesh->morph_targets[j].weight, animation.morph_weights_temp[j], t);
+							target_mesh->morph_targets[j].weight = Protean::Math::Lerp(target_mesh->morph_targets[j].weight, animation.morph_weights_temp[j], t);
 						}
 					}
 
@@ -2776,27 +2775,27 @@ namespace wi::scene
 						{
 						case AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
 						{
-							target_light->color = wi::math::Lerp(target_light->color, interpolator.f3, t);
+							target_light->color = Protean::Math::Lerp(target_light->color, interpolator.f3, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
 						{
-							target_light->intensity = wi::math::Lerp(target_light->intensity, interpolator.f, t);
+							target_light->intensity = Protean::Math::Lerp(target_light->intensity, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
 						{
-							target_light->range = wi::math::Lerp(target_light->range, interpolator.f, t);
+							target_light->range = Protean::Math::Lerp(target_light->range, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
 						{
-							target_light->innerConeAngle = wi::math::Lerp(target_light->innerConeAngle, interpolator.f, t);
+							target_light->innerConeAngle = Protean::Math::Lerp(target_light->innerConeAngle, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
 						{
-							target_light->outerConeAngle = wi::math::Lerp(target_light->outerConeAngle, interpolator.f, t);
+							target_light->outerConeAngle = Protean::Math::Lerp(target_light->outerConeAngle, interpolator.f, t);
 						}
 						break;
 						default:
@@ -2810,7 +2809,7 @@ namespace wi::scene
 						{
 						case AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
 						{
-							target_sound->volume = wi::math::Lerp(target_sound->volume, interpolator.f, t);
+							target_sound->volume = Protean::Math::Lerp(target_sound->volume, interpolator.f, t);
 						}
 						break;
 						default:
@@ -2824,7 +2823,7 @@ namespace wi::scene
 						{
 						case AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
 						{
-							target_emitter->count = wi::math::Lerp(target_emitter->count, interpolator.f, t);
+							target_emitter->count = Protean::Math::Lerp(target_emitter->count, interpolator.f, t);
 						}
 						break;
 						default:
@@ -2838,22 +2837,22 @@ namespace wi::scene
 						{
 						case AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
 						{
-							target_camera->fov = wi::math::Lerp(target_camera->fov, interpolator.f, t);
+							target_camera->fov = Protean::Math::Lerp(target_camera->fov, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
 						{
-							target_camera->focal_length = wi::math::Lerp(target_camera->focal_length, interpolator.f, t);
+							target_camera->focal_length = Protean::Math::Lerp(target_camera->focal_length, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
 						{
-							target_camera->aperture_size = wi::math::Lerp(target_camera->aperture_size, interpolator.f, t);
+							target_camera->aperture_size = Protean::Math::Lerp(target_camera->aperture_size, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
 						{
-							target_camera->aperture_shape = wi::math::Lerp(target_camera->aperture_shape, interpolator.f2, t);
+							target_camera->aperture_shape = Protean::Math::Lerp(target_camera->aperture_shape, interpolator.f2, t);
 						}
 						break;
 						default:
@@ -2869,32 +2868,32 @@ namespace wi::scene
 						{
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
 						{
-							target_material->baseColor = wi::math::Lerp(target_material->baseColor, interpolator.f4, t);
+							target_material->baseColor = Protean::Math::Lerp(target_material->baseColor, interpolator.f4, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
 						{
-							target_material->emissiveColor = wi::math::Lerp(target_material->emissiveColor, interpolator.f4, t);
+							target_material->emissiveColor = Protean::Math::Lerp(target_material->emissiveColor, interpolator.f4, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
 						{
-							target_material->roughness = wi::math::Lerp(target_material->roughness, interpolator.f, t);
+							target_material->roughness = Protean::Math::Lerp(target_material->roughness, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
 						{
-							target_material->metalness = wi::math::Lerp(target_material->metalness, interpolator.f, t);
+							target_material->metalness = Protean::Math::Lerp(target_material->metalness, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
 						{
-							target_material->reflectance = wi::math::Lerp(target_material->reflectance, interpolator.f, t);
+							target_material->reflectance = Protean::Math::Lerp(target_material->reflectance, interpolator.f, t);
 						}
 						break;
 						case AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
 						{
-							target_material->texMulAdd = wi::math::Lerp(target_material->texMulAdd, interpolator.f4, t);
+							target_material->texMulAdd = Protean::Math::Lerp(target_material->texMulAdd, interpolator.f4, t);
 						}
 						break;
 						default:
@@ -2954,21 +2953,21 @@ namespace wi::scene
 			}
 		});
 
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
-	void Scene::RunTransformUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunTransformUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)transforms.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)transforms.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			TransformComponent& transform = transforms[args.jobIndex];
 			transform.UpdateTransform();
 		});
 	}
-	void Scene::RunHierarchyUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunHierarchyUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)hierarchy.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)hierarchy.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			HierarchyComponent& hier = hierarchy[args.jobIndex];
 			Entity entity = hierarchy.GetEntity(args.jobIndex);
@@ -3022,7 +3021,7 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunExpressionUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunExpressionUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		for (size_t i = 0; i < expressions.GetCount(); ++i)
 		{
@@ -3040,23 +3039,23 @@ namespace wi::scene
 					expression_mastering.blink_count = std::max(1, expression_mastering.blink_count);
 					float one_blink_length = expression_mastering.blink_length * expression_mastering.blink_frequency;
 					float all_blink_length = one_blink_length * (float)expression_mastering.blink_count;
-					float blink_index = std::floor(wi::math::Lerp(0, (float)expression_mastering.blink_count, (expression_mastering.blink_timer - 1) / all_blink_length));
+					float blink_index = std::floor(Protean::Math::Lerp(0, (float)expression_mastering.blink_count, (expression_mastering.blink_timer - 1) / all_blink_length));
 					float blink_trim = 1 + one_blink_length * blink_index;
-					float blink_state = wi::math::InverseLerp(0, one_blink_length, expression_mastering.blink_timer - blink_trim);
+					float blink_state = Protean::Math::InverseLerp(0, one_blink_length, expression_mastering.blink_timer - blink_trim);
 					if (blink_state < 0.5f)
 					{
 						// closing
-						expression.weight = wi::math::Lerp(0, 1, saturate(blink_state * 2));
+						expression.weight = Protean::Math::Lerp(0, 1, saturate(blink_state * 2));
 					}
 					else
 					{
 						// opening
-						expression.weight = wi::math::Lerp(1, 0, saturate((blink_state - 0.5f) * 2));
+						expression.weight = Protean::Math::Lerp(1, 0, saturate((blink_state - 0.5f) * 2));
 					}
 					if (expression_mastering.blink_timer >= 1 + all_blink_length)
 					{
 						expression.weight = 0;
-						expression_mastering.blink_timer = -wi::random::GetRandom(0.0f, 1.0f);
+						expression_mastering.blink_timer = -Protean::Random::GetRandom(0.0f, 1.0f);
 					}
 					expression.SetDirty();
 				}
@@ -3066,8 +3065,8 @@ namespace wi::scene
 			if (expression_mastering.look_timer == 0)
 			{
 				// Roll new random look direction for next look away event:
-				float vertical = wi::random::GetRandom(-1.0f, 1.0f);
-				float horizontal = wi::random::GetRandom(-1.0f, 1.0f);
+				float vertical = Protean::Random::GetRandom(-1.0f, 1.0f);
+				float horizontal = Protean::Random::GetRandom(-1.0f, 1.0f);
 				expression_mastering.look_weights[0] = saturate(vertical);
 				expression_mastering.look_weights[1] = saturate(-vertical);
 				expression_mastering.look_weights[2] = saturate(horizontal);
@@ -3089,21 +3088,21 @@ namespace wi::scene
 					if (look >= 0 && look < expression_mastering.expressions.size())
 					{
 						ExpressionComponent::Expression& expression = expression_mastering.expressions[look];
-						float look_state = wi::math::InverseLerp(0, expression_mastering.look_length * expression_mastering.look_frequency, expression_mastering.look_timer - 1);
+						float look_state = Protean::Math::InverseLerp(0, expression_mastering.look_length * expression_mastering.look_frequency, expression_mastering.look_timer - 1);
 						if (look_state < 0.25f)
 						{
-							expression.weight = wi::math::Lerp(0, weight, saturate(look_state * 4));
+							expression.weight = Protean::Math::Lerp(0, weight, saturate(look_state * 4));
 						}
 						else
 						{
-							expression.weight = wi::math::Lerp(weight, 0, saturate((look_state - 0.75f) * 4));
+							expression.weight = Protean::Math::Lerp(weight, 0, saturate((look_state - 0.75f) * 4));
 						}
 						expression.SetDirty();
 					}
 				}
 				if (expression_mastering.look_timer >= 1 + expression_mastering.look_length * expression_mastering.look_frequency)
 				{
-					expression_mastering.look_timer = -wi::random::GetRandom(0.0f, 1.0f);
+					expression_mastering.look_timer = -Protean::Random::GetRandom(0.0f, 1.0f);
 				}
 			}
 
@@ -3123,7 +3122,7 @@ namespace wi::scene
 						if (mouth < 0 || mouth >= (int)expression_mastering.expressions.size())
 							continue; // preset not bound on this model
 						ExpressionComponent::Expression& expression = expression_mastering.expressions[mouth];
-						expression.weight = wi::math::Lerp(expression.weight, 0, 0.4f); // fade out unused
+						expression.weight = Protean::Math::Lerp(expression.weight, 0, 0.4f); // fade out unused
 						expression.SetDirty();
 					}
 				}
@@ -3135,9 +3134,9 @@ namespace wi::scene
 				if (voice_playing)
 				{
 					// Take voice sample from audio:
-					wi::audio::SampleInfo info = wi::audio::GetSampleInfo(&sound->soundResource.GetSound());
+					Protean::Audio::SampleInfo info = Protean::Audio::GetSampleInfo(&sound->soundResource.GetSound());
 					uint32_t sample_frequency = info.sample_rate * info.channel_count;
-					uint64_t current_sample = wi::audio::GetTotalSamplesPlayed(&sound->soundinstance);
+					uint64_t current_sample = Protean::Audio::GetTotalSamplesPlayed(&sound->soundinstance);
 					if (sound->IsLooped())
 					{
 						float total_time = float(current_sample) / float(info.sample_rate);
@@ -3160,11 +3159,11 @@ namespace wi::scene
 					const float strength = 0.4f;
 					if (voice > 0.1f)
 					{
-						expression.weight = wi::math::Lerp(expression.weight, 1, strength);
+						expression.weight = Protean::Math::Lerp(expression.weight, 1, strength);
 					}
 					else
 					{
-						expression.weight = wi::math::Lerp(expression.weight, 0, strength);
+						expression.weight = Protean::Math::Lerp(expression.weight, 0, strength);
 					}
 				}
 				else
@@ -3180,7 +3179,7 @@ namespace wi::scene
 				if (prev_slope < 0 && curr_slope > 0)
 				{
 					// New phoneme when voice slope valley is detected:
-					expression_mastering.talking_phoneme = unused_phonemes[wi::random::GetRandom(0, (int)arraysize(unused_phonemes) - 1)];
+					expression_mastering.talking_phoneme = unused_phonemes[Protean::Random::GetRandom(0, (int)arraysize(unused_phonemes) - 1)];
 				}
 
 				expression.SetDirty();
@@ -3202,7 +3201,7 @@ namespace wi::scene
 					if (phoneme < 0)
 						continue;
 					auto& expression = expression_mastering.expressions[phoneme];
-					expression.weight = wi::math::Lerp(expression.weight, 0, 0.4f);
+					expression.weight = Protean::Math::Lerp(expression.weight, 0, 0.4f);
 					expression.SetDirty();
 					if (expression.weight > 0)
 						talking_active = true;
@@ -3326,15 +3325,15 @@ namespace wi::scene
 					if (mesh != nullptr && (int)mesh->morph_targets.size() > morph_target_binding.index)
 					{
 						MeshComponent::MorphTarget& morph_target = mesh->morph_targets[morph_target_binding.index];
-						morph_target.weight = wi::math::Lerp(morph_target.weight, morph_target_binding.weight, blend);
+						morph_target.weight = Protean::Math::Lerp(morph_target.weight, morph_target_binding.weight, blend);
 					}
 				}
 			}
 		}
 	}
-	void Scene::RunProceduralAnimationUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunProceduralAnimationUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Procedural Animations");
+		auto range = Protean::Profiler::BeginRangeCPU("Procedural Animations");
 
 		// Character IK foot placement, should be after animations and hierarchy update:
 		for (size_t i = 0; i < characters.GetCount(); ++i)
@@ -3374,7 +3373,7 @@ namespace wi::scene
 				ik.iteration_count = 10;
 			}
 		}
-		wi::jobsystem::Dispatch(ctx, (uint32_t)characters.GetCount(), 1, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)characters.GetCount(), 1, [&](Protean::JobSystem::JobArgs args) {
 			CharacterComponent& character = characters[args.jobIndex];
 			if (!character.IsActive())
 				return;
@@ -3445,11 +3444,11 @@ namespace wi::scene
 						ik_pos = right_result.position;
 					}
 				}
-				character.foot_offset = wi::math::Lerp(character.foot_offset, diff, saturate(5 * dt));
+				character.foot_offset = Protean::Math::Lerp(character.foot_offset, diff, saturate(5 * dt));
 			}
 			else
 			{
-				character.foot_offset = wi::math::Lerp(character.foot_offset, 0.0f, saturate(5 * dt));
+				character.foot_offset = Protean::Math::Lerp(character.foot_offset, 0.0f, saturate(5 * dt));
 			}
 
 			TransformComponent* humanoid_transform = transforms.GetComponent(character.humanoidEntity);
@@ -3466,12 +3465,12 @@ namespace wi::scene
 			if (inverse_kinematics.Contains(character.left_foot))
 			{
 				InverseKinematicsComponent& ik = *inverse_kinematics.GetComponent(character.left_foot);
-				ik.target_position = wi::math::Lerp(ik.target_position, left_pos, foot_blend);
+				ik.target_position = Protean::Math::Lerp(ik.target_position, left_pos, foot_blend);
 			}
 			if (inverse_kinematics.Contains(character.right_foot))
 			{
 				InverseKinematicsComponent& ik = *inverse_kinematics.GetComponent(character.right_foot);
-				ik.target_position = wi::math::Lerp(ik.target_position, right_pos, foot_blend);
+				ik.target_position = Protean::Math::Lerp(ik.target_position, right_pos, foot_blend);
 			}
 
 			// The upper foot will use IK:
@@ -3479,20 +3478,20 @@ namespace wi::scene
 			{
 				InverseKinematicsComponent& ik = *inverse_kinematics.GetComponent(ik_foot);
 				ik_pos.y += 0.16f;
-				ik.target_position = wi::math::Lerp(ik.target_position, ik_pos, foot_blend);
+				ik.target_position = Protean::Math::Lerp(ik.target_position, ik_pos, foot_blend);
 #if 0
 				// Debug draw foot target:
 				locker.lock();
-				wi::renderer::RenderablePoint point;
+				Protean::Renderer::RenderablePoint point;
 				point.position = ik.target_position;
 				point.color = XMFLOAT4(1, 1, 0, 1);
 				point.size = 0.1f;
-				wi::renderer::DrawPoint(point);
+				Protean::Renderer::DrawPoint(point);
 				locker.unlock();
 #endif
 			}
 		});
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
 		if (inverse_kinematics.GetCount() > 0 || humanoids.GetCount() > 0)
 		{
@@ -3501,7 +3500,7 @@ namespace wi::scene
 
 		std::atomic_bool recompute_hierarchy{ false };
 
-		wi::jobsystem::Dispatch(ctx,(uint32_t)inverse_kinematics.GetCount(),1,[this, &recompute_hierarchy](wi::jobsystem::JobArgs args){
+		Protean::JobSystem::Dispatch(ctx,(uint32_t)inverse_kinematics.GetCount(),1,[this, &recompute_hierarchy](Protean::JobSystem::JobArgs args){
 			const InverseKinematicsComponent& ik = inverse_kinematics[args.jobIndex];
 			if (ik.IsDisabled())
 				return;
@@ -3679,9 +3678,9 @@ namespace wi::scene
 			}
 		});
 
-		wi::jobsystem::Wait(ctx); // sync needed when there is IK on character arm/leg, and also arm/leg spacing!
+		Protean::JobSystem::Wait(ctx); // sync needed when there is IK on character arm/leg, and also arm/leg spacing!
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)humanoids.GetCount(), 1, [this, &recompute_hierarchy](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)humanoids.GetCount(), 1, [this, &recompute_hierarchy](Protean::JobSystem::JobArgs args) {
 			Entity humanoidEntity = humanoids.GetEntity(args.jobIndex);
 			HumanoidComponent& humanoid = humanoids[args.jobIndex];
 
@@ -3753,43 +3752,43 @@ namespace wi::scene
 						const XMVECTOR TARGET_HORIZONTAL = XMVector3Normalize(XMVectorSetY(TARGET, 0));
 						const XMVECTOR TARGET_VERTICAL = XMVector3Normalize(XMVectorSetX(TARGET, 0) + FORWARD);
 
-						const float angle_horizontal = wi::math::GetAngle(FORWARD, TARGET_HORIZONTAL, UP, source.rotation_max->x);
-						const float angle_vertical = wi::math::GetAngle(FORWARD, TARGET_VERTICAL, SIDE, source.rotation_max->y);
+						const float angle_horizontal = Protean::Math::GetAngle(FORWARD, TARGET_HORIZONTAL, UP, source.rotation_max->x);
+						const float angle_vertical = Protean::Math::GetAngle(FORWARD, TARGET_VERTICAL, SIDE, source.rotation_max->y);
 
 						Q = XMQuaternionNormalize(XMQuaternionRotationRollPitchYaw(angle_vertical, angle_horizontal, 0));
 
 #if 0
-						wi::renderer::RenderableLine line;
+						Protean::Renderer::RenderableLine line;
 						line.color_start = XMFLOAT4(0, 0, 1, 1);
 						line.color_end = XMFLOAT4(0, 1, 0, 1);
 						XMVECTOR E = P + FORWARD;
 						XMStoreFloat3(&line.start, P);
 						XMStoreFloat3(&line.end, E);
-						wi::renderer::DrawLine(line);
+						Protean::Renderer::DrawLine(line);
 
 						line.color_end = XMFLOAT4(1, 0, 0, 1);
 						E = P + TARGET;
 						XMStoreFloat3(&line.end, E);
-						wi::renderer::DrawLine(line);
+						Protean::Renderer::DrawLine(line);
 
 						line.color_start = line.color_end = XMFLOAT4(1, 0, 1, 1);
 						E = P + UP;
 						XMStoreFloat3(&line.end, E);
-						wi::renderer::DrawLine(line);
+						Protean::Renderer::DrawLine(line);
 
 						line.color_start = line.color_end = XMFLOAT4(1, 1, 0, 1);
 						E = P + SIDE;
 						XMStoreFloat3(&line.end, E);
-						wi::renderer::DrawLine(line);
+						Protean::Renderer::DrawLine(line);
 
 						std::string text = "angle_horizontal = " + std::to_string(angle_horizontal);
 						text += "\nangle_vertical = " + std::to_string(angle_vertical);
-						wi::renderer::DebugTextParams textparams;
-						textparams.flags |= wi::renderer::DebugTextParams::CAMERA_FACING;
-						textparams.flags |= wi::renderer::DebugTextParams::CAMERA_SCALING;
+						Protean::Renderer::DebugTextParams textparams;
+						textparams.flags |= Protean::Renderer::DebugTextParams::CAMERA_FACING;
+						textparams.flags |= Protean::Renderer::DebugTextParams::CAMERA_SCALING;
 						textparams.position = humanoid.lookAt;
 						textparams.scaling = 0.8f;
-						wi::renderer::DrawDebugText(text.c_str(), textparams);
+						Protean::Renderer::DrawDebugText(text.c_str(), textparams);
 #endif
 					}
 
@@ -3836,11 +3835,11 @@ namespace wi::scene
 			}
 		});
 
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
 		if (recompute_hierarchy.load())
 		{
-			wi::jobsystem::Dispatch(ctx, (uint32_t)hierarchy.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)hierarchy.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 				HierarchyComponent& hier = hierarchy[args.jobIndex];
 				Entity entity = hierarchy.GetEntity(args.jobIndex);
@@ -3876,15 +3875,15 @@ namespace wi::scene
 
 				});
 
-			wi::jobsystem::Wait(ctx);
+			Protean::JobSystem::Wait(ctx);
 		}
 
 		// Colliders:
-		wi::jobsystem::Wait(collider_bvh_workload); // waits for BVH build and collider counts
+		Protean::JobSystem::Wait(collider_bvh_workload); // waits for BVH build and collider counts
 		std::swap(collider_bvh, collider_bvh_next);
 		const size_t size =
-			sizeof(wi::primitive::AABB) * collider_count_cpu +
-			sizeof(wi::primitive::AABB) * collider_count_gpu +
+			sizeof(Protean::AABB) * collider_count_cpu +
+			sizeof(Protean::AABB) * collider_count_gpu +
 			sizeof(ColliderComponent) * collider_count_cpu +
 			sizeof(ColliderComponent) * collider_count_gpu
 		;
@@ -3896,10 +3895,10 @@ namespace wi::scene
 
 		colliders_cpu = reinterpret_cast<ColliderComponent*>(collider_deinterleaved_data.data() + padding_needed);
 		colliders_gpu = colliders_cpu + collider_count_cpu;
-		aabb_colliders_cpu = reinterpret_cast<wi::primitive::AABB*>(colliders_gpu + collider_count_gpu);
+		aabb_colliders_cpu = reinterpret_cast<Protean::AABB*>(colliders_gpu + collider_count_gpu);
 		aabb_colliders_gpu = aabb_colliders_cpu + collider_count_cpu;
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)colliders.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)colliders.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			ColliderComponent& collider = colliders[args.jobIndex];
 			Entity entity = colliders.GetEntity(args.jobIndex);
@@ -3974,35 +3973,35 @@ namespace wi::scene
 
 		});
 
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 		collider_bvh.Update(aabb_colliders_cpu, collider_count_cpu);
 
 		// Springs:
-		wi::jobsystem::Wait(spring_dependency_scan_workload);
+		Protean::JobSystem::Wait(spring_dependency_scan_workload);
 		if (dt > 0)
 		{
-			wi::jobsystem::Dispatch(ctx, (uint32_t)spring_queues.size(), 1, [this](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)spring_queues.size(), 1, [this](Protean::JobSystem::JobArgs args) {
 				UpdateSpringsTopDownRecursive(nullptr, *spring_queues[args.jobIndex]);
 			});
-			wi::jobsystem::Wait(ctx);
+			Protean::JobSystem::Wait(ctx);
 		}
 
 		if (collider_count_cpu > 0)
 		{
 			// Issue the bvh rebuild on a background thread, the result will be used next frame...
-			collider_bvh_workload.priority = wi::jobsystem::Priority::Low;
-			wi::jobsystem::Execute(collider_bvh_workload, [this](wi::jobsystem::JobArgs args) {
+			collider_bvh_workload.priority = Protean::JobSystem::Priority::Low;
+			Protean::JobSystem::Execute(collider_bvh_workload, [this](Protean::JobSystem::JobArgs args) {
 				collider_bvh_next.Build(aabb_colliders_cpu, collider_count_cpu);
 			});
 		}
 
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
-	void Scene::RunArmatureUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunArmatureUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		// disable pointer-overflow UBSAN check because adding an offset to a nullptr is UB.
 		// we only calculate but never use the value in that case, so it should be fine
-		wi::jobsystem::Dispatch(ctx, (uint32_t)armatures.GetCount(), 1, [&](wi::jobsystem::JobArgs args) NO_SANITIZE("pointer-overflow") {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)armatures.GetCount(), 1, [&](Protean::JobSystem::JobArgs args) NO_SANITIZE("pointer-overflow") {
 
 			ArmatureComponent& armature = armatures[args.jobIndex];
 			armature.skinningRebase = XMFLOAT3(0, 0, 0);
@@ -4058,7 +4057,7 @@ namespace wi::scene
 				XMMATRIX W = XMLoadFloat4x4(&bone->world);
 				XMMATRIX M = B * W * R;
 
-				REBASE += wi::math::GetPosition(M);
+				REBASE += Protean::Math::GetPosition(M);
 				rebase_count += 1.0f;
 
 				XMFLOAT4X4 mat;
@@ -4069,8 +4068,8 @@ namespace wi::scene
 				XMFLOAT3 bonepos = bone->GetPosition();
 				AABB boneAABB;
 				boneAABB.createFromHalfWidth(bonepos, XMFLOAT3(bone_radius, bone_radius, bone_radius));
-				_min = wi::math::Min(_min, boneAABB._min);
-				_max = wi::math::Max(_max, boneAABB._max);
+				_min = Protean::Math::Min(_min, boneAABB._min);
+				_max = Protean::Math::Max(_max, boneAABB._max);
 			}
 			REBASE /= std::max(1.0f, rebase_count);
 
@@ -4092,7 +4091,7 @@ namespace wi::scene
 
 			armature.aabb = AABB(_min, _max);
 		});
-		wi::jobsystem::Dispatch(ctx, (uint32_t)softbodies.GetCount(), 1, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)softbodies.GetCount(), 1, [&](Protean::JobSystem::JobArgs args) {
 			SoftBodyPhysicsComponent& softbody = softbodies[args.jobIndex];
 			const uint32_t dataSize = uint32_t(softbody.boneData.size() * sizeof(ShaderTransform));
 			softbody.gpuBoneOffset = skinningAllocator.fetch_add(dataSize);
@@ -4103,9 +4102,9 @@ namespace wi::scene
 			}
 		});
 	}
-	void Scene::RunMeshUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunMeshUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)meshes.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)meshes.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			Entity entity = meshes.GetEntity(args.jobIndex);
 			MeshComponent& mesh = meshes[args.jobIndex];
@@ -4170,7 +4169,7 @@ namespace wi::scene
 				geometry.vb_uvs = mesh.vb_uvs.descriptor_srv;
 				geometry.vb_atl = mesh.vb_atl.descriptor_srv;
 				geometry.vb_pre = mesh.so_pre.descriptor_srv;
-				if (wi::renderer::IsMeshShaderAllowed())
+				if (Protean::Renderer::IsMeshShaderAllowed())
 				{
 					geometry.vb_clu = mesh.vb_clu.descriptor_srv;
 					geometry.vb_bou = mesh.vb_bou.descriptor_srv;
@@ -4219,7 +4218,7 @@ namespace wi::scene
 					subsetGeometry.indexOffset = subset.indexOffset;
 					subsetGeometry.indexCount = subset.indexCount;
 					subsetGeometry.materialIndex = subset.materialIndex;
-					if (wi::renderer::IsMeshShaderAllowed() && subsetIndex < mesh.cluster_ranges.size())
+					if (Protean::Renderer::IsMeshShaderAllowed() && subsetIndex < mesh.cluster_ranges.size())
 					{
 						subsetGeometry.meshletOffset = mesh.cluster_ranges[subsetIndex].clusterOffset;
 						subsetGeometry.meshletCount = mesh.cluster_ranges[subsetIndex].clusterCount;
@@ -4295,9 +4294,9 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunMaterialUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunMaterialUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)materials.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)materials.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			MaterialComponent& material = materials[args.jobIndex];
 			Entity entity = materials.GetEntity(args.jobIndex);
@@ -4342,7 +4341,7 @@ namespace wi::scene
 			GraphicsDevice* device = GetDevice();
 			if (material.sampler_descriptor < 0)
 			{
-				material.cached_wrapSampler = device->GetDescriptorIndex(wi::renderer::GetSampler(wi::enums::SAMPLER_OBJECTSHADER));
+				material.cached_wrapSampler = device->GetDescriptorIndex(Protean::Renderer::GetSampler(Protean::SAMPLER_OBJECTSHADER));
 			}
 			else
 			{
@@ -4406,14 +4405,14 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunImpostorUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunImpostorUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		if (instanceArrayMapped == nullptr)
 			return;
 
 		if (impostors.GetCount() > 0 && !impostorArray.IsValid())
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			TextureDesc desc;
 			desc.width = impostorTextureDim;
@@ -4487,8 +4486,8 @@ namespace wi::scene
 			total_size += ComputeTextureMemorySizeInBytes(impostorRenderTarget_Albedo_MSAA.desc);
 			total_size += ComputeTextureMemorySizeInBytes(impostorRenderTarget_Surface_MSAA.desc);
 			total_size += ComputeTextureMemorySizeInBytes(impostorRenderTarget_Normal_MSAA.desc);
-			info += "\n\tMemory = " + wi::helper::GetMemorySizeText(total_size) + "\n";
-			wi::backlog::post(info);
+			info += "\n\tMemory = " + Protean::Helper::GetMemorySizeText(total_size) + "\n";
+			Protean::Backlog::post(info);
 		}
 
 		// reconstruct impostor array status:
@@ -4555,7 +4554,7 @@ namespace wi::scene
 			std::memcpy(instanceArrayMapped + impostorInstanceOffset, &inst, sizeof(inst));
 		}
 	}
-	void Scene::RunObjectUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunObjectUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		aabb_objects.resize(objects.GetCount());
 		matrix_objects.resize(objects.GetCount());
@@ -4564,14 +4563,14 @@ namespace wi::scene
 		meshletAllocator.store(0u);
 
 		parallel_bounds.clear();
-		parallel_bounds.resize((size_t)wi::jobsystem::DispatchGroupCount((uint32_t)objects.GetCount(), small_subtask_groupsize));
+		parallel_bounds.resize((size_t)Protean::JobSystem::DispatchGroupCount((uint32_t)objects.GetCount(), small_subtask_groupsize));
 		
-		wi::jobsystem::Dispatch(ctx, (uint32_t)objects.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)objects.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			Entity entity = objects.GetEntity(args.jobIndex);
 			ObjectComponent& object = objects[args.jobIndex];
 			AABB& aabb = aabb_objects[args.jobIndex];
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			UpdateOcclusionResult(object.occlusion);
 
@@ -4644,7 +4643,7 @@ namespace wi::scene
 
 				if (softbody != nullptr)
 				{
-					if (wi::physics::IsEnabled())
+					if (Protean::Physics::IsEnabled())
 					{
 						// this will be registered as soft body in the next physics update
 						softbody->_flags |= SoftBodyPhysicsComponent::SAFE_TO_REGISTER;
@@ -4765,8 +4764,8 @@ namespace wi::scene
 				}
 				inst.uid = entity;
 				inst.layerMask = layerMask;
-				inst.color = wi::math::pack_half4(object.color);
-				inst.emissive = wi::math::pack_half3(XMFLOAT3(object.emissiveColor.x * object.emissiveColor.w, object.emissiveColor.y * object.emissiveColor.w, object.emissiveColor.z * object.emissiveColor.w));
+				inst.color = Protean::Math::pack_half4(object.color);
+				inst.emissive = Protean::Math::pack_half3(XMFLOAT3(object.emissiveColor.x * object.emissiveColor.w, object.emissiveColor.y * object.emissiveColor.w, object.emissiveColor.z * object.emissiveColor.w));
 				inst.baseGeometryOffset = mesh.geometryOffset;
 				inst.baseGeometryCount = (uint)mesh.subsets.size();
 				inst.geometryOffset = inst.baseGeometryOffset + first_subset;
@@ -4777,9 +4776,9 @@ namespace wi::scene
 				inst.radius = object.radius;
 				inst.vb_ao = object.vb_ao_srv;
 				inst.vb_wetmap = device->GetDescriptorIndex(&object.wetmap, SubresourceType::SRV);
-				inst.alphaTest_size = wi::math::pack_half2(XMFLOAT2(1 - object.alphaRef, size));
+				inst.alphaTest_size = Protean::Math::pack_half2(XMFLOAT2(1 - object.alphaRef, size));
 				inst.SetUserStencilRef(object.userStencilRef);
-				inst.rimHighlight = wi::math::pack_half4(XMFLOAT4(object.rimHighlightColor.x * object.rimHighlightColor.w, object.rimHighlightColor.y * object.rimHighlightColor.w, object.rimHighlightColor.z * object.rimHighlightColor.w, object.rimHighlightFalloff));
+				inst.rimHighlight = Protean::Math::pack_half4(XMFLOAT4(object.rimHighlightColor.x * object.rimHighlightColor.w, object.rimHighlightColor.y * object.rimHighlightColor.w, object.rimHighlightColor.z * object.rimHighlightColor.w, object.rimHighlightFalloff));
 
 				std::memcpy(instanceArrayMapped + args.jobIndex, &inst, sizeof(inst)); // memcpy whole structure into mapped pointer to avoid read from uncached memory
 
@@ -4802,15 +4801,15 @@ namespace wi::scene
 					}
 					if (!object.IsCastingShadow())
 					{
-						instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_shadow;
+						instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_shadow;
 					}
 					if (object.IsNotVisibleInReflections())
 					{
-						instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_reflection;
+						instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_reflection;
 					}
 					if (object.GetFilterMask() & FILTER_WATER)
 					{
-						instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_shadow;
+						instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_shadow;
 					}
 					instance.bottom_level = &mesh.BLASes[object.lod];
 					instance.instance_contribution_to_hit_group_index = 0;
@@ -4837,8 +4836,8 @@ namespace wi::scene
 				{
 					if (!object.lightmap_render.IsValid())
 					{
-						object.lightmapWidth = wi::math::GetNextPowerOfTwo(object.lightmapWidth + 1) / 2;
-						object.lightmapHeight = wi::math::GetNextPowerOfTwo(object.lightmapHeight + 1) / 2;
+						object.lightmapWidth = Protean::Math::GetNextPowerOfTwo(object.lightmapWidth + 1) / 2;
+						object.lightmapHeight = Protean::Math::GetNextPowerOfTwo(object.lightmapHeight + 1) / 2;
 
 						// align to BC6 block size:
 						object.lightmapWidth = align(object.lightmapWidth, 4u);
@@ -4895,12 +4894,12 @@ namespace wi::scene
 					}
 					else
 					{
-						wi::backlog::post("Invalid or old lightmap data found, it will be discarded. Re-render the lightmap if required.", wi::backlog::LogLevel::Warning);
+						Protean::Backlog::post("Invalid or old lightmap data found, it will be discarded. Re-render the lightmap if required.", Protean::Backlog::LogLevel::Warning);
 						object.lightmapTextureData.clear();
 					}
 					if (object.lightmap.desc.format != Format::UNKNOWN)
 					{
-						wi::texturehelper::CreateTexture(object.lightmap, object.lightmapTextureData.data(), object.lightmapWidth, object.lightmapHeight, object.lightmap.desc.format);
+						Protean::TextureHelper::CreateTexture(object.lightmap, object.lightmapTextureData.data(), object.lightmapWidth, object.lightmapHeight, object.lightmap.desc.format);
 						device->SetName(&object.lightmap, "lightmap");
 					}
 				}
@@ -4921,9 +4920,9 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunCameraUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunCameraUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)cameras.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)cameras.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			CameraComponent& camera = cameras[args.jobIndex];
 			Entity entity = cameras.GetEntity(args.jobIndex);
@@ -4935,7 +4934,7 @@ namespace wi::scene
 			camera.UpdateCamera();
 		});
 	}
-	void Scene::RunDecalUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunDecalUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		aabb_decals.resize(decals.GetCount());
 
@@ -4990,7 +4989,7 @@ namespace wi::scene
 			decal.texMulAdd = material.texMulAdd;
 		}
 	}
-	void Scene::RunProbeUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunProbeUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		aabb_probes.resize(probes.GetCount());
 
@@ -5049,9 +5048,9 @@ namespace wi::scene
 			global_dynamic_probe.CreateRenderData();
 		}
 	}
-	void Scene::RunForceUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunForceUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)forces.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)forces.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			ForceFieldComponent& force = forces[args.jobIndex];
 			Entity entity = forces.GetEntity(args.jobIndex);
@@ -5068,7 +5067,7 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunLightUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunLightUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		aabb_lights.resize(lights.GetCount());
 
@@ -5082,7 +5081,7 @@ namespace wi::scene
 			}
 		}
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)lights.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)lights.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			LightComponent& light = lights[args.jobIndex];
 			Entity entity = lights.GetEntity(args.jobIndex);
@@ -5185,9 +5184,9 @@ namespace wi::scene
 
 		});
 	}
-	void Scene::RunParticleUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunParticleUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)hairs.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)hairs.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			HairParticleSystem& hair = hairs[args.jobIndex];
 			Entity entity = hairs.GetEntity(args.jobIndex);
@@ -5217,7 +5216,7 @@ namespace wi::scene
 				}
 			}
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			uint32_t indexCount = hair.GetIndexCount();
 			uint32_t triangleCount = indexCount / 3u;
@@ -5245,8 +5244,8 @@ namespace wi::scene
 			ShaderMeshInstance inst = shader_mesh_instance_null;
 			inst.uid = entity;
 			inst.layerMask = hair.layerMask;
-			inst.emissive = wi::math::pack_half3(XMFLOAT3(1, 1, 1));
-			inst.color = wi::math::pack_half4(XMFLOAT4(1, 1, 1, 1));
+			inst.emissive = Protean::Math::pack_half3(XMFLOAT3(1, 1, 1));
+			inst.color = Protean::Math::pack_half4(XMFLOAT4(1, 1, 1, 1));
 			inst.center = hair.aabb.getCenter();
 			inst.radius = hair.aabb.getRadius();
 			inst.geometryOffset = (uint)geometryAllocation;
@@ -5256,7 +5255,7 @@ namespace wi::scene
 			inst.meshletOffset = meshletOffset;
 			inst.vb_wetmap = hair.wetmap.descriptor_srv;
 
-			XMFLOAT4X4 remapMatrix = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 remapMatrix = Protean::Math::IDENTITY_MATRIX;
 			if (IsFormatUnorm(hair.position_format))
 			{
 				XMStoreFloat4x4(&remapMatrix, hair.aabb.getUnormRemapMatrix());
@@ -5289,12 +5288,12 @@ namespace wi::scene
 					const MaterialComponent* material = materials.GetComponent(entity);
 					if (material != nullptr && !material->IsCastingShadow())
 					{
-						instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_shadow;
+						instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_shadow;
 					}
 					// Grass participates in diffuse GI rays. If its raytracing
 					// cost is still too high on a given target, it can be excluded
 					// from the diffuse pass by clearing the diffuse mask bit:
-					//instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_diffuse;
+					//instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_diffuse;
 					instance.bottom_level = &hair.BLAS;
 					instance.instance_contribution_to_hit_group_index = 0;
 					instance.flags = RaytracingAccelerationStructureDesc::TopLevel::Instance::FLAG_TRIANGLE_CULL_DISABLE;
@@ -5306,7 +5305,7 @@ namespace wi::scene
 
 		});
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)emitters.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)emitters.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 
 			EmittedParticleSystem& emitter = emitters[args.jobIndex];
 			Entity entity = emitters.GetEntity(args.jobIndex);
@@ -5341,7 +5340,7 @@ namespace wi::scene
 			if (emitter.IsInactive()) // check after UpdateCPU
 				return; // can skip writing TLAS instace below
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			ShaderGeometry geometry = shader_geometry_null;
 			geometry.indexOffset = 0;
@@ -5360,8 +5359,8 @@ namespace wi::scene
 			ShaderMeshInstance inst = shader_mesh_instance_null;
 			inst.uid = entity;
 			inst.layerMask = emitter.layerMask;
-			inst.emissive = wi::math::pack_half3(XMFLOAT3(1, 1, 1));
-			inst.color = wi::math::pack_half4(XMFLOAT4(1, 1, 1, 1));
+			inst.emissive = Protean::Math::pack_half3(XMFLOAT3(1, 1, 1));
+			inst.color = Protean::Math::pack_half4(XMFLOAT4(1, 1, 1, 1));
 			inst.geometryOffset = (uint)geometryAllocation;
 			inst.geometryCount = 1;
 			inst.baseGeometryOffset = inst.geometryOffset;
@@ -5383,14 +5382,14 @@ namespace wi::scene
 				{
 					for (int j = 0; j < arraysize(instance.transform[i]); ++j)
 					{
-						instance.transform[i][j] = wi::math::IDENTITY_MATRIX.m[j][i];
+						instance.transform[i][j] = Protean::Math::IDENTITY_MATRIX.m[j][i];
 					}
 				}
 				instance.instance_id = (uint32_t)instanceIndex;
 				instance.instance_mask = emitter.layerMask == 0 ? 0 : 0xFF;
 				if (material != nullptr && !material->IsCastingShadow())
 				{
-					instance.instance_mask &= ~wi::renderer::raytracing_inclusion_mask_shadow;
+					instance.instance_mask &= ~Protean::Renderer::raytracing_inclusion_mask_shadow;
 				}
 				instance.bottom_level = &emitter.BLAS;
 				instance.instance_contribution_to_hit_group_index = 0;
@@ -5406,8 +5405,8 @@ namespace wi::scene
 		{
 			for (size_t i = 0; i < gaussian_splats.GetCount(); ++i)
 			{
-				const wi::GaussianSplatModel& splat = gaussian_splats[i];
-				XMFLOAT4X4 matrix = wi::math::IDENTITY_MATRIX;
+				const Protean::GaussianSplatModel& splat = gaussian_splats[i];
+				XMFLOAT4X4 matrix = Protean::Math::IDENTITY_MATRIX;
 				Entity entity = gaussian_splats.GetEntity(i);
 				const TransformComponent* transform = transforms.GetComponent(entity);
 				if (transform != nullptr)
@@ -5423,7 +5422,7 @@ namespace wi::scene
 			gaussian_scene.Clear();
 		}
 	}
-	void Scene::RunWeatherUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunWeatherUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		if (weathers.GetCount() > 0)
 		{
@@ -5439,7 +5438,7 @@ namespace wi::scene
 			}
 
 			// Ocean occlusion status:
-			if (!wi::renderer::GetFreezeCullingCameraEnabled() && weather.IsOceanEnabled())
+			if (!Protean::Renderer::GetFreezeCullingCameraEnabled() && weather.IsOceanEnabled())
 			{
 				ocean.occlusionHistory <<= 1u; // advance history by 1 frame
 				int query_id = ocean.occlusionQueries[queryheap_idx];
@@ -5466,10 +5465,10 @@ namespace wi::scene
 
 		if (weather.rain_amount > 0)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			rainEmitter.opacityCurveControlPeakStart = 0;
-			rainEmitter._flags |= wi::EmittedParticleSystem::FLAG_USE_RAIN_BLOCKER;
-			rainEmitter.shaderType = wi::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_LIGHTING;
+			rainEmitter._flags |= Protean::EmittedParticleSystem::FLAG_USE_RAIN_BLOCKER;
+			rainEmitter.shaderType = Protean::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_LIGHTING;
 			rainEmitter.SetCollidersDisabled(true);
 			rainEmitter.SetVolumeEnabled(true);
 			constexpr uint32_t target_max_particle_count = 1000000;
@@ -5477,7 +5476,7 @@ namespace wi::scene
 			{
 				rainEmitter.SetMaxParticleCount(target_max_particle_count);
 			}
-			rainEmitter.count = wi::math::Lerp(0, (float)target_max_particle_count, weather.rain_amount);
+			rainEmitter.count = Protean::Math::Lerp(0, (float)target_max_particle_count, weather.rain_amount);
 			rainEmitter.life = 1;
 			rainEmitter.size = weather.rain_scale;
 			rainEmitter.random_factor = weather.windRandomness;
@@ -5495,33 +5494,33 @@ namespace wi::scene
 			rainMaterial.baseColor = weather.rain_color;
 			if (!rainMaterial.textures[MaterialComponent::BASECOLORMAP].resource.IsValid())
 			{
-				Texture gradientTex = wi::texturehelper::CreateGradientTexture(
-					wi::texturehelper::GradientType::Circular,
+				Texture gradientTex = Protean::TextureHelper::CreateGradientTexture(
+					Protean::TextureHelper::GradientType::Circular,
 					64, 64,
 					XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0),
-					wi::texturehelper::GradientFlags::Smoothstep | wi::texturehelper::GradientFlags::Inverse
+					Protean::TextureHelper::GradientFlags::Smoothstep | Protean::TextureHelper::GradientFlags::Inverse
 				);
 				Texture gradientTexBC;
 				TextureDesc desc = gradientTex.GetDesc();
 				desc.format = Format::BC4_UNORM;
-				desc.swizzle = { wi::graphics::ComponentSwizzle::ONE,wi::graphics::ComponentSwizzle::ONE,wi::graphics::ComponentSwizzle::ONE,wi::graphics::ComponentSwizzle::R };
+				desc.swizzle = { Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::R };
 				bool success = device->CreateTexture(&desc, nullptr, &gradientTexBC);
 				assert(success);
-				wi::renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
+				Protean::Renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
 				rainMaterial.textures[MaterialComponent::BASECOLORMAP].resource.SetTexture(gradientTexBC);
 			}
 			if (!rainMaterial.textures[MaterialComponent::NORMALMAP].resource.IsValid())
 			{
-				Texture gradientTex = wi::texturehelper::CreateLensDistortionNormalMap(
+				Texture gradientTex = Protean::TextureHelper::CreateLensDistortionNormalMap(
 					32, 32
 				);
 				Texture gradientTexBC;
 				TextureDesc desc = gradientTex.GetDesc();
 				desc.format = Format::BC5_UNORM;
-				desc.swizzle = { wi::graphics::ComponentSwizzle::R,wi::graphics::ComponentSwizzle::G,wi::graphics::ComponentSwizzle::ONE,wi::graphics::ComponentSwizzle::ONE };
+				desc.swizzle = { Protean::Graphics::ComponentSwizzle::R,Protean::Graphics::ComponentSwizzle::G,Protean::Graphics::ComponentSwizzle::ONE,Protean::Graphics::ComponentSwizzle::ONE };
 				bool success = device->CreateTexture(&desc, nullptr, &gradientTexBC);
 				assert(success);
-				wi::renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
+				Protean::Renderer::AddDeferredBlockCompression(gradientTex, gradientTexBC);
 				rainMaterial.textures[MaterialComponent::NORMALMAP].resource.SetTexture(gradientTexBC);
 			}
 			//rainMaterial.shadingRate = ShadingRate::RATE_4X4;
@@ -5554,8 +5553,8 @@ namespace wi::scene
 			ShaderMeshInstance inst = shader_mesh_instance_null;
 			inst.uid = 0;
 			inst.layerMask = ~0u;
-			inst.emissive = wi::math::pack_half3(XMFLOAT3(1, 1, 1));
-			inst.color = wi::math::pack_half4(XMFLOAT4(1, 1, 1, 1));
+			inst.emissive = Protean::Math::pack_half3(XMFLOAT3(1, 1, 1));
+			inst.color = Protean::Math::pack_half4(XMFLOAT4(1, 1, 1, 1));
 			inst.geometryOffset = (uint)rainGeometryOffset;
 			inst.geometryCount = 1;
 			inst.baseGeometryOffset = inst.geometryOffset;
@@ -5577,7 +5576,7 @@ namespace wi::scene
 				{
 					for (int j = 0; j < arraysize(instance.transform[i]); ++j)
 					{
-						instance.transform[i][j] = wi::math::IDENTITY_MATRIX.m[j][i];
+						instance.transform[i][j] = Protean::Math::IDENTITY_MATRIX.m[j][i];
 					}
 				}
 				instance.instance_id = (uint32_t)instanceIndex;
@@ -5602,9 +5601,9 @@ namespace wi::scene
 			wetmap_fadeout_time = 60; // allow 60 sec for remaining wetmaps to fade out
 		}
 	}
-	void Scene::RunSoundUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunSoundUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::audio::SoundInstance3D instance3D;
+		Protean::Audio::SoundInstance3D instance3D;
 		instance3D.listenerPos = camera.Eye;
 		instance3D.listenerUp = camera.Up;
 		instance3D.listenerFront = camera.At;
@@ -5616,7 +5615,7 @@ namespace wi::scene
 			if (!sound.soundinstance.IsValid() && sound.soundResource.IsValid())
 			{
 				sound.soundinstance.SetLooped(sound.IsLooped());
-				wi::audio::CreateSoundInstance(&sound.soundResource.GetSound(), &sound.soundinstance);
+				Protean::Audio::CreateSoundInstance(&sound.soundResource.GetSound(), &sound.soundinstance);
 			}
 
 			if (!sound.IsDisable3D())
@@ -5628,23 +5627,23 @@ namespace wi::scene
 					instance3D.emitterPos = transform->GetPosition();
 					instance3D.emitterFront = transform->GetForward();
 					instance3D.emitterUp = transform->GetUp();
-					wi::audio::Update3D(&sound.soundinstance, instance3D);
+					Protean::Audio::Update3D(&sound.soundinstance, instance3D);
 				}
 			}
 			if (sound.IsPlaying())
 			{
-				wi::audio::Play(&sound.soundinstance);
+				Protean::Audio::Play(&sound.soundinstance);
 			}
 			else
 			{
-				wi::audio::Stop(&sound.soundinstance);
+				Protean::Audio::Stop(&sound.soundinstance);
 			}
-			wi::audio::SetVolume(sound.volume, &sound.soundinstance);
+			Protean::Audio::SetVolume(sound.volume, &sound.soundinstance);
 		}
 	}
-	void Scene::RunVideoUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunVideoUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::audio::SoundInstance3D instance3D;
+		Protean::Audio::SoundInstance3D instance3D;
 		instance3D.listenerPos = camera.Eye;
 		instance3D.listenerUp = camera.Up;
 		instance3D.listenerFront = camera.At;
@@ -5655,7 +5654,7 @@ namespace wi::scene
 
 			if (!video.videoinstance.IsValid() && video.videoResource.IsValid())
 			{
-				if (wi::video::CreateVideoInstance(&video.videoResource.GetVideo(), &video.videoinstance))
+				if (Protean::Video::CreateVideoInstance(&video.videoResource.GetVideo(), &video.videoinstance))
 				{
 					video.Seek(video.currentTimer);
 				}
@@ -5664,31 +5663,31 @@ namespace wi::scene
 			video.currentTimer = 0;
 			if (video.videoResource.IsValid())
 			{
-				const wi::video::Video& vid = video.videoResource.GetVideo();
+				const Protean::Video::Video& vid = video.videoResource.GetVideo();
 				video.currentTimer = video.videoinstance.current_time;
 			}
 
 			if (video.IsPlaying())
 			{
-				video.videoinstance.flags |= wi::video::VideoInstance::Flags::Playing;
+				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Playing;
 			}
 			else
 			{
-				video.videoinstance.flags &= ~wi::video::VideoInstance::Flags::Playing;
+				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
 			}
 
 			if (video.IsLooped())
 			{
-				video.videoinstance.flags |= wi::video::VideoInstance::Flags::Looped;
+				video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Looped;
 			}
 			else
 			{
-				video.videoinstance.flags &= ~wi::video::VideoInstance::Flags::Looped;
+				video.videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Looped;
 			}
 
-			video.videoinstance.flags |= wi::video::VideoInstance::Flags::Mipmapped;
+			video.videoinstance.flags |= Protean::Video::VideoInstance::Flags::Mipmapped;
 
-			wi::video::UpdateVideo(&video.videoinstance, dt);
+			Protean::Video::UpdateVideo(&video.videoinstance, dt);
 
 			if (video.videoinstance.audio.IsValid())
 			{
@@ -5700,17 +5699,17 @@ namespace wi::scene
 					instance3D.emitterFront = transform->GetForward();
 					instance3D.emitterUp = transform->GetUp();
 					instance3D.emitterRadius = 0;
-					wi::audio::Update3D(&video.videoinstance.audio, instance3D);
+					Protean::Audio::Update3D(&video.videoinstance.audio, instance3D);
 				}
-				wi::audio::SetVolume(video.volume, &video.videoinstance.audio);
+				Protean::Audio::SetVolume(video.volume, &video.videoinstance.audio);
 			}
 		}
 	}
-	void Scene::RunScriptUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunScriptUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		if (dt == 0)
 			return; // not allowed to be run when dt == 0 as it could be on separate thread!
-		auto range = wi::profiler::BeginRangeCPU("Script Components");
+		auto range = Protean::Profiler::BeginRangeCPU("Script Components");
 		for (size_t i = 0; i < scripts.GetCount(); ++i)
 		{
 			ScriptComponent& script = scripts[i];
@@ -5723,12 +5722,12 @@ namespace wi::scene
 					script.script.clear();
 					script.script_hash = script.resource.GetScriptHash();
 					std::string str = script.resource.GetScript();
-					wi::lua::AttachScriptParameters(str, script.filename, wi::lua::GeneratePID(), "local function GetEntity() return " + std::to_string(entity) + "; end;", "");
-					wi::lua::CompileText(str, script.script);
+					Protean::Lua::AttachScriptParameters(str, script.filename, Protean::Lua::GeneratePID(), "local function GetEntity() return " + std::to_string(entity) + "; end;", "");
+					Protean::Lua::CompileText(str, script.script);
 				}
 				if (!script.script.empty())
 				{
-					wi::lua::RunBinaryData(script.script.data(), script.script.size(), script.filename.c_str());
+					Protean::Lua::RunBinaryData(script.script.data(), script.script.size(), script.filename.c_str());
 				}
 
 				if (script.IsPlayingOnlyOnce())
@@ -5737,11 +5736,11 @@ namespace wi::scene
 				}
 			}
 		}
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
-	void Scene::RunSpriteUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunSpriteUpdateSystem(Protean::JobSystem::context& ctx)
 	{
-		wi::jobsystem::Dispatch(ctx, (uint32_t)sprites.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)sprites.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 			Entity entity = sprites.GetEntity(args.jobIndex);
 			Sprite& sprite = sprites[args.jobIndex];
 			if (sprite.params.isExtractNormalMapEnabled())
@@ -5771,10 +5770,10 @@ namespace wi::scene
 			sprite.Update(dt);
 		});
 	}
-	void Scene::RunFontUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunFontUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		aabb_fonts.resize(fonts.GetCount());
-		wi::jobsystem::Dispatch(ctx, (uint32_t)fonts.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)fonts.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 			SpriteFont& font = fonts[args.jobIndex];
 			Entity entity = fonts.GetEntity(args.jobIndex);
 			const SoundComponent* sound = sounds.GetComponent(entity);
@@ -5792,7 +5791,7 @@ namespace wi::scene
 			aabb_fonts[args.jobIndex] = font.GetAABB();
 		});
 	}
-	void Scene::RunCharacterUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunCharacterUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		if (dt == 0)
 			return;
@@ -5813,7 +5812,7 @@ namespace wi::scene
 			character_capsules[i] = characters[i].GetCapsule();
 		}
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)characters.GetCount(), 1, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)characters.GetCount(), 1, [&](Protean::JobSystem::JobArgs args) {
 			CharacterComponent& character = characters[args.jobIndex];
 			Entity entity = characters.GetEntity(args.jobIndex);
 			if (character.IsActive())
@@ -6036,7 +6035,7 @@ namespace wi::scene
 				const float horizontal_velocity_length = XMVectorGetX(XMVector3Length(XMVectorSetY(velocity, 0)));
 
 				// Smooth facing:
-				float faceangle = -wi::math::GetAngleSigned(facing_next, facing, up);
+				float faceangle = -Protean::Math::GetAngleSigned(facing_next, facing, up);
 				const float turning_speed = clamp(character.turning_speed * dt, 0.0f, std::abs(faceangle));
 				if (faceangle < 0)
 				{
@@ -6112,7 +6111,7 @@ namespace wi::scene
 
 				if (character.pathfinding_thread == nullptr && character.process_goal)
 				{
-					character.pathfinding_thread = wi::allocator::make_shared<CharacterComponent::PathfindingThreadContext>();
+					character.pathfinding_thread = Protean::Allocator::make_shared<CharacterComponent::PathfindingThreadContext>();
 				}
 				if (character.pathfinding_thread)
 				{
@@ -6121,11 +6120,11 @@ namespace wi::scene
 						AtomicAnd(&character.pathfinding_thread->process_goal_completed, 0);
 						std::swap(character.pathfinding_thread->pathquery_work, character.pathquery);
 					}
-					if (character.process_goal && character.voxelgrid != nullptr && !wi::jobsystem::IsBusy(character.pathfinding_thread->ctx))
+					if (character.process_goal && character.voxelgrid != nullptr && !Protean::JobSystem::IsBusy(character.pathfinding_thread->ctx))
 					{
 						character.process_goal = false;
-						character.pathfinding_thread->ctx.priority = wi::jobsystem::Priority::Low;
-						wi::jobsystem::Execute(character.pathfinding_thread->ctx, [&](wi::jobsystem::JobArgs args) {
+						character.pathfinding_thread->ctx.priority = Protean::JobSystem::Priority::Low;
+						Protean::JobSystem::Execute(character.pathfinding_thread->ctx, [&](Protean::JobSystem::JobArgs args) {
 							character.pathfinding_thread->pathquery_work.process(character.position, character.goal, *character.voxelgrid);
 							AtomicOr(&character.pathfinding_thread->process_goal_completed, 1);
 							});
@@ -6173,7 +6172,7 @@ namespace wi::scene
 			character.shake_timer += dt;
 
 		});
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
 		character_dedicated_shadows.clear();
 		for (size_t i = 0; i < characters.GetCount(); ++i)
@@ -6188,7 +6187,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void Scene::RunSplineUpdateSystem(wi::jobsystem::context& ctx)
+	void Scene::RunSplineUpdateSystem(Protean::JobSystem::context& ctx)
 	{
 		ScopedCPUProfiling("Spline Update");
 
@@ -6211,7 +6210,7 @@ namespace wi::scene
 			}
 		}
 
-		wi::jobsystem::Dispatch(ctx, (uint32_t)splines.GetCount(), small_subtask_groupsize, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Dispatch(ctx, (uint32_t)splines.GetCount(), small_subtask_groupsize, [&](Protean::JobSystem::JobArgs args) {
 			SplineComponent& spline = splines[args.jobIndex];
 			Entity entity = splines.GetEntity(args.jobIndex);
 
@@ -6360,10 +6359,10 @@ namespace wi::scene
 							const XMVECTOR currentMID = XMVectorLerp(currentRIGHT, currentLEFT, 0.5f);
 							prevPLANE = XMPlaneFromPointNormal(currentMID, XMVector3Normalize(XMVector3Cross(N, currentRIGHT - currentLEFT)));
 
-							const float width = wi::math::Distance(currentRIGHT, currentLEFT);
+							const float width = Protean::Math::Distance(currentRIGHT, currentLEFT);
 							if (i > 0)
 							{
-								dist += wi::math::Distance(prevMID, currentMID) / std::max(0.01f, width);
+								dist += Protean::Math::Distance(prevMID, currentMID) / std::max(0.01f, width);
 							}
 							prevMID = currentMID;
 
@@ -6585,7 +6584,7 @@ namespace wi::scene
 			}
 
 		});
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 	}
 
 	Scene::RayIntersectionResult Scene::Intersects(const Ray& ray, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
@@ -6703,11 +6702,11 @@ namespace wi::scene
 
 					float distance;
 					XMFLOAT2 bary;
-					if (wi::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
+					if (Protean::Math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
 					{
 						const XMVECTOR pos_local = XMVectorAdd(rayOrigin_local, rayDirection_local * distance);
 						const XMVECTOR pos = XMVector3Transform(pos_local, objectMat);
-						distance = wi::math::Distance(pos, rayOrigin);
+						distance = Protean::Math::Distance(pos, rayOrigin);
 
 						// Note: we do the TMin, Tmax check here, in world space! We use the RayTriangleIntersects in local space, so we don't use those in there
 						if (distance < result.distance && distance >= ray.TMin && distance <= ray.TMax)
@@ -6851,7 +6850,7 @@ namespace wi::scene
 
 		return result;
 	}
-	void Scene::IntersectsAll(wi::vector<RayIntersectionResult>& results, const Ray& ray, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
+	void Scene::IntersectsAll(Protean::vector<RayIntersectionResult>& results, const Ray& ray, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
 	{
 		const XMVECTOR rayOrigin = XMLoadFloat3(&ray.origin);
 		const XMVECTOR rayDirection = XMVector3Normalize(XMLoadFloat3(&ray.direction));
@@ -6964,11 +6963,11 @@ namespace wi::scene
 
 					float distance;
 					XMFLOAT2 bary;
-					if (wi::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
+					if (Protean::Math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
 					{
 						const XMVECTOR pos_local = XMVectorAdd(rayOrigin_local, rayDirection_local * distance);
 						const XMVECTOR pos = XMVector3Transform(pos_local, objectMat);
-						distance = wi::math::Distance(pos, rayOrigin);
+						distance = Protean::Math::Distance(pos, rayOrigin);
 
 						// Note: we do the TMin, Tmax check here, in world space! We use the RayTriangleIntersects in local space, so we don't use those in there
 						if (distance >= ray.TMin && distance <= ray.TMax)
@@ -7219,11 +7218,11 @@ namespace wi::scene
 
 					float distance;
 					XMFLOAT2 bary;
-					if (wi::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
+					if (Protean::Math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary))
 					{
 						const XMVECTOR pos_local = XMVectorAdd(rayOrigin_local, rayDirection_local * distance);
 						const XMVECTOR pos = XMVector3Transform(pos_local, objectMat);
-						distance = wi::math::Distance(pos, rayOrigin);
+						distance = Protean::Math::Distance(pos, rayOrigin);
 
 						// Note: we do the TMin, Tmax check here, in world space! We use the RayTriangleIntersects in local space, so we don't use those in there
 						if (distance >= ray.TMin && distance <= ray.TMax)
@@ -7617,7 +7616,7 @@ namespace wi::scene
 
 		return result;
 	}
-	void Scene::IntersectsAll(wi::vector<SphereIntersectionResult>& results, const Sphere& sphere, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
+	void Scene::IntersectsAll(Protean::vector<SphereIntersectionResult>& results, const Sphere& sphere, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
 	{
 		const XMVECTOR Center = XMLoadFloat3(&sphere.center);
 		const XMVECTOR Radius = XMVectorReplicate(sphere.radius);
@@ -8099,13 +8098,13 @@ namespace wi::scene
 							// Find the nearest point on each edge.
 
 							// Edge 0,1
-							XMVECTOR Point1 = wi::math::ClosestPointOnLineSegment(p0, p1, LinePlaneIntersection);
+							XMVECTOR Point1 = Protean::Math::ClosestPointOnLineSegment(p0, p1, LinePlaneIntersection);
 
 							// Edge 1,2
-							XMVECTOR Point2 = wi::math::ClosestPointOnLineSegment(p1, p2, LinePlaneIntersection);
+							XMVECTOR Point2 = Protean::Math::ClosestPointOnLineSegment(p1, p2, LinePlaneIntersection);
 
 							// Edge 2,0
-							XMVECTOR Point3 = wi::math::ClosestPointOnLineSegment(p2, p0, LinePlaneIntersection);
+							XMVECTOR Point3 = Protean::Math::ClosestPointOnLineSegment(p2, p0, LinePlaneIntersection);
 
 							ReferencePoint = Point1;
 							float bestDist = XMVectorGetX(XMVector3LengthSq(Point1 - LinePlaneIntersection));
@@ -8127,7 +8126,7 @@ namespace wi::scene
 					}
 
 					// Place a sphere on closest point on line segment to intersection:
-					XMVECTOR Center = wi::math::ClosestPointOnLineSegment(A, B, ReferencePoint);
+					XMVECTOR Center = Protean::Math::ClosestPointOnLineSegment(A, B, ReferencePoint);
 
 					// Assert that the triangle is not degenerate.
 					assert(!XMVector3Equal(N, XMVectorZero()));
@@ -8172,21 +8171,21 @@ namespace wi::scene
 					// Find the nearest point on each edge.
 
 					// Edge 0,1
-					XMVECTOR Point1 = wi::math::ClosestPointOnLineSegment(p0, p1, Center);
+					XMVECTOR Point1 = Protean::Math::ClosestPointOnLineSegment(p0, p1, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
 					Intersection = XMVectorOrInt(Intersection, XMVectorLessOrEqual(XMVector3LengthSq(XMVectorSubtract(Center, Point1)), RadiusSq));
 
 					// Edge 1,2
-					XMVECTOR Point2 = wi::math::ClosestPointOnLineSegment(p1, p2, Center);
+					XMVECTOR Point2 = Protean::Math::ClosestPointOnLineSegment(p1, p2, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
 					Intersection = XMVectorOrInt(Intersection, XMVectorLessOrEqual(XMVector3LengthSq(XMVectorSubtract(Center, Point2)), RadiusSq));
 
 					// Edge 2,0
-					XMVECTOR Point3 = wi::math::ClosestPointOnLineSegment(p2, p0, Center);
+					XMVECTOR Point3 = Protean::Math::ClosestPointOnLineSegment(p2, p0, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
@@ -8358,7 +8357,7 @@ namespace wi::scene
 
 		return result;
 	}
-	void Scene::IntersectsAll(wi::vector<CapsuleIntersectionResult>& results, const Capsule& capsule, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
+	void Scene::IntersectsAll(Protean::vector<CapsuleIntersectionResult>& results, const Capsule& capsule, uint32_t filterMask, uint32_t layerMask, uint32_t lod) const
 	{
 		const XMVECTOR Base = XMLoadFloat3(&capsule.base);
 		const XMVECTOR Tip = XMLoadFloat3(&capsule.tip);
@@ -8528,13 +8527,13 @@ namespace wi::scene
 							// Find the nearest point on each edge.
 
 							// Edge 0,1
-							XMVECTOR Point1 = wi::math::ClosestPointOnLineSegment(p0, p1, LinePlaneIntersection);
+							XMVECTOR Point1 = Protean::Math::ClosestPointOnLineSegment(p0, p1, LinePlaneIntersection);
 
 							// Edge 1,2
-							XMVECTOR Point2 = wi::math::ClosestPointOnLineSegment(p1, p2, LinePlaneIntersection);
+							XMVECTOR Point2 = Protean::Math::ClosestPointOnLineSegment(p1, p2, LinePlaneIntersection);
 
 							// Edge 2,0
-							XMVECTOR Point3 = wi::math::ClosestPointOnLineSegment(p2, p0, LinePlaneIntersection);
+							XMVECTOR Point3 = Protean::Math::ClosestPointOnLineSegment(p2, p0, LinePlaneIntersection);
 
 							ReferencePoint = Point1;
 							float bestDist = XMVectorGetX(XMVector3LengthSq(Point1 - LinePlaneIntersection));
@@ -8556,7 +8555,7 @@ namespace wi::scene
 					}
 
 					// Place a sphere on closest point on line segment to intersection:
-					XMVECTOR Center = wi::math::ClosestPointOnLineSegment(A, B, ReferencePoint);
+					XMVECTOR Center = Protean::Math::ClosestPointOnLineSegment(A, B, ReferencePoint);
 
 					// Assert that the triangle is not degenerate.
 					assert(!XMVector3Equal(N, XMVectorZero()));
@@ -8601,21 +8600,21 @@ namespace wi::scene
 					// Find the nearest point on each edge.
 
 					// Edge 0,1
-					XMVECTOR Point1 = wi::math::ClosestPointOnLineSegment(p0, p1, Center);
+					XMVECTOR Point1 = Protean::Math::ClosestPointOnLineSegment(p0, p1, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
 					Intersection = XMVectorOrInt(Intersection, XMVectorLessOrEqual(XMVector3LengthSq(XMVectorSubtract(Center, Point1)), RadiusSq));
 
 					// Edge 1,2
-					XMVECTOR Point2 = wi::math::ClosestPointOnLineSegment(p1, p2, Center);
+					XMVECTOR Point2 = Protean::Math::ClosestPointOnLineSegment(p1, p2, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
 					Intersection = XMVectorOrInt(Intersection, XMVectorLessOrEqual(XMVector3LengthSq(XMVectorSubtract(Center, Point2)), RadiusSq));
 
 					// Edge 2,0
-					XMVECTOR Point3 = wi::math::ClosestPointOnLineSegment(p2, p0, Center);
+					XMVECTOR Point3 = Protean::Math::ClosestPointOnLineSegment(p2, p0, Center);
 
 					// If the distance to the center of the sphere to the point is less than 
 					// the radius of the sphere then it must intersect.
@@ -8791,11 +8790,11 @@ namespace wi::scene
 		}
 	}
 
-	void Scene::VoxelizeObject(size_t objectIndex, wi::VoxelGrid& grid, bool subtract, uint32_t lod)
+	void Scene::VoxelizeObject(size_t objectIndex, Protean::VoxelGrid& grid, bool subtract, uint32_t lod)
 	{
 		if (objectIndex >= objects.GetCount() || objectIndex >= aabb_objects.size())
 			return;
-		if (aabb_objects[objectIndex].intersects(grid.get_aabb()) == wi::primitive::AABB::OUTSIDE)
+		if (aabb_objects[objectIndex].intersects(grid.get_aabb()) == Protean::AABB::OUTSIDE)
 			return;
 		const ObjectComponent& object = objects[objectIndex];
 		const MeshComponent* mesh = meshes.GetComponent(object.meshID);
@@ -8855,9 +8854,9 @@ namespace wi::scene
 		}
 	}
 	
-	void Scene::VoxelizeScene(wi::VoxelGrid& voxelgrid, bool subtract, uint32_t filterMask, uint32_t layerMask, uint32_t lod)
+	void Scene::VoxelizeScene(Protean::VoxelGrid& voxelgrid, bool subtract, uint32_t filterMask, uint32_t layerMask, uint32_t lod)
 	{
-		wi::jobsystem::context ctx;
+		Protean::JobSystem::context ctx;
 		if ((filterMask & FILTER_COLLIDER))
 		{
 			for (size_t i = 0; i < collider_count_cpu; ++i)
@@ -8873,7 +8872,7 @@ namespace wi::scene
 				case ColliderComponent::Shape::Sphere:
 				{
 					Sphere sphere = collider.sphere;
-					wi::jobsystem::Execute(ctx, [&voxelgrid, subtract, sphere](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Execute(ctx, [&voxelgrid, subtract, sphere](Protean::JobSystem::JobArgs args) {
 						voxelgrid.inject_sphere(sphere, subtract);
 						});
 				}
@@ -8881,7 +8880,7 @@ namespace wi::scene
 				case ColliderComponent::Shape::Capsule:
 				{
 					Capsule capsule = collider.capsule;
-					wi::jobsystem::Execute(ctx, [&voxelgrid, subtract, capsule](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Execute(ctx, [&voxelgrid, subtract, capsule](Protean::JobSystem::JobArgs args) {
 						voxelgrid.inject_capsule(capsule, subtract);
 						});
 				}
@@ -8893,7 +8892,7 @@ namespace wi::scene
 					XMVECTOR P1 = XMVector3Transform(XMVectorSet(1, 0, -1, 1), planeMatrix);
 					XMVECTOR P2 = XMVector3Transform(XMVectorSet(1, 0, 1, 1), planeMatrix);
 					XMVECTOR P3 = XMVector3Transform(XMVectorSet(-1, 0, 1, 1), planeMatrix);
-					wi::jobsystem::Execute(ctx, [&voxelgrid, subtract, P0, P1, P2, P3](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Execute(ctx, [&voxelgrid, subtract, P0, P1, P2, P3](Protean::JobSystem::JobArgs args) {
 						voxelgrid.inject_triangle(P0, P1, P2, subtract);
 						voxelgrid.inject_triangle(P0, P2, P3, subtract);
 						});
@@ -8912,12 +8911,12 @@ namespace wi::scene
 				const AABB& aabb = aabb_objects[i];
 				if ((layerMask & aabb.layerMask) == 0)
 					continue;
-				wi::jobsystem::Execute(ctx, [this, &voxelgrid, subtract, lod, i](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [this, &voxelgrid, subtract, lod, i](Protean::JobSystem::JobArgs args) {
 					VoxelizeObject(i, voxelgrid, subtract, lod);
 					});
 			}
 		}
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 	}
 
 	XMFLOAT3 Scene::GetPositionOnSurface(Entity objectEntity, int vertexID0, int vertexID1, int vertexID2, const XMFLOAT2& bary) const
@@ -9083,16 +9082,16 @@ namespace wi::scene
 
 	void Scene::PutWaterRipple(const std::string& image, const XMFLOAT3& pos)
 	{
-		wi::Sprite img(image);
+		Protean::Sprite img(image);
 		img.params.enableExtractNormalMap();
 		img.params.blendFlag = BLENDMODE_ADDITIVE;
 		img.anim.fad = 0.01f;
 		img.anim.scaleX = 0.1f;
 		img.anim.scaleY = 0.1f;
 		img.params.pos = pos;
-		img.params.rotation = (wi::random::GetRandom(0, 1000) * 0.001f) * 2 * 3.1415f;
+		img.params.rotation = (Protean::Random::GetRandom(0, 1000) * 0.001f) * 2 * 3.1415f;
 		img.params.siz = XMFLOAT2(1, 1);
-		img.params.quality = wi::image::QUALITY_ANISOTROPIC;
+		img.params.quality = Protean::Image::QUALITY_ANISOTROPIC;
 		img.params.pivot = XMFLOAT2(0.5f, 0.5f);
 		locker.lock();
 		waterRipples.push_back(img);
@@ -9100,24 +9099,24 @@ namespace wi::scene
 	}
 	void Scene::PutWaterRipple(const XMFLOAT3& pos)
 	{
-		wi::Sprite img;
-		img.textureResource.SetTexture(*wi::texturehelper::getWaterRipple());
+		Protean::Sprite img;
+		img.textureResource.SetTexture(*Protean::TextureHelper::getWaterRipple());
 		img.params.enableExtractNormalMap();
 		img.params.blendFlag = BLENDMODE_ADDITIVE;
 		img.anim.fad = 0.01f;
 		img.anim.scaleX = 0.1f;
 		img.anim.scaleY = 0.1f;
 		img.params.pos = pos;
-		img.params.rotation = (wi::random::GetRandom(0, 1000) * 0.001f) * 2 * 3.1415f;
+		img.params.rotation = (Protean::Random::GetRandom(0, 1000) * 0.001f) * 2 * 3.1415f;
 		img.params.siz = XMFLOAT2(1, 1);
-		img.params.quality = wi::image::QUALITY_ANISOTROPIC;
+		img.params.quality = Protean::Image::QUALITY_ANISOTROPIC;
 		img.params.pivot = XMFLOAT2(0.5f, 0.5f);
 		locker.lock();
 		waterRipples.push_back(img);
 		locker.unlock();
 	}
 
-	XMVECTOR SkinVertex(const MeshComponent& mesh, const wi::vector<ShaderTransform>& boneData, uint32_t index, XMVECTOR* N)
+	XMVECTOR SkinVertex(const MeshComponent& mesh, const Protean::vector<ShaderTransform>& boneData, uint32_t index, XMVECTOR* N)
 	{
 		XMVECTOR P = XMLoadFloat3(&mesh.vertex_positions[index]);
 
@@ -9210,7 +9209,7 @@ namespace wi::scene
 
 	void LoadModel2(Scene& scene, const std::string& fileName, const XMMATRIX& transformMatrix, Entity rootEntity)
 	{
-		wi::Archive archive(fileName, true);
+		Protean::Archive archive(fileName, true);
 		if (!archive.IsOpen())
 			return;
 
@@ -9255,21 +9254,21 @@ namespace wi::scene
 		}
 	}
 
-	PickResult Pick(const wi::primitive::Ray& ray, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
+	PickResult Pick(const Protean::Ray& ray, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
 	{
 		return scene.Intersects(ray, filterMask, layerMask, lod);
 	}
-	SceneIntersectSphereResult SceneIntersectSphere(const wi::primitive::Sphere& sphere, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
+	SceneIntersectSphereResult SceneIntersectSphere(const Protean::Sphere& sphere, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
 	{
 		return scene.Intersects(sphere, filterMask, layerMask, lod);
 	}
-	SceneIntersectCapsuleResult SceneIntersectCapsule(const wi::primitive::Capsule& capsule, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
+	SceneIntersectCapsuleResult SceneIntersectCapsule(const Protean::Capsule& capsule, uint32_t filterMask, uint32_t layerMask, const Scene& scene, uint32_t lod)
 	{
 		return scene.Intersects(capsule, filterMask, layerMask, lod);
 	}
 
 
-	XMMATRIX Scene::ComputeEntityMatrixRecursive(wi::ecs::Entity entity) const
+	XMMATRIX Scene::ComputeEntityMatrixRecursive(Protean::Entity entity) const
 	{
 		const TransformComponent* transform = transforms.GetComponent(entity);
 		if (transform == nullptr)
@@ -9449,7 +9448,7 @@ namespace wi::scene
 		return INVALID_ENTITY;
 	}
 
-	XMMATRIX Scene::GetRestPose(wi::ecs::Entity entity) const
+	XMMATRIX Scene::GetRestPose(Protean::Entity entity) const
 	{
 		if (entity != INVALID_ENTITY)
 		{
@@ -9481,7 +9480,7 @@ namespace wi::scene
 	void Scene::StartBuildTopDownHierarchy()
 	{
 		WaitBuildTopDownHierarchy();
-		wi::jobsystem::Execute(topdown_hierarchy_workload, [&](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(topdown_hierarchy_workload, [&](Protean::JobSystem::JobArgs args) {
 			for (auto& x : topdown_hierarchy)
 			{
 				x.second.clear();
@@ -9496,9 +9495,9 @@ namespace wi::scene
 	}
 	void Scene::WaitBuildTopDownHierarchy() const
 	{
-		wi::jobsystem::Wait(topdown_hierarchy_workload);
+		Protean::JobSystem::Wait(topdown_hierarchy_workload);
 	}
-	void Scene::RefreshHierarchyTopdownFromParent(wi::ecs::Entity entity)
+	void Scene::RefreshHierarchyTopdownFromParent(Protean::Entity entity)
 	{
 		auto it = topdown_hierarchy.find(entity);
 		if (it == topdown_hierarchy.end())
@@ -9547,8 +9546,8 @@ namespace wi::scene
 		animation_queues.reserve(animations.GetCount());
 		animation_queue_count = 0;
 
-		wi::jobsystem::Execute(animation_dependency_scan_workload, [&](wi::jobsystem::JobArgs args) {
-			auto range = wi::profiler::BeginRangeCPU("Animation Dependencies");
+		Protean::JobSystem::Execute(animation_dependency_scan_workload, [&](Protean::JobSystem::JobArgs args) {
+			auto range = Protean::Profiler::BeginRangeCPU("Animation Dependencies");
 			for (size_t i = 0; i < animations.GetCount(); ++i)
 			{
 				AnimationComponent& animationA = animations[i];
@@ -9594,7 +9593,7 @@ namespace wi::scene
 					animation_queue_count++;
 				}
 			}
-			wi::profiler::EndRange(range);
+			Protean::Profiler::EndRange(range);
 		});
 
 		// We don't wait for this job here, it will be waited just before animation update
@@ -9602,8 +9601,8 @@ namespace wi::scene
 
 	void Scene::ScanSpringDependencies()
 	{
-		wi::jobsystem::Execute(spring_dependency_scan_workload, [this](wi::jobsystem::JobArgs args){
-			auto range = wi::profiler::BeginRangeCPU("Spring Dependencies");
+		Protean::JobSystem::Execute(spring_dependency_scan_workload, [this](Protean::JobSystem::JobArgs args){
+			auto range = Protean::Profiler::BeginRangeCPU("Spring Dependencies");
 			spring_queues.clear();
 			// First, reset all spring temp state:
 			for (size_t i = 0; i < springs.GetCount(); ++i)
@@ -9648,7 +9647,7 @@ namespace wi::scene
 					}
 				}
 			}
-			wi::profiler::EndRange(range);
+			Protean::Profiler::EndRange(range);
 		});
 
 		// We don't wait for this job here, it will be waited just before spring update
@@ -9770,7 +9769,7 @@ namespace wi::scene
 		//	apply scaling to radius:
 		XMFLOAT3 scale = transform.GetScale();
 		const float hitRadius = spring.hitRadius * std::max(scale.x, std::max(scale.y, scale.z));
-		wi::primitive::Sphere tail_sphere;
+		Protean::Sphere tail_sphere;
 		XMStoreFloat3(&tail_sphere.center, tail_next);
 		tail_sphere.radius = hitRadius;
 
@@ -9835,13 +9834,13 @@ namespace wi::scene
 
 #if 0
 		// Debug axis:
-		static wi::SpinLock dbglocker;
-		wi::renderer::RenderableLine line;
+		static Protean::SpinLock dbglocker;
+		Protean::Renderer::RenderableLine line;
 		line.color_start = line.color_end = XMFLOAT4(1, 1, 0, 1);
 		XMStoreFloat3(&line.start, position_root);
 		line.end = spring.currentTail;
 		dbglocker.lock();
-		wi::renderer::DrawLine(line);
+		Protean::Renderer::DrawLine(line);
 		dbglocker.unlock();
 #endif
 
@@ -9938,7 +9937,7 @@ namespace wi::scene
 				const TransformComponent* transform = transforms.GetComponent(left_leg);
 				if (transform != nullptr)
 				{
-					XMFLOAT3 roll_pitch_yaw = wi::math::QuaternionToRollPitchYaw(transform->rotation_local);
+					XMFLOAT3 roll_pitch_yaw = Protean::Math::QuaternionToRollPitchYaw(transform->rotation_local);
 					humanoid.knee_bending *= (roll_pitch_yaw.y / XM_PI * 180.0f) < 0 ? -1 : 1; // MIXAMO fix!
 				}
 			}
@@ -9947,7 +9946,7 @@ namespace wi::scene
 
 	void Scene::UpdateOcclusionResult(OcclusionResult& occlusion)
 	{
-		if (!wi::renderer::GetFreezeCullingCameraEnabled())
+		if (!Protean::Renderer::GetFreezeCullingCameraEnabled())
 		{
 			occlusion.occlusionHistory <<= 1u; // advance history by 1 frame
 			const int query_id = occlusion.occlusionQueries[queryheap_idx];

@@ -1,20 +1,17 @@
 #include "stdafx.h"
 #include "DecalWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
-
+using namespace Protean;
 void DecalWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_DECAL " Decal", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_DECAL " Decal", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 200));
 
 	closeButton.SetTooltip("Delete DecalComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -32,7 +29,7 @@ void DecalWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				DecalComponent* decal = scene.decals.GetComponent(x.entity);
@@ -60,7 +57,7 @@ void DecalWindow::Create(EditorComponent* _editor)
 
 	infoLabel.Create("");
 	infoLabel.SetText("Set decal properties in the Material component. Decals support the following material properties:\n - Base color\n - Base color texture\n - Emissive strength\n - Normalmap texture\n - Normalmap strength\n - Surfacemap texture\n - Texture tiling (TexMulAdd)");
-	infoLabel.SetColor(wi::Color::Transparent());
+	infoLabel.SetColor(Protean::Color::Transparent());
 	infoLabel.SetFitTextEnabled(true);
 	AddWidget(&infoLabel);
 
@@ -91,7 +88,7 @@ void DecalWindow::SetEntity(Entity entity)
 
 void DecalWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 100;
 
 	layout.add_fullwidth(infoLabel);

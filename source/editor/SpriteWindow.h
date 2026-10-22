@@ -1,52 +1,52 @@
 #pragma once
 class EditorComponent;
 
-class SpriteWindow : public wi::gui::Window
+class SpriteWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Button textureButton;
-	wi::gui::Button maskButton;
-	wi::gui::Slider pivotXSlider;
-	wi::gui::Slider pivotYSlider;
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider saturationSlider;
-	wi::gui::Slider alphaStartSlider;
-	wi::gui::Slider alphaEndSlider;
-	wi::gui::Slider borderSoftenSlider;
-	wi::gui::Slider cornerRounding0Slider;
-	wi::gui::Slider cornerRounding1Slider;
-	wi::gui::Slider cornerRounding2Slider;
-	wi::gui::Slider cornerRounding3Slider;
-	wi::gui::ComboBox qualityCombo;
-	wi::gui::ComboBox samplemodeCombo;
-	wi::gui::ComboBox blendModeCombo;
-	wi::gui::CheckBox mirrorCheckBox;
-	wi::gui::CheckBox hiddenCheckBox;
-	wi::gui::CheckBox cameraFacingCheckBox;
-	wi::gui::CheckBox cameraScalingCheckBox;
-	wi::gui::CheckBox depthTestCheckBox;
-	wi::gui::CheckBox distortionCheckBox;
-	wi::gui::ColorPicker colorPicker;
+	Protean::Gui::Button textureButton;
+	Protean::Gui::Button maskButton;
+	Protean::Gui::Slider pivotXSlider;
+	Protean::Gui::Slider pivotYSlider;
+	Protean::Gui::Slider intensitySlider;
+	Protean::Gui::Slider rotationSlider;
+	Protean::Gui::Slider saturationSlider;
+	Protean::Gui::Slider alphaStartSlider;
+	Protean::Gui::Slider alphaEndSlider;
+	Protean::Gui::Slider borderSoftenSlider;
+	Protean::Gui::Slider cornerRounding0Slider;
+	Protean::Gui::Slider cornerRounding1Slider;
+	Protean::Gui::Slider cornerRounding2Slider;
+	Protean::Gui::Slider cornerRounding3Slider;
+	Protean::Gui::ComboBox qualityCombo;
+	Protean::Gui::ComboBox samplemodeCombo;
+	Protean::Gui::ComboBox blendModeCombo;
+	Protean::Gui::CheckBox mirrorCheckBox;
+	Protean::Gui::CheckBox hiddenCheckBox;
+	Protean::Gui::CheckBox cameraFacingCheckBox;
+	Protean::Gui::CheckBox cameraScalingCheckBox;
+	Protean::Gui::CheckBox depthTestCheckBox;
+	Protean::Gui::CheckBox distortionCheckBox;
+	Protean::Gui::ColorPicker colorPicker;
 
-	wi::gui::Slider movingTexXSlider;
-	wi::gui::Slider movingTexYSlider;
+	Protean::Gui::Slider movingTexXSlider;
+	Protean::Gui::Slider movingTexYSlider;
 
-	wi::gui::Slider drawrectFrameRateSlider;
-	wi::gui::TextInputField drawrectFrameCountInput;
-	wi::gui::TextInputField drawrectHorizontalFrameCountInput;
+	Protean::Gui::Slider drawrectFrameRateSlider;
+	Protean::Gui::TextInputField drawrectFrameCountInput;
+	Protean::Gui::TextInputField drawrectHorizontalFrameCountInput;
 
-	wi::gui::Slider wobbleXSlider;
-	wi::gui::Slider wobbleYSlider;
-	wi::gui::Slider wobbleSpeedSlider;
+	Protean::Gui::Slider wobbleXSlider;
+	Protean::Gui::Slider wobbleYSlider;
+	Protean::Gui::Slider wobbleSpeedSlider;
 
 	void ResizeLayout() override;
 
-	void UpdateSpriteDrawRectParams(wi::Sprite* sprite);
+	void UpdateSpriteDrawRectParams(Protean::Sprite* sprite);
 };

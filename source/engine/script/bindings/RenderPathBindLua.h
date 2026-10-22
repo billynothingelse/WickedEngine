@@ -3,7 +3,7 @@
 #include "script/Luna.h"
 #include "render/RenderPath.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class RenderPath_BindLua
 	{

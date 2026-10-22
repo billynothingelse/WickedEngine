@@ -9,12 +9,12 @@
 #include "scene/SceneDecl.h"
 #include "scene/SceneComponents.h"
 
-namespace wi
+namespace Protean
 {
 	class Archive;
 }
 
-namespace wi
+namespace Protean
 {
 	class EmittedParticleSystem
 	{
@@ -31,29 +31,29 @@ namespace wi
 		};
 
 		ParticleCounters statistics = {};
-		wi::graphics::GPUBuffer statisticsReadbackBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer statisticsReadbackBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 
-		wi::graphics::GPUBuffer particleBuffer;
-		wi::graphics::GPUBuffer aliveList[2];
-		wi::graphics::GPUBuffer deadList;
-		wi::graphics::GPUBuffer distanceBuffer; // for sorting
-		wi::graphics::GPUBuffer sphGridCells;  // for SPH
-		wi::graphics::GPUBuffer sphParticleCells;  // for SPH
-		wi::graphics::GPUBuffer densityBuffer; // for SPH
-		wi::graphics::GPUBuffer counterBuffer;
-		wi::graphics::GPUBuffer indirectBuffers; // kickoffUpdate, simulation, draw
-		wi::graphics::GPUBuffer constantBuffer;
-		wi::graphics::GPUBuffer generalBuffer;
-		wi::scene::MeshComponent::BufferView vb_pos;
-		wi::scene::MeshComponent::BufferView vb_nor;
-		wi::scene::MeshComponent::BufferView vb_uvs;
-		wi::scene::MeshComponent::BufferView vb_col;
-		wi::graphics::GPUBuffer primitiveBuffer; // raytracing
-		wi::graphics::GPUBuffer culledIndirectionBuffer; // rasterization
-		wi::graphics::GPUBuffer culledIndirectionBuffer2; // rasterization
-		wi::graphics::Texture opacityCurveTex;
+		Protean::Graphics::GPUBuffer particleBuffer;
+		Protean::Graphics::GPUBuffer aliveList[2];
+		Protean::Graphics::GPUBuffer deadList;
+		Protean::Graphics::GPUBuffer distanceBuffer; // for sorting
+		Protean::Graphics::GPUBuffer sphGridCells;  // for SPH
+		Protean::Graphics::GPUBuffer sphParticleCells;  // for SPH
+		Protean::Graphics::GPUBuffer densityBuffer; // for SPH
+		Protean::Graphics::GPUBuffer counterBuffer;
+		Protean::Graphics::GPUBuffer indirectBuffers; // kickoffUpdate, simulation, draw
+		Protean::Graphics::GPUBuffer constantBuffer;
+		Protean::Graphics::GPUBuffer generalBuffer;
+		Protean::MeshComponent::BufferView vb_pos;
+		Protean::MeshComponent::BufferView vb_nor;
+		Protean::MeshComponent::BufferView vb_uvs;
+		Protean::MeshComponent::BufferView vb_col;
+		Protean::Graphics::GPUBuffer primitiveBuffer; // raytracing
+		Protean::Graphics::GPUBuffer culledIndirectionBuffer; // rasterization
+		Protean::Graphics::GPUBuffer culledIndirectionBuffer2; // rasterization
+		Protean::Graphics::Texture opacityCurveTex;
 
-		wi::graphics::RaytracingAccelerationStructure BLAS;
+		Protean::Graphics::RaytracingAccelerationStructure BLAS;
 
 	private:
 		void CreateSelfBuffers();
@@ -65,19 +65,19 @@ namespace wi
 
 		uint32_t MAX_PARTICLES = 1000;
 
-		mutable wi::vector<EmitLocation> emit_locations;
+		mutable Protean::vector<EmitLocation> emit_locations;
 
 	public:
-		void UpdateCPU(const wi::scene::TransformComponent& transform, float dt);
+		void UpdateCPU(const Protean::TransformComponent& transform, float dt);
 		void Burst(int num);
-		void Burst(int num, const XMFLOAT3& position, const wi::Color& color = wi::Color::White());
-		void Burst(int num, const XMFLOAT4X4& transform, const wi::Color& color = wi::Color::White());
+		void Burst(int num, const XMFLOAT3& position, const Protean::Color& color = Protean::Color::White());
+		void Burst(int num, const XMFLOAT4X4& transform, const Protean::Color& color = Protean::Color::White());
 		void Restart();
 
 		// Must have a transform and material component, but mesh is optional
-		void UpdateGPU(uint32_t instanceIndex, const wi::scene::MeshComponent* mesh, wi::graphics::CommandList cmd) const;
-		void Draw(const wi::scene::MaterialComponent& material, wi::graphics::CommandList cmd, const PARTICLESHADERTYPE* shadertype_override = nullptr) const;
-		void DrawForShadowmap(const wi::scene::MaterialComponent& material, wi::graphics::CommandList cmd, uint16_t camera_mask = 1) const;
+		void UpdateGPU(uint32_t instanceIndex, const Protean::MeshComponent* mesh, Protean::Graphics::CommandList cmd) const;
+		void Draw(const Protean::MaterialComponent& material, Protean::Graphics::CommandList cmd, const PARTICLESHADERTYPE* shadertype_override = nullptr) const;
+		void DrawForShadowmap(const Protean::MaterialComponent& material, Protean::Graphics::CommandList cmd, uint16_t camera_mask = 1) const;
 
 		void CreateRaytracingRenderData();
 
@@ -101,7 +101,7 @@ namespace wi
 
 		PARTICLESHADERTYPE shaderType = SOFT;
 
-		wi::ecs::Entity meshID = wi::ecs::INVALID_ENTITY;
+		Protean::Entity meshID = Protean::INVALID_ENTITY;
 
 		float FIXED_TIMESTEP = -1.0f; // -1 : variable timestep; >=0 : fixed timestep
 
@@ -147,7 +147,7 @@ namespace wi
 		// Non-serialized attributes:
 		XMFLOAT3 center;
 		uint32_t layerMask = ~0u;
-		XMFLOAT4X4 worldMatrix = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 worldMatrix = Protean::Math::IDENTITY_MATRIX;
 		bool bursted_on_create = false;
 
 		inline bool IsDebug() const { return _flags & FLAG_DEBUG; }
@@ -173,9 +173,9 @@ namespace wi
 		// Set the opacity curve parameters
 		//	peak : start peak of the opacity relative to particle lifetime [0,1]
 		void SetOpacityCurveControl(float peakStart, float peakEnd);
-		const wi::graphics::Texture* GetOpacityCurveTex() const { return &opacityCurveTex; }
+		const Protean::Graphics::Texture* GetOpacityCurveTex() const { return &opacityCurveTex; }
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 
 		static void Initialize();
 	};

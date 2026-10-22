@@ -1,26 +1,26 @@
 #pragma once
 class EditorComponent;
 
-class ColliderWindow : public wi::gui::Window
+class ColliderWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox cpuCheckBox;
-	wi::gui::CheckBox gpuCheckBox;
-	wi::gui::ComboBox shapeCombo;
-	wi::gui::Slider radiusSlider;
-	wi::gui::Slider offsetX;
-	wi::gui::Slider offsetY;
-	wi::gui::Slider offsetZ;
-	wi::gui::Slider tailX;
-	wi::gui::Slider tailY;
-	wi::gui::Slider tailZ;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::CheckBox cpuCheckBox;
+	Protean::Gui::CheckBox gpuCheckBox;
+	Protean::Gui::ComboBox shapeCombo;
+	Protean::Gui::Slider radiusSlider;
+	Protean::Gui::Slider offsetX;
+	Protean::Gui::Slider offsetY;
+	Protean::Gui::Slider offsetZ;
+	Protean::Gui::Slider tailX;
+	Protean::Gui::Slider tailY;
+	Protean::Gui::Slider tailZ;
 
 	void ResizeLayout() override;
 };

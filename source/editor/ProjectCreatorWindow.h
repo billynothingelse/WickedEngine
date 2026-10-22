@@ -1,34 +1,34 @@
 #pragma once
 class EditorComponent;
 
-class ProjectCreatorWindow : public wi::gui::Window
+class ProjectCreatorWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
 
-	wi::gui::Label infoLabel;
-	wi::gui::TextInputField projectNameInput;
-	wi::gui::Button reloadButton;
-	wi::gui::Button iconButton;
-	wi::gui::Button thumbnailButton;
-	wi::gui::Button splashScreenButton;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::TextInputField projectNameInput;
+	Protean::Gui::Button reloadButton;
+	Protean::Gui::Button iconButton;
+	Protean::Gui::Button thumbnailButton;
+	Protean::Gui::Button splashScreenButton;
 
-	wi::gui::Label cursorLabel;
-	wi::gui::Button cursorButton;
+	Protean::Gui::Label cursorLabel;
+	Protean::Gui::Button cursorButton;
 
-	wi::gui::ColorPicker fontColorPicker;
-	wi::gui::ColorPicker backgroundColorPicker;
-	wi::gui::Button colorPreviewButton;
+	Protean::Gui::ColorPicker fontColorPicker;
+	Protean::Gui::ColorPicker backgroundColorPicker;
+	Protean::Gui::Button colorPreviewButton;
 
-	wi::gui::Button createButton;
+	Protean::Gui::Button createButton;
 
-	wi::Resource iconResource;
-	wi::Resource thumbnailResource;
-	wi::Resource splashScreenResource;
-	wi::Resource splashScreenResourceCroppedPreview;
-	wi::Resource cursorResource;
+	Protean::Resource iconResource;
+	Protean::Resource thumbnailResource;
+	Protean::Resource splashScreenResource;
+	Protean::Resource splashScreenResourceCroppedPreview;
+	Protean::Resource cursorResource;
 
 	std::string iconFilename;
 	std::string thumbnailFilename;
@@ -38,7 +38,7 @@ public:
 	float hotspotX = 0.5f;
 	float hotspotY = 0.5f;
 
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 	void ResizeLayout() override;
 };
 

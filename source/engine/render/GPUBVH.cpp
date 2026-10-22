@@ -12,11 +12,9 @@
 
 //#define BVH_VALIDATE // slow but great for debug!
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
-
-namespace wi
+using namespace Protean::Graphics;
+using namespace Protean;
+namespace Protean
 {
 
 	enum CSTYPES_BVH
@@ -28,9 +26,9 @@ namespace wi
 	};
 	static Shader computeShaders[CSTYPE_BVH_COUNT];
 
-	void GPUBVH::Update(const wi::scene::Scene& scene)
+	void GPUBVH::Update(const Protean::Scene& scene)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// Pre-gather scene properties:
 		uint totalTriangles = 0;
@@ -47,7 +45,7 @@ namespace wi
 		}
 		for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 		{
-			const wi::HairParticleSystem& hair = scene.hairs[i];
+			const Protean::HairParticleSystem& hair = scene.hairs[i];
 
 			if (hair.meshID != INVALID_ENTITY)
 			{
@@ -56,7 +54,7 @@ namespace wi
 		}
 		for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 		{
-			const wi::EmittedParticleSystem& emitter = scene.emitters[i];
+			const Protean::EmittedParticleSystem& emitter = scene.emitters[i];
 			totalTriangles += emitter.GetMaxParticleCount() * 2;
 		}
 
@@ -134,9 +132,9 @@ namespace wi
 	}
 	void GPUBVH::Build(const Scene& scene, CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		auto range = wi::profiler::BeginRangeGPU("BVH Rebuild", cmd);
+		auto range = Protean::Profiler::BeginRangeGPU("BVH Rebuild", cmd);
 
 		uint32_t primitiveCount = 0;
 
@@ -187,7 +185,7 @@ namespace wi
 
 			for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 			{
-				const wi::HairParticleSystem& hair = scene.hairs[i];
+				const Protean::HairParticleSystem& hair = scene.hairs[i];
 
 				if (hair.meshID != INVALID_ENTITY)
 				{
@@ -211,7 +209,7 @@ namespace wi
 
 			for (size_t i = 0; i < scene.emitters.GetCount(); ++i)
 			{
-				const wi::EmittedParticleSystem& emitter = scene.emitters[i];
+				const Protean::EmittedParticleSystem& emitter = scene.emitters[i];
 
 				if (emitter.GetMaxParticleCount() > 0)
 				{
@@ -254,7 +252,7 @@ namespace wi
 		device->EventEnd(cmd);
 
 		device->EventBegin("BVH - Sort Primitive Mortons", cmd);
-		wi::gpusortlib::Sort(primitiveCount, primitiveMortonBuffer, primitiveCounterBuffer, 0, primitiveIDBuffer, cmd);
+		Protean::GPUSortLib::Sort(primitiveCount, primitiveMortonBuffer, primitiveCounterBuffer, 0, primitiveIDBuffer, cmd);
 		device->EventEnd(cmd);
 
 		{
@@ -326,7 +324,7 @@ namespace wi
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
 
-		wi::profiler::EndRange(range); // BVH rebuild
+		Protean::Profiler::EndRange(range); // BVH rebuild
 
 #ifdef BVH_VALIDATE
 		{
@@ -424,19 +422,19 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PRIMITIVES], "bvh_primitivesCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_HIERARCHY], "bvh_hierarchyCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, computeShaders[CSTYPE_BVH_PROPAGATEAABB], "bvh_propagateaabbCS.cso");
 		}
 	}
 
 	void GPUBVH::Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { GPUBVH_Internal::LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { GPUBVH_Internal::LoadShaders(); });
 		GPUBVH_Internal::LoadShaders();
 
-		wilog("wi::GPUBVH Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::GPUBVH Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 }

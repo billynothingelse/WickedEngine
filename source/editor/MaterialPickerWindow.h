@@ -1,18 +1,18 @@
 #pragma once
 class EditorComponent;
 
-class MaterialPickerWindow : public wi::gui::Window
+class MaterialPickerWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
 
-	std::deque<wi::gui::Button> buttons;
+	std::deque<Protean::Gui::Button> buttons;
 
-	wi::gui::Slider zoomSlider;
-	wi::gui::CheckBox showMeshMaterialCheckBox;
-	wi::gui::CheckBox showInternalMaterialCheckBox;
+	Protean::Gui::Slider zoomSlider;
+	Protean::Gui::CheckBox showMeshMaterialCheckBox;
+	Protean::Gui::CheckBox showInternalMaterialCheckBox;
 
 	void ResizeLayout() override;
 
@@ -20,7 +20,7 @@ public:
 	void RecreateButtons();
 
 private:
-	bool ShouldShowMaterial(const wi::scene::MaterialComponent& material, wi::ecs::Entity entity) const;
-	bool MaterialIsUsedInMesh(wi::ecs::Entity materialEntity) const;
+	bool ShouldShowMaterial(const Protean::MaterialComponent& material, Protean::Entity entity) const;
+	bool MaterialIsUsedInMesh(Protean::Entity materialEntity) const;
 };
 

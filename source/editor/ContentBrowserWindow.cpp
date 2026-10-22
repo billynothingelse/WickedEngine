@@ -1,15 +1,13 @@
 #include "stdafx.h"
 #include "ContentBrowserWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void ContentBrowserWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 	control_size = 30;
 
-	wi::gui::Window::Create("Content Browser");
+	Protean::Gui::Window::Create("Content Browser");
 
 	RemoveWidget(&scrollbar_horizontal);
 
@@ -25,7 +23,7 @@ void ContentBrowserWindow::Create(EditorComponent* _editor)
 		current_sorting = (SORTING)editor->main->config.GetSection("options").GetInt("content_browser_sorting");
 	}
 	sortingComboBox.SetSelected((int)current_sorting);
-	sortingComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	sortingComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		current_sorting = (SORTING)args.iValue;
 		editor->main->config.GetSection("options").Set("content_browser_sorting", args.iValue);
 		editor->main->config.Commit();
@@ -40,31 +38,31 @@ void ContentBrowserWindow::Create(EditorComponent* _editor)
 }
 
 static constexpr float separator = 140; // width of the left selection folder buttons and sorting combobox
-void ContentBrowserWindow::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void ContentBrowserWindow::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
-	wi::gui::Window::Render(canvas, cmd);
+	Protean::Gui::Window::Render(canvas, cmd);
 
 	if (IsVisible() && !IsCollapsed())
 	{
 		ApplyScissor(canvas, scissorRect, cmd);
-		wi::image::Params params;
+		Protean::Image::Params params;
 		params.pos = XMFLOAT3(translation.x + separator, translation.y + control_size, 0);
 		params.siz = XMFLOAT2(2, scale.y - control_size);
 		params.color = shadow_color;
-		wi::image::Draw(nullptr, params, cmd);
+		Protean::Image::Draw(nullptr, params, cmd);
 	}
 }
 
-void ContentBrowserWindow::Update(const wi::Canvas& canvas, float dt)
+void ContentBrowserWindow::Update(const Protean::Canvas& canvas, float dt)
 {
-	wi::gui::Window::Update(canvas, dt);
+	Protean::Gui::Window::Update(canvas, dt);
 
 	SetShadowRadius(6);
 
 	const bool gui_round_enabled = !editor->generalWnd.disableRoundCornersCheckBox.GetCheck();
 	constexpr float radius = 15;
 
-	for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+	for (int i = 0; i < arraysize(Protean::Gui::Widget::sprites); ++i)
 	{
 		if (gui_round_enabled)
 		{
@@ -89,7 +87,7 @@ void ContentBrowserWindow::Update(const wi::Canvas& canvas, float dt)
 
 	for (auto& x : folderButtons)
 	{
-		x.font.params.h_align = wi::font::WIFALIGN_LEFT;
+		x.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
 		for (auto& y : x.sprites)
 		{
 			if (gui_round_enabled)
@@ -106,9 +104,9 @@ void ContentBrowserWindow::Update(const wi::Canvas& canvas, float dt)
 	}
 	for (auto& x : itemButtons)
 	{
-		if (x.sprites[wi::gui::IDLE].textureResource.IsValid())
+		if (x.sprites[Protean::Gui::IDLE].textureResource.IsValid())
 		{
-			x.sprites[wi::gui::IDLE].params.color = wi::Color::White();
+			x.sprites[Protean::Gui::IDLE].params.color = Protean::Color::White();
 		}
 		for (auto& y : x.sprites)
 		{
@@ -130,22 +128,22 @@ void ContentBrowserWindow::Update(const wi::Canvas& canvas, float dt)
 
 	openFolderButton.SetShadowRadius(0);
 
-	const XMFLOAT4 color_on = sprites[wi::gui::FOCUS].params.color;
-	const XMFLOAT4 color_off = sprites[wi::gui::IDLE].params.color;
+	const XMFLOAT4 color_on = sprites[Protean::Gui::FOCUS].params.color;
+	const XMFLOAT4 color_off = sprites[Protean::Gui::IDLE].params.color;
 
 	for (auto& x : folderButtons)
 	{
-		x.sprites[wi::gui::IDLE].params.color = color_off;
+		x.sprites[Protean::Gui::IDLE].params.color = color_off;
 	}
 	if (current_selection < SELECTION_COUNT)
 	{
-		folderButtons[current_selection].sprites[wi::gui::IDLE].params.color = color_on;
+		folderButtons[current_selection].sprites[Protean::Gui::IDLE].params.color = color_on;
 	}
 }
 
 void ContentBrowserWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	constexpr float padding = 4;
 	const float width = GetWidgetAreaSize().x;
 	float y = padding;
@@ -191,13 +189,13 @@ void ContentBrowserWindow::ResizeLayout()
 
 void ContentBrowserWindow::RefreshContent()
 {
-	content_folder = wi::helper::GetCurrentPath() + "/Content/";
-	wi::helper::MakePathAbsolute(content_folder);
-	if (!wi::helper::DirectoryExists(content_folder))
+	content_folder = Protean::Helper::GetCurrentPath() + "/Content/";
+	Protean::Helper::MakePathAbsolute(content_folder);
+	if (!Protean::Helper::DirectoryExists(content_folder))
 	{
 		// Source tree layout: working directory is data/editor, content is in data/content
-		content_folder = wi::helper::GetCurrentPath() + "/../content/";
-		wi::helper::MakePathAbsolute(content_folder);
+		content_folder = Protean::Helper::GetCurrentPath() + "/../content/";
+		Protean::Helper::MakePathAbsolute(content_folder);
 	}
 
 	float hei = 25;
@@ -210,47 +208,47 @@ void ContentBrowserWindow::RefreshContent()
 
 	if (!editor->recentFilenames.empty())
 	{
-		wi::gui::Button& button = folderButtons[SELECTION_ALL];
+		Protean::Gui::Button& button = folderButtons[SELECTION_ALL];
 		button.Create("All");
 		button.SetTooltip("List all recently used files, not grouped by folders.");
 		button.SetLocalizationEnabled(false);
 		button.SetSize(XMFLOAT2(wid, hei));
-		button.OnClick([this](wi::gui::EventArgs args) {
+		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_ALL);
 			});
-		AddWidget(&button, wi::gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_ALL;
 		}
 	}
-	if (wi::helper::DirectoryExists(content_folder + "models"))
+	if (Protean::Helper::DirectoryExists(content_folder + "models"))
 	{
-		wi::gui::Button& button = folderButtons[SELECTION_MODELS];
+		Protean::Gui::Button& button = folderButtons[SELECTION_MODELS];
 		button.Create("Models");
 		button.SetTooltip(content_folder + "models");
 		button.SetLocalizationEnabled(false);
 		button.SetSize(XMFLOAT2(wid, hei));
-		button.OnClick([this](wi::gui::EventArgs args) {
+		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_MODELS);
 			});
-		AddWidget(&button, wi::gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_MODELS;
 		}
 	}
-	if (wi::helper::DirectoryExists(content_folder + "scripts"))
+	if (Protean::Helper::DirectoryExists(content_folder + "scripts"))
 	{
-		wi::gui::Button& button = folderButtons[SELECTION_SCRIPTS];
+		Protean::Gui::Button& button = folderButtons[SELECTION_SCRIPTS];
 		button.Create("Scripts");
 		button.SetTooltip(content_folder + "scripts");
 		button.SetLocalizationEnabled(false);
 		button.SetSize(XMFLOAT2(wid, hei));
-		button.OnClick([this](wi::gui::EventArgs args) {
+		button.OnClick([this](Protean::Gui::EventArgs args) {
 			SetSelection(SELECTION_SCRIPTS);
 		});
-		AddWidget(&button, wi::gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = SELECTION_SCRIPTS;
@@ -259,7 +257,7 @@ void ContentBrowserWindow::RefreshContent()
 
 	for (size_t i = 0; i < editor->recentFolders.size(); ++i)
 	{
-		wi::gui::Button& button = folderButtons[SELECTION_RECENTFOLDER_BEGIN + i];
+		Protean::Gui::Button& button = folderButtons[SELECTION_RECENTFOLDER_BEGIN + i];
 		std::string folder = editor->recentFolders[editor->recentFolders.size() - 1 - i];
 		while (!folder.empty() && (folder.back() == '/' || folder.back() == '\\'))
 		{
@@ -274,10 +272,10 @@ void ContentBrowserWindow::RefreshContent()
 		button.SetTooltip(editor->recentFolders[editor->recentFolders.size() - 1 - i]); // full folder name!
 		button.SetLocalizationEnabled(false);
 		button.SetSize(XMFLOAT2(wid, hei));
-		button.OnClick([this, i](wi::gui::EventArgs args) {
+		button.OnClick([this, i](Protean::Gui::EventArgs args) {
 			SetSelection((SELECTION)(SELECTION_RECENTFOLDER_BEGIN + i));
 		});
-		AddWidget(&button, wi::gui::Window::AttachmentOptions::NONE);
+		AddWidget(&button, Protean::Gui::Window::AttachmentOptions::NONE);
 		if (current_selection == SELECTION_COUNT)
 		{
 			current_selection = (SELECTION)(SELECTION_RECENTFOLDER_BEGIN + i);
@@ -292,7 +290,7 @@ void ContentBrowserWindow::RefreshContent()
 
 void ContentBrowserWindow::SetSelection(SELECTION selection)
 {
-	wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this, selection](uint64_t userdata) {
+	Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this, selection](uint64_t userdata) {
 		current_selection = selection;
 		for (auto& x : itemButtons)
 		{
@@ -309,10 +307,10 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 		{
 		case SELECTION_SCRIPTS:
 			AddItems(content_folder + "scripts/", "lua", ICON_SCRIPT);
-			openFolderButton.OnClick([this](wi::gui::EventArgs args) {
-				wi::helper::OpenUrl(content_folder + "scripts/");
+			openFolderButton.OnClick([this](Protean::Gui::EventArgs args) {
+				Protean::Helper::OpenUrl(content_folder + "scripts/");
 				});
-			AddWidget(&openFolderButton, wi::gui::Window::AttachmentOptions::NONE);
+			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
 			break;
 		case SELECTION_MODELS:
 			AddItems(content_folder + "models/", "wiscene", ICON_OBJECT);
@@ -323,16 +321,16 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 			AddItems(content_folder + "models/", "fbx", ICON_OBJECT);
 			AddItems(content_folder + "models/", "obj", ICON_OBJECT);
 			AddItems(content_folder + "models/", "ply", ICON_OBJECT);
-			openFolderButton.OnClick([this](wi::gui::EventArgs args) {
-				wi::helper::OpenUrl(content_folder + "models/");
+			openFolderButton.OnClick([this](Protean::Gui::EventArgs args) {
+				Protean::Helper::OpenUrl(content_folder + "models/");
 				});
-			AddWidget(&openFolderButton, wi::gui::Window::AttachmentOptions::NONE);
+			AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
 			break;
 		case SELECTION_ALL:
 			for (size_t i = 0; i < editor->recentFilenames.size(); ++i)
 			{
 				const std::string& fileName = editor->recentFilenames[editor->recentFilenames.size() - 1 - i];
-				std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+				std::string ext = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(fileName));
 				if (!ext.compare("LUA"))
 				{
 					AddItem(fileName, ICON_SCRIPT);
@@ -385,10 +383,10 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 				AddItems(folder, "obj", ICON_OBJECT);
 				AddItems(folder, "ply", ICON_OBJECT);
 				AddItems(folder, "lua", ICON_SCRIPT);
-				openFolderButton.OnClick([folder](wi::gui::EventArgs args) {
-					wi::helper::OpenUrl(folder);
+				openFolderButton.OnClick([folder](Protean::Gui::EventArgs args) {
+					Protean::Helper::OpenUrl(folder);
 				});
-				AddWidget(&openFolderButton, wi::gui::Window::AttachmentOptions::NONE);
+				AddWidget(&openFolderButton, Protean::Gui::Window::AttachmentOptions::NONE);
 			}
 			break;
 		}
@@ -408,24 +406,24 @@ void ContentBrowserWindow::SetSelection(SELECTION selection)
 void ContentBrowserWindow::AddItems(const std::string& folder, const std::string& extension, const std::string& icon)
 {
 	// Folders parse:
-	wi::helper::GetFolderNamesInDirectory(folder, [&](const std::string& folderName) {
+	Protean::Helper::GetFolderNamesInDirectory(folder, [&](const std::string& folderName) {
 		const std::string itemName = folderName.substr(folder.size()) + "." + extension;
 		const std::string fileName = folderName + "/" + itemName;
-		if (wi::helper::FileExists(fileName))
+		if (Protean::Helper::FileExists(fileName))
 		{
 			AddItem(fileName, icon);
 		}
 	});
 
 	// Individual items:
-	wi::helper::GetFileNamesInDirectory(folder, [&](const std::string& fileName) {
+	Protean::Helper::GetFileNamesInDirectory(folder, [&](const std::string& fileName) {
 		AddItem(fileName, icon);
 		}, extension);
 }
 
 void ContentBrowserWindow::AddItem(const std::string& fileName, const std::string& icon)
 {
-	if (!wi::helper::FileExists(fileName))
+	if (!Protean::Helper::FileExists(fileName))
 		return;
 
 	for (const auto& item : added_items)
@@ -437,7 +435,7 @@ void ContentBrowserWindow::AddItem(const std::string& fileName, const std::strin
 	ItemInfo info;
 	info.fileName = fileName;
 	info.icon = icon;
-	info.file_size = wi::helper::FileSize(fileName);
+	info.file_size = Protean::Helper::FileSize(fileName);
 
 	// Find index in recent filenames list (lower - more recent)
 	info.recent_index = SIZE_MAX;
@@ -466,12 +464,12 @@ void ContentBrowserWindow::SortAndCreateItemButtons()
 		break;
 	case SORTING_NAME:
 		std::sort(added_items.begin(), added_items.end(), [](const ItemInfo& a, const ItemInfo& b) {
-			return wi::helper::toUpper(wi::helper::GetFileNameFromPath(a.fileName)) < wi::helper::toUpper(wi::helper::GetFileNameFromPath(b.fileName));
+			return Protean::Helper::toUpper(Protean::Helper::GetFileNameFromPath(a.fileName)) < Protean::Helper::toUpper(Protean::Helper::GetFileNameFromPath(b.fileName));
 		});
 		break;
 	case SORTING_PATH:
 		std::sort(added_items.begin(), added_items.end(), [](const ItemInfo& a, const ItemInfo& b) {
-			return wi::helper::toUpper(a.fileName) < wi::helper::toUpper(b.fileName);
+			return Protean::Helper::toUpper(a.fileName) < Protean::Helper::toUpper(b.fileName);
 		});
 		break;
 	case SORTING_SIZE:
@@ -493,39 +491,39 @@ void ContentBrowserWindow::CreateItemButton(const std::string& fileName, const s
 {
 	static constexpr auto siz = XMFLOAT2(240, 120);
 
-	if (!wi::helper::FileExists(fileName))
+	if (!Protean::Helper::FileExists(fileName))
 		return;
 
-	const std::string itemName = wi::helper::GetFileNameFromPath(fileName);
-	const std::string folderName = wi::helper::GetDirectoryFromPath(fileName);
-	const std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+	const std::string itemName = Protean::Helper::GetFileNameFromPath(fileName);
+	const std::string folderName = Protean::Helper::GetDirectoryFromPath(fileName);
+	const std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(fileName));
 
-	wi::gui::Button& button = itemButtons.emplace_back();
+	Protean::Gui::Button& button = itemButtons.emplace_back();
 	button.Create(icon);
 	button.SetSize(siz);
 	button.SetLocalizationEnabled(false);
 	button.SetDescription(itemName);
-	button.OnClick([this, fileName](wi::gui::EventArgs args) {
-		wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
+	button.OnClick([this, fileName](Protean::Gui::EventArgs args) {
+		Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
 			editor->Open(fileName);
 			});
 		this->SetVisible(false);
 		});
-	button.OnRightClick([this, fileName](wi::gui::EventArgs args) {
-		wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
+	button.OnRightClick([this, fileName](Protean::Gui::EventArgs args) {
+		Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
 			editor->NewScene();
 			editor->Open(fileName);
 			});
 		this->SetVisible(false);
 		});
-	button.font_description.params.h_align = wi::font::WIFALIGN_CENTER;
-	button.font_description.params.v_align = wi::font::WIFALIGN_TOP;
+	button.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
+	button.font_description.params.v_align = Protean::Font::WIFALIGN_TOP;
 	button.font.params.size = 42;
-	button.SetTooltip(fileName + "\nSize: " + wi::helper::GetMemorySizeText(wi::helper::FileSize(fileName)));
+	button.SetTooltip(fileName + "\nSize: " + Protean::Helper::GetMemorySizeText(Protean::Helper::FileSize(fileName)));
 	if (extension.compare("WISCENE") == 0)
 	{
-		wi::Archive::Header archive_header;
-		wi::graphics::Texture archiveThumbnail = wi::Archive::PeekThumbnail(fileName, &archive_header);
+		Protean::Archive::Header archive_header;
+		Protean::Graphics::Texture archiveThumbnail = Protean::Archive::PeekThumbnail(fileName, &archive_header);
 		if (archiveThumbnail.IsValid())
 		{
 			for (int i = 0; i < arraysize(sprites); ++i)
@@ -539,9 +537,9 @@ void ContentBrowserWindow::CreateItemButton(const std::string& fileName, const s
 	else
 	{
 		std::string thumbnailName = folderName + "/thumbnail.png";
-		if (wi::helper::FileExists(thumbnailName))
+		if (Protean::Helper::FileExists(thumbnailName))
 		{
-			wi::Resource thumbnail = wi::resourcemanager::Load(thumbnailName);
+			Protean::Resource thumbnail = Protean::ResourceManager::Load(thumbnailName);
 			if (thumbnail.IsValid())
 			{
 				for (int i = 0; i < arraysize(sprites); ++i)

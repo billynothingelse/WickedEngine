@@ -37,7 +37,7 @@ int sdl_loop()
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			bool textinput_action_delete = false;
-			wi::input::sdlinput::ProcessEvent(event);
+			Protean::Input::SDL::ProcessEvent(event);
 			switch(event.type){
 				case SDL_EVENT_QUIT:
 					editor.Exit();
@@ -57,23 +57,23 @@ int sdl_loop()
 				case SDL_EVENT_KEY_DOWN:
 					if(event.key.scancode == SDL_SCANCODE_BACKSPACE
 					   || event.key.scancode == SDL_SCANCODE_KP_BACKSPACE) {
-						wi::gui::TextInputField::DeleteFromInput();
+						Protean::Gui::TextInputField::DeleteFromInput();
 						textinput_action_delete = true;
-					} else if(wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL)) {
+					} else if(Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCONTROL)) {
 						// HACK: AddInput will check if Ctrl is pressed and
 						// handle Ctrl-C/Ctrl-V/Ctrl-X for us, but
-						// wi::input::Down will only be accurate after
-						// wi::input::Update was run, which will happen next
+						// Protean::Input::Down will only be accurate after
+						// Protean::Input::Update was run, which will happen next
 						// frame, which is too late for us. So we just call it
 						// now and then call AddInput
-						wi::input::Update(editor.window, editor.canvas);
-						wi::gui::TextInputField::AddInput('?'); // AddInput actually ignores the argument when Ctrl is pressed
+						Protean::Input::Update(editor.window, editor.canvas);
+						Protean::Gui::TextInputField::AddInput('?'); // AddInput actually ignores the argument when Ctrl is pressed
 					}
 					break;
 				case SDL_EVENT_TEXT_INPUT:
 					if(!textinput_action_delete){
 						if(event.text.text[0] >= 21){
-							wi::gui::TextInputField::AddInput(event.text.text[0]);
+							Protean::Gui::TextInputField::AddInput(event.text.text[0]);
 						}
 					}
 					break;
@@ -151,7 +151,7 @@ void crash_handler(int sig)
 		"Driver: %s\n"
 		"Stacktrace:\n",
 		sig, sigdescr_np(sig),
-		wi::version::GetVersionString(),
+		Protean::Version::GetVersionString(),
 		editor.GetAdapterName(),
 		editor.GetDriverDescription()
 	);
@@ -180,7 +180,7 @@ void crash_handler(int sig)
 		fflush(logfile);
 		backtrace_symbols_fd(btbuf, size, fileno(logfile));
 		fputs("\nBacklog:\n", logfile);
-		wi::backlog::_forEachLogEntry_unsafe([&logfile] (auto&& entry) {
+		Protean::Backlog::_forEachLogEntry_unsafe([&logfile] (auto&& entry) {
 			fputs(entry.text.c_str(), logfile);
 			fflush(logfile);
 		});
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	wi::arguments::Parse(argc, argv);
+	Protean::Arguments::Parse(argc, argv);
 
 	// SDL3 dropped SDL_INIT_EVERYTHING; list the subsystems the editor actually needs instead.
 	sdl3::sdlsystem_ptr_t system = sdl3::make_sdlsystem(
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 	bool fullscreen = false;
 	bool window_maximized = false;
 
-	wi::Timer timer;
+	Protean::Timer timer;
 	if (editor.config.Open("config.ini"))
 	{
 		if (editor.config.Has("width"))
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
 	height = std::max(100, height);
 
 	sdl3::window_ptr_t window = sdl3::make_window(
-			wi::helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(),
+			Protean::Helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			width, height,
 			SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
@@ -265,14 +265,14 @@ int main(int argc, char *argv[])
 
 	int ret = sdl_loop();
 
-	wi::jobsystem::ShutDown();
+	Protean::JobSystem::ShutDown();
 
 	// Must run before SDL_Quit() (triggered below by the `system` RAII wrapper going out of
-	// scope): wi::audio's internal state is otherwise only destroyed as a static at process
+	// scope): Protean::Audio's internal state is otherwise only destroyed as a static at process
 	// exit, which runs after SDL_Quit() has already torn down the audio subsystem -- the
 	// FAudio SDL3 platform backend's device teardown then dereferences an already-invalidated
 	// SDL3 audio device handle and crashes.
-	wi::audio::Deinitialize();
+	Protean::Audio::Deinitialize();
 
 	return ret;
 }

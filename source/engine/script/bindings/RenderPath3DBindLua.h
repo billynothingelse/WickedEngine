@@ -5,7 +5,7 @@
 #include "script/bindings/RenderPath2DBindLua.h"
 #include "script/bindings/SceneBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	class RenderPath3D_BindLua : public RenderPath2D_BindLua
@@ -24,8 +24,8 @@ namespace wi::lua
 		}
 		RenderPath3D_BindLua(lua_State* L)
 		{
-			renderpath.scene = wi::lua::scene::GetGlobalScene();
-			renderpath.camera = wi::lua::scene::GetGlobalCamera();
+			renderpath.scene = Protean::Lua::SceneBindings::GetGlobalScene();
+			renderpath.camera = Protean::Lua::SceneBindings::GetGlobalCamera();
 			this->component = &renderpath;
 		}
 		virtual ~RenderPath3D_BindLua() = default;

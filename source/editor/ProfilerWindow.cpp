@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "ProfilerWindow.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-void ProfilerWidget::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void ProfilerWidget::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
 	if (!IsVisible())
 	{
-		wi::profiler::DisableDrawForThisFrame();
-		wi::profiler::SetBackgroundColor(wi::Color::fromFloat4(sprites[wi::gui::IDLE].params.color));
+		Protean::Profiler::DisableDrawForThisFrame();
+		Protean::Profiler::SetBackgroundColor(Protean::Color::fromFloat4(sprites[Protean::Gui::IDLE].params.color));
 		return;
 	}
 
@@ -16,18 +16,18 @@ void ProfilerWidget::Render(const wi::Canvas& canvas, wi::graphics::CommandList 
 
 	ApplyScissor(canvas, scissorRect, cmd);
 
-	wi::profiler::SetBackgroundColor(wi::Color::Transparent());
-	wi::profiler::SetTextColor(font.params.color);
-	wi::profiler::DrawData(canvas, translation.x + 5, translation.y + 5, cmd);
+	Protean::Profiler::SetBackgroundColor(Protean::Color::Transparent());
+	Protean::Profiler::SetTextColor(font.params.color);
+	Protean::Profiler::DrawData(canvas, translation.x + 5, translation.y + 5, cmd);
 }
 
 void ProfilerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	Window::Create("Profiler", wi::gui::Window::WindowControls::ALL);
+	Window::Create("Profiler", Protean::Gui::Window::WindowControls::ALL);
 
-	OnClose([=](wi::gui::EventArgs args) {
-		wi::profiler::SetEnabled(false);
+	OnClose([=](Protean::Gui::EventArgs args) {
+		Protean::Profiler::SetEnabled(false);
 	});
 
 	profilerWidget.SetSize(XMFLOAT2(200, 1000));
@@ -58,12 +58,12 @@ void ProfilerWindow::Create(EditorComponent* _editor)
 	SetShadowRadius(2);
 }
 
-void ProfilerWindow::Update(const wi::Canvas& canvas, float dt)
+void ProfilerWindow::Update(const Protean::Canvas& canvas, float dt)
 {
-	wi::gui::Window::Update(canvas, dt);
+	Protean::Gui::Window::Update(canvas, dt);
 
 	const bool gui_round_enabled = !editor->generalWnd.disableRoundCornersCheckBox.GetCheck();
-	for (int i = 0; i < arraysize(wi::gui::Widget::sprites); ++i)
+	for (int i = 0; i < arraysize(Protean::Gui::Widget::sprites); ++i)
 	{
 		if (gui_round_enabled)
 		{
@@ -81,7 +81,7 @@ void ProfilerWindow::Update(const wi::Canvas& canvas, float dt)
 }
 void ProfilerWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	editor->main->config.GetSection("layout").Set("profiler.width", GetSize().x);
 	editor->main->config.GetSection("layout").Set("profiler.height", GetSize().y);

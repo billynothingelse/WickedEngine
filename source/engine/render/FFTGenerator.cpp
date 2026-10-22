@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi::fftgenerator
+namespace Protean::FFTGenerator
 {
 	Shader radix008A_CS;
 	Shader radix008A_CS2;
@@ -20,9 +20,9 @@ namespace wi::fftgenerator
 		uint32_t slices;
 
 		// For 512x512 config, we need 6 constant buffers
-		wi::graphics::GPUBuffer pRadix008A_CB[6];
+		Protean::Graphics::GPUBuffer pRadix008A_CB[6];
 
-		wi::graphics::GPUBuffer pBuffer_Tmp;
+		Protean::Graphics::GPUBuffer pBuffer_Tmp;
 
 		inline bool IsValid() const { return pBuffer_Tmp.IsValid(); }
 	};
@@ -46,7 +46,7 @@ namespace wi::fftgenerator
 		// Setup execution configuration
 		uint32_t grid = thread_count / COHERENCY_GRANULARITY;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// Buffers
 		const GPUResource* srvs[1] = { &pSRV_Src };
@@ -82,7 +82,7 @@ namespace wi::fftgenerator
 		const GPUResource& pSRV_Src,
 		CommandList cmd)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (!fft_plan.IsValid())
 		{
@@ -195,8 +195,8 @@ namespace wi::fftgenerator
 
 	void LoadShaders()
 	{
-		wi::renderer::LoadShader(ShaderStage::CS, radix008A_CS, "fft_512x512_c2c_CS.cso");
-		wi::renderer::LoadShader(ShaderStage::CS, radix008A_CS2, "fft_512x512_c2c_v2_CS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix008A_CS, "fft_512x512_c2c_CS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix008A_CS2, "fft_512x512_c2c_v2_CS.cso");
 	}
 
 }

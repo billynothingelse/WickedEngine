@@ -12,7 +12,7 @@
 //		- JPEG compressed image if header.properties.bits.thumbnail_data_size > 0
 // - Data [optionally compressed] (offset = sizeof(Header) + header.properties.bits.thumbnail_data_size, size = remaining)
 
-namespace wi
+namespace Protean
 {
 	// this should always be only INCREMENTED and only if a new serialization is implemeted somewhere!
 	static constexpr uint64_t __archiveVersion = 93;
@@ -30,10 +30,10 @@ namespace wi
 	{
 		if (!fileName.empty())
 		{
-			directory = wi::helper::GetDirectoryFromPath(fileName);
+			directory = Protean::Helper::GetDirectoryFromPath(fileName);
 			if (readMode)
 			{
-				if (wi::helper::FileRead(fileName, DATA))
+				if (Protean::Helper::FileRead(fileName, DATA))
 				{
 					data_ptr = DATA.data();
 					data_ptr_size = DATA.size();
@@ -75,7 +75,7 @@ namespace wi
 			{
 				if (report_errors)
 				{
-					wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(header.version) + ") is no longer supported! This is likely because trying to open a file that was created by a version of Wicked Engine that is too old.", "Error!");
+					Protean::Helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(header.version) + ") is no longer supported! This is likely because trying to open a file that was created by a version of Wicked Engine that is too old.", "Error!");
 				}
 				Close();
 				return;
@@ -84,7 +84,7 @@ namespace wi
 			{
 				if (report_errors)
 				{
-					wi::helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(header.version) + ") is higher than the program's (" + std::to_string(__archiveVersion) + ")!\nThis is likely due to trying to open an Archive file that was not created by Wicked Engine.", "Error!");
+					Protean::Helper::messageBox("File is not supported!\nReason: The archive version (" + std::to_string(header.version) + ") is higher than the program's (" + std::to_string(__archiveVersion) + ")!\nThis is likely due to trying to open an Archive file that was not created by Wicked Engine.", "Error!");
 				}
 				Close();
 				return;
@@ -111,9 +111,9 @@ namespace wi
 				if (data_ptr_size > data_offset)
 				{
 					size_t data_size = data_ptr_size - data_offset;
-					wi::vector<uint8_t> decompressed_part;
-					wi::helper::Decompress(data_ptr + data_offset, data_size, decompressed_part);
-					wi::vector<uint8_t> final_data(data_offset + decompressed_part.size());
+					Protean::vector<uint8_t> decompressed_part;
+					Protean::Helper::Decompress(data_ptr + data_offset, data_size, decompressed_part);
+					Protean::vector<uint8_t> final_data(data_offset + decompressed_part.size());
 					size_t _offset = 0;
 					std::memcpy(final_data.data() + _offset, &header, sizeof(Header));
 					_offset += sizeof(Header);
@@ -155,33 +155,33 @@ namespace wi
 	{
 		if (IsCompressionEnabled())
 		{
-			wi::vector<uint8_t> final_data;
+			Protean::vector<uint8_t> final_data;
 			WriteCompressedData(final_data);
-			return wi::helper::FileWrite(fileName, final_data.data(), final_data.size());
+			return Protean::Helper::FileWrite(fileName, final_data.data(), final_data.size());
 		}
-		return wi::helper::FileWrite(fileName, data_ptr, pos);
+		return Protean::Helper::FileWrite(fileName, data_ptr, pos);
 	}
 
 	bool Archive::SaveHeaderFile(const std::string& fileName, const std::string& dataName)
 	{
 		if (IsCompressionEnabled())
 		{
-			wi::vector<uint8_t> final_data;
+			Protean::vector<uint8_t> final_data;
 			WriteCompressedData(final_data);
-			return wi::helper::Bin2H(final_data.data(), final_data.size(), fileName, dataName.c_str());
+			return Protean::Helper::Bin2H(final_data.data(), final_data.size(), fileName, dataName.c_str());
 		}
-		return wi::helper::Bin2H(data_ptr, pos, fileName, dataName.c_str());
+		return Protean::Helper::Bin2H(data_ptr, pos, fileName, dataName.c_str());
 	}
 
 	bool Archive::SaveCPPFile(const std::string& fileName, const std::string& dataName)
 	{
 		if (IsCompressionEnabled())
 		{
-			wi::vector<uint8_t> final_data;
+			Protean::vector<uint8_t> final_data;
 			WriteCompressedData(final_data);
-			return wi::helper::Bin2CPP(final_data.data(), final_data.size(), fileName, dataName.c_str());
+			return Protean::Helper::Bin2CPP(final_data.data(), final_data.size(), fileName, dataName.c_str());
 		}
-		return wi::helper::Bin2CPP(data_ptr, pos, fileName, dataName.c_str());
+		return Protean::Helper::Bin2CPP(data_ptr, pos, fileName, dataName.c_str());
 	}
 
 	const std::string& Archive::GetSourceDirectory() const
@@ -194,7 +194,7 @@ namespace wi
 		return fileName;
 	}
 
-	wi::graphics::Texture Archive::CreateThumbnailTexture() const
+	Protean::Graphics::Texture Archive::CreateThumbnailTexture() const
 	{
 		if (header.properties.bits.thumbnail_data_size == 0)
 			return {};
@@ -204,34 +204,34 @@ namespace wi
 		uint8_t* rgba = stbi_load_from_memory(get_thumbnail_data(), (int)header.properties.bits.thumbnail_data_size, &width, &height, &channels, 4);
 		if (rgba == nullptr)
 			return {};
-		wi::graphics::Texture texture;
-		wi::texturehelper::CreateTexture(texture, rgba, (uint32_t)width, (uint32_t)height);
+		Protean::Graphics::Texture texture;
+		Protean::TextureHelper::CreateTexture(texture, rgba, (uint32_t)width, (uint32_t)height);
 		stbi_image_free(rgba);
 		return texture;
 	}
 
-	void Archive::SetThumbnailAndResetPos(const wi::graphics::Texture& texture)
+	void Archive::SetThumbnailAndResetPos(const Protean::Graphics::Texture& texture)
 	{
-		wi::vector<uint8_t> thumbnail_data;
-		wi::helper::saveTextureToMemoryFile(texture, "JPG", thumbnail_data);
+		Protean::vector<uint8_t> thumbnail_data;
+		Protean::Helper::saveTextureToMemoryFile(texture, "JPG", thumbnail_data);
 		header.properties.bits.thumbnail_data_size = thumbnail_data.size();
 		thumbnail_data_ptr_write = thumbnail_data.data();
 		SetReadModeAndResetPos(false); // start over in write mode with thumbnail image data
 		thumbnail_data_ptr_write = nullptr;
 	}
 
-	wi::graphics::Texture Archive::PeekThumbnail(const std::string& filename, Header* out_header)
+	Protean::Graphics::Texture Archive::PeekThumbnail(const std::string& filename, Header* out_header)
 	{
-		wi::vector<uint8_t> filedata;
+		Protean::vector<uint8_t> filedata;
 
 		size_t required_size = sizeof(Header);
 
-		wi::helper::FileRead(filename, filedata, required_size); // read only the header
+		Protean::Helper::FileRead(filename, filedata, required_size); // read only the header
 		if (filedata.empty())
 			return {};
 
 		{
-			wi::Archive archive(filedata.data(), filedata.size());
+			Protean::Archive archive(filedata.data(), filedata.size());
 			if (archive.IsOpen())
 			{
 				if (out_header != nullptr)
@@ -244,15 +244,15 @@ namespace wi
 			}
 		}
 
-		wi::helper::FileRead(filename, filedata, required_size); // read up to end of thumbnail data
+		Protean::Helper::FileRead(filename, filedata, required_size); // read up to end of thumbnail data
 		if (filedata.empty())
 			return {};
 
-		wi::Archive archive(filedata.data(), filedata.size());
+		Protean::Archive archive(filedata.data(), filedata.size());
 		return archive.CreateThumbnailTexture();
 	}
 
-	void Archive::WriteData(wi::vector<uint8_t>& dest) const
+	void Archive::WriteData(Protean::vector<uint8_t>& dest) const
 	{
 		if (IsCompressionEnabled())
 		{
@@ -265,7 +265,7 @@ namespace wi
 		}
 	}
 
-	void Archive::WriteCompressedData(wi::vector<uint8_t>& final_data) const
+	void Archive::WriteCompressedData(Protean::vector<uint8_t>& final_data) const
 	{
 		Header _header = header;
 		_header.properties.bits.compressed = 1; // force write compressed header
@@ -273,8 +273,8 @@ namespace wi
 		data_offset += sizeof(Header);
 		data_offset += _header.properties.bits.thumbnail_data_size;
 		size_t data_size = pos - data_offset;
-		wi::vector<uint8_t> compressed_part;
-		wi::helper::Compress(data_ptr + data_offset, data_size, compressed_part, 9);
+		Protean::vector<uint8_t> compressed_part;
+		Protean::Helper::Compress(data_ptr + data_offset, data_size, compressed_part, 9);
 		final_data.resize(data_offset + compressed_part.size());
 		size_t _offset = 0;
 		std::memcpy(final_data.data() + _offset, &_header, sizeof(Header));

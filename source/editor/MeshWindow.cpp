@@ -4,9 +4,7 @@
 #include "stb_image.h"
 #include "meshoptimizer/meshoptimizer.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 MeshComponent* get_mesh(Scene& scene, PickResult x)
 {
 	MeshComponent* mesh = scene.meshes.GetComponent(x.entity);
@@ -25,13 +23,13 @@ MeshComponent* get_mesh(Scene& scene, PickResult x)
 void MeshWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_MESH " Mesh", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_MESH " Mesh", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(580, 880));
 
 	closeButton.SetTooltip("Delete MeshComponent");
-	OnClose([this](wi::gui::EventArgs args) {
+	OnClose([this](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -51,13 +49,13 @@ void MeshWindow::Create(EditorComponent* _editor)
 	float wid = 200;
 
 	meshInfoLabel.Create("Mesh Info");
-	meshInfoLabel.SetColor(wi::Color::Transparent());
+	meshInfoLabel.SetColor(Protean::Color::Transparent());
 	meshInfoLabel.SetFitTextEnabled(true);
 	AddWidget(&meshInfoLabel);
 
 	subsetComboBox.Create("Select subset: ");
 	subsetComboBox.SetEnabled(false);
-	subsetComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	subsetComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		MeshComponent* mesh = scene.meshes.GetComponent(entity);
 		if (mesh != nullptr)
@@ -67,7 +65,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 			uint32_t main_subset_count = mesh->subsets_per_lod > 0 ? mesh->subsets_per_lod : (uint32_t)mesh->subsets.size();
 			if (main_subset_count <= (uint32_t)subset)
 			{
-				wi::Archive& archive = editor->AdvanceHistory();
+				Protean::Archive& archive = editor->AdvanceHistory();
 				archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 				editor->RecordEntity(archive, entity);
 
@@ -84,7 +82,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	subsetRemoveButton.Create("X");
 	subsetRemoveButton.SetTooltip("Remove currently selected subset. LODs will be lost and need to be regenerated!");
-	subsetRemoveButton.OnClick([=](wi::gui::EventArgs args) {
+	subsetRemoveButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		MeshComponent* mesh = scene.meshes.GetComponent(entity);
 		if (mesh != nullptr)
@@ -94,7 +92,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 			if (selected < 0 || selected >= (int)main_subset_count)
 				return;
 
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -109,7 +107,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	subsetLastButton.Create("Move subset to last index");
 	subsetLastButton.SetTooltip("Move subset to the last index to render last. Useful if you want to force transparency render order within subsets.");
-	subsetLastButton.OnClick([=](wi::gui::EventArgs args) {
+	subsetLastButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		MeshComponent* mesh = scene.meshes.GetComponent(entity);
 		if (mesh != nullptr)
@@ -119,12 +117,12 @@ void MeshWindow::Create(EditorComponent* _editor)
 			if (selected < 0 || selected >= (int)main_subset_count)
 				return;
 
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
 			uint32_t lod_count = mesh->GetLODCount();
-			wi::vector<MeshComponent::MeshSubset> newSubsets;
+			Protean::vector<MeshComponent::MeshSubset> newSubsets;
 			newSubsets.reserve(mesh->subsets.size());
 
 			for (uint32_t lod = 0; lod < lod_count; ++lod)
@@ -153,7 +151,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MeshComponent* mesh = get_mesh(scene, x);
@@ -198,7 +196,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	impostorCreateButton.Create("Create Impostor");
 	impostorCreateButton.SetTooltip("Create an impostor image of the mesh. The mesh will be replaced by this image when far away, to render faster.");
-	impostorCreateButton.OnClick([this](wi::gui::EventArgs args) {
+	impostorCreateButton.OnClick([this](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		ImpostorComponent* impostor = scene.impostors.GetComponent(entity);
 		if (impostor == nullptr)
@@ -216,7 +214,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	impostorDistanceSlider.Create(0, 1000, 100, 10000, "Impostor Dist: ");
 	impostorDistanceSlider.SetTooltip("Assign the distance where the mesh geometry should be switched to the impostor image.");
-	impostorDistanceSlider.OnSlide([this](wi::gui::EventArgs args) {
+	impostorDistanceSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		ImpostorComponent* impostor = editor->GetCurrentScene().impostors.GetComponent(entity);
 		if (impostor != nullptr)
 		{
@@ -234,10 +232,10 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	instanceSelectButton.Create("Select instances");
 	instanceSelectButton.SetTooltip("Select all instances that use this mesh.");
-	instanceSelectButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
-		wi::vector<Entity> sel;
-		wi::unordered_set<const ObjectComponent*> visited_objects; // fix double visit (straight mesh + object->mesh)
+	instanceSelectButton.OnClick([this](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
+		Protean::vector<Entity> sel;
+		Protean::unordered_set<const ObjectComponent*> visited_objects; // fix double visit (straight mesh + object->mesh)
 		for (size_t i = 0; i < scene.objects.GetCount(); ++i)
 		{
 			const ObjectComponent& object = scene.objects[i];
@@ -256,10 +254,10 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	auto changeSelectedMesh = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
-			wi::unordered_set<MeshComponent*> visited_meshes; // fix double visit (straight mesh + object->mesh)
-			wi::vector<MeshComponent*> meshes_to_modify;
-			wi::vector<wi::ecs::Entity> mesh_entities;
+			Protean::Scene& scene = editor->GetCurrentScene();
+			Protean::unordered_set<MeshComponent*> visited_meshes; // fix double visit (straight mesh + object->mesh)
+			Protean::vector<MeshComponent*> meshes_to_modify;
+			Protean::vector<Protean::Entity> mesh_entities;
 			for (auto& i : editor->translator.selected)
 			{
 				MeshComponent* mesh = get_mesh(scene, i);
@@ -278,7 +276,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 			}
 			if (mesh_entities.empty())
 				return;
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, mesh_entities);
 			for (auto* mesh : meshes_to_modify)
@@ -347,7 +345,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 	recenterToXInput.SetDescription("Center: ");
 	recenterToXInput.SetValue(0.0f);
 	recenterToXInput.SetSize(XMFLOAT2(siz, hei));
-	recenterToXInput.OnInputAccepted([this, changeSelectedMesh](wi::gui::EventArgs args) {
+	recenterToXInput.OnInputAccepted([this, changeSelectedMesh](Protean::Gui::EventArgs args) {
 		const float recenterX = args.fValue;
 		const float recenterY = (float)std::atof(recenterToYInput.GetValue().c_str());
 		const float recenterZ = (float)std::atof(recenterToZInput.GetValue().c_str());
@@ -361,7 +359,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 	recenterToYInput.SetDescription("");
 	recenterToYInput.SetValue(0.0f);
 	recenterToYInput.SetSize(XMFLOAT2(siz, hei));
-	recenterToYInput.OnInputAccepted([this, changeSelectedMesh](wi::gui::EventArgs args) {
+	recenterToYInput.OnInputAccepted([this, changeSelectedMesh](Protean::Gui::EventArgs args) {
 		const float recenterX = (float)std::atof(recenterToXInput.GetValue().c_str());
 		const float recenterY = args.fValue;
 		const float recenterZ = (float)std::atof(recenterToZInput.GetValue().c_str());
@@ -375,7 +373,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 	recenterToZInput.SetDescription("");
 	recenterToZInput.SetValue(0.0f);
 	recenterToZInput.SetSize(XMFLOAT2(siz, hei));
-	recenterToZInput.OnInputAccepted([this, changeSelectedMesh](wi::gui::EventArgs args) {
+	recenterToZInput.OnInputAccepted([this, changeSelectedMesh](Protean::Gui::EventArgs args) {
 		const float recenterX = (float)std::atof(recenterToXInput.GetValue().c_str());
 		const float recenterY = (float)std::atof(recenterToYInput.GetValue().c_str());
 		const float recenterZ = args.fValue;
@@ -387,7 +385,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	mergeButton.Create("Merge Selected");
 	mergeButton.SetTooltip("Merges selected objects/meshes into one.\nAll selected object transformations will be applied to meshes and all meshes will be baked into a single mesh.");
-	mergeButton.OnClick([=](wi::gui::EventArgs args) {
+	mergeButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		ObjectComponent merged_object;
 		MeshComponent merged_mesh;
@@ -402,7 +400,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 		bool valid_boneweights2 = false;
 		bool valid_colors = false;
 		bool valid_windweights = false;
-		wi::unordered_set<Entity> entities_to_remove;
+		Protean::unordered_set<Entity> entities_to_remove;
 		Entity prev_subset_material = INVALID_ENTITY;
 
 		// Search for first object with a mesh from selection, that will be the base:
@@ -665,7 +663,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 			size_t index_count = mesh->indices.size();
 			size_t vertex_count = mesh->vertex_positions.size();
 
-			wi::vector<uint32_t> indices(index_count);
+			Protean::vector<uint32_t> indices(index_count);
 			meshopt_optimizeVertexCache(indices.data(), mesh->indices.data(), index_count, vertex_count);
 
 			mesh->indices = indices;
@@ -678,17 +676,17 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	exportHeaderButton.Create("Export to C++ header");
 	exportHeaderButton.SetTooltip("Export vertex positions and index buffer into a C++ header file.\n - Object transformation (if selected through object picking) and Skinning pose will be applied.\n - Only LOD0 will be exported.\n - The generated vertex positions and indices will be reordered and optimized without considering other vertex attributes.");
-	exportHeaderButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
+	exportHeaderButton.OnClick([this](Protean::Gui::EventArgs args) {
+		Protean::Helper::FileDialogParams params;
 		params.description = ".h (C++ header file)";
 		params.extensions.push_back("h");
-		params.type = wi::helper::FileDialogParams::TYPE::SAVE;
-		wi::helper::FileDialog(params, [&](std::string filename) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		params.type = Protean::Helper::FileDialogParams::TYPE::SAVE;
+		Protean::Helper::FileDialog(params, [&](std::string filename) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-				wi::scene::Scene& scene = editor->GetCurrentScene();
-				wi::vector<XMFLOAT3> vertices;
-				wi::vector<uint32_t> indices;
+				Protean::Scene& scene = editor->GetCurrentScene();
+				Protean::vector<XMFLOAT3> vertices;
+				Protean::vector<uint32_t> indices;
 				uint32_t vertexOffset = 0;
 
 				for (auto& x : editor->translator.selected)
@@ -714,7 +712,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 						}
 						else
 						{
-							P = wi::scene::SkinVertex(*mesh, *armature, (uint32_t)i);
+							P = Protean::SkinVertex(*mesh, *armature, (uint32_t)i);
 						}
 						P = XMVector3Transform(P, M);
 
@@ -747,21 +745,21 @@ void MeshWindow::Create(EditorComponent* _editor)
 				}
 
 				// Generate shadow indices for position-only stream:
-				wi::vector<uint32_t> shadow_indices(indices.size());
+				Protean::vector<uint32_t> shadow_indices(indices.size());
 				meshopt_generateShadowIndexBuffer(
 					shadow_indices.data(), indices.data(), indices.size(),
 					vertices.data(), vertices.size(), sizeof(XMFLOAT3), sizeof(XMFLOAT3)
 				);
 
 				// De-duplicate vertices based on shadow index buffer:
-				wi::vector<unsigned int> remap(shadow_indices.size());
+				Protean::vector<unsigned int> remap(shadow_indices.size());
 				const size_t vertex_count = meshopt_generateVertexRemap(
 					remap.data(),
 					shadow_indices.data(), shadow_indices.size(),
 					vertices.data(), vertices.size(), sizeof(XMFLOAT3)
 				);
-				wi::vector<XMFLOAT3> remapped_vertices(vertex_count);
-				wi::vector<uint32_t> remapped_indices(shadow_indices.size());
+				Protean::vector<XMFLOAT3> remapped_vertices(vertex_count);
+				Protean::vector<uint32_t> remapped_indices(shadow_indices.size());
 				meshopt_remapIndexBuffer(remapped_indices.data(), shadow_indices.data(), shadow_indices.size(), remap.data());
 				meshopt_remapVertexBuffer(remapped_vertices.data(), vertices.data(), vertices.size() /*initial vertex count, not the one returned from meshopt_generateVertexRemap*/, sizeof(XMFLOAT3), remap.data());
 
@@ -785,8 +783,8 @@ void MeshWindow::Create(EditorComponent* _editor)
 				str += "};\n";
 
 				// Write to file:
-				std::string filename_dest = wi::helper::ForceExtension(filename, "h");
-				if (wi::helper::FileWrite(filename_dest, (uint8_t*)str.c_str(), str.length()))
+				std::string filename_dest = Protean::Helper::ForceExtension(filename, "h");
+				if (Protean::Helper::FileWrite(filename_dest, (uint8_t*)str.c_str(), str.length()))
 				{
 					editor->PostSaveText("Mesh exported to header file: ", filename_dest);
 				}
@@ -802,7 +800,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 	subsetMaterialComboBox.Create("Material: ");
 	subsetMaterialComboBox.SetEnabled(false);
-	subsetMaterialComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	subsetMaterialComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		MeshComponent* mesh = scene.meshes.GetComponent(entity);
 		if (mesh != nullptr && subset >= 0 && subset < mesh->subsets.size())
@@ -822,7 +820,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 
 
 	morphTargetCombo.Create("Morph Target:");
-	morphTargetCombo.OnSelect([this](wi::gui::EventArgs args) {
+	morphTargetCombo.OnSelect([this](Protean::Gui::EventArgs args) {
 		MeshComponent* mesh = editor->GetCurrentScene().meshes.GetComponent(entity);
 		if (mesh != nullptr && args.iValue < (int)mesh->morph_targets.size())
 		{
@@ -861,11 +859,11 @@ void MeshWindow::Create(EditorComponent* _editor)
 			{
 				struct Subset
 				{
-					wi::vector<uint32_t> indices;
+					Protean::vector<uint32_t> indices;
 				};
-				wi::vector<Subset> subsets;
+				Protean::vector<Subset> subsets;
 			};
-			wi::vector<LOD> lods(lod_count);
+			Protean::vector<LOD> lods(lod_count);
 
 			const float target_error = lodErrorSlider.GetValue();
 
@@ -887,17 +885,17 @@ void MeshWindow::Create(EditorComponent* _editor)
 			{
 				const MeshComponent::MeshSubset& subset = mesh->subsets[subsetIndex];
 
-				float threshold = wi::math::Lerp(0, 0.9f, saturate(lodQualitySlider.GetValue()));
+				float threshold = Protean::Math::Lerp(0, 0.9f, saturate(lodQualitySlider.GetValue()));
 				for (size_t i = 1; i < lod_count; ++i)
 				{
-					wi::vector<unsigned int>& lod = lods[i].subsets[subsetIndex].indices;
+					Protean::vector<unsigned int>& lod = lods[i].subsets[subsetIndex].indices;
 
 					size_t target_index_count = size_t(mesh->indices.size() * threshold) / 3 * 3;
 
 					// we can simplify all the way from base level or from the last result
 					// simplifying from the base level sometimes produces better results, but simplifying from last level is faster
-					//const wi::vector<unsigned int>& source = lods[0].subsets[subsetIndex].indices;
-					const wi::vector<unsigned int>& source = lods[i - 1].subsets[subsetIndex].indices;
+					//const Protean::vector<unsigned int>& source = lods[0].subsets[subsetIndex].indices;
+					const Protean::vector<unsigned int>& source = lods[i - 1].subsets[subsetIndex].indices;
 
 					if (source.size() < target_index_count)
 						target_index_count = source.size();
@@ -918,7 +916,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 				// optimize each individual LOD for vertex cache & overdraw
 				for (size_t i = 0; i < lod_count; ++i)
 				{
-					wi::vector<unsigned int>& lod = lods[i].subsets[subsetIndex].indices;
+					Protean::vector<unsigned int>& lod = lods[i].subsets[subsetIndex].indices;
 
 					meshopt_optimizeVertexCache(&lod[0], &lod[0], lod.size(), mesh->vertex_positions.size());
 					meshopt_optimizeOverdraw(&lod[0], &lod[0], lod.size(), &mesh->vertex_positions[0].x, mesh->vertex_positions.size(), sizeof(XMFLOAT3), 1.0f);
@@ -926,7 +924,7 @@ void MeshWindow::Create(EditorComponent* _editor)
 			}
 
 			mesh->indices.clear();
-			wi::vector<MeshComponent::MeshSubset> subsets;
+			Protean::vector<MeshComponent::MeshSubset> subsets;
 			for (size_t i = 0; i < lod_count; ++i)
 			{
 				for (uint32_t subsetIndex = 0; subsetIndex < mesh->subsets_per_lod; ++subsetIndex)
@@ -1024,8 +1022,8 @@ void MeshWindow::SetEntity(Entity entity, int subset)
 		}
 		ss += "Vertex count: " + std::to_string(mesh->vertex_positions.size()) + "\n";
 		ss += "Index count: " + std::to_string(mesh->indices.size()) + "\n";
-		ss += "Index format: " + std::string(wi::graphics::GetIndexBufferFormatString(mesh->GetIndexFormat())) + "\n";
-		ss += "Position format: " + std::string(wi::graphics::GetFormatString(mesh->position_format)) + "\n";
+		ss += "Index format: " + std::string(Protean::Graphics::GetIndexBufferFormatString(mesh->GetIndexFormat())) + "\n";
+		ss += "Position format: " + std::string(Protean::Graphics::GetFormatString(mesh->position_format)) + "\n";
 		ss += "Subset count: " + std::to_string(mesh->subsets.size()) + " (" + std::to_string(mesh->GetLODCount()) + " LODs)\n";
 		if (!mesh->morph_targets.empty())
 		{
@@ -1035,12 +1033,12 @@ void MeshWindow::SetEntity(Entity entity, int subset)
 		{
 			ss += "Cluster count: " + std::to_string(mesh->GetClusterCount()) + "\n";
 		}
-		ss += "CPU memory: " + wi::helper::GetMemorySizeText(mesh->GetMemoryUsageCPU()) + "\n";
+		ss += "CPU memory: " + Protean::Helper::GetMemorySizeText(mesh->GetMemoryUsageCPU()) + "\n";
 		if (mesh->bvh.IsValid())
 		{
-			ss += "\tCPU BVH size: " + wi::helper::GetMemorySizeText(mesh->GetMemoryUsageBVH()) + "\n";
+			ss += "\tCPU BVH size: " + Protean::Helper::GetMemorySizeText(mesh->GetMemoryUsageBVH()) + "\n";
 		}
-		ss += "GPU memory: " + wi::helper::GetMemorySizeText(mesh->GetMemoryUsageGPU()) + "\n";
+		ss += "GPU memory: " + Protean::Helper::GetMemorySizeText(mesh->GetMemoryUsageGPU()) + "\n";
 		if (!mesh->BLASes.empty())
 		{
 			size_t size = 0;
@@ -1048,7 +1046,7 @@ void MeshWindow::SetEntity(Entity entity, int subset)
 			{
 				size += x.size;
 			}
-			ss += "\tBLAS size: " + wi::helper::GetMemorySizeText(size) + "\n";
+			ss += "\tBLAS size: " + Protean::Helper::GetMemorySizeText(size) + "\n";
 		}
 		ss += "\nVertex buffers:\n";
 		if (!mesh->vertex_positions.empty()) ss += "\tposition;\n";
@@ -1070,7 +1068,7 @@ void MeshWindow::SetEntity(Entity entity, int subset)
 		ss += "\nSuballocation offset: ";
 		if (mesh->generalBufferOffsetAllocation.IsValid())
 		{
-			ss += wi::helper::GetMemorySizeText(mesh->generalBufferOffsetAllocation.byte_offset);
+			ss += Protean::Helper::GetMemorySizeText(mesh->generalBufferOffsetAllocation.byte_offset);
 		}
 		else
 		{
@@ -1182,7 +1180,7 @@ void MeshWindow::UpdateRecenterInputs(const XMFLOAT3 center)
 
 void MeshWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 100;
 
 	layout.add_fullwidth(meshInfoLabel);

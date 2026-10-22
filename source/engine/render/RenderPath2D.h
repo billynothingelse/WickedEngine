@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	class Sprite;
 	class SpriteFont;
@@ -14,13 +14,13 @@ namespace wi
 	class RenderPath2D : public RenderPath
 	{
 	protected:
-		wi::graphics::Texture rtStencilExtracted;
-		wi::graphics::Texture stencilScaled;
+		Protean::Graphics::Texture rtStencilExtracted;
+		Protean::Graphics::Texture stencilScaled;
 
-		wi::graphics::Texture rtFinal;
-		wi::graphics::Texture rtFinal_MSAA;
+		Protean::Graphics::Texture rtFinal;
+		Protean::Graphics::Texture rtFinal_MSAA;
 
-		wi::gui::GUI GUI;
+		Protean::Gui::GUI GUI;
 
 		XMUINT2 current_buffersize{};
 		float current_layoutscale{};
@@ -30,7 +30,7 @@ namespace wi
 		uint32_t msaaSampleCount = 1;
 		uint32_t msaaSampleCount2D = 1;
 
-		wi::vector<wi::video::VideoInstance*> video_decodes;
+		Protean::vector<Protean::Video::VideoInstance*> video_decodes;
 
 	public:
 		// Delete GPU resources and initialize them to default
@@ -44,7 +44,7 @@ namespace wi
 		void FixedUpdate() override;
 		void PreRender() override;
 		void Render() const override;
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(Protean::Graphics::CommandList cmd) const override;
 
 		// MSAA sample count of main rendering
 		//	This is the minimum sample count that is used for 3D and 2D rendering
@@ -57,46 +57,46 @@ namespace wi
 		constexpr uint32_t getMSAASampleCount2D() const { return msaaSampleCount2D; }
 
 		// The 2D scene rendering that is used in Compose() to present the final image. In RenderPath3D this is only the 2D overlay with transparency
-		const wi::graphics::Texture& GetRenderResult2D() const { return rtFinal; }
+		const Protean::Graphics::Texture& GetRenderResult2D() const { return rtFinal; }
 
 		// The depth stencil is not used in pure 2D rendering, but when it's also a RenderPath3D it is available (not texture compatible, only depth-stencil)
-		virtual const wi::graphics::Texture* GetDepthStencil() const { return nullptr; }
+		virtual const Protean::Graphics::Texture* GetDepthStencil() const { return nullptr; }
 
 		// The blurred GUI background is not available in pure 2D rendering, but other render path can make it available, such as RenderPath3D
-		virtual const wi::graphics::Texture* GetGUIBlurredBackground() const { return nullptr; }
+		virtual const Protean::Graphics::Texture* GetGUIBlurredBackground() const { return nullptr; }
 
 		// Adds a sprite to be rendered. The pointer lifetime is managed by the user, it must be valid as long as it is used by the RenderPath2D
 		//	layer is optional, it can be used to manage overlapping render groups
-		void AddSprite(wi::Sprite* sprite, const std::string& layer = "");
-		void RemoveSprite(wi::Sprite* sprite);
+		void AddSprite(Protean::Sprite* sprite, const std::string& layer = "");
+		void RemoveSprite(Protean::Sprite* sprite);
 		void ClearSprites();
-		int GetSpriteOrder(wi::Sprite* sprite);
+		int GetSpriteOrder(Protean::Sprite* sprite);
 
 		// Adds a SpriteFont to be rendered. The pointer lifetime is managed by the user, it must be valid as long as it is used by the RenderPath2D
 		//	layer is optional, it can be used to manage overlapping render groups
-		void AddFont(wi::SpriteFont* font, const std::string& layer = "");
-		void RemoveFont(wi::SpriteFont* font);
+		void AddFont(Protean::SpriteFont* font, const std::string& layer = "");
+		void RemoveFont(Protean::SpriteFont* font);
 		void ClearFonts();
-		int GetFontOrder(wi::SpriteFont* font);
+		int GetFontOrder(Protean::SpriteFont* font);
 
 		// Adds a sprite showing a video, the pointer lifetimes are managed by the user, they must be valid as long as they are used by the RenderPath2D
 		//	layer is optional, it can be used to manage overlapping render groups
-		void AddVideoSprite(wi::video::VideoInstance* videoinstance, wi::Sprite* sprite, const std::string& layer = "");
+		void AddVideoSprite(Protean::Video::VideoInstance* videoinstance, Protean::Sprite* sprite, const std::string& layer = "");
 
 		struct RenderItem2D
 		{
-			wi::Sprite* sprite = nullptr;
-			wi::SpriteFont* font = nullptr;
-			wi::video::VideoInstance* videoinstance = nullptr;
+			Protean::Sprite* sprite = nullptr;
+			Protean::SpriteFont* font = nullptr;
+			Protean::Video::VideoInstance* videoinstance = nullptr;
 			int order = 0;
 		};
 		struct RenderLayer2D
 		{
-			wi::vector<RenderItem2D> items;
+			Protean::vector<RenderItem2D> items;
 			std::string name;
 			int order = 0;
 		};
-		wi::vector<RenderLayer2D> layers{ 1 };
+		Protean::vector<RenderLayer2D> layers{ 1 };
 
 		// Creates a new layer, for managing overlapping render groups
 		void AddLayer(const std::string& name);
@@ -105,10 +105,10 @@ namespace wi
 		void SetLayerOrder(const std::string& name, int order);
 
 		// Set the render order of a specific sprite within its layer
-		void SetSpriteOrder(wi::Sprite* sprite, int order);
+		void SetSpriteOrder(Protean::Sprite* sprite, int order);
 
 		// Set the render order of a specific font within its layer
-		void SetFontOrder(wi::SpriteFont* font, int order);
+		void SetFontOrder(Protean::SpriteFont* font, int order);
 
 		// Sorts all layers based on their order
 		void SortLayers();
@@ -119,8 +119,8 @@ namespace wi
 		// Deletes all layers
 		void DeleteLayers();
 
-		const wi::gui::GUI& GetGUI() const { return GUI; }
-		wi::gui::GUI& GetGUI() { return GUI; }
+		const Protean::Gui::GUI& GetGUI() const { return GUI; }
+		Protean::Gui::GUI& GetGUI() { return GUI; }
 
 		float resolutionScale = 1.0f;
 		XMUINT2 GetInternalResolution() const

@@ -1,28 +1,28 @@
 #pragma once
 class EditorComponent;
 
-class ExpressionWindow : public wi::gui::Window
+class ExpressionWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox talkCheckBox;
-	wi::gui::Slider blinkFrequencySlider;
-	wi::gui::Slider blinkLengthSlider;
-	wi::gui::Slider blinkCountSlider;
-	wi::gui::Slider lookFrequencySlider;
-	wi::gui::Slider lookLengthSlider;
-	wi::gui::TreeList expressionList;
-	wi::gui::Slider weightSlider;
-	wi::gui::CheckBox binaryCheckBox;
-	wi::gui::ComboBox overrideMouthCombo;
-	wi::gui::ComboBox overrideBlinkCombo;
-	wi::gui::ComboBox overrideLookCombo;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::CheckBox talkCheckBox;
+	Protean::Gui::Slider blinkFrequencySlider;
+	Protean::Gui::Slider blinkLengthSlider;
+	Protean::Gui::Slider blinkCountSlider;
+	Protean::Gui::Slider lookFrequencySlider;
+	Protean::Gui::Slider lookLengthSlider;
+	Protean::Gui::TreeList expressionList;
+	Protean::Gui::Slider weightSlider;
+	Protean::Gui::CheckBox binaryCheckBox;
+	Protean::Gui::ComboBox overrideMouthCombo;
+	Protean::Gui::ComboBox overrideBlinkCombo;
+	Protean::Gui::ComboBox overrideLookCombo;
 
 	void ResizeLayout() override;
 };

@@ -1,7 +1,7 @@
 #pragma once
 #include "script/Lua.h"
 
-namespace wi::lua::renderer
+namespace Protean::Lua::RendererBindings
 {
 	void Bind();
 };

@@ -1,21 +1,20 @@
 #include "stdafx.h"
 #include "SpriteWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
+using namespace Protean;
+using namespace Protean::Graphics;
 
 void SpriteWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_SPRITE " Sprite", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SPRITE " Sprite", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 1540));
 
 	closeButton.SetTooltip("Delete Sprite");
-	OnClose([this](wi::gui::EventArgs args) {
+	OnClose([this](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -28,10 +27,10 @@ void SpriteWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
-				wi::Sprite* sprite = scene.sprites.GetComponent(x.entity);
+				Protean::Sprite* sprite = scene.sprites.GetComponent(x.entity);
 				if (sprite != nullptr)
 				{
 					func(sprite, args);
@@ -42,14 +41,14 @@ void SpriteWindow::Create(EditorComponent* _editor)
 
 	textureButton.Create("Base Texture");
 	textureButton.SetSize(XMFLOAT2(200, 200));
-	textureButton.sprites[wi::gui::IDLE].params.color = wi::Color::White();
-	textureButton.sprites[wi::gui::FOCUS].params.color = wi::Color::Gray();
-	textureButton.sprites[wi::gui::ACTIVE].params.color = wi::Color::White();
-	textureButton.sprites[wi::gui::DEACTIVATING].params.color = wi::Color::Gray();
+	textureButton.sprites[Protean::Gui::IDLE].params.color = Protean::Color::White();
+	textureButton.sprites[Protean::Gui::FOCUS].params.color = Protean::Color::Gray();
+	textureButton.sprites[Protean::Gui::ACTIVE].params.color = Protean::Color::White();
+	textureButton.sprites[Protean::Gui::DEACTIVATING].params.color = Protean::Color::Gray();
 	textureButton.OnClick(forEachSelected([this] (auto sprite, auto args) {
 		if (sprite->textureResource.IsValid())
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -62,12 +61,12 @@ void SpriteWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				sprite->textureResource = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				sprite->textureResource = Protean::ResourceManager::Load(fileName);
 				sprite->textureName = fileName;
 				textureButton.SetImage(sprite->textureResource);
 				if (sprite->textureResource.IsValid())
@@ -86,14 +85,14 @@ void SpriteWindow::Create(EditorComponent* _editor)
 
 	maskButton.Create("Mask Texture");
 	maskButton.SetSize(XMFLOAT2(200, 200));
-	maskButton.sprites[wi::gui::IDLE].params.color = wi::Color::White();
-	maskButton.sprites[wi::gui::FOCUS].params.color = wi::Color::Gray();
-	maskButton.sprites[wi::gui::ACTIVE].params.color = wi::Color::White();
-	maskButton.sprites[wi::gui::DEACTIVATING].params.color = wi::Color::Gray();
+	maskButton.sprites[Protean::Gui::IDLE].params.color = Protean::Color::White();
+	maskButton.sprites[Protean::Gui::FOCUS].params.color = Protean::Color::Gray();
+	maskButton.sprites[Protean::Gui::ACTIVE].params.color = Protean::Color::White();
+	maskButton.sprites[Protean::Gui::DEACTIVATING].params.color = Protean::Color::Gray();
 	maskButton.OnClick(forEachSelected([this] (auto sprite, auto args) {
 		if (sprite->maskResource.IsValid())
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -104,12 +103,12 @@ void SpriteWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				sprite->maskResource = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				sprite->maskResource = Protean::ResourceManager::Load(fileName);
 				sprite->maskName = fileName;
 				maskButton.SetImage(sprite->maskResource);
 				});
@@ -141,7 +140,7 @@ void SpriteWindow::Create(EditorComponent* _editor)
 	rotationSlider.Create(0, 360, 0, 10000, "Rotation: ");
 	rotationSlider.SetTooltip("Z Rotation around pivot point. The editor input is in degrees.");
 	rotationSlider.OnSlide(forEachSelected([] (auto sprite, auto args) {
-		sprite->params.rotation = wi::math::DegreesToRadians(args.fValue);
+		sprite->params.rotation = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&rotationSlider);
 
@@ -202,32 +201,32 @@ void SpriteWindow::Create(EditorComponent* _editor)
 	AddWidget(&cornerRounding3Slider);
 
 	qualityCombo.Create("Filtering: ");
-	qualityCombo.AddItem("Nearest Neighbor", wi::image::QUALITY_NEAREST);
-	qualityCombo.AddItem("Linear", wi::image::QUALITY_LINEAR);
-	qualityCombo.AddItem("Anisotropic", wi::image::QUALITY_ANISOTROPIC);
+	qualityCombo.AddItem("Nearest Neighbor", Protean::Image::QUALITY_NEAREST);
+	qualityCombo.AddItem("Linear", Protean::Image::QUALITY_LINEAR);
+	qualityCombo.AddItem("Anisotropic", Protean::Image::QUALITY_ANISOTROPIC);
 	qualityCombo.OnSelect(forEachSelected([] (auto sprite, auto args) {
-		sprite->params.quality = (wi::image::QUALITY)args.userdata;
+		sprite->params.quality = (Protean::Image::QUALITY)args.userdata;
 	}));
 	AddWidget(&qualityCombo);
 
 	samplemodeCombo.Create("Sampling: ");
-	samplemodeCombo.AddItem("Clamp", wi::image::SAMPLEMODE_CLAMP);
-	samplemodeCombo.AddItem("Mirror", wi::image::SAMPLEMODE_MIRROR);
-	samplemodeCombo.AddItem("Wrap", wi::image::SAMPLEMODE_WRAP);
+	samplemodeCombo.AddItem("Clamp", Protean::Image::SAMPLEMODE_CLAMP);
+	samplemodeCombo.AddItem("Mirror", Protean::Image::SAMPLEMODE_MIRROR);
+	samplemodeCombo.AddItem("Wrap", Protean::Image::SAMPLEMODE_WRAP);
 	samplemodeCombo.OnSelect(forEachSelected([] (auto sprite, auto args) {
-		sprite->params.sampleFlag = (wi::image::SAMPLEMODE)args.userdata;
+		sprite->params.sampleFlag = (Protean::Image::SAMPLEMODE)args.userdata;
 	}));
 	AddWidget(&samplemodeCombo);
 
 	blendModeCombo.Create("Blending: ");
-	blendModeCombo.AddItem("Opaque", wi::enums::BLENDMODE_OPAQUE);
-	blendModeCombo.AddItem("Alpha", wi::enums::BLENDMODE_ALPHA);
-	blendModeCombo.AddItem("Premultiplied", wi::enums::BLENDMODE_PREMULTIPLIED);
-	blendModeCombo.AddItem("Additive", wi::enums::BLENDMODE_ADDITIVE);
-	blendModeCombo.AddItem("Multiply", wi::enums::BLENDMODE_MULTIPLY);
-	blendModeCombo.AddItem("Inverse", wi::enums::BLENDMODE_INVERSE);
+	blendModeCombo.AddItem("Opaque", Protean::BLENDMODE_OPAQUE);
+	blendModeCombo.AddItem("Alpha", Protean::BLENDMODE_ALPHA);
+	blendModeCombo.AddItem("Premultiplied", Protean::BLENDMODE_PREMULTIPLIED);
+	blendModeCombo.AddItem("Additive", Protean::BLENDMODE_ADDITIVE);
+	blendModeCombo.AddItem("Multiply", Protean::BLENDMODE_MULTIPLY);
+	blendModeCombo.AddItem("Inverse", Protean::BLENDMODE_INVERSE);
 	blendModeCombo.OnSelect(forEachSelected([] (auto sprite, auto args) {
-		sprite->params.blendFlag = (wi::enums::BLENDMODE)args.userdata;
+		sprite->params.blendFlag = (Protean::BLENDMODE)args.userdata;
 	}));
 	AddWidget(&blendModeCombo);
 
@@ -280,7 +279,7 @@ void SpriteWindow::Create(EditorComponent* _editor)
 	}));
 	AddWidget(&distortionCheckBox);
 
-	colorPicker.Create("Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
 	colorPicker.OnColorChanged(forEachSelected([] (auto sprite, auto args) {
 		sprite->params.color = args.color;
 	}));
@@ -353,12 +352,12 @@ void SpriteWindow::Create(EditorComponent* _editor)
 	SetEntity(INVALID_ENTITY);
 }
 
-void SpriteWindow::SetEntity(wi::ecs::Entity entity)
+void SpriteWindow::SetEntity(Protean::Entity entity)
 {
 	this->entity = entity;
 
 	Scene& scene = editor->GetCurrentScene();
-	wi::Sprite* sprite = scene.sprites.GetComponent(entity);
+	Protean::Sprite* sprite = scene.sprites.GetComponent(entity);
 	if (sprite == nullptr)
 		return;
 
@@ -372,7 +371,7 @@ void SpriteWindow::SetEntity(wi::ecs::Entity entity)
 		tooltiptext += GetFormatString(texture.desc.format);
 		tooltiptext += "\nSwizzle: ";
 		tooltiptext += GetSwizzleString(texture.desc.swizzle);
-		tooltiptext += "\nMemory: " + wi::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(texture.desc));
+		tooltiptext += "\nMemory: " + Protean::Helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(texture.desc));
 	}
 	textureButton.SetTooltip(tooltiptext);
 
@@ -386,7 +385,7 @@ void SpriteWindow::SetEntity(wi::ecs::Entity entity)
 		tooltiptext += GetFormatString(texture.desc.format);
 		tooltiptext += "\nSwizzle: ";
 		tooltiptext += GetSwizzleString(texture.desc.swizzle);
-		tooltiptext += "\nMemory: " + wi::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(texture.desc));
+		tooltiptext += "\nMemory: " + Protean::Helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(texture.desc));
 	}
 	maskButton.SetTooltip(tooltiptext);
 
@@ -413,7 +412,7 @@ void SpriteWindow::SetEntity(wi::ecs::Entity entity)
 	pivotXSlider.SetValue(sprite->params.pivot.x);
 	pivotYSlider.SetValue(sprite->params.pivot.y);
 	intensitySlider.SetValue(sprite->params.intensity);
-	rotationSlider.SetValue(wi::math::RadiansToDegrees(sprite->params.rotation));
+	rotationSlider.SetValue(Protean::Math::RadiansToDegrees(sprite->params.rotation));
 	saturationSlider.SetValue(sprite->params.saturation);
 	alphaStartSlider.SetValue(sprite->params.mask_alpha_range_start);
 	alphaEndSlider.SetValue(sprite->params.mask_alpha_range_end);
@@ -430,7 +429,7 @@ void SpriteWindow::SetEntity(wi::ecs::Entity entity)
 	cameraScalingCheckBox.SetCheck(sprite->IsCameraScaling());
 	depthTestCheckBox.SetCheck(sprite->params.isDepthTestEnabled());
 	distortionCheckBox.SetCheck(sprite->params.isExtractNormalMapEnabled());
-	colorPicker.SetPickColor(wi::Color::fromFloat4(sprite->params.color));
+	colorPicker.SetPickColor(Protean::Color::fromFloat4(sprite->params.color));
 	movingTexXSlider.SetValue(sprite->anim.movingTexAnim.speedX);
 	movingTexYSlider.SetValue(sprite->anim.movingTexAnim.speedY);
 	drawrectFrameRateSlider.SetValue(sprite->anim.drawRectAnim.frameRate);
@@ -443,7 +442,7 @@ void SpriteWindow::SetEntity(wi::ecs::Entity entity)
 
 void SpriteWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 118;
 
 	layout.add_fullwidth(textureButton);
@@ -479,7 +478,7 @@ void SpriteWindow::ResizeLayout()
 	layout.add(wobbleSpeedSlider);
 }
 
-void SpriteWindow::UpdateSpriteDrawRectParams(wi::Sprite* sprite)
+void SpriteWindow::UpdateSpriteDrawRectParams(Protean::Sprite* sprite)
 {
 	if (sprite->anim.drawRectAnim.frameCount > 1 && sprite->textureResource.IsValid())
 	{

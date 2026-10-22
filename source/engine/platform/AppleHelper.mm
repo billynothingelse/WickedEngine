@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 __asm__(".linker_option \"-framework\", \"Foundation\"");
 
-namespace wi::apple
+namespace Protean::Apple
 {
 
 std::string GetApplicationSupportPath()
@@ -43,7 +43,7 @@ __asm__(".linker_option \"-framework\", \"CoreGraphics\"");
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
 
-namespace wi::apple
+namespace Protean::Apple
 {
 
 void SetMetalLayerToWindow(void* _window, void* _layer)
@@ -170,9 +170,9 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"No"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)wi::helper::MessageBoxResult::Yes;
-				case NSAlertSecondButtonReturn: return (int)wi::helper::MessageBoxResult::No;
-				default:  return (int)wi::helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Yes;
+				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult::No;
+				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
 			}
 		}
 		else if (strcmp(buttons, "YesNoCancel") == 0)
@@ -182,9 +182,9 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Cancel"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)wi::helper::MessageBoxResult::Yes;
-				case NSAlertSecondButtonReturn: return (int)wi::helper::MessageBoxResult::No;
-				default:  return (int)wi::helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Yes;
+				case NSAlertSecondButtonReturn: return (int)Protean::Helper::MessageBoxResult::No;
+				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
 			}
 		}
 		else if (strcmp(buttons, "OKCancel") == 0)
@@ -193,8 +193,8 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Cancel"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)wi::helper::MessageBoxResult::OK;
-				default:  return (int)wi::helper::MessageBoxResult::Cancel;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::OK;
+				default:  return (int)Protean::Helper::MessageBoxResult::Cancel;
 			}
 		}
 		else if (strcmp(buttons, "AbortRetryIgnore") == 0)
@@ -204,14 +204,14 @@ int MessageBox(const char* title, const char* message, const char* buttons)
 			[alert addButtonWithTitle:@"Ignore"];
 			NSInteger button = [alert runModal];
 			switch (button) {
-				case NSAlertFirstButtonReturn:  return (int)wi::helper::MessageBoxResult::Abort;
-				case NSAlertSecondButtonReturn:  return (int)wi::helper::MessageBoxResult::Retry;
-				default:  return (int)wi::helper::MessageBoxResult::Ignore;
+				case NSAlertFirstButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Abort;
+				case NSAlertSecondButtonReturn:  return (int)Protean::Helper::MessageBoxResult::Retry;
+				default:  return (int)Protean::Helper::MessageBoxResult::Ignore;
 			}
 		}
 
 	}
-	return (int)wi::helper::MessageBoxResult::OK;
+	return (int)Protean::Helper::MessageBoxResult::OK;
 }
 
 std::string GetResourcePath()
@@ -247,15 +247,15 @@ std::string GetExecutablePath()
 
 void CursorInit(void** cursor_table)
 {
-	cursor_table[wi::input::CURSOR_DEFAULT] = (__bridge void*)[NSCursor arrowCursor];
-	cursor_table[wi::input::CURSOR_TEXTINPUT] = (__bridge void*)[NSCursor IBeamCursor];
-	cursor_table[wi::input::CURSOR_RESIZEALL] = (__bridge void*)[NSCursor closedHandCursor];
-	cursor_table[wi::input::CURSOR_RESIZE_NS] = (__bridge void*)[NSCursor resizeUpDownCursor];
-	cursor_table[wi::input::CURSOR_RESIZE_EW] = (__bridge void*)[NSCursor resizeLeftRightCursor];
-	cursor_table[wi::input::CURSOR_RESIZE_NESW] = (__bridge void*)[NSCursor closedHandCursor];
-	cursor_table[wi::input::CURSOR_RESIZE_NWSE] = (__bridge void*)[NSCursor closedHandCursor];
-	cursor_table[wi::input::CURSOR_HAND] = (__bridge void*)[NSCursor pointingHandCursor];
-	cursor_table[wi::input::CURSOR_NOTALLOWED] = (__bridge void*)[NSCursor operationNotAllowedCursor];
+	cursor_table[Protean::Input::CURSOR_DEFAULT] = (__bridge void*)[NSCursor arrowCursor];
+	cursor_table[Protean::Input::CURSOR_TEXTINPUT] = (__bridge void*)[NSCursor IBeamCursor];
+	cursor_table[Protean::Input::CURSOR_RESIZEALL] = (__bridge void*)[NSCursor closedHandCursor];
+	cursor_table[Protean::Input::CURSOR_RESIZE_NS] = (__bridge void*)[NSCursor resizeUpDownCursor];
+	cursor_table[Protean::Input::CURSOR_RESIZE_EW] = (__bridge void*)[NSCursor resizeLeftRightCursor];
+	cursor_table[Protean::Input::CURSOR_RESIZE_NESW] = (__bridge void*)[NSCursor closedHandCursor];
+	cursor_table[Protean::Input::CURSOR_RESIZE_NWSE] = (__bridge void*)[NSCursor closedHandCursor];
+	cursor_table[Protean::Input::CURSOR_HAND] = (__bridge void*)[NSCursor pointingHandCursor];
+	cursor_table[Protean::Input::CURSOR_NOTALLOWED] = (__bridge void*)[NSCursor operationNotAllowedCursor];
 }
 void CursorSet(void* cursor)
 {
@@ -396,7 +396,7 @@ void* CreateCursorFromARGB8ImageData(const void* data, uint32_t width, uint32_t 
 						initWithImage:image
 						hotSpot:NSMakePoint(hotspotX, hotspotY)];
 	
-	static wi::vector<NSCursor*> cursors; // Lifetime extender, a proper solution would require engine to know about autorelease pools lifetimes and manage cursor lifetime with that
+	static Protean::vector<NSCursor*> cursors; // Lifetime extender, a proper solution would require engine to know about autorelease pools lifetimes and manage cursor lifetime with that
 	cursors.push_back(cursor);
 	
 	return (__bridge void*)cursor;
@@ -414,7 +414,7 @@ __asm__(".linker_option \"-framework\", \"UIKit\"");
 #include <UIKit/UIKit.h>
 #include <QuartzCore/QuartzCore.h>
 
-namespace wi::apple
+namespace Protean::Apple
 {
 
 void SetMetalLayerToWindow(void* _window, void* _layer)
@@ -505,7 +505,7 @@ void SetMousePositionInWindow(void* handle, XMFLOAT2 value)
 
 int MessageBox(const char* title, const char* message, const char* buttons)
 {
-	return (int)wi::helper::MessageBoxResult::OK;
+	return (int)Protean::Helper::MessageBoxResult::OK;
 }
 
 std::string GetResourcePath()
@@ -522,7 +522,7 @@ std::string GetExecutablePath()
 
 void CursorInit(void** cursor_table)
 {
-	for (int i = 0; i < wi::input::CURSOR_COUNT; ++i)
+	for (int i = 0; i < Protean::Input::CURSOR_COUNT; ++i)
 		cursor_table[i] = nullptr;
 }
 
@@ -624,5 +624,5 @@ void GetSafeArea(void* _window, float& left, float& right, float& top, float& bo
 	bottom = bottomInset;
 }
 
-} // namespace wi::apple
+} // namespace Protean::Apple
 #endif

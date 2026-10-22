@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CameraComponentWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void CameraPreview::RenderPreview()
 {
 	if (renderpath.scene != nullptr)
@@ -32,18 +30,18 @@ void CameraPreview::RenderPreview()
 		}
 	}
 }
-void CameraPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void CameraPreview::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
-	wi::gui::Widget::Render(canvas, cmd);
+	Protean::Gui::Widget::Render(canvas, cmd);
 
 	if (renderpath.scene != nullptr && renderpath.camera != nullptr)
 	{
 		const bool gui_round_enabled = !editor->generalWnd.disableRoundCornersCheckBox.GetCheck();
-		wi::image::Params params;
+		Protean::Image::Params params;
 		params.pos = translation;
 		params.siz = XMFLOAT2(scale.x, scale.y);
 		params.color = shadow_color;
-		params.blendFlag = wi::enums::BLENDMODE_ALPHA;
+		params.blendFlag = Protean::BLENDMODE_ALPHA;
 		if (gui_round_enabled)
 		{
 			params.enableCornerRounding();
@@ -56,7 +54,7 @@ void CameraPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList c
 		{
 			params.disableCornerRounding();
 		}
-		wi::image::Draw(nullptr, params, cmd);
+		Protean::Image::Draw(nullptr, params, cmd);
 
 		params.pos.x += 4;
 		params.pos.y += 4;
@@ -74,17 +72,17 @@ void CameraPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList c
 		{
 			params.disableCornerRounding();
 		}
-		params.color = wi::Color::White();
-		params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
+		params.color = Protean::Color::White();
+		params.blendFlag = Protean::BLENDMODE_OPAQUE;
 		if (renderpath.camera->render_to_texture.rendertarget_render.IsValid())
 		{
-			wi::image::Draw(&renderpath.camera->render_to_texture.rendertarget_render, params, cmd);
-			wi::font::Draw("Camera preview (raw render):", wi::font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
+			Protean::Image::Draw(&renderpath.camera->render_to_texture.rendertarget_render, params, cmd);
+			Protean::Font::Draw("Camera preview (raw render):", Protean::Font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
 		}
 		else
 		{
-			wi::image::Draw(renderpath.GetLastPostprocessRT(), params, cmd);
-			wi::font::Draw("Camera preview (editor only):", wi::font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
+			Protean::Image::Draw(renderpath.GetLastPostprocessRT(), params, cmd);
+			Protean::Font::Draw("Camera preview (editor only):", Protean::Font::Params(params.pos.x + 2, params.pos.y + 2), cmd);
 		}
 
 	}
@@ -94,16 +92,16 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 	preview.editor = _editor;
-	wi::gui::Window::Create(ICON_CAMERA " Camera", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_CAMERA " Camera", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	editor->GetCurrentEditorScene().camera_transform.MatrixTransform(editor->GetCurrentEditorScene().camera.GetInvView());
 	editor->GetCurrentEditorScene().camera_transform.UpdateTransform();
 
 	SetSize(XMFLOAT2(320, 400));
 
 	closeButton.SetTooltip("Delete CameraComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -120,9 +118,9 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	float step = hei + 2;
 	float wid = 120;
 
-	auto forEachSelectedCameraComponent = [this](auto /* void(nonnull CameraComponent*, wi::gui::EventArgs) */ func) {
-		return [this, func](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+	auto forEachSelectedCameraComponent = [this](auto /* void(nonnull CameraComponent*, Protean::Gui::EventArgs) */ func) {
+		return [this, func](Protean::Gui::EventArgs args) {
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				CameraComponent* camera = scene.cameras.GetComponent(x.entity);
@@ -202,8 +200,8 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 
 	renderButton.Create("RenderToTexture");
 	renderButton.SetTooltip("If Render To Texture is enabled for a camera, the camera renders the scene into its own textures\n which can be reused for other things such as materials.");
-	renderButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	renderButton.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		bool disable = true;
 		const CameraComponent* cam = scene.cameras.GetComponent(entity);
 		if (cam != nullptr)
@@ -255,7 +253,7 @@ void CameraComponentWindow::Create(EditorComponent* _editor)
 	samplecountSlider.Create(1, 8, 1, 7, "Sample count: ");
 	samplecountSlider.SetTooltip("Set the render resolution sample count (MSAA)");
 	samplecountSlider.OnSlide(forEachSelectedCameraComponent([](auto camera, auto args) {
-		camera->render_to_texture.sample_count = wi::math::GetNextPowerOfTwo((uint32_t)args.iValue);
+		camera->render_to_texture.sample_count = Protean::Math::GetNextPowerOfTwo((uint32_t)args.iValue);
 	}));
 	AddWidget(&samplecountSlider);
 
@@ -325,7 +323,7 @@ void CameraComponentWindow::SetEntity(Entity entity)
 
 void CameraComponentWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 140;
 
 	layout.add(farPlaneSlider);

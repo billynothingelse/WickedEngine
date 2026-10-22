@@ -20,52 +20,52 @@
 #include <string>
 #include <memory>
 
-namespace wi::scene
+namespace Protean
 {
 	struct Scene
 	{
 		virtual ~Scene() = default;
 
-		wi::ecs::ComponentLibrary componentLibrary;
+		Protean::ComponentLibrary componentLibrary;
 
-		wi::ecs::ComponentManager<NameComponent>& names = componentLibrary.Register<NameComponent>("wi::scene::Scene::names");
-		wi::ecs::ComponentManager<LayerComponent>& layers = componentLibrary.Register<LayerComponent>("wi::scene::Scene::layers");
-		wi::ecs::ComponentManager<TransformComponent>& transforms = componentLibrary.Register<TransformComponent>("wi::scene::Scene::transforms");
-		wi::ecs::ComponentManager<HierarchyComponent>& hierarchy = componentLibrary.Register<HierarchyComponent>("wi::scene::Scene::hierarchy");
-		wi::ecs::ComponentManager<MaterialComponent>& materials = componentLibrary.Register<MaterialComponent>("wi::scene::Scene::materials", 11); // version = 11
-		wi::ecs::ComponentManager<MeshComponent>& meshes = componentLibrary.Register<MeshComponent>("wi::scene::Scene::meshes", 4); // version = 4
-		wi::ecs::ComponentManager<ImpostorComponent>& impostors = componentLibrary.Register<ImpostorComponent>("wi::scene::Scene::impostors");
-		wi::ecs::ComponentManager<ObjectComponent>& objects = componentLibrary.Register<ObjectComponent>("wi::scene::Scene::objects", 4); // version = 4
-		wi::ecs::ComponentManager<RigidBodyPhysicsComponent>& rigidbodies = componentLibrary.Register<RigidBodyPhysicsComponent>("wi::scene::Scene::rigidbodies", 6); // version = 6
-		wi::ecs::ComponentManager<SoftBodyPhysicsComponent>& softbodies = componentLibrary.Register<SoftBodyPhysicsComponent>("wi::scene::Scene::softbodies", 3); // version = 3
-		wi::ecs::ComponentManager<ArmatureComponent>& armatures = componentLibrary.Register<ArmatureComponent>("wi::scene::Scene::armatures");
-		wi::ecs::ComponentManager<LightComponent>& lights = componentLibrary.Register<LightComponent>("wi::scene::Scene::lights", 5); // version = 5
-		wi::ecs::ComponentManager<CameraComponent>& cameras = componentLibrary.Register<CameraComponent>("wi::scene::Scene::cameras", 3); // version = 3
-		wi::ecs::ComponentManager<EnvironmentProbeComponent>& probes = componentLibrary.Register<EnvironmentProbeComponent>("wi::scene::Scene::probes", 3); // version = 3
-		wi::ecs::ComponentManager<ForceFieldComponent>& forces = componentLibrary.Register<ForceFieldComponent>("wi::scene::Scene::forces", 1); // version = 1
-		wi::ecs::ComponentManager<DecalComponent>& decals = componentLibrary.Register<DecalComponent>("wi::scene::Scene::decals", 1); // version = 1
-		wi::ecs::ComponentManager<AnimationComponent>& animations = componentLibrary.Register<AnimationComponent>("wi::scene::Scene::animations", 2); // version = 2
-		wi::ecs::ComponentManager<AnimationDataComponent>& animation_datas = componentLibrary.Register<AnimationDataComponent>("wi::scene::Scene::animation_datas");
-		wi::ecs::ComponentManager<EmittedParticleSystem>& emitters = componentLibrary.Register<EmittedParticleSystem>("wi::scene::Scene::emitters", 3); // version = 3
-		wi::ecs::ComponentManager<HairParticleSystem>& hairs = componentLibrary.Register<HairParticleSystem>("wi::scene::Scene::hairs", 3); // version = 3
-		wi::ecs::ComponentManager<WeatherComponent>& weathers = componentLibrary.Register<WeatherComponent>("wi::scene::Scene::weathers", 6); // version = 6
-		wi::ecs::ComponentManager<SoundComponent>& sounds = componentLibrary.Register<SoundComponent>("wi::scene::Scene::sounds", 1); // version = 1
-		wi::ecs::ComponentManager<VideoComponent>& videos = componentLibrary.Register<VideoComponent>("wi::scene::Scene::videos", 2); // version = 2
-		wi::ecs::ComponentManager<InverseKinematicsComponent>& inverse_kinematics = componentLibrary.Register<InverseKinematicsComponent>("wi::scene::Scene::inverse_kinematics");
-		wi::ecs::ComponentManager<SpringComponent>& springs = componentLibrary.Register<SpringComponent>("wi::scene::Scene::springs", 1); // version = 1
-		wi::ecs::ComponentManager<ColliderComponent>& colliders = componentLibrary.Register<ColliderComponent>("wi::scene::Scene::colliders", 2); // version = 2
-		wi::ecs::ComponentManager<ScriptComponent>& scripts = componentLibrary.Register<ScriptComponent>("wi::scene::Scene::scripts");
-		wi::ecs::ComponentManager<ExpressionComponent>& expressions = componentLibrary.Register<ExpressionComponent>("wi::scene::Scene::expressions");
-		wi::ecs::ComponentManager<HumanoidComponent>& humanoids = componentLibrary.Register<HumanoidComponent>("wi::scene::Scene::humanoids", 3); // version = 3
-		wi::ecs::ComponentManager<wi::terrain::Terrain>& terrains = componentLibrary.Register<wi::terrain::Terrain>("wi::scene::Scene::terrains", 6); // version = 6
-		wi::ecs::ComponentManager<wi::Sprite>& sprites = componentLibrary.Register<wi::Sprite>("wi::scene::Scene::sprites", 2); // version = 2
-		wi::ecs::ComponentManager<wi::SpriteFont>& fonts = componentLibrary.Register<wi::SpriteFont>("wi::scene::Scene::fonts");
-		wi::ecs::ComponentManager<wi::VoxelGrid>& voxel_grids = componentLibrary.Register<wi::VoxelGrid>("wi::scene::Scene::voxel_grids");
-		wi::ecs::ComponentManager<MetadataComponent>& metadatas = componentLibrary.Register<MetadataComponent>("wi::scene::Scene::metadatas");
-		wi::ecs::ComponentManager<CharacterComponent>& characters = componentLibrary.Register<CharacterComponent>("wi::scene::Scene::characters");
-		wi::ecs::ComponentManager<PhysicsConstraintComponent>& constraints = componentLibrary.Register<PhysicsConstraintComponent>("wi::scene::Scene::constraints", 6); // version = 6
-		wi::ecs::ComponentManager<SplineComponent>& splines = componentLibrary.Register<SplineComponent>("wi::scene::Scene::splines", 4); // version = 4
-		wi::ecs::ComponentManager<wi::GaussianSplatModel>& gaussian_splats = componentLibrary.Register<wi::GaussianSplatModel>("wi::scene::Scene::gaussian_splats");
+		Protean::ComponentManager<NameComponent>& names = componentLibrary.Register<NameComponent>("Protean::Scene::names");
+		Protean::ComponentManager<LayerComponent>& layers = componentLibrary.Register<LayerComponent>("Protean::Scene::layers");
+		Protean::ComponentManager<TransformComponent>& transforms = componentLibrary.Register<TransformComponent>("Protean::Scene::transforms");
+		Protean::ComponentManager<HierarchyComponent>& hierarchy = componentLibrary.Register<HierarchyComponent>("Protean::Scene::hierarchy");
+		Protean::ComponentManager<MaterialComponent>& materials = componentLibrary.Register<MaterialComponent>("Protean::Scene::materials", 11); // version = 11
+		Protean::ComponentManager<MeshComponent>& meshes = componentLibrary.Register<MeshComponent>("Protean::Scene::meshes", 4); // version = 4
+		Protean::ComponentManager<ImpostorComponent>& impostors = componentLibrary.Register<ImpostorComponent>("Protean::Scene::impostors");
+		Protean::ComponentManager<ObjectComponent>& objects = componentLibrary.Register<ObjectComponent>("Protean::Scene::objects", 4); // version = 4
+		Protean::ComponentManager<RigidBodyPhysicsComponent>& rigidbodies = componentLibrary.Register<RigidBodyPhysicsComponent>("Protean::Scene::rigidbodies", 6); // version = 6
+		Protean::ComponentManager<SoftBodyPhysicsComponent>& softbodies = componentLibrary.Register<SoftBodyPhysicsComponent>("Protean::Scene::softbodies", 3); // version = 3
+		Protean::ComponentManager<ArmatureComponent>& armatures = componentLibrary.Register<ArmatureComponent>("Protean::Scene::armatures");
+		Protean::ComponentManager<LightComponent>& lights = componentLibrary.Register<LightComponent>("Protean::Scene::lights", 5); // version = 5
+		Protean::ComponentManager<CameraComponent>& cameras = componentLibrary.Register<CameraComponent>("Protean::Scene::cameras", 3); // version = 3
+		Protean::ComponentManager<EnvironmentProbeComponent>& probes = componentLibrary.Register<EnvironmentProbeComponent>("Protean::Scene::probes", 3); // version = 3
+		Protean::ComponentManager<ForceFieldComponent>& forces = componentLibrary.Register<ForceFieldComponent>("Protean::Scene::forces", 1); // version = 1
+		Protean::ComponentManager<DecalComponent>& decals = componentLibrary.Register<DecalComponent>("Protean::Scene::decals", 1); // version = 1
+		Protean::ComponentManager<AnimationComponent>& animations = componentLibrary.Register<AnimationComponent>("Protean::Scene::animations", 2); // version = 2
+		Protean::ComponentManager<AnimationDataComponent>& animation_datas = componentLibrary.Register<AnimationDataComponent>("Protean::Scene::animation_datas");
+		Protean::ComponentManager<EmittedParticleSystem>& emitters = componentLibrary.Register<EmittedParticleSystem>("Protean::Scene::emitters", 3); // version = 3
+		Protean::ComponentManager<HairParticleSystem>& hairs = componentLibrary.Register<HairParticleSystem>("Protean::Scene::hairs", 3); // version = 3
+		Protean::ComponentManager<WeatherComponent>& weathers = componentLibrary.Register<WeatherComponent>("Protean::Scene::weathers", 6); // version = 6
+		Protean::ComponentManager<SoundComponent>& sounds = componentLibrary.Register<SoundComponent>("Protean::Scene::sounds", 1); // version = 1
+		Protean::ComponentManager<VideoComponent>& videos = componentLibrary.Register<VideoComponent>("Protean::Scene::videos", 2); // version = 2
+		Protean::ComponentManager<InverseKinematicsComponent>& inverse_kinematics = componentLibrary.Register<InverseKinematicsComponent>("Protean::Scene::inverse_kinematics");
+		Protean::ComponentManager<SpringComponent>& springs = componentLibrary.Register<SpringComponent>("Protean::Scene::springs", 1); // version = 1
+		Protean::ComponentManager<ColliderComponent>& colliders = componentLibrary.Register<ColliderComponent>("Protean::Scene::colliders", 2); // version = 2
+		Protean::ComponentManager<ScriptComponent>& scripts = componentLibrary.Register<ScriptComponent>("Protean::Scene::scripts");
+		Protean::ComponentManager<ExpressionComponent>& expressions = componentLibrary.Register<ExpressionComponent>("Protean::Scene::expressions");
+		Protean::ComponentManager<HumanoidComponent>& humanoids = componentLibrary.Register<HumanoidComponent>("Protean::Scene::humanoids", 3); // version = 3
+		Protean::ComponentManager<Protean::Terrain::Terrain>& terrains = componentLibrary.Register<Protean::Terrain::Terrain>("Protean::Scene::terrains", 6); // version = 6
+		Protean::ComponentManager<Protean::Sprite>& sprites = componentLibrary.Register<Protean::Sprite>("Protean::Scene::sprites", 2); // version = 2
+		Protean::ComponentManager<Protean::SpriteFont>& fonts = componentLibrary.Register<Protean::SpriteFont>("Protean::Scene::fonts");
+		Protean::ComponentManager<Protean::VoxelGrid>& voxel_grids = componentLibrary.Register<Protean::VoxelGrid>("Protean::Scene::voxel_grids");
+		Protean::ComponentManager<MetadataComponent>& metadatas = componentLibrary.Register<MetadataComponent>("Protean::Scene::metadatas");
+		Protean::ComponentManager<CharacterComponent>& characters = componentLibrary.Register<CharacterComponent>("Protean::Scene::characters");
+		Protean::ComponentManager<PhysicsConstraintComponent>& constraints = componentLibrary.Register<PhysicsConstraintComponent>("Protean::Scene::constraints", 6); // version = 6
+		Protean::ComponentManager<SplineComponent>& splines = componentLibrary.Register<SplineComponent>("Protean::Scene::splines", 4); // version = 4
+		Protean::ComponentManager<Protean::GaussianSplatModel>& gaussian_splats = componentLibrary.Register<Protean::GaussianSplatModel>("Protean::Scene::gaussian_splats");
 
 		// Non-serialized attributes:
 		float dt = 0;
@@ -77,42 +77,42 @@ namespace wi::scene
 
 		float time = 0;
 		CameraComponent camera; // only for LOD and 3D sound update; use GetCamera() or set RenderPath3D's camera to your own
-		wi::allocator::shared_ptr<void> physics_scene;
-		wi::SpinLock locker;
-		wi::primitive::AABB bounds;
-		wi::vector<wi::primitive::AABB> parallel_bounds;
+		Protean::Allocator::shared_ptr<void> physics_scene;
+		Protean::SpinLock locker;
+		Protean::AABB bounds;
+		Protean::vector<Protean::AABB> parallel_bounds;
 		WeatherComponent weather;
 		uint32_t cloudmap_resolution = 256;
-		wi::graphics::Texture cloudmap;
-		wi::graphics::GPUBuffer cloudmap_variance;
+		Protean::Graphics::Texture cloudmap;
+		Protean::Graphics::GPUBuffer cloudmap_variance;
 		mutable int cloudmap_frame = 0;
-		wi::graphics::RaytracingAccelerationStructure TLAS;
-		wi::graphics::GPUBuffer TLAS_instancesUpload[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::RaytracingAccelerationStructure TLAS;
+		Protean::Graphics::GPUBuffer TLAS_instancesUpload[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		void* TLAS_instancesMapped = nullptr;
-		wi::GPUBVH BVH; // this is for non-hardware accelerated raytracing
+		Protean::GPUBVH BVH; // this is for non-hardware accelerated raytracing
 		mutable bool acceleration_structure_update_requested = false;
 		void SetAccelerationStructureUpdateRequested(bool value = true) { acceleration_structure_update_requested = value; }
 		bool IsAccelerationStructureUpdateRequested() const { return acceleration_structure_update_requested; }
 		bool IsLightmapUpdateRequested() const { return lightmap_request_allocator.load() > 0; }
-		wi::Archive optimized_instatiation_data;
-		wi::vector<wi::primitive::Capsule> character_capsules;
-		wi::vector<wi::primitive::Sphere> character_dedicated_shadows;
-		wi::unordered_map<wi::ecs::Entity, wi::vector<wi::ecs::Entity>> topdown_hierarchy; // managed by BuildTopDownHierarchy() in every Update(), allows parent->children traversal
-		wi::jobsystem::context topdown_hierarchy_workload;
+		Protean::Archive optimized_instatiation_data;
+		Protean::vector<Protean::Capsule> character_capsules;
+		Protean::vector<Protean::Sphere> character_dedicated_shadows;
+		Protean::unordered_map<Protean::Entity, Protean::vector<Protean::Entity>> topdown_hierarchy; // managed by BuildTopDownHierarchy() in every Update(), allows parent->children traversal
+		Protean::JobSystem::context topdown_hierarchy_workload;
 		uint32_t cpu_gpu_mapped_resource_index = 0;
 		mutable uint32_t blas_optimize_offset = 0;
 		uint32_t sun_index = 0;
 
 		// AABB culling streams:
-		wi::vector<wi::primitive::AABB> aabb_objects;
-		wi::vector<wi::primitive::AABB> aabb_lights;
-		wi::vector<wi::primitive::AABB> aabb_probes;
-		wi::vector<wi::primitive::AABB> aabb_decals;
-		wi::vector<wi::primitive::AABB> aabb_fonts;
+		Protean::vector<Protean::AABB> aabb_objects;
+		Protean::vector<Protean::AABB> aabb_lights;
+		Protean::vector<Protean::AABB> aabb_probes;
+		Protean::vector<Protean::AABB> aabb_decals;
+		Protean::vector<Protean::AABB> aabb_fonts;
 
 		// Separate stream of world matrices:
-		wi::vector<XMFLOAT4X4> matrix_objects;
-		wi::vector<XMFLOAT4X4> matrix_objects_prev;
+		Protean::vector<XMFLOAT4X4> matrix_objects;
+		Protean::vector<XMFLOAT4X4> matrix_objects_prev;
 
 		// Shader visible scene parameters:
 		ShaderScene shaderscene;
@@ -123,10 +123,10 @@ namespace wi::scene
 		//		2) hair particles
 		//		3) emitted particles
 		//		4) impostors
-		wi::graphics::GPUBuffer instanceUploadBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer instanceUploadBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		ShaderMeshInstance* instanceArrayMapped = nullptr;
 		size_t instanceArraySize = 0;
-		wi::graphics::GPUBuffer instanceBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer instanceBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 
 		// Geometries for bindless visiblity indexing:
 		//	contains in order:
@@ -134,34 +134,34 @@ namespace wi::scene
 		//		2) hair particles * 1
 		//		3) emitted particles * 1
 		//		4) impostors * 1
-		wi::graphics::GPUBuffer geometryUploadBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer geometryUploadBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		ShaderGeometry* geometryArrayMapped = nullptr;
 		size_t geometryArraySize = 0;
-		wi::graphics::GPUBuffer geometryBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer geometryBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		std::atomic<uint32_t> geometryAllocator{ 0 };
 
 		// Materials for bindless visibility indexing:
-		wi::graphics::GPUBuffer materialUploadBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer materialUploadBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		ShaderMaterial* materialArrayMapped = nullptr;
 		size_t materialArraySize = 0;
-		wi::graphics::GPUBuffer materialBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
-		wi::graphics::GPUBuffer textureStreamingFeedbackBuffer;
-		wi::graphics::GPUBuffer textureStreamingFeedbackBuffer_readback[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer materialBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer textureStreamingFeedbackBuffer;
+		Protean::Graphics::GPUBuffer textureStreamingFeedbackBuffer_readback[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		const uint32_t* textureStreamingFeedbackMapped = nullptr;
 
 		// Meshlets:
-		wi::graphics::GPUBuffer meshletBuffer;
+		Protean::Graphics::GPUBuffer meshletBuffer;
 		std::atomic<uint32_t> meshletAllocator{ 0 };
 
 		// Skinning GPU data containining all bones, all morph descriptions:
-		wi::graphics::GPUBuffer skinningUploadBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer skinningUploadBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		void* skinningDataMapped = nullptr;
 		size_t skinningDataSize = 0;
-		wi::graphics::GPUBuffer skinningBuffer[wi::graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer skinningBuffer[Protean::Graphics::GraphicsDevice::GetBufferCount()];
 		std::atomic<uint32_t> skinningAllocator{ 0 };
 
-		wi::graphics::GPUQueryHeap queryHeap;
-		wi::graphics::GPUBuffer queryResultBuffer[arraysize(OcclusionResult::occlusionQueries)];
+		Protean::Graphics::GPUQueryHeap queryHeap;
+		Protean::Graphics::GPUBuffer queryResultBuffer[arraysize(OcclusionResult::occlusionQueries)];
 		void UpdateOcclusionResult(OcclusionResult& occlusion);
 		uint32_t queryheap_idx = 0;
 		mutable std::atomic<uint32_t> queryAllocator{ 0 };
@@ -170,22 +170,22 @@ namespace wi::scene
 		struct SurfelGI
 		{
 			mutable bool cleared = false;
-			wi::graphics::GPUBuffer surfelBuffer;
-			wi::graphics::GPUBuffer dataBuffer;
-			wi::graphics::GPUBuffer varianceBuffer;
-			wi::graphics::GPUBuffer aliveBuffer[2];
-			wi::graphics::GPUBuffer deadBuffer;
-			wi::graphics::GPUBuffer statsBuffer;
-			wi::graphics::GPUBuffer indirectBuffer;
-			wi::graphics::GPUBuffer gridBuffer;
-			wi::graphics::GPUBuffer cellBuffer;
-			wi::graphics::GPUBuffer rayBuffer;
+			Protean::Graphics::GPUBuffer surfelBuffer;
+			Protean::Graphics::GPUBuffer dataBuffer;
+			Protean::Graphics::GPUBuffer varianceBuffer;
+			Protean::Graphics::GPUBuffer aliveBuffer[2];
+			Protean::Graphics::GPUBuffer deadBuffer;
+			Protean::Graphics::GPUBuffer statsBuffer;
+			Protean::Graphics::GPUBuffer indirectBuffer;
+			Protean::Graphics::GPUBuffer gridBuffer;
+			Protean::Graphics::GPUBuffer cellBuffer;
+			Protean::Graphics::GPUBuffer rayBuffer;
 			// Ray-sort (coherence) buffers: Morton key + payload (ray slot),
 			// radix-sorted so the raytrace traces rays from nearby surfels
 			// together.
-			wi::graphics::GPUBuffer raySortKeyBuffer;
-			wi::graphics::GPUBuffer raySortPayloadBuffer;
-			wi::graphics::Texture momentsTexture;
+			Protean::Graphics::GPUBuffer raySortKeyBuffer;
+			Protean::Graphics::GPUBuffer raySortPayloadBuffer;
+			Protean::Graphics::Texture momentsTexture;
 		} surfelgi;
 
 		// DDGI resources:
@@ -196,14 +196,14 @@ namespace wi::scene
 			float3 grid_min = float3(-1, -1, -1);
 			float3 grid_max = float3(1, 1, 1);
 			float smooth_backface = 0.01f; // smoothness of backface test
-			wi::graphics::GPUBuffer ray_buffer;
-			wi::graphics::GPUBuffer variance_buffer;
-			wi::graphics::GPUBuffer raycount_buffer;
-			wi::graphics::GPUBuffer rayallocation_buffer;
-			wi::graphics::GPUBuffer probe_buffer;
-			wi::graphics::Texture depth_texture;
+			Protean::Graphics::GPUBuffer ray_buffer;
+			Protean::Graphics::GPUBuffer variance_buffer;
+			Protean::Graphics::GPUBuffer raycount_buffer;
+			Protean::Graphics::GPUBuffer rayallocation_buffer;
+			Protean::Graphics::GPUBuffer probe_buffer;
+			Protean::Graphics::Texture depth_texture;
 
-			void Serialize(wi::Archive& archive);
+			void Serialize(Protean::Archive& archive);
 		} ddgi;
 
 		// Voxel GI resources:
@@ -221,30 +221,30 @@ namespace wi::scene
 			} clipmaps[VXGI_CLIPMAP_COUNT];
 			uint32_t clipmap_to_update = 0;
 
-			wi::graphics::Texture radiance;
-			wi::graphics::Texture prev_radiance;
-			wi::graphics::Texture render_atomic;
-			wi::graphics::Texture sdf;
-			wi::graphics::Texture sdf_temp;
+			Protean::Graphics::Texture radiance;
+			Protean::Graphics::Texture prev_radiance;
+			Protean::Graphics::Texture render_atomic;
+			Protean::Graphics::Texture sdf;
+			Protean::Graphics::Texture sdf_temp;
 			mutable bool pre_clear = true;
 		} vxgi;
 
-		wi::GaussianSplatScene gaussian_scene;
+		Protean::GaussianSplatScene gaussian_scene;
 
 		EnvironmentProbeComponent global_dynamic_probe; // when no envprobes are placed, this will be the fallback
 
 		// Impostor state:
 		static constexpr uint32_t maxImpostorCount = 8;
 		static constexpr uint32_t impostorTextureDim = 128;
-		wi::graphics::Texture impostorDepthStencil;
-		wi::graphics::Texture impostorRenderTarget_Albedo_MSAA;
-		wi::graphics::Texture impostorRenderTarget_Normal_MSAA;
-		wi::graphics::Texture impostorRenderTarget_Surface_MSAA;
-		wi::graphics::Texture impostorRenderTarget_Albedo;
-		wi::graphics::Texture impostorRenderTarget_Normal;
-		wi::graphics::Texture impostorRenderTarget_Surface;
-		wi::graphics::Texture impostorArray;
-		wi::graphics::GPUBuffer impostorBuffer;
+		Protean::Graphics::Texture impostorDepthStencil;
+		Protean::Graphics::Texture impostorRenderTarget_Albedo_MSAA;
+		Protean::Graphics::Texture impostorRenderTarget_Normal_MSAA;
+		Protean::Graphics::Texture impostorRenderTarget_Surface_MSAA;
+		Protean::Graphics::Texture impostorRenderTarget_Albedo;
+		Protean::Graphics::Texture impostorRenderTarget_Normal;
+		Protean::Graphics::Texture impostorRenderTarget_Surface;
+		Protean::Graphics::Texture impostorArray;
+		Protean::Graphics::GPUBuffer impostorBuffer;
 		uint32_t allocated_impostor_capacity = 0;
 		MeshComponent::BufferView impostor_ib32;
 		MeshComponent::BufferView impostor_ib16;
@@ -252,12 +252,12 @@ namespace wi::scene
 		MeshComponent::BufferView impostor_vb_nor;
 		MeshComponent::BufferView impostor_data;
 		MeshComponent::BufferView impostor_indirect;
-		wi::graphics::Format impostor_ib_format = wi::graphics::Format::R32_UINT;
+		Protean::Graphics::Format impostor_ib_format = Protean::Graphics::Format::R32_UINT;
 		uint32_t impostorInstanceOffset = ~0u;
 		uint32_t impostorGeometryOffset = ~0u;
 		uint32_t impostorMaterialOffset = ~0u;
 
-		wi::EmittedParticleSystem rainEmitter;
+		Protean::EmittedParticleSystem rainEmitter;
 		MaterialComponent rainMaterial;
 		uint32_t rainInstanceOffset = ~0u;
 		uint32_t rainGeometryOffset = ~0u;
@@ -265,48 +265,48 @@ namespace wi::scene
 		LightComponent rain_blocker_dummy_light;
 
 		std::atomic<uint32_t> lightmap_request_allocator{ 0 };
-		wi::vector<uint32_t> lightmap_requests;
-		wi::vector<TransformComponent> transforms_temp;
+		Protean::vector<uint32_t> lightmap_requests;
+		Protean::vector<TransformComponent> transforms_temp;
 
 		// CPU/GPU Colliders:
-		wi::vector<uint8_t> collider_deinterleaved_data;
+		Protean::vector<uint8_t> collider_deinterleaved_data;
 		uint32_t collider_count_cpu = 0;
 		uint32_t collider_count_gpu = 0;
-		wi::primitive::AABB* aabb_colliders_cpu = nullptr;
-		wi::primitive::AABB* aabb_colliders_gpu = nullptr;
+		Protean::AABB* aabb_colliders_cpu = nullptr;
+		Protean::AABB* aabb_colliders_gpu = nullptr;
 		ColliderComponent* colliders_cpu = nullptr;
 		ColliderComponent* colliders_gpu = nullptr;
-		wi::BVH collider_bvh;
-		wi::BVH collider_bvh_next;
-		wi::jobsystem::context collider_bvh_workload;
+		Protean::BVH collider_bvh;
+		Protean::BVH collider_bvh_next;
+		Protean::JobSystem::context collider_bvh_workload;
 		void CountCPUandGPUColliders();
 
 		// Ocean GPU state:
-		wi::Ocean ocean;
+		Protean::Ocean ocean;
 		void OceanRegenerate() { ocean.Create(weather.oceanParameters); }
 
 		// Simple water ripple sprites:
-		mutable wi::vector<wi::Sprite> waterRipples;
+		mutable Protean::vector<Protean::Sprite> waterRipples;
 		void PutWaterRipple(const XMFLOAT3& pos);
 		void PutWaterRipple(const std::string& image, const XMFLOAT3& pos);
 
-		wi::graphics::GPUBuffer voxelgrid_gpu_upload[wi::graphics::GraphicsDevice::GetBufferCount()];
-		wi::graphics::GPUBuffer voxelgrid_gpu[wi::graphics::GraphicsDevice::GetBufferCount()]; // primary CPU voxelgrid uploaded to GPU
+		Protean::Graphics::GPUBuffer voxelgrid_gpu_upload[Protean::Graphics::GraphicsDevice::GetBufferCount()];
+		Protean::Graphics::GPUBuffer voxelgrid_gpu[Protean::Graphics::GraphicsDevice::GetBufferCount()]; // primary CPU voxelgrid uploaded to GPU
 
 		// Animation processing optimizer:
 		struct AnimationQueue
 		{
 			// The animations within one queue must be processed on the same thread in order
-			wi::vector<AnimationComponent*> animations; // pointers for one frame only!
-			wi::unordered_set<wi::ecs::Entity> entities;
+			Protean::vector<AnimationComponent*> animations; // pointers for one frame only!
+			Protean::unordered_set<Protean::Entity> entities;
 		};
-		wi::vector<AnimationQueue> animation_queues; // different animation queues can be processed in different threads in any order
+		Protean::vector<AnimationQueue> animation_queues; // different animation queues can be processed in different threads in any order
 		size_t animation_queue_count = 0; // to avoid resizing animation queues downwards because the internals for them needs to be reallocated in that case
-		wi::jobsystem::context animation_dependency_scan_workload;
+		Protean::JobSystem::context animation_dependency_scan_workload;
 		void ScanAnimationDependencies();
 
-		wi::vector<SpringComponent*> spring_queues; // these indicate which chains can be updated on separate threads
-		wi::jobsystem::context spring_dependency_scan_workload;
+		Protean::vector<SpringComponent*> spring_queues; // these indicate which chains can be updated on separate threads
+		Protean::JobSystem::context spring_dependency_scan_workload;
 		void ScanSpringDependencies();
 		void UpdateSpringsTopDownRecursive(SpringComponent* parent_spring, SpringComponent& spring);
 
@@ -315,7 +315,7 @@ namespace wi::scene
 
 		void StartBuildTopDownHierarchy();
 		void WaitBuildTopDownHierarchy() const;
-		void RefreshHierarchyTopdownFromParent(wi::ecs::Entity entity);
+		void RefreshHierarchyTopdownFromParent(Protean::Entity entity);
 
 		// Update all components by a given timestep (in seconds):
 		//	This is an expensive function, prefer to call it only once per frame!
@@ -332,28 +332,28 @@ namespace wi::scene
 		//	prefab		: source scene to be copied from
 		//	attached	: if true, everything from prefab will be attached to a root entity
 		//	returns new root entity if attached is set to true, otherwise returns INVALID_ENTITY
-		virtual wi::ecs::Entity Instantiate(Scene& prefab, bool attached = false);
+		virtual Protean::Entity Instantiate(Scene& prefab, bool attached = false);
 		// Finds all entities in the scene that have any components attached
-		void FindAllEntities(wi::unordered_set<wi::ecs::Entity>& entities) const;
+		void FindAllEntities(Protean::unordered_set<Protean::Entity>& entities) const;
 
 		// Removes (deletes) a specific entity from the scene (if it exists):
 		//	recursive	: also removes children if true
 		//	keep_sorted	: remove all components while keeping sorted order (slow)
-		void Entity_Remove(wi::ecs::Entity entity, bool recursive = true, bool keep_sorted = false);
+		void Entity_Remove(Protean::Entity entity, bool recursive = true, bool keep_sorted = false);
 		// Finds the first entity by the name (if it exists, otherwise returns INVALID_ENTITY):
 		//	ancestor : you can specify an ancestor entity if you only want to find entities that are descendants of ancestor entity
-		wi::ecs::Entity Entity_FindByName(const std::string& name, wi::ecs::Entity ancestor = wi::ecs::INVALID_ENTITY);
+		Protean::Entity Entity_FindByName(const std::string& name, Protean::Entity ancestor = Protean::INVALID_ENTITY);
 		// Duplicates all of an entity's components and creates a new entity with them (recursively keeps hierarchy):
-		wi::ecs::Entity Entity_Duplicate(wi::ecs::Entity entity);
+		Protean::Entity Entity_Duplicate(Protean::Entity entity);
 		// Check whether entity is a descendant of ancestor
 		//	returns true if entity is in the hierarchy tree of ancestor, false otherwise
-		bool Entity_IsDescendant(wi::ecs::Entity entity, wi::ecs::Entity ancestor) const;
+		bool Entity_IsDescendant(Protean::Entity entity, Protean::Entity ancestor) const;
 
 		enum class EntitySerializeFlags
 		{
 			NONE = 0,
 			RECURSIVE = 1 << 0, // children entities will be also serialized
-			KEEP_INTERNAL_ENTITY_REFERENCES = 1 << 1, // entity handles inside components will be kept intact, they won't use remapping of wi::ecs::EntitySerializer
+			KEEP_INTERNAL_ENTITY_REFERENCES = 1 << 1, // entity handles inside components will be kept intact, they won't use remapping of Protean::EntitySerializer
 		};
 		// Serializes entity and all of its components to archive:
 		//	archive		: archive used for serializing data
@@ -362,26 +362,26 @@ namespace wi::scene
 		//	flags		: specify options as EntitySerializeFlags bits to control internal behaviour
 		//
 		//	Returns either the new entity that was read, or the original entity that was written
-		wi::ecs::Entity Entity_Serialize(
-			wi::Archive& archive,
-			wi::ecs::EntitySerializer& seri,
-			wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY,
+		Protean::Entity Entity_Serialize(
+			Protean::Archive& archive,
+			Protean::EntitySerializer& seri,
+			Protean::Entity entity = Protean::INVALID_ENTITY,
 			EntitySerializeFlags flags = EntitySerializeFlags::RECURSIVE
 		);
 
-		wi::ecs::Entity Entity_CreateTransform(
+		Protean::Entity Entity_CreateTransform(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreateMaterial(
+		Protean::Entity Entity_CreateMaterial(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreateObject(
+		Protean::Entity Entity_CreateObject(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreateMesh(
+		Protean::Entity Entity_CreateMesh(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreateLight(
+		Protean::Entity Entity_CreateLight(
 			const std::string& name,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0),
 			const XMFLOAT3& color = XMFLOAT3(1, 1, 1),
@@ -391,53 +391,53 @@ namespace wi::scene
 			float outerConeAngle = XM_PIDIV4,
 			float innerConeAngle = 0
 		);
-		wi::ecs::Entity Entity_CreateForce(
+		Protean::Entity Entity_CreateForce(
 			const std::string& name,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0)
 		);
-		wi::ecs::Entity Entity_CreateEnvironmentProbe(
+		Protean::Entity Entity_CreateEnvironmentProbe(
 			const std::string& name,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0)
 		);
-		wi::ecs::Entity Entity_CreateDecal(
+		Protean::Entity Entity_CreateDecal(
 			const std::string& name,
 			const std::string& textureName,
 			const std::string& normalMapName = ""
 		);
-		wi::ecs::Entity Entity_CreateCamera(
+		Protean::Entity Entity_CreateCamera(
 			const std::string& name,
 			float width, float height, float nearPlane = 0.01f, float farPlane = 1000.0f, float fov = XM_PIDIV4
 		);
-		wi::ecs::Entity Entity_CreateEmitter(
+		Protean::Entity Entity_CreateEmitter(
 			const std::string& name,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0)
 		);
-		wi::ecs::Entity Entity_CreateHair(
+		Protean::Entity Entity_CreateHair(
 			const std::string& name,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0)
 		);
-		wi::ecs::Entity Entity_CreateSound(
+		Protean::Entity Entity_CreateSound(
 			const std::string& name,
 			const std::string& filename,
 			const XMFLOAT3& position = XMFLOAT3(0, 0, 0)
 		);
-		wi::ecs::Entity Entity_CreateVideo(
+		Protean::Entity Entity_CreateVideo(
 			const std::string& name,
 			const std::string& filename
 		);
-		wi::ecs::Entity Entity_CreateCube(
+		Protean::Entity Entity_CreateCube(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreatePlane(
+		Protean::Entity Entity_CreatePlane(
 			const std::string& name
 		);
-		wi::ecs::Entity Entity_CreateSphere(
+		Protean::Entity Entity_CreateSphere(
 			const std::string& name,
 			float radius = 1,
 			uint32_t latitudeBands = 64,
 			uint32_t longitudeBands = 64
 		);
-		wi::ecs::Entity Entity_CreateMeshFromData(
+		Protean::Entity Entity_CreateMeshFromData(
 			const std::string& name,
 			size_t index_count,
 			const uint32_t* indices,
@@ -447,16 +447,16 @@ namespace wi::scene
 
 		// Attaches an entity to a parent:
 		//	child_already_in_local_space	:	child won't be transformed from world space to local space
-		void Component_Attach(wi::ecs::Entity entity, wi::ecs::Entity parent, bool child_already_in_local_space = false);
+		void Component_Attach(Protean::Entity entity, Protean::Entity parent, bool child_already_in_local_space = false);
 		// Detaches the entity from its parent (if it is attached):
-		void Component_Detach(wi::ecs::Entity entity);
+		void Component_Detach(Protean::Entity entity);
 		// Detaches all children from an entity (if there are any):
-		void Component_DetachChildren(wi::ecs::Entity parent);
+		void Component_DetachChildren(Protean::Entity parent);
 		// Bakes the transform's current world matrix back to hierarchy local space (if it is part of a hierarchy)
-		void Component_TransformWorldToHierarchy(wi::ecs::Entity entity);
+		void Component_TransformWorldToHierarchy(Protean::Entity entity);
 
 		// Gathers all direct and indirect children of an entity
-		void GatherChildren(wi::ecs::Entity parent, wi::vector<wi::ecs::Entity>& children) const;
+		void GatherChildren(Protean::Entity parent, Protean::vector<Protean::Entity>& children) const;
 
 		// Iterates over each child of an entity and executes a lambda function for each child
 		//	parent		: the parent entity whose children will be iterated
@@ -464,11 +464,11 @@ namespace wi::scene
 		//				  If function returns bool, iteration stops when it returns false
 		//				  If function returns void, iteration continues for all children
 		template<typename Func>
-		void ForEachChild(const wi::ecs::Entity parent, Func function) const
+		void ForEachChild(const Protean::Entity parent, Func function) const
 		{
 			for (size_t i = 0; i < hierarchy.GetCount(); ++i)
 			{
-				wi::ecs::Entity child = hierarchy.GetEntity(i);
+				Protean::Entity child = hierarchy.GetEntity(i);
 
 				if (Entity_IsDescendant(child, parent))
 				{
@@ -488,37 +488,37 @@ namespace wi::scene
 		}
 
 		// Read/write whole scene into an archive
-		void Serialize(wi::Archive& archive);
+		void Serialize(Protean::Archive& archive);
 
-		void RunAnimationUpdateSystem(wi::jobsystem::context& ctx);
-		void RunTransformUpdateSystem(wi::jobsystem::context& ctx);
-		void RunHierarchyUpdateSystem(wi::jobsystem::context& ctx);
-		void RunExpressionUpdateSystem(wi::jobsystem::context& ctx);
-		void RunProceduralAnimationUpdateSystem(wi::jobsystem::context& ctx);
-		void RunArmatureUpdateSystem(wi::jobsystem::context& ctx);
-		void RunMeshUpdateSystem(wi::jobsystem::context& ctx);
-		void RunMaterialUpdateSystem(wi::jobsystem::context& ctx);
-		void RunImpostorUpdateSystem(wi::jobsystem::context& ctx);
-		void RunObjectUpdateSystem(wi::jobsystem::context& ctx);
-		void RunCameraUpdateSystem(wi::jobsystem::context& ctx);
-		void RunDecalUpdateSystem(wi::jobsystem::context& ctx);
-		void RunProbeUpdateSystem(wi::jobsystem::context& ctx);
-		void RunForceUpdateSystem(wi::jobsystem::context& ctx);
-		void RunLightUpdateSystem(wi::jobsystem::context& ctx);
-		void RunParticleUpdateSystem(wi::jobsystem::context& ctx);
-		void RunWeatherUpdateSystem(wi::jobsystem::context& ctx);
-		void RunSoundUpdateSystem(wi::jobsystem::context& ctx);
-		void RunVideoUpdateSystem(wi::jobsystem::context& ctx);
-		void RunScriptUpdateSystem(wi::jobsystem::context& ctx);
-		void RunSpriteUpdateSystem(wi::jobsystem::context& ctx);
-		void RunFontUpdateSystem(wi::jobsystem::context& ctx);
-		void RunCharacterUpdateSystem(wi::jobsystem::context& ctx);
-		void RunSplineUpdateSystem(wi::jobsystem::context& ctx);
+		void RunAnimationUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunTransformUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunHierarchyUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunExpressionUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunProceduralAnimationUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunArmatureUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunMeshUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunMaterialUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunImpostorUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunObjectUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunCameraUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunDecalUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunProbeUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunForceUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunLightUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunParticleUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunWeatherUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunSoundUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunVideoUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunScriptUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunSpriteUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunFontUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunCharacterUpdateSystem(Protean::JobSystem::context& ctx);
+		void RunSplineUpdateSystem(Protean::JobSystem::context& ctx);
 
 
 		struct RayIntersectionResult
 		{
-			wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+			Protean::Entity entity = Protean::INVALID_ENTITY;
 			XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 			XMFLOAT3 normal = XMFLOAT3(0, 0, 0);
 			XMFLOAT4 uv = XMFLOAT4(0, 0, 0, 0);
@@ -529,7 +529,7 @@ namespace wi::scene
 			int vertexID1 = -1;
 			int vertexID2 = -1;
 			XMFLOAT2 bary = XMFLOAT2(0, 0);
-			XMFLOAT4X4 orientation = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 orientation = Protean::Math::IDENTITY_MATRIX;
 			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone::Count;
 
 			constexpr bool operator==(const RayIntersectionResult& other) const
@@ -542,7 +542,7 @@ namespace wi::scene
 		//	filterMask		:	filter based on type
 		//	layerMask		:	filter based on layer
 		//	lod				:	specify min level of detail for meshes
-		RayIntersectionResult Intersects(const wi::primitive::Ray& ray, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		RayIntersectionResult Intersects(const Protean::Ray& ray, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		// Given a ray, finds the first intersection point against all mesh instances or colliders
 		//	returns true immediately if intersection was found, false otherwise
@@ -550,40 +550,40 @@ namespace wi::scene
 		//	filterMask		:	filter based on type
 		//	layerMask		:	filter based on layer
 		//	lod				:	specify min level of detail for meshes
-		bool IntersectsFirst(const wi::primitive::Ray& ray, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		bool IntersectsFirst(const Protean::Ray& ray, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		// Given a ray, finds all intersections against all mesh instances or collliders
-		void IntersectsAll(wi::vector<RayIntersectionResult>& results, const wi::primitive::Ray& ray, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		void IntersectsAll(Protean::vector<RayIntersectionResult>& results, const Protean::Ray& ray, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		struct SphereIntersectionResult
 		{
-			wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+			Protean::Entity entity = Protean::INVALID_ENTITY;
 			XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 			XMFLOAT3 normal = XMFLOAT3(0, 0, 0);
 			XMFLOAT3 velocity = XMFLOAT3(0, 0, 0);
 			float depth = 0;
 			int subsetIndex = -1;
-			XMFLOAT4X4 orientation = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 orientation = Protean::Math::IDENTITY_MATRIX;
 			HumanoidComponent::HumanoidBone humanoid_bone = HumanoidComponent::HumanoidBone::Count;
 		};
 		// Closest sphere intersection
-		SphereIntersectionResult Intersects(const wi::primitive::Sphere& sphere, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		SphereIntersectionResult Intersects(const Protean::Sphere& sphere, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		// All sphere intersections
-		void IntersectsAll(wi::vector<SphereIntersectionResult>& results, const wi::primitive::Sphere& sphere, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		void IntersectsAll(Protean::vector<SphereIntersectionResult>& results, const Protean::Sphere& sphere, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		using CapsuleIntersectionResult = SphereIntersectionResult;
 		// Closest capsule intersection
-		CapsuleIntersectionResult Intersects(const wi::primitive::Capsule& capsule, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		CapsuleIntersectionResult Intersects(const Protean::Capsule& capsule, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		// All capsule intersections
-		void IntersectsAll(wi::vector<CapsuleIntersectionResult>& results, const wi::primitive::Capsule& capsule, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
+		void IntersectsAll(Protean::vector<CapsuleIntersectionResult>& results, const Protean::Capsule& capsule, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, uint32_t lod = 0) const;
 
 		// Goes through the hierarchy backwards and computes entity's world space matrix:
-		XMMATRIX ComputeEntityMatrixRecursive(wi::ecs::Entity entity) const;
+		XMMATRIX ComputeEntityMatrixRecursive(Protean::Entity entity) const;
 
 		// Goes through the hierarchy backwards and computes parent's world space matrix:
-		XMMATRIX ComputeParentMatrixRecursive(wi::ecs::Entity entity) const;
+		XMMATRIX ComputeParentMatrixRecursive(Protean::Entity entity) const;
 
 		// Retargets an animation from a Humanoid to an other Humanoid such that the new animation will play back on the destination humanoid
 		//	dst			:	destination humanoid that the animation will be fit onto
@@ -594,27 +594,27 @@ namespace wi::scene
 		//					If you use a separate scene, then you mustn't serialize the scene while there are animations referencing the src_scene!
 		//
 		//	returns entity ID of the new animation or INVALID_ENTITY if retargeting was not successful
-		wi::ecs::Entity RetargetAnimation(wi::ecs::Entity dst, wi::ecs::Entity src, bool bake_data, const Scene* src_scene = nullptr);
+		Protean::Entity RetargetAnimation(Protean::Entity dst, Protean::Entity src, bool bake_data, const Scene* src_scene = nullptr);
 
 		// If you don't know which armature the bone is contained in, this function can be used to find the first such armature and return the bone's rest matrix
 		//	If not found, and entity has a transform, it returns transform matrix
 		//	Otherwise, returns identity matrix
-		XMMATRIX GetRestPose(wi::ecs::Entity entity) const;
-		XMMATRIX FindBoneRestPose(wi::ecs::Entity bone) { return GetRestPose(bone); }; // back-compat of GetRestPose
+		XMMATRIX GetRestPose(Protean::Entity entity) const;
+		XMMATRIX FindBoneRestPose(Protean::Entity bone) { return GetRestPose(bone); }; // back-compat of GetRestPose
 
 		// All triangles of the object will be injected into the voxel grid
 		//	subtract: if false (default), voxels will be added, if true then voxels will be removed
-		void VoxelizeObject(size_t objectIndex, wi::VoxelGrid& grid, bool subtract = false, uint32_t lod = 0);
+		void VoxelizeObject(size_t objectIndex, Protean::VoxelGrid& grid, bool subtract = false, uint32_t lod = 0);
 
 		// Voxelize all meshes that match the filters into a voxel grid
-		void VoxelizeScene(wi::VoxelGrid& voxelgrid, bool subtract = false, uint32_t filterMask = wi::enums::FILTER_ALL, uint32_t layerMask = ~0, uint32_t lod = 0);
+		void VoxelizeScene(Protean::VoxelGrid& voxelgrid, bool subtract = false, uint32_t filterMask = Protean::FILTER_ALL, uint32_t layerMask = ~0, uint32_t lod = 0);
 
 		// Get the current position on the surface of an object, tracked by the triangle barycentrics
-		XMFLOAT3 GetPositionOnSurface(wi::ecs::Entity objectEntity, int vertexID0, int vertexID1, int vertexID2, const XMFLOAT2& bary) const;
+		XMFLOAT3 GetPositionOnSurface(Protean::Entity objectEntity, int vertexID0, int vertexID1, int vertexID2, const XMFLOAT2& bary) const;
 
 		// Resets pose of the specified entity to bind pose
 		//	this will search for all armatures that are descendants of the entity and set all bone matrices to the their bind matrix
-		void ResetPose(wi::ecs::Entity entity);
+		void ResetPose(Protean::Entity entity);
 
 		// Returns the approximate position on the ocean surface seen from a position in world space.
 		//	If current weather doesn't have ocean enabled, returns the world position itself.
@@ -623,7 +623,7 @@ namespace wi::scene
 		XMFLOAT3 GetOceanPosAt(const XMFLOAT3& worldPosition) const;
 
 		// Computes the LOD for an object AABB for a given view projection matrix
-		uint32_t ComputeObjectLODForView(const ObjectComponent& object, const wi::primitive::AABB& aabb, const MeshComponent& mesh, const XMMATRIX& ViewProjection) const;
+		uint32_t ComputeObjectLODForView(const ObjectComponent& object, const Protean::AABB& aabb, const MeshComponent& mesh, const XMMATRIX& ViewProjection) const;
 
 		// If somehow NANs happened in TransformComponents, this will clear them up and rename them with _nanfix postfix to help filtering them
 		void FixupNans();
@@ -638,7 +638,7 @@ namespace wi::scene
 
 	// Returns skinned vertex position
 	//	N : normal (out, optional)
-	XMVECTOR SkinVertex(const MeshComponent& mesh, const wi::vector<ShaderTransform>& boneData, uint32_t index, XMVECTOR* N = nullptr);
+	XMVECTOR SkinVertex(const MeshComponent& mesh, const Protean::vector<ShaderTransform>& boneData, uint32_t index, XMVECTOR* N = nullptr);
 	// Returns skinned vertex position in armature local space
 	//	N : normal (out, optional)
 	XMVECTOR SkinVertex(const MeshComponent& mesh, const ArmatureComponent& armature, uint32_t index, XMVECTOR* N = nullptr);
@@ -669,7 +669,7 @@ namespace wi::scene
 	//	attached		:	if true, everything will be attached to a base entity
 	//
 	//	returns INVALID_ENTITY if attached argument was false, else it returns the base entity handle
-	wi::ecs::Entity LoadModel(const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), bool attached = false);
+	Protean::Entity LoadModel(const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), bool attached = false);
 
 	// Helper function to open a wiscene file and add the contents to the specified scene. This is thread safe as it doesn't modify global scene
 	//	scene			:	the scene that will contain the model
@@ -678,34 +678,34 @@ namespace wi::scene
 	//	attached		:	if true, everything will be attached to a base entity
 	//
 	//	returns INVALID_ENTITY if attached argument was false, else it returns the base entity handle
-	wi::ecs::Entity LoadModel(Scene& scene, const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), bool attached = false);
+	Protean::Entity LoadModel(Scene& scene, const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), bool attached = false);
 
 	// Helper function to open a wiscene file and add the contents to the global scene
 	//	fileName		:	file path
 	//	transformMatrix	:	everything will be transformed by this matrix (optional)
 	//	rootEntity		:	specify entity to attach whole scene to (optional)
-	void LoadModel2(const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), wi::ecs::Entity rootEntity = wi::ecs::INVALID_ENTITY);
+	void LoadModel2(const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), Protean::Entity rootEntity = Protean::INVALID_ENTITY);
 
 	// Helper function to open a wiscene file and add the contents to the specified scene. This is thread safe as it doesn't modify global scene
 	//	scene			:	the scene that will contain the model
 	//	fileName		:	file path
 	//	transformMatrix	:	everything will be transformed by this matrix (optional)
 	//	rootEntity		:	specify entity to attach whole scene to (optional)
-	void LoadModel2(Scene& scene, const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), wi::ecs::Entity rootEntity = wi::ecs::INVALID_ENTITY);
+	void LoadModel2(Scene& scene, const std::string& fileName, const XMMATRIX& transformMatrix = XMMatrixIdentity(), Protean::Entity rootEntity = Protean::INVALID_ENTITY);
 
 	// Deprecated, use Scene::Intersects() function instead
 	using PickResult = Scene::RayIntersectionResult;
-	PickResult Pick(const wi::primitive::Ray& ray, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
+	PickResult Pick(const Protean::Ray& ray, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
 
 	// Deprecated, use Scene::Intersects() function instead
 	using SceneIntersectSphereResult = Scene::SphereIntersectionResult;
-	SceneIntersectSphereResult SceneIntersectSphere(const wi::primitive::Sphere& sphere, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
+	SceneIntersectSphereResult SceneIntersectSphere(const Protean::Sphere& sphere, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
 
 	// Deprecated, use Scene::Intersects() function instead
 	using SceneIntersectCapsuleResult = Scene::SphereIntersectionResult;
-	SceneIntersectCapsuleResult SceneIntersectCapsule(const wi::primitive::Capsule& capsule, uint32_t filterMask = wi::enums::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
+	SceneIntersectCapsuleResult SceneIntersectCapsule(const Protean::Capsule& capsule, uint32_t filterMask = Protean::FILTER_OPAQUE, uint32_t layerMask = ~0, const Scene& scene = GetScene(), uint32_t lod = 0);
 
 }
 
 template<>
-struct enable_bitmask_operators<wi::scene::Scene::EntitySerializeFlags> : std::true_type {};
+struct enable_bitmask_operators<Protean::Scene::EntitySerializeFlags> : std::true_type {};

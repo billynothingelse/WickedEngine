@@ -17,29 +17,29 @@
 #include <memory>
 #include <limits>
 
-namespace wi
+namespace Protean
 {
 	struct VoxelGrid;
 	struct PathQuery;
 	struct TrailRenderer;
 }
 
-namespace wi::renderer
+namespace Protean::Renderer
 {
-	constexpr wi::graphics::Format format_depthbuffer_main = wi::graphics::Format::D32_FLOAT_S8X24_UINT;
-	constexpr wi::graphics::Format format_rendertarget_main = wi::graphics::Format::R11G11B10_FLOAT;
-	constexpr wi::graphics::Format format_idbuffer = wi::graphics::Format::R32_UINT;
-	constexpr wi::graphics::Format format_rendertarget_shadowmap = wi::graphics::Format::R16G16B16A16_FLOAT;
-	constexpr wi::graphics::Format format_depthbuffer_shadowmap = wi::graphics::Format::D16_UNORM;
-	//constexpr wi::graphics::Format format_depthbuffer_shadowmap = wi::graphics::Format::D32_FLOAT;
-	constexpr wi::graphics::Format format_rendertarget_envprobe = wi::graphics::Format::R11G11B10_FLOAT;
-	constexpr wi::graphics::Format format_depthbuffer_envprobe = wi::graphics::Format::D16_UNORM;
+	constexpr Protean::Graphics::Format format_depthbuffer_main = Protean::Graphics::Format::D32_FLOAT_S8X24_UINT;
+	constexpr Protean::Graphics::Format format_rendertarget_main = Protean::Graphics::Format::R11G11B10_FLOAT;
+	constexpr Protean::Graphics::Format format_idbuffer = Protean::Graphics::Format::R32_UINT;
+	constexpr Protean::Graphics::Format format_rendertarget_shadowmap = Protean::Graphics::Format::R16G16B16A16_FLOAT;
+	constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format::D16_UNORM;
+	//constexpr Protean::Graphics::Format format_depthbuffer_shadowmap = Protean::Graphics::Format::D32_FLOAT;
+	constexpr Protean::Graphics::Format format_rendertarget_envprobe = Protean::Graphics::Format::R11G11B10_FLOAT;
+	constexpr Protean::Graphics::Format format_depthbuffer_envprobe = Protean::Graphics::Format::D16_UNORM;
 
 	constexpr uint8_t raytracing_inclusion_mask_shadow = 1 << 0;
 	constexpr uint8_t raytracing_inclusion_mask_reflection = 1 << 1;
 	constexpr uint8_t raytracing_inclusion_mask_diffuse = 1 << 2;
 
-	constexpr uint32_t CombineStencilrefs(wi::enums::STENCILREF engineStencilRef, uint8_t userStencilRef)
+	constexpr uint32_t CombineStencilrefs(Protean::STENCILREF engineStencilRef, uint8_t userStencilRef)
 	{
 		return (userStencilRef << 4) | static_cast<uint8_t>(engineStencilRef);
 	}
@@ -58,24 +58,24 @@ namespace wi::renderer
 		);
 	}
 
-	const wi::graphics::Sampler* GetSampler(wi::enums::SAMPLERTYPES id);
-	const wi::graphics::Shader* GetShader(wi::enums::SHADERTYPE id);
-	const wi::graphics::InputLayout* GetInputLayout(wi::enums::ILTYPES id);
-	const wi::graphics::RasterizerState* GetRasterizerState(wi::enums::RSTYPES id);
-	const wi::graphics::DepthStencilState* GetDepthStencilState(wi::enums::DSSTYPES id);
-	const wi::graphics::BlendState* GetBlendState(wi::enums::BSTYPES id);
-	const wi::graphics::GPUBuffer* GetBuffer(wi::enums::BUFFERTYPES id);
-	const wi::graphics::Texture* GetTexture(wi::enums::TEXTYPES id);
+	const Protean::Graphics::Sampler* GetSampler(Protean::SAMPLERTYPES id);
+	const Protean::Graphics::Shader* GetShader(Protean::SHADERTYPE id);
+	const Protean::Graphics::InputLayout* GetInputLayout(Protean::ILTYPES id);
+	const Protean::Graphics::RasterizerState* GetRasterizerState(Protean::RSTYPES id);
+	const Protean::Graphics::DepthStencilState* GetDepthStencilState(Protean::DSSTYPES id);
+	const Protean::Graphics::BlendState* GetBlendState(Protean::BSTYPES id);
+	const Protean::Graphics::GPUBuffer* GetBuffer(Protean::BUFFERTYPES id);
+	const Protean::Graphics::Texture* GetTexture(Protean::TEXTYPES id);
 
 	// Returns a buffer preinitialized for quad index buffer laid out as:
 	//	vertexID * 4 + [0, 1, 2, 2, 1, 3]
 	//	Note: it will return 16-bit or 32-bit index buffer depending on max_quad_count
-	const wi::graphics::GPUBuffer& GetIndexBufferForQuads(uint32_t max_quad_count);
+	const Protean::Graphics::GPUBuffer& GetIndexBufferForQuads(uint32_t max_quad_count);
 
 	struct BufferSuballocation
 	{
-		wi::graphics::GPUBuffer alias;
-		wi::allocator::PageAllocator::Allocation allocation;
+		Protean::Graphics::GPUBuffer alias;
+		Protean::Allocator::PageAllocator::Allocation allocation;
 		inline bool IsValid() const { return allocation.IsValid(); }
 	};
 	// Sub-allocate (thread-safe) from a global GPU buffer for memory aliasing purpose:
@@ -85,13 +85,13 @@ namespace wi::renderer
 	BufferSuballocation SuballocateGPUBuffer(uint64_t size);
 	void UpdateGPUSuballocator(); // called every frame for deferred release of GPU suballocations
 
-	void ModifyObjectSampler(const wi::graphics::SamplerDesc& desc);
+	void ModifyObjectSampler(const Protean::Graphics::SamplerDesc& desc);
 
 	// Initializes the renderer
 	void Initialize();
 
 	// Clears the scene and the associated renderer resources
-	void ClearWorld(wi::scene::Scene& scene);
+	void ClearWorld(Protean::Scene& scene);
 
 	// Returns the shader binary directory
 	const std::string& GetShaderPath();
@@ -110,11 +110,11 @@ namespace wi::renderer
 	size_t GetShaderMissingCount();
 
 	bool LoadShader(
-		wi::graphics::ShaderStage stage,
-		wi::graphics::Shader& shader,
+		Protean::Graphics::ShaderStage stage,
+		Protean::Graphics::Shader& shader,
 		const std::string& filename,
-		wi::graphics::ShaderModel minshadermodel = wi::graphics::ShaderModel::SM_6_0,
-		const wi::vector<std::string>& permutation_defines = {},
+		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel::SM_6_0,
+		const Protean::vector<std::string>& permutation_defines = {},
 		const std::string& entrypoint = "main"
 	);
 
@@ -125,8 +125,8 @@ namespace wi::renderer
 	{
 		// User fills these:
 		uint32_t layerMask = ~0u;
-		const wi::scene::Scene* scene = nullptr;
-		const wi::scene::CameraComponent* camera = nullptr;
+		const Protean::Scene* scene = nullptr;
+		const Protean::CameraComponent* camera = nullptr;
 		enum FLAGS
 		{
 			EMPTY = 0,
@@ -145,23 +145,23 @@ namespace wi::renderer
 		};
 		uint32_t flags = EMPTY;
 
-		// wi::renderer::UpdateVisibility() fills these:
-		wi::primitive::Frustum frustum;
-		wi::vector<uint32_t> visibleObjects;
-		wi::vector<uint32_t> visibleDecals;
-		wi::vector<uint32_t> visibleEnvProbes;
-		wi::vector<uint32_t> visibleEmitters;
-		wi::vector<uint32_t> visibleHairs;
-		wi::vector<uint32_t> visibleLights;
-		wi::vector<wi::scene::ColliderComponent> visibleColliders;
-		wi::rectpacker::State shadow_packer;
-		wi::rectpacker::Rect rain_blocker_shadow_rect;
-		wi::vector<wi::rectpacker::Rect> visibleLightShadowRects;
+		// Protean::Renderer::UpdateVisibility() fills these:
+		Protean::Frustum frustum;
+		Protean::vector<uint32_t> visibleObjects;
+		Protean::vector<uint32_t> visibleDecals;
+		Protean::vector<uint32_t> visibleEnvProbes;
+		Protean::vector<uint32_t> visibleEmitters;
+		Protean::vector<uint32_t> visibleHairs;
+		Protean::vector<uint32_t> visibleLights;
+		Protean::vector<Protean::ColliderComponent> visibleColliders;
+		Protean::RectPacker::State shadow_packer;
+		Protean::RectPacker::Rect rain_blocker_shadow_rect;
+		Protean::vector<Protean::RectPacker::Rect> visibleLightShadowRects;
 
 		std::atomic<uint32_t> object_counter;
 		std::atomic<uint32_t> light_counter;
 
-		wi::SpinLock locker;
+		Protean::SpinLock locker;
 		bool planar_reflection_visible = false;
 		float closestRefPlane = std::numeric_limits<float>::max();
 		XMFLOAT4 reflectionPlane = XMFLOAT4(0, 1, 0, 0);
@@ -211,7 +211,7 @@ namespace wi::renderer
 	void UpdateVisibility(Visibility& vis);
 	// Prepares the scene for rendering
 	void UpdatePerFrameData(
-		wi::scene::Scene& scene,
+		Protean::Scene& scene,
 		const Visibility& vis,
 		FrameCB& frameCB,
 		float dt
@@ -220,46 +220,46 @@ namespace wi::renderer
 	void UpdateRenderData(
 		const Visibility& vis,
 		const FrameCB& frameCB,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Updates those GPU states that can be async
 	void UpdateRenderDataAsync(
 		const Visibility& vis,
 		const FrameCB& frameCB,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Copies the texture streaming requests from GPU to CPU
 	void TextureStreamingReadbackCopy(
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Updates the ocean, can be on async compute
 	void UpdateOcean(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Readback the ocean, can be on async compute or async copy
 	void ReadbackOcean(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Rebuild or update all required acceleration structures for the frame
-	void UpdateRaytracingAccelerationStructures(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void UpdateRaytracingAccelerationStructures(const Protean::Scene& scene, Protean::Graphics::CommandList cmd);
 
 	// Binds all common constant buffers and samplers that may be used in all shaders
-	void BindCommonResources(wi::graphics::CommandList cmd);
+	void BindCommonResources(Protean::Graphics::CommandList cmd);
 	// Updates the per camera constant buffer need to call for each different camera that is used when calling DrawScene() and the like
 	//	camera_previous : camera from previous frame, used for reprojection effects.
 	//	camera_reflection : camera that renders planar reflection
 	void BindCameraCB(
-		const wi::scene::CameraComponent& camera,
-		const wi::scene::CameraComponent& camera_previous,
-		const wi::scene::CameraComponent& camera_reflection,
-		wi::graphics::CommandList cmd
+		const Protean::CameraComponent& camera,
+		const Protean::CameraComponent& camera_previous,
+		const Protean::CameraComponent& camera_reflection,
+		Protean::Graphics::CommandList cmd
 	);
 
 
@@ -281,168 +281,168 @@ namespace wi::renderer
 	// Draw the world from a camera. You must call BindCameraCB() at least once in this command list prior to this
 	void DrawScene(
 		const Visibility& vis,
-		wi::enums::RENDERPASS renderPass,
-		wi::graphics::CommandList cmd,
+		Protean::RENDERPASS renderPass,
+		Protean::Graphics::CommandList cmd,
 		uint32_t flags = DRAWSCENE_OPAQUE
 	);
 
 	// Process deferred requests such as AddDeferredMIPGen and AddDeferredBlockCompression:
-	void ProcessDeferredTextureRequests(wi::graphics::CommandList cmd);
+	void ProcessDeferredTextureRequests(Protean::Graphics::CommandList cmd);
 
 	// Compute volumetric cloud shadow data
 	void ComputeVolumetricCloudShadows(
-		wi::graphics::CommandList cmd,
-		const wi::graphics::Texture* weatherMapFirst = nullptr,
-		const wi::graphics::Texture* weatherMapSecond = nullptr
+		Protean::Graphics::CommandList cmd,
+		const Protean::Graphics::Texture* weatherMapFirst = nullptr,
+		const Protean::Graphics::Texture* weatherMapSecond = nullptr
 	);
 
 	// Compute essential SkyAtmosphere textures for lighting, skyviewlut and cameravolume.
-	void ComputeSkyAtmosphereTextures(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereTextures(Protean::Graphics::CommandList cmd);
 	// Update SkyViewLut independently, used primarily for environtment probes.
-	void ComputeSkyAtmosphereSkyViewLut(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereSkyViewLut(Protean::Graphics::CommandList cmd);
 	// Update CameraVolumeLut independently, used primarily for environtment probes.
-	void ComputeSkyAtmosphereCameraVolumeLut(wi::graphics::CommandList cmd);
+	void ComputeSkyAtmosphereCameraVolumeLut(Protean::Graphics::CommandList cmd);
 
 	// Draw skydome centered to camera.
-	void DrawSky(const wi::scene::Scene& scene, wi::graphics::CommandList cmd, bool clouds = true);
+	void DrawSky(const Protean::Scene& scene, Protean::Graphics::CommandList cmd, bool clouds = true);
 	// Draw shadow maps for each visible light that has associated shadow maps
-	void DrawSun(wi::graphics::CommandList cmd);
+	void DrawSun(Protean::Graphics::CommandList cmd);
 	// Draw shadow maps for each visible light that has associated shadow maps
 	void DrawShadowmaps(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw debug world. You must also enable what parts to draw, eg. SetToDrawGridHelper, etc, see implementation for details what can be enabled.
 	void DrawDebugWorld(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::CameraComponent& camera,
+		const Protean::Canvas& canvas,
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw wireframe overlay on top of scene geometry when wireframe mode is enabled
 	void DrawWireframeOverlay(
 		const Visibility& vis,
-		wi::enums::RENDERPASS renderPass,
-		wi::graphics::CommandList cmd
+		Protean::RENDERPASS renderPass,
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw Soft offscreen particles.
 	void DrawSoftParticles(
 		const Visibility& vis,
 		bool distortion, 
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Does the gaussian splat culling and sorting for a single camera
 	void UpdateGaussianSplatsForCamera(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::CameraComponent& camera,
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw gaussian splats inside a render pass, the UpdateGaussianSplatsForCamera must have been called for this camera before this outside of render pass
 	void DrawGaussianSplats(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::CameraComponent& camera,
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw the sprites and fonts from the scene
 	void DrawSpritesAndFonts(
-		const wi::scene::Scene& scene,
-		const wi::scene::CameraComponent& camera,
+		const Protean::Scene& scene,
+		const Protean::CameraComponent& camera,
 		bool distortion,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw simple light visualizer geometries
 	//	instance_replication is used to render them into multiple texture slices
 	void DrawLightVisualizers(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd,
+		Protean::Graphics::CommandList cmd,
 		uint32_t instance_replication = 1
 	);
 	// Draw volumetric light scattering effects
 	void DrawVolumeLights(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Draw Lens Flares for lights that have them enabled
 	void DrawLensFlares(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Call once per frame to re-render out of date environment probes
-	void RefreshEnvProbes(const Visibility& vis, wi::graphics::CommandList cmd);
+	void RefreshEnvProbes(const Visibility& vis, Protean::Graphics::CommandList cmd);
 	// Call once per frame to re-render out of date impostors
-	void RefreshImpostors(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RefreshImpostors(const Protean::Scene& scene, Protean::Graphics::CommandList cmd);
 	// Call once per frame to render lightmaps
-	void RefreshLightmaps(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RefreshLightmaps(const Protean::Scene& scene, Protean::Graphics::CommandList cmd);
 	// Call once per frame to render wetmaps
-	void RefreshWetmaps(const Visibility& vis, wi::graphics::CommandList cmd);
+	void RefreshWetmaps(const Visibility& vis, Protean::Graphics::CommandList cmd);
 	// Call once per frame to render PaintDecalIntoMeshSpaceTexture requests
-	void PaintDecals(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void PaintDecals(const Protean::Scene& scene, Protean::Graphics::CommandList cmd);
 
 	// Run a compute shader that will resolve a MSAA depth buffer to a single-sample texture
-	void ResolveMSAADepthBuffer(const wi::graphics::Texture& dst, const wi::graphics::Texture& src, wi::graphics::CommandList cmd);
-	void DownsampleDepthBuffer(const wi::graphics::Texture& src, wi::graphics::CommandList cmd);
+	void ResolveMSAADepthBuffer(const Protean::Graphics::Texture& dst, const Protean::Graphics::Texture& src, Protean::Graphics::CommandList cmd);
+	void DownsampleDepthBuffer(const Protean::Graphics::Texture& src, Protean::Graphics::CommandList cmd);
 
 	struct TiledLightResources
 	{
 		XMUINT2 tileCount = {};
 		uint32_t camera_count = 1;
-		wi::graphics::GPUBuffer entityTiles; // culled entity indices
+		Protean::Graphics::GPUBuffer entityTiles; // culled entity indices
 	};
 	void CreateTiledLightResources(TiledLightResources& res, XMUINT2 resolution, uint32_t camera_count = 1);
 	// Compute light grid tiles
 	void ComputeTiledLightCulling(
 		const TiledLightResources& res,
 		const Visibility& vis,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& debugUAV,
+		Protean::Graphics::CommandList cmd
 	);
 
 	struct LuminanceResources
 	{
-		wi::graphics::GPUBuffer luminance; // result luminance value
+		Protean::Graphics::GPUBuffer luminance; // result luminance value
 	};
 	void CreateLuminanceResources(LuminanceResources& res, XMUINT2 resolution);
 	void ComputeLuminance(
 		const LuminanceResources& res,
-		const wi::graphics::Texture& sourceImage,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& sourceImage,
+		Protean::Graphics::CommandList cmd,
 		float adaption_rate = 1,
 		float eyeadaptionkey = 0.115f
 	);
 
 	struct BloomResources
 	{
-		wi::graphics::Texture texture_bloom;
-		wi::graphics::Texture texture_temp;
+		Protean::Graphics::Texture texture_bloom;
+		Protean::Graphics::Texture texture_temp;
 	};
 	void CreateBloomResources(BloomResources& res, XMUINT2 resolution);
 	void ComputeBloom(
 		const BloomResources& res,
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		Protean::Graphics::CommandList cmd,
 		float threshold = 1.0f, // cutoff value, pixels below this will not contribute to bloom
 		float exposure = 1.0f,
-		const wi::graphics::GPUBuffer* buffer_luminance = nullptr
+		const Protean::Graphics::GPUBuffer* buffer_luminance = nullptr
 	);
 
 	void ComputeShadingRateClassification(
-		const wi::graphics::Texture& output,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& output,
+		const Protean::Graphics::Texture& debugUAV,
+		Protean::Graphics::CommandList cmd
 	);
 
 	struct VisibilityResources
 	{
 		XMUINT2 tile_count = {};
-		wi::graphics::GPUBuffer primitive_bins;			 // primitiveID uniformity binning
-		wi::graphics::GPUBuffer primitive_binned_tiles;	 // primitiveID uniformity binning
-		wi::graphics::GPUBuffer bins;					 // material type binning
-		wi::graphics::GPUBuffer binned_tiles;			 // material type binning
-		wi::graphics::Texture texture_normal_roughness;
+		Protean::Graphics::GPUBuffer primitive_bins;			 // primitiveID uniformity binning
+		Protean::Graphics::GPUBuffer primitive_binned_tiles;	 // primitiveID uniformity binning
+		Protean::Graphics::GPUBuffer bins;					 // material type binning
+		Protean::Graphics::GPUBuffer binned_tiles;			 // material type binning
+		Protean::Graphics::Texture texture_normal_roughness;
 
 		// You can request any of these extra outputs to be written by VisibilityResolve:
-		const wi::graphics::Texture* depthbuffer = nullptr; // depth buffer that matches with post projection
-		const wi::graphics::Texture* primitiveID_resolved = nullptr; // resolved from MSAA texture_visibility input
+		const Protean::Graphics::Texture* depthbuffer = nullptr; // depth buffer that matches with post projection
+		const Protean::Graphics::Texture* primitiveID_resolved = nullptr; // resolved from MSAA texture_visibility input
 
 		inline bool IsValidSimple() const { return primitive_bins.IsValid(); }
 		inline bool IsValid() const { return bins.IsValid(); }
@@ -457,22 +457,22 @@ namespace wi::renderer
 	void CreateVisibilityResources(VisibilityResources& res, XMUINT2 resolution);
 	void Visibility_Prepare(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& input_primitiveID, // can be MSAA
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input_primitiveID, // can be MSAA
+		Protean::Graphics::CommandList cmd
 	);
 	void Visibility_Surface(
 		const VisibilityResources& res,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	void Visibility_Shade(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	void Visibility_Velocity(
 		const VisibilityResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 
 	enum class PostProcessQuality
@@ -485,11 +485,11 @@ namespace wi::renderer
 	{
 		switch (quality)
 		{
-		case wi::renderer::PostProcessQuality::Low:
+		case Protean::Renderer::PostProcessQuality::Low:
 			return 4;
-		case wi::renderer::PostProcessQuality::Medium:
+		case Protean::Renderer::PostProcessQuality::Medium:
 			return 2;
-		case wi::renderer::PostProcessQuality::High:
+		case Protean::Renderer::PostProcessQuality::High:
 		default:
 			break;
 		}
@@ -501,14 +501,14 @@ namespace wi::renderer
 	{
 		// Ping-ponged half-res GI: one frame's coverage reads the other as
 		// temporal history and writes this frame's, picked by frame parity.
-		wi::graphics::Texture result_halfres[2];
+		Protean::Graphics::Texture result_halfres[2];
 		// Scratch pair the edge-aware a-trous denoiser ping-pongs through. Kept
 		// separate from result_halfres[] so the temporal history
 		// (result_halfres) stays un-denoised - the spatial blur never compounds
 		// through the temporal loop; only the copy sent to the upsample is
 		// filtered.
-		wi::graphics::Texture result_halfres_denoise[2];
-		wi::graphics::Texture result;
+		Protean::Graphics::Texture result_halfres_denoise[2];
+		Protean::Graphics::Texture result;
 
 		// Frames since (re)creation. Used to clear the ping-pong temporal
 		// history once on the first frame (the textures are allocated
@@ -518,21 +518,21 @@ namespace wi::renderer
 	void CreateSurfelGIResources(SurfelGIResources& res, XMUINT2 resolution);
 	void SurfelGI_Coverage(
 		const SurfelGIResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& depth,
-		const wi::graphics::Texture& debugUAV,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& depth,
+		const Protean::Graphics::Texture& debugUAV,
+		Protean::Graphics::CommandList cmd
 	);
 	void SurfelGI(
 		const SurfelGIResources& res,
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// DDGI: Dynamic Diffuse Global Illumination (probe-based ray tracing)
 	void DDGI(
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// VXGI: Voxel-based Global Illumination (voxel cone tracing-based)
@@ -540,12 +540,12 @@ namespace wi::renderer
 	{
 		// Full-resolution outputs, bilateral-upsampled from the half-res
 		// traces. These are what gets sampled during shading.
-		wi::graphics::Texture diffuse;
-		wi::graphics::Texture specular;
+		Protean::Graphics::Texture diffuse;
+		Protean::Graphics::Texture specular;
 		// Half-resolution cone-trace targets. The expensive cone tracing runs
 		// at half resolution here and is then upsampled into diffuse/specular.
-		wi::graphics::Texture diffuse_half;
-		wi::graphics::Texture specular_half;
+		Protean::Graphics::Texture diffuse_half;
+		Protean::Graphics::Texture specular_half;
 		mutable bool pre_clear = true;
 
 		bool IsValid() const { return diffuse.IsValid(); }
@@ -553,30 +553,30 @@ namespace wi::renderer
 	void CreateVXGIResources(VXGIResources& res, XMUINT2 resolution);
 	void VXGI_Voxelize(
 		const Visibility& vis,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	// Resolve VXGI to screen
 	void VXGI_Resolve(
 		const VXGIResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& depth,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& depth,
+		Protean::Graphics::CommandList cmd
 	);
 
 	void Postprocess_Blur_Gaussian(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& temp,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& temp,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		int mip_src = -1,
 		int mip_dst = -1,
 		bool wide = false
 	);
 	void Postprocess_Blur_Bilateral(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& temp,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& temp,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float depth_threshold = 1.0f,
 		int mip_src = -1,
 		int mip_dst = -1,
@@ -584,73 +584,73 @@ namespace wi::renderer
 	);
 	struct SSAOResources
 	{
-		wi::graphics::Texture temp;
+		Protean::Graphics::Texture temp;
 	};
 	void CreateSSAOResources(SSAOResources& res, XMUINT2 resolution);
 	void Postprocess_SSAO(
 		const SSAOResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float range = 1.0f,
 		uint32_t samplecount = 16,
 		float power = 1.0f
 	);
 	void Postprocess_HBAO(
 		const SSAOResources& res,
-		const wi::scene::CameraComponent& camera,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::CameraComponent& camera,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float power = 1.0f
 		);
 	struct MSAOResources
 	{
 		mutable bool cleared = false;
-		wi::graphics::Texture texture_lineardepth_downsize1;
-		wi::graphics::Texture texture_lineardepth_tiled1;
-		wi::graphics::Texture texture_lineardepth_downsize2;
-		wi::graphics::Texture texture_lineardepth_tiled2;
-		wi::graphics::Texture texture_lineardepth_downsize3;
-		wi::graphics::Texture texture_lineardepth_tiled3;
-		wi::graphics::Texture texture_lineardepth_downsize4;
-		wi::graphics::Texture texture_lineardepth_tiled4;
-		wi::graphics::Texture texture_ao_merged1;
-		wi::graphics::Texture texture_ao_hq1;
-		wi::graphics::Texture texture_ao_smooth1;
-		wi::graphics::Texture texture_ao_merged2;
-		wi::graphics::Texture texture_ao_hq2;
-		wi::graphics::Texture texture_ao_smooth2;
-		wi::graphics::Texture texture_ao_merged3;
-		wi::graphics::Texture texture_ao_hq3;
-		wi::graphics::Texture texture_ao_smooth3;
-		wi::graphics::Texture texture_ao_merged4;
-		wi::graphics::Texture texture_ao_hq4;
+		Protean::Graphics::Texture texture_lineardepth_downsize1;
+		Protean::Graphics::Texture texture_lineardepth_tiled1;
+		Protean::Graphics::Texture texture_lineardepth_downsize2;
+		Protean::Graphics::Texture texture_lineardepth_tiled2;
+		Protean::Graphics::Texture texture_lineardepth_downsize3;
+		Protean::Graphics::Texture texture_lineardepth_tiled3;
+		Protean::Graphics::Texture texture_lineardepth_downsize4;
+		Protean::Graphics::Texture texture_lineardepth_tiled4;
+		Protean::Graphics::Texture texture_ao_merged1;
+		Protean::Graphics::Texture texture_ao_hq1;
+		Protean::Graphics::Texture texture_ao_smooth1;
+		Protean::Graphics::Texture texture_ao_merged2;
+		Protean::Graphics::Texture texture_ao_hq2;
+		Protean::Graphics::Texture texture_ao_smooth2;
+		Protean::Graphics::Texture texture_ao_merged3;
+		Protean::Graphics::Texture texture_ao_hq3;
+		Protean::Graphics::Texture texture_ao_smooth3;
+		Protean::Graphics::Texture texture_ao_merged4;
+		Protean::Graphics::Texture texture_ao_hq4;
 	};
 	void CreateMSAOResources(MSAOResources& res, XMUINT2 resolution);
 	void Postprocess_MSAO(
 		const MSAOResources& res,
-		const wi::scene::CameraComponent& camera,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::CameraComponent& camera,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float power = 1.0f
 		);
 	struct RTAOResources
 	{
-		wi::graphics::Texture normals;
-		wi::graphics::Texture denoised;
+		Protean::Graphics::Texture normals;
+		Protean::Graphics::Texture denoised;
 
 		mutable int frame = 0;
-		wi::graphics::GPUBuffer tiles;
-		wi::graphics::GPUBuffer metadata;
-		wi::graphics::Texture scratch[2];
-		wi::graphics::Texture moments[2];
+		Protean::Graphics::GPUBuffer tiles;
+		Protean::Graphics::GPUBuffer metadata;
+		Protean::Graphics::Texture scratch[2];
+		Protean::Graphics::Texture moments[2];
 	};
 	void CreateRTAOResources(RTAOResources& res, XMUINT2 resolution);
 	void Postprocess_RTAO(
 		const RTAOResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& depth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& depth,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float range = 1.0f,
 		float power = 1.0f
 	);
@@ -658,58 +658,58 @@ namespace wi::renderer
 	{
 		mutable int frame = 0;
 		PostProcessQuality quality = PostProcessQuality::Medium;
-		wi::graphics::Texture texture_rayIndirectDiffuse;
-		wi::graphics::Texture texture_spatial;
-		wi::graphics::Texture texture_spatial_variance;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
+		Protean::Graphics::Texture texture_rayIndirectDiffuse;
+		Protean::Graphics::Texture texture_spatial;
+		Protean::Graphics::Texture texture_spatial_variance;
+		Protean::Graphics::Texture texture_temporal[2];
+		Protean::Graphics::Texture texture_temporal_variance[2];
 	};
 	void CreateRTDiffuseResources(RTDiffuseResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
 	void Postprocess_RTDiffuse(
 		const RTDiffuseResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float range = 1000.0f
 	);
 	struct SSGIResources
 	{
 		mutable bool cleared = false;
-		wi::graphics::Texture texture_atlas_depth;
-		wi::graphics::Texture texture_atlas_color;
-		wi::graphics::Texture texture_depth_mips;
-		wi::graphics::Texture texture_normal_mips;
-		wi::graphics::Texture texture_diffuse_mips;
+		Protean::Graphics::Texture texture_atlas_depth;
+		Protean::Graphics::Texture texture_atlas_color;
+		Protean::Graphics::Texture texture_depth_mips;
+		Protean::Graphics::Texture texture_normal_mips;
+		Protean::Graphics::Texture texture_diffuse_mips;
 	};
 	void CreateSSGIResources(SSGIResources& res, XMUINT2 resolution);
 	void Postprocess_SSGI(
 		const SSGIResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& input_depth,
-		const wi::graphics::Texture& input_normal,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& input_depth,
+		const Protean::Graphics::Texture& input_normal,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float depthRejection = 8
 	);
 	struct RTReflectionResources
 	{
 		mutable int frame = 0;
 		PostProcessQuality quality = PostProcessQuality::Medium;
-		wi::graphics::Texture texture_rayIndirectSpecular;
-		wi::graphics::Texture texture_rayDirectionPDF;
-		wi::graphics::Texture texture_rayLengths;
-		wi::graphics::Texture texture_resolve;
-		wi::graphics::Texture texture_resolve_variance;
-		wi::graphics::Texture texture_resolve_reprojectionDepth;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
+		Protean::Graphics::Texture texture_rayIndirectSpecular;
+		Protean::Graphics::Texture texture_rayDirectionPDF;
+		Protean::Graphics::Texture texture_rayLengths;
+		Protean::Graphics::Texture texture_resolve;
+		Protean::Graphics::Texture texture_resolve_variance;
+		Protean::Graphics::Texture texture_resolve_reprojectionDepth;
+		Protean::Graphics::Texture texture_temporal[2];
+		Protean::Graphics::Texture texture_temporal_variance[2];
 	};
 	void CreateRTReflectionResources(RTReflectionResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
 	void Postprocess_RTReflection(
 		const RTReflectionResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float range = 1000.0f,
 		float roughnessCutoff = 0.5f
 	);
@@ -717,116 +717,116 @@ namespace wi::renderer
 	{
 		mutable int frame = 0;
 		PostProcessQuality quality = PostProcessQuality::Medium;
-		wi::graphics::Texture texture_tile_minmax_roughness_horizontal;
-		wi::graphics::Texture texture_tile_minmax_roughness;
-		wi::graphics::Texture texture_depth_hierarchy;
-		wi::graphics::Texture texture_rayIndirectSpecular;
-		wi::graphics::Texture texture_rayDirectionPDF;
-		wi::graphics::Texture texture_rayLengths;
-		wi::graphics::Texture texture_resolve;
-		wi::graphics::Texture texture_resolve_variance;
-		wi::graphics::Texture texture_resolve_reprojectionDepth;
-		wi::graphics::Texture texture_temporal[2];
-		wi::graphics::Texture texture_temporal_variance[2];
-		wi::graphics::GPUBuffer buffer_tile_tracing_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_tracing_expensive;
+		Protean::Graphics::Texture texture_tile_minmax_roughness_horizontal;
+		Protean::Graphics::Texture texture_tile_minmax_roughness;
+		Protean::Graphics::Texture texture_depth_hierarchy;
+		Protean::Graphics::Texture texture_rayIndirectSpecular;
+		Protean::Graphics::Texture texture_rayDirectionPDF;
+		Protean::Graphics::Texture texture_rayLengths;
+		Protean::Graphics::Texture texture_resolve;
+		Protean::Graphics::Texture texture_resolve_variance;
+		Protean::Graphics::Texture texture_resolve_reprojectionDepth;
+		Protean::Graphics::Texture texture_temporal[2];
+		Protean::Graphics::Texture texture_temporal_variance[2];
+		Protean::Graphics::GPUBuffer buffer_tile_tracing_statistics;
+		Protean::Graphics::GPUBuffer buffer_tiles_tracing_earlyexit;
+		Protean::Graphics::GPUBuffer buffer_tiles_tracing_cheap;
+		Protean::Graphics::GPUBuffer buffer_tiles_tracing_expensive;
 	};
 	void CreateSSRResources(SSRResources& res, XMUINT2 resolution, PostProcessQuality quality = PostProcessQuality::Medium);
 	void Postprocess_SSR(
 		const SSRResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float roughnessCutoff = 0.6f
 	);
 	struct RTShadowResources
 	{
-		wi::graphics::Texture raytraced;
-		wi::graphics::Texture temporal[2];
-		wi::graphics::Texture normals;
+		Protean::Graphics::Texture raytraced;
+		Protean::Graphics::Texture temporal[2];
+		Protean::Graphics::Texture normals;
 
 		mutable int frame = 0;
-		wi::graphics::GPUBuffer tiles;
-		wi::graphics::GPUBuffer metadata;
-		wi::graphics::Texture scratch[4][2];
-		wi::graphics::Texture moments[4][2];
-		wi::graphics::Texture denoised;
+		Protean::Graphics::GPUBuffer tiles;
+		Protean::Graphics::GPUBuffer metadata;
+		Protean::Graphics::Texture scratch[4][2];
+		Protean::Graphics::Texture moments[4][2];
+		Protean::Graphics::Texture denoised;
 	};
 	void CreateRTShadowResources(RTShadowResources& res, XMUINT2 resolution);
 	void Postprocess_RTShadow(
 		const RTShadowResources& res,
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	struct ScreenSpaceShadowResources
 	{
-		wi::graphics::Texture lowres;
+		Protean::Graphics::Texture lowres;
 	};
 	void CreateScreenSpaceShadowResources(ScreenSpaceShadowResources& res, XMUINT2 resolution);
 	void Postprocess_ScreenSpaceShadow(
 		const ScreenSpaceShadowResources& res,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float range = 1,
 		uint32_t samplecount = 16
 	);
 	void Postprocess_LightShafts(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		const XMFLOAT2& center,
 		float strength = 0.1f
 	);
 	struct DepthOfFieldResources
 	{
-		wi::graphics::Texture texture_tilemax_horizontal;
-		wi::graphics::Texture texture_tilemin_horizontal;
-		wi::graphics::Texture texture_tilemax;
-		wi::graphics::Texture texture_tilemin;
-		wi::graphics::Texture texture_neighborhoodmax;
-		wi::graphics::Texture texture_presort;
-		wi::graphics::Texture texture_prefilter;
-		wi::graphics::Texture texture_main;
-		wi::graphics::Texture texture_postfilter;
-		wi::graphics::Texture texture_alpha1;
-		wi::graphics::Texture texture_alpha2;
-		wi::graphics::GPUBuffer buffer_tile_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_expensive;
+		Protean::Graphics::Texture texture_tilemax_horizontal;
+		Protean::Graphics::Texture texture_tilemin_horizontal;
+		Protean::Graphics::Texture texture_tilemax;
+		Protean::Graphics::Texture texture_tilemin;
+		Protean::Graphics::Texture texture_neighborhoodmax;
+		Protean::Graphics::Texture texture_presort;
+		Protean::Graphics::Texture texture_prefilter;
+		Protean::Graphics::Texture texture_main;
+		Protean::Graphics::Texture texture_postfilter;
+		Protean::Graphics::Texture texture_alpha1;
+		Protean::Graphics::Texture texture_alpha2;
+		Protean::Graphics::GPUBuffer buffer_tile_statistics;
+		Protean::Graphics::GPUBuffer buffer_tiles_earlyexit;
+		Protean::Graphics::GPUBuffer buffer_tiles_cheap;
+		Protean::Graphics::GPUBuffer buffer_tiles_expensive;
 
 		bool IsValid() const { return texture_tilemax_horizontal.IsValid(); }
 	};
 	void CreateDepthOfFieldResources(DepthOfFieldResources& res, XMUINT2 resolution);
 	void Postprocess_DepthOfField(
 		const DepthOfFieldResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float coc_scale = 10,
 		float max_coc = 18
 	);
 	void Postprocess_Outline(
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		Protean::Graphics::CommandList cmd,
 		float threshold = 0.1f,
 		float thickness = 1.0f,
 		const XMFLOAT4& color = XMFLOAT4(0, 0, 0, 1)
 	);
 	struct MotionBlurResources
 	{
-		wi::graphics::Texture texture_tilemin_horizontal;
-		wi::graphics::Texture texture_tilemax_horizontal;
-		wi::graphics::Texture texture_tilemax;
-		wi::graphics::Texture texture_tilemin;
-		wi::graphics::Texture texture_neighborhoodmax;
-		wi::graphics::GPUBuffer buffer_tile_statistics;
-		wi::graphics::GPUBuffer buffer_tiles_earlyexit;
-		wi::graphics::GPUBuffer buffer_tiles_cheap;
-		wi::graphics::GPUBuffer buffer_tiles_expensive;
+		Protean::Graphics::Texture texture_tilemin_horizontal;
+		Protean::Graphics::Texture texture_tilemax_horizontal;
+		Protean::Graphics::Texture texture_tilemax;
+		Protean::Graphics::Texture texture_tilemin;
+		Protean::Graphics::Texture texture_neighborhoodmax;
+		Protean::Graphics::GPUBuffer buffer_tile_statistics;
+		Protean::Graphics::GPUBuffer buffer_tiles_earlyexit;
+		Protean::Graphics::GPUBuffer buffer_tiles_cheap;
+		Protean::Graphics::GPUBuffer buffer_tiles_expensive;
 
 		bool IsValid() const { return texture_tilemax_horizontal.IsValid(); }
 	};
@@ -834,29 +834,29 @@ namespace wi::renderer
 	void Postprocess_MotionBlur(
 		float dt, // delta time in seconds
 		const MotionBlurResources& res,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float strength = 100.0f
 	);
 	struct AerialPerspectiveResources
 	{
-		wi::graphics::Texture texture_output;
+		Protean::Graphics::Texture texture_output;
 	};
 	void CreateAerialPerspectiveResources(AerialPerspectiveResources& res, XMUINT2 resolution);
 	void Postprocess_AerialPerspective(
 		const AerialPerspectiveResources& res,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	struct VolumetricCloudResources
 	{
 		mutable int frame = -1;
 		XMUINT2 final_resolution = {};
-		wi::graphics::Texture texture_cloudRender;
-		wi::graphics::Texture texture_cloudDepth;
-		wi::graphics::Texture texture_reproject[2];
-		wi::graphics::Texture texture_reproject_depth[2];
-		wi::graphics::Texture texture_reproject_additional[2];
+		Protean::Graphics::Texture texture_cloudRender;
+		Protean::Graphics::Texture texture_cloudDepth;
+		Protean::Graphics::Texture texture_reproject[2];
+		Protean::Graphics::Texture texture_reproject_depth[2];
+		Protean::Graphics::Texture texture_reproject_additional[2];
 
 		void ResetFrame() const { frame = -1; }
 		void AdvanceFrame() const { frame++; }
@@ -866,52 +866,52 @@ namespace wi::renderer
 	void CreateVolumetricCloudResources(VolumetricCloudResources& res, XMUINT2 resolution);
 	void Postprocess_VolumetricClouds(
 		const VolumetricCloudResources& res,
-		wi::graphics::CommandList cmd,
-		const wi::scene::CameraComponent& camera,
-		const wi::scene::CameraComponent& camera_previous,
-		const wi::scene::CameraComponent& camera_reflection,
+		Protean::Graphics::CommandList cmd,
+		const Protean::CameraComponent& camera,
+		const Protean::CameraComponent& camera_previous,
+		const Protean::CameraComponent& camera_reflection,
 		const bool jitterEnabled,
-		const wi::graphics::Texture* weatherMapFirst = nullptr,
-		const wi::graphics::Texture* weatherMapSecond = nullptr
+		const Protean::Graphics::Texture* weatherMapFirst = nullptr,
+		const Protean::Graphics::Texture* weatherMapSecond = nullptr
 	);
 	void Postprocess_VolumetricClouds_Upsample(
 		const VolumetricCloudResources& res,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	void VolumetricClouds_Capture(
-		const wi::scene::Scene& scene,
-		wi::graphics::CommandList cmd
+		const Protean::Scene& scene,
+		Protean::Graphics::CommandList cmd
 	);
 	void Postprocess_FXAA(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	struct TemporalAAResources
 	{
 		mutable int frame = 0;
-		wi::graphics::Texture texture_temporal[2];
+		Protean::Graphics::Texture texture_temporal[2];
 
 		bool IsValid() const { return texture_temporal[0].IsValid(); }
-		const wi::graphics::Texture* GetCurrent() const { return &texture_temporal[frame % arraysize(texture_temporal)]; }
-		const wi::graphics::Texture* GetHistory() const { return &texture_temporal[(frame + 1) % arraysize(texture_temporal)]; }
+		const Protean::Graphics::Texture* GetCurrent() const { return &texture_temporal[frame % arraysize(texture_temporal)]; }
+		const Protean::Graphics::Texture* GetHistory() const { return &texture_temporal[(frame + 1) % arraysize(texture_temporal)]; }
 	};
 	void CreateTemporalAAResources(TemporalAAResources& res, XMUINT2 resolution);
 	void Postprocess_TemporalAA(
 		const TemporalAAResources& res,
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input,
+		Protean::Graphics::CommandList cmd
 	);
 	void Postprocess_Sharpen(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float amount = 1.0f
 	);
 	void Postprocess_CRT(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float flicker_amount = 0,
 		float flicker_timer = 0,
 		bool srgb = true // if true, then srgb->linear->crt filter->srgb conversion will be done
@@ -923,28 +923,28 @@ namespace wi::renderer
 		Uchimura
 	};
 	void Postprocess_Tonemap(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float exposure,
 		float brightness,
 		float contrast,
 		float saturation,
 		bool dither,
-		const wi::graphics::Texture* texture_colorgradinglut = nullptr,
-		const wi::graphics::Texture* texture_distortion = nullptr,
-		const wi::graphics::GPUBuffer* buffer_luminance = nullptr,
-		const wi::graphics::Texture* texture_bloom = nullptr,
-		wi::graphics::ColorSpace display_colorspace = wi::graphics::ColorSpace::SRGB,
+		const Protean::Graphics::Texture* texture_colorgradinglut = nullptr,
+		const Protean::Graphics::Texture* texture_distortion = nullptr,
+		const Protean::Graphics::GPUBuffer* buffer_luminance = nullptr,
+		const Protean::Graphics::Texture* texture_bloom = nullptr,
+		Protean::Graphics::ColorSpace display_colorspace = Protean::Graphics::ColorSpace::SRGB,
 		Tonemap tonemap = Tonemap::Reinhard,
-		const wi::graphics::Texture* texture_distortion_overlay = nullptr,
+		const Protean::Graphics::Texture* texture_distortion_overlay = nullptr,
 		float hdr_calibration = 1
 	);
 	void Postprocess_FSR(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& temp,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& temp,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float sharpness = 1.0f
 	);
 	struct FSR2Resources
@@ -975,21 +975,21 @@ namespace wi::renderer
 			float     lumaMipRcp;
 		};
 		mutable Fsr2Constants fsr2_constants = {};
-		wi::graphics::Texture adjusted_color;
-		wi::graphics::Texture luminance_current;
-		wi::graphics::Texture luminance_history;
-		wi::graphics::Texture exposure;
-		wi::graphics::Texture previous_depth;
-		wi::graphics::Texture dilated_depth;
-		wi::graphics::Texture dilated_motion;
-		wi::graphics::Texture dilated_reactive;
-		wi::graphics::Texture disocclusion_mask;
-		wi::graphics::Texture lock_status[2];
-		wi::graphics::Texture reactive_mask;
-		wi::graphics::Texture lanczos_lut;
-		wi::graphics::Texture maximum_bias_lut;
-		wi::graphics::Texture spd_global_atomic;
-		wi::graphics::Texture output_internal[2];
+		Protean::Graphics::Texture adjusted_color;
+		Protean::Graphics::Texture luminance_current;
+		Protean::Graphics::Texture luminance_history;
+		Protean::Graphics::Texture exposure;
+		Protean::Graphics::Texture previous_depth;
+		Protean::Graphics::Texture dilated_depth;
+		Protean::Graphics::Texture dilated_motion;
+		Protean::Graphics::Texture dilated_reactive;
+		Protean::Graphics::Texture disocclusion_mask;
+		Protean::Graphics::Texture lock_status[2];
+		Protean::Graphics::Texture reactive_mask;
+		Protean::Graphics::Texture lanczos_lut;
+		Protean::Graphics::Texture maximum_bias_lut;
+		Protean::Graphics::Texture spd_global_atomic;
+		Protean::Graphics::Texture output_internal[2];
 
 		bool IsValid() const { return adjusted_color.IsValid(); }
 
@@ -998,88 +998,88 @@ namespace wi::renderer
 	void CreateFSR2Resources(FSR2Resources& res, XMUINT2 render_resolution, XMUINT2 presentation_resolution);
 	void Postprocess_FSR2(
 		const FSR2Resources& res,
-		const wi::scene::CameraComponent& camera,
-		const wi::graphics::Texture& input_pre_alpha,
-		const wi::graphics::Texture& input_post_alpha,
-		const wi::graphics::Texture& input_depth,
-		const wi::graphics::Texture& input_velocity,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::CameraComponent& camera,
+		const Protean::Graphics::Texture& input_pre_alpha,
+		const Protean::Graphics::Texture& input_post_alpha,
+		const Protean::Graphics::Texture& input_depth,
+		const Protean::Graphics::Texture& input_velocity,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float dt, // delta time in seconds
 		float sharpness = 0.5f
 	);
 	void Postprocess_Chromatic_Aberration(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		float amount = 1.0f
 	);
 	void Postprocess_Upsample_Bilateral(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& depth,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& depth,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		bool is_pixelshader = false,
 		float threshold = 1.0f
 	);
 	void Postprocess_Downsample4x(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		bool hdrToSRGB = false
 	);
 	void Postprocess_Lineardepth(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	void Postprocess_NormalsFromDepth(
-		const wi::graphics::Texture& depthbuffer,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& depthbuffer,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	void Postprocess_Underwater(
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 	struct MeshBlendResources
 	{
-		wi::graphics::Texture mask;
-		wi::graphics::Texture tmp;
-		wi::graphics::Texture expand[2];
-		wi::graphics::GPUBuffer aliasingAllocation;
+		Protean::Graphics::Texture mask;
+		Protean::Graphics::Texture tmp;
+		Protean::Graphics::Texture expand[2];
+		Protean::Graphics::GPUBuffer aliasingAllocation;
 
 		bool IsValid() const { return mask.IsValid(); }
 	};
 	void CreateMeshBlendResources(MeshBlendResources& res, XMUINT2 resolution);
 	void PostProcess_MeshBlend_EdgeProcess( // this part can be run on async compute, it doesn't need color buffer, only the primID
 		const MeshBlendResources& res,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	void PostProcess_MeshBlend_Resolve( // this part can only be run on gfx queue, it will use renderpass internally (to support MSAA)
 		const MeshBlendResources& res,
-		const wi::graphics::Texture& output,
-		const wi::graphics::RenderPassImage* renderpass_images,
+		const Protean::Graphics::Texture& output,
+		const Protean::Graphics::RenderPassImage* renderpass_images,
 		uint32_t renderpass_image_count,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	);
 	void Postprocess_Custom(
-		const wi::graphics::Shader& computeshader,
-		const wi::graphics::Texture& input,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Shader& computeshader,
+		const Protean::Graphics::Texture& input,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd,
 		const XMFLOAT4& params0 = XMFLOAT4(0, 0, 0, 0),
 		const XMFLOAT4& params1 = XMFLOAT4(0, 0, 0, 0),
 		const char* debug_name = "Postprocess_Custom"
 	);
 
 	void YUV_to_RGB(
-		const wi::graphics::Texture& input,
+		const Protean::Graphics::Texture& input,
 		int input_subresource_luminance,
 		int input_subresource_chrominance,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// This performs copies from separate depth and stencil shader resource textures
@@ -1088,54 +1088,54 @@ namespace wi::renderer
 	//	stencil_bits_to_copy : bitmask can be specified to mask out stencil bits that will be copied
 	//	depthstencil_already_cleared : if false, it will be fully cleared if required; if true, it will be left intact
 	void CopyDepthStencil(
-		const wi::graphics::Texture* input_depth,
-		const wi::graphics::Texture* input_stencil,
-		const wi::graphics::Texture& output_depth_stencil,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture* input_depth,
+		const Protean::Graphics::Texture* input_stencil,
+		const Protean::Graphics::Texture& output_depth_stencil,
+		Protean::Graphics::CommandList cmd,
 		uint8_t stencil_bits_to_copy = 0xFF,
 		bool depthstencil_already_cleared = false
 	);
 
 	// The input texture mask is scaled into the stencil of the current render pass with the specified viewport
 	void ScaleStencilMask(
-		const wi::graphics::Viewport& vp,
-		const wi::graphics::Texture& input,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Viewport& vp,
+		const Protean::Graphics::Texture& input,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Extract stencil from a depth stencil texture into a R8_UINT format texture
 	void ExtractStencil(
-		const wi::graphics::Texture& input_depthstencil,
-		const wi::graphics::Texture& output,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input_depthstencil,
+		const Protean::Graphics::Texture& output,
+		Protean::Graphics::CommandList cmd
 	);
 
 	// Render the scene with ray tracing
 	void RayTraceScene(
-		const wi::scene::Scene& scene,
-		const wi::graphics::Texture& output,
+		const Protean::Scene& scene,
+		const Protean::Graphics::Texture& output,
 		int accumulation_sample,
-		wi::graphics::CommandList cmd,
-		const wi::graphics::Texture* output_albedo = nullptr,
-		const wi::graphics::Texture* output_normal = nullptr,
-		const wi::graphics::Texture* output_depth = nullptr,
-		const wi::graphics::Texture* output_stencil = nullptr,
-		const wi::graphics::Texture* output_depth_stencil = nullptr,
-		const wi::graphics::Texture* output_primitiveID = nullptr
+		Protean::Graphics::CommandList cmd,
+		const Protean::Graphics::Texture* output_albedo = nullptr,
+		const Protean::Graphics::Texture* output_normal = nullptr,
+		const Protean::Graphics::Texture* output_depth = nullptr,
+		const Protean::Graphics::Texture* output_stencil = nullptr,
+		const Protean::Graphics::Texture* output_depth_stencil = nullptr,
+		const Protean::Graphics::Texture* output_primitiveID = nullptr
 	);
 	// Render the scene BVH with ray tracing to the screen
-	void RayTraceSceneBVH(const wi::scene::Scene& scene, wi::graphics::CommandList cmd);
+	void RayTraceSceneBVH(const Protean::Scene& scene, Protean::Graphics::CommandList cmd);
 
 	// Render occluders against a depth buffer
-	void OcclusionCulling_Reset(const Visibility& vis, wi::graphics::CommandList cmd);
-	void OcclusionCulling_Render(const wi::scene::CameraComponent& camera, const Visibility& vis, wi::graphics::CommandList cmd);
-	void OcclusionCulling_Resolve(const Visibility& vis, wi::graphics::CommandList cmd);
+	void OcclusionCulling_Reset(const Visibility& vis, Protean::Graphics::CommandList cmd);
+	void OcclusionCulling_Render(const Protean::CameraComponent& camera, const Visibility& vis, Protean::Graphics::CommandList cmd);
+	void OcclusionCulling_Resolve(const Visibility& vis, Protean::Graphics::CommandList cmd);
 
 	void ComputeReprojectedDepthPyramid(
-		const wi::graphics::Texture& input_depth,
-		const wi::graphics::Texture& input_velocity,
-		const wi::graphics::Texture& output_depth_pyramid,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::Texture& input_depth,
+		const Protean::Graphics::Texture& input_velocity,
+		const Protean::Graphics::Texture& output_depth_pyramid,
+		Protean::Graphics::CommandList cmd
 	);
 
 	enum MIPGENFILTER
@@ -1147,17 +1147,17 @@ namespace wi::renderer
 	struct MIPGEN_OPTIONS
 	{
 		int arrayIndex = -1;
-		const wi::graphics::Texture* gaussian_temp = nullptr;
+		const Protean::Graphics::Texture* gaussian_temp = nullptr;
 		bool preserve_coverage = false;
 		bool wide_gauss = false;
 	};
-	void GenerateMipChain(const wi::graphics::Texture& texture, MIPGENFILTER filter, wi::graphics::CommandList cmd, const MIPGEN_OPTIONS& options = {});
+	void GenerateMipChain(const Protean::Graphics::Texture& texture, MIPGENFILTER filter, Protean::Graphics::CommandList cmd, const MIPGEN_OPTIONS& options = {});
 
 	// Compress a texture into Block Compressed format
 	//	texture_src	: source uncompressed texture
 	//	texture_bc	: destination comporessed texture, must be a supported BC format (BC1/BC3/BC4/BC5/BC6H_UFLOAT)
 	//	Currently this will handle simple Texture2D with mip levels, and additionally BC6H cubemap
-	void BlockCompress(const wi::graphics::Texture& texture_src, const wi::graphics::Texture& texture_bc, wi::graphics::CommandList cmd, uint32_t dst_slice_offset = 0);
+	void BlockCompress(const Protean::Graphics::Texture& texture_src, const Protean::Graphics::Texture& texture_bc, Protean::Graphics::CommandList cmd, uint32_t dst_slice_offset = 0);
 
 	enum BORDEREXPANDSTYLE
 	{
@@ -1169,26 +1169,26 @@ namespace wi::renderer
 	//	NOTE: DstMIP can be specified as -1 to use main subresource, otherwise the subresource (>=0) must have been generated explicitly!
 	//	Can also expand border region according to desired sampler func
 	void CopyTexture2D(
-		const wi::graphics::Texture& dst, int DstMIP, int DstX, int DstY,
-		const wi::graphics::Texture& src, int SrcMIP, int SrcX, int SrcY,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& dst, int DstMIP, int DstX, int DstY,
+		const Protean::Graphics::Texture& src, int SrcMIP, int SrcX, int SrcY,
+		Protean::Graphics::CommandList cmd,
 		BORDEREXPANDSTYLE borderExpand = BORDEREXPAND_DISABLE,
 		bool srgb_convert = false
 	);
 	// Performs copy operation even between different texture formats
 	//	Simplified function overload
 	void CopyTexture2D(
-		const wi::graphics::Texture& dst,
-		const wi::graphics::Texture& src,
-		wi::graphics::CommandList cmd,
+		const Protean::Graphics::Texture& dst,
+		const Protean::Graphics::Texture& src,
+		Protean::Graphics::CommandList cmd,
 		BORDEREXPANDSTYLE borderExpand = BORDEREXPAND_DISABLE,
 		bool srgb_convert = false
 	);
 
-	void DrawWaterRipples(const Visibility& vis, wi::graphics::CommandList cmd);
+	void DrawWaterRipples(const Visibility& vis, Protean::Graphics::CommandList cmd);
 
 
-	void DrawWaveEffect(const XMFLOAT4& color, wi::graphics::CommandList cmd);
+	void DrawWaveEffect(const XMFLOAT4& color, Protean::Graphics::CommandList cmd);
 
 
 
@@ -1288,7 +1288,7 @@ namespace wi::renderer
 	bool IsMeshShaderAllowed();
 	void SetMeshletOcclusionCullingEnabled(bool value);
 	bool IsMeshletOcclusionCullingEnabled();
-	void Workaround( const int bug, wi::graphics::CommandList cmd);
+	void Workaround( const int bug, Protean::Graphics::CommandList cmd);
 	void SetCapsuleShadowEnabled(bool value);
 	bool IsCapsuleShadowEnabled();
 	void SetCapsuleShadowAngle(float value); // cone angle in radians
@@ -1303,18 +1303,18 @@ namespace wi::renderer
 	bool IsDebugDrawEnabled();
 
 	// Gets pick ray according to the current screen resolution and pointer coordinates. Can be used as input into RayIntersectWorld()
-	wi::primitive::Ray GetPickRay(long cursorX, long cursorY, const wi::Canvas& canvas, const wi::scene::CameraComponent& camera = wi::scene::GetCamera());
+	Protean::Ray GetPickRay(long cursorX, long cursorY, const Protean::Canvas& canvas, const Protean::CameraComponent& camera = Protean::GetCamera());
 
 
 	// Add box to render in next frame. It will be rendered in DrawDebugWorld()
-	void DrawBox(const wi::primitive::AABB& aabb, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
+	void DrawBox(const Protean::AABB& aabb, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 	void DrawBox(const XMMATRIX& boxMatrix, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 	void DrawBox(const XMFLOAT4X4& boxMatrix, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 	void DrawBox(const BoundingOrientedBox& obb, const XMFLOAT4& color = XMFLOAT4(1,1,1,1), bool depth = true);
 	// Add sphere to render in next frame. It will be rendered in DrawDebugWorld()
-	void DrawSphere(const wi::primitive::Sphere& sphere, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
+	void DrawSphere(const Protean::Sphere& sphere, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 	// Add capsule to render in next frame. It will be rendered in DrawDebugWorld()
-	void DrawCapsule(const wi::primitive::Capsule& capsule, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
+	void DrawCapsule(const Protean::Capsule& capsule, const XMFLOAT4& color = XMFLOAT4(1, 1, 1, 1), bool depth = true);
 
 	struct RenderableLine
 	{
@@ -1380,7 +1380,7 @@ namespace wi::renderer
 
 	struct PaintRadius
 	{
-		wi::ecs::Entity objectEntity = wi::ecs::INVALID_ENTITY;
+		Protean::Entity objectEntity = Protean::INVALID_ENTITY;
 		int subset = -1;
 		uint32_t uvset = 0;
 		float radius = 0;
@@ -1393,20 +1393,20 @@ namespace wi::renderer
 
 	struct PaintTextureParams
 	{
-		wi::graphics::Texture editTex; // UAV writable texture
-		wi::graphics::Texture brushTex; // splat texture (optional)
-		wi::graphics::Texture revealTex; // mask texture that can be revealed (optional)
+		Protean::Graphics::Texture editTex; // UAV writable texture
+		Protean::Graphics::Texture brushTex; // splat texture (optional)
+		Protean::Graphics::Texture revealTex; // mask texture that can be revealed (optional)
 		PaintTexturePushConstants push = {}; // shader parameters
 	};
 	void PaintIntoTexture(const PaintTextureParams& params);
-	wi::Resource CreatePaintableTexture(uint32_t width, uint32_t height, uint32_t mips = 0, wi::Color initialColor = wi::Color::Transparent());
+	Protean::Resource CreatePaintableTexture(uint32_t width, uint32_t height, uint32_t mips = 0, Protean::Color initialColor = Protean::Color::Transparent());
 
 	struct PaintDecalParams
 	{
-		wi::ecs::Entity objectEntity = wi::ecs::INVALID_ENTITY;
-		XMFLOAT4X4 decalMatrix = wi::math::IDENTITY_MATRIX;
-		wi::graphics::Texture in_texture;
-		wi::graphics::Texture out_texture;
+		Protean::Entity objectEntity = Protean::INVALID_ENTITY;
+		XMFLOAT4X4 decalMatrix = Protean::Math::IDENTITY_MATRIX;
+		Protean::Graphics::Texture in_texture;
+		Protean::Graphics::Texture out_texture;
 		float slopeBlendPower = 0;
 	};
 	// Render a decal into a texture mapped onto a mesh (supports skinned mesh)
@@ -1418,25 +1418,25 @@ namespace wi::renderer
 
 	// Add voxel grid to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so voxel grid must not be destroyed until then!
-	void DrawVoxelGrid(const wi::VoxelGrid* voxelgrid);
+	void DrawVoxelGrid(const Protean::VoxelGrid* voxelgrid);
 
 	// Add path query to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so path query must not be destroyed until then!
-	void DrawPathQuery(const wi::PathQuery* pathquery);
+	void DrawPathQuery(const Protean::PathQuery* pathquery);
 
 	// Add trail to be drawn in debug rendering phase.
 	//	WARNING: This retains pointer until next call to DrawDebugScene(), so trail must not be destroyed until then!
-	void DrawTrail(const wi::TrailRenderer* trail);
+	void DrawTrail(const Protean::TrailRenderer* trail);
 
 	// Add a texture that should be mipmapped whenever it is feasible to do so
-	void AddDeferredMIPGen(const wi::graphics::Texture& texture, bool preserve_coverage = false);
-	void AddDeferredBlockCompression(const wi::graphics::Texture& texture_src, const wi::graphics::Texture& texture_bc);
+	void AddDeferredMIPGen(const Protean::Graphics::Texture& texture, bool preserve_coverage = false);
+	void AddDeferredBlockCompression(const Protean::Graphics::Texture& texture_src, const Protean::Graphics::Texture& texture_bc);
 
 	struct CustomShader
 	{
 		std::string name;
-		uint32_t filterMask = wi::enums::FILTER_OPAQUE;
-		wi::graphics::PipelineState pso[wi::enums::RENDERPASS_COUNT] = {};
+		uint32_t filterMask = Protean::FILTER_OPAQUE;
+		Protean::Graphics::PipelineState pso[Protean::RENDERPASS_COUNT] = {};
 		// Assigned by RegisterCustomShader(). The ID remains stable across updates.
 		int id = -1;
 	};
@@ -1458,11 +1458,11 @@ namespace wi::renderer
 	bool GetCustomShader(int customShaderID, CustomShader& result);
 	// Returns active custom shaders for main-thread enumeration at a safe point.
 	//	Don't retain references across lifecycle calls.
-	const wi::vector<CustomShader>& GetCustomShaders();
+	const Protean::vector<CustomShader>& GetCustomShaders();
 
 	// Thread-local barrier batching helpers:
-	void PushBarrier(const wi::graphics::GPUBarrier& barrier);
-	void FlushBarriers(wi::graphics::CommandList cmd);
+	void PushBarrier(const Protean::Graphics::GPUBarrier& barrier);
+	void FlushBarriers(Protean::Graphics::CommandList cmd);
 
 };
 

@@ -11,12 +11,12 @@
 #include "render/data/Logo.h"
 #include "render/data/WaterRipple.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
 // from Utility/samplerBlueNoiseErrorDistribution_128x128_OptimizedFor_2d2d2d2d_1spp.cpp
 extern float samplerBlueNoiseErrorDistribution_128x128_OptimizedFor_2d2d2d2d_1spp(int pixel_i, int pixel_j, int sampleIndex, int sampleDimension);
 
-namespace wi::texturehelper
+namespace Protean::TextureHelper
 {
 
 	enum HELPERTEXTURES
@@ -35,13 +35,13 @@ namespace wi::texturehelper
 		HELPERTEXTURE_CHECKERBOARD,
 		HELPERTEXTURE_COUNT
 	};
-	wi::graphics::Texture helperTextures[HELPERTEXTURE_COUNT];
+	Protean::Graphics::Texture helperTextures[HELPERTEXTURE_COUNT];
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// Logo
 		{
@@ -54,10 +54,10 @@ namespace wi::texturehelper
 			uint8_t data[64 * 64 * 4];
 			for (int i = 0; i < arraysize(data); i += 4)
 			{
-				data[i] = wi::random::GetRandom(0, 255);
-				data[i + 1] = wi::random::GetRandom(0, 255);
-				data[i + 2] = wi::random::GetRandom(0, 255);
-				data[i + 3] = wi::random::GetRandom(0, 255);
+				data[i] = Protean::Random::GetRandom(0, 255);
+				data[i + 1] = Protean::Random::GetRandom(0, 255);
+				data[i + 2] = Protean::Random::GetRandom(0, 255);
+				data[i + 3] = Protean::Random::GetRandom(0, 255);
 			}
 
 			CreateTexture(helperTextures[HELPERTEXTURE_RANDOM64X64], data, 64, 64);
@@ -107,7 +107,7 @@ namespace wi::texturehelper
 			texDesc.misc_flags = ResourceMiscFlag::TEXTURECUBE;
 
 			SubresourceData pData[6];
-			wi::Color d[6][width * height] = {}; // 6 images initialized to 0 (transparent black)
+			Protean::Color d[6][width * height] = {}; // 6 images initialized to 0 (transparent black)
 
 			for (int cubeMapFaceIndex = 0; cubeMapFaceIndex < 6; cubeMapFaceIndex++)
 			{
@@ -129,7 +129,7 @@ namespace wi::texturehelper
 
 		// Blue Noise:
 		{
-			wi::vector<wi::Color> bluenoise(128 * 128); // heap alloc intended (PS5)
+			Protean::vector<Protean::Color> bluenoise(128 * 128); // heap alloc intended (PS5)
 
 			for (int y = 0; y < 128; ++y)
 			{
@@ -140,7 +140,7 @@ namespace wi::texturehelper
 					const float f2 = samplerBlueNoiseErrorDistribution_128x128_OptimizedFor_2d2d2d2d_1spp(x, y, 0, 2);
 					const float f3 = samplerBlueNoiseErrorDistribution_128x128_OptimizedFor_2d2d2d2d_1spp(x, y, 0, 3);
 
-					bluenoise[x + y * 128] = wi::Color::fromFloat4(XMFLOAT4(f0, f1, f2, f3));
+					bluenoise[x + y * 128] = Protean::Color::fromFloat4(XMFLOAT4(f0, f1, f2, f3));
 				}
 			}
 
@@ -176,9 +176,9 @@ namespace wi::texturehelper
 
 		// Checkerboard:
 		{
-			wi::Color checker[] = {
-				wi::Color(255,255,255,255), wi::Color(127,127,127,255),
-				wi::Color(127,127,127,255), wi::Color(255,255,255,255),
+			Protean::Color checker[] = {
+				Protean::Color(255,255,255,255), Protean::Color(127,127,127,255),
+				Protean::Color(127,127,127,255), Protean::Color(255,255,255,255),
 			};
 
 			CreateTexture(helperTextures[HELPERTEXTURE_CHECKERBOARD], checker, 2, 2, Format::R8G8B8A8_UNORM);
@@ -187,24 +187,24 @@ namespace wi::texturehelper
 
 		// Single colors:
 		{
-			wi::Color color = wi::Color::Black();
+			Protean::Color color = Protean::Color::Black();
 			CreateTexture(helperTextures[HELPERTEXTURE_BLACK], (const uint8_t*)&color, 1, 1);
 			device->SetName(&helperTextures[HELPERTEXTURE_BLACK], "HELPERTEXTURE_BLACK");
 
-			color = wi::Color::White();
+			color = Protean::Color::White();
 			CreateTexture(helperTextures[HELPERTEXTURE_WHITE], (const uint8_t*)&color, 1, 1);
 			device->SetName(&helperTextures[HELPERTEXTURE_WHITE], "HELPERTEXTURE_WHITE");
 
-			color = wi::Color::Transparent();
+			color = Protean::Color::Transparent();
 			CreateTexture(helperTextures[HELPERTEXTURE_TRANSPARENT], (const uint8_t*)&color, 1, 1);
 			device->SetName(&helperTextures[HELPERTEXTURE_TRANSPARENT], "HELPERTEXTURE_TRANSPARENT");
 
-			color = wi::Color(127, 127, 255, 255);
+			color = Protean::Color(127, 127, 255, 255);
 			CreateTexture(helperTextures[HELPERTEXTURE_NORMALMAPDEFAULT], (const uint8_t*)&color, 1, 1);
 			device->SetName(&helperTextures[HELPERTEXTURE_NORMALMAPDEFAULT], "HELPERTEXTURE_NORMALMAPDEFAULT");
 		}
 
-		wilog("wi::texturehelper Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::TextureHelper Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	const Texture* getLogo()
@@ -268,7 +268,7 @@ namespace wi::texturehelper
 	{
 		if (data == nullptr)
 			return false;
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		TextureDesc desc;
 		desc.width = width;
@@ -301,8 +301,8 @@ namespace wi::texturehelper
 		float perlin_persistence
 	)
 	{
-		wi::vector<uint8_t> data;
-		wi::vector<uint16_t> data16;
+		Protean::vector<uint8_t> data;
+		Protean::vector<uint16_t> data16;
 		if (has_flag(flags, GradientFlags::R16Unorm))
 		{
 			data16.resize(width * height);
@@ -311,7 +311,7 @@ namespace wi::texturehelper
 		{
 			data.resize(width * height);
 		}
-		wi::noise::Perlin perlin;
+		Protean::Noise::Perlin perlin;
 		if (has_flag(flags, GradientFlags::PerlinNoise))
 		{
 			perlin.init(perlin_seed);
@@ -332,16 +332,16 @@ namespace wi::texturehelper
 				for (uint32_t x = 0; x < width; ++x)
 				{
 					const XMFLOAT2 uv = XMFLOAT2((float(x) + 0.5f) / float(width), (float(y) + 0.5f) / float(height));
-					const XMVECTOR point_on_line = wi::math::ClosestPointOnLineSegment(a, b, XMLoadFloat2(&uv));
+					const XMVECTOR point_on_line = Protean::Math::ClosestPointOnLineSegment(a, b, XMLoadFloat2(&uv));
 					const float uv_distance = XMVectorGetX(XMVector3Length(point_on_line - a));
-					float gradient = saturate(wi::math::InverseLerp(0, distance, uv_distance));
+					float gradient = saturate(Protean::Math::InverseLerp(0, distance, uv_distance));
 					if (has_flag(flags, GradientFlags::Inverse))
 					{
 						gradient = 1 - gradient;
 					}
 					if (has_flag(flags, GradientFlags::Smoothstep))
 					{
-						gradient = wi::math::SmoothStep(0, 1, gradient);
+						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
 					if (has_flag(flags, GradientFlags::PerlinNoise))
 					{
@@ -371,15 +371,15 @@ namespace wi::texturehelper
 				for (uint32_t x = 0; x < width; ++x)
 				{
 					const XMFLOAT2 uv = XMFLOAT2((float(x) + 0.5f) / float(width), (float(y) + 0.5f) / float(height));
-					const float uv_distance = wi::math::Clamp(XMVectorGetX(XMVector3Length(XMLoadFloat2(&uv) - a)), 0, distance);
-					float gradient = saturate(wi::math::InverseLerp(0, distance, uv_distance));
+					const float uv_distance = Protean::Math::Clamp(XMVectorGetX(XMVector3Length(XMLoadFloat2(&uv) - a)), 0, distance);
+					float gradient = saturate(Protean::Math::InverseLerp(0, distance, uv_distance));
 					if (has_flag(flags, GradientFlags::Inverse))
 					{
 						gradient = 1 - gradient;
 					}
 					if (has_flag(flags, GradientFlags::Smoothstep))
 					{
-						gradient = wi::math::SmoothStep(0, 1, gradient);
+						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
 					if (has_flag(flags, GradientFlags::PerlinNoise))
 					{
@@ -409,14 +409,14 @@ namespace wi::texturehelper
 				{
 					const XMFLOAT2 uv = XMFLOAT2((float(x) + 0.5f) / float(width), (float(y) + 0.5f) / float(height));
 					const XMFLOAT2 coord = XMFLOAT2(uv.x - uv_start.x, uv.y - uv_start.y);
-					float gradient = wi::math::GetAngle(direction, coord) / XM_2PI;
+					float gradient = Protean::Math::GetAngle(direction, coord) / XM_2PI;
 					if (has_flag(flags, GradientFlags::Inverse))
 					{
 						gradient = 1 - gradient;
 					}
 					if (has_flag(flags, GradientFlags::Smoothstep))
 					{
-						gradient = wi::math::SmoothStep(0, 1, gradient);
+						gradient = Protean::Math::SmoothStep(0, 1, gradient);
 					}
 					if (has_flag(flags, GradientFlags::PerlinNoise))
 					{
@@ -458,13 +458,13 @@ namespace wi::texturehelper
 		Swizzle swizzle
 	)
 	{
-		wi::vector<uint8_t> data(width * height);
+		Protean::vector<uint8_t> data(width * height);
 		for (uint32_t y = 0; y < height; ++y)
 		{
 			for (uint32_t x = 0; x < width; ++x)
 			{
 				const XMFLOAT2 coord = XMFLOAT2((float(x) + 0.5f) / float(width) * 2 - 1, -((float(y) + 0.5f) / float(height) * 2 - 1));
-				float gradient = wi::math::GetAngle(direction, coord) / XM_2PI;
+				float gradient = Protean::Math::GetAngle(direction, coord) / XM_2PI;
 				if (counter_clockwise)
 				{
 					gradient = 1 - gradient;
@@ -478,7 +478,7 @@ namespace wi::texturehelper
 		return texture;
 	}
 
-	wi::graphics::Texture CreateLensDistortionNormalMap(
+	Protean::Graphics::Texture CreateLensDistortionNormalMap(
 		uint32_t width,
 		uint32_t height,
 		const XMFLOAT2& uv_start,
@@ -492,7 +492,7 @@ namespace wi::texturehelper
 		float scale = 1.0f / (radius * 2);
 		float edge = 1.0f - edge_smoothness;
 
-		wi::vector<uint32_t> data(width * height);
+		Protean::vector<uint32_t> data(width * height);
 		for (uint32_t y = 0; y < height; ++y)
 		{
 			for (uint32_t x = 0; x < width; ++x)
@@ -509,7 +509,7 @@ namespace wi::texturehelper
 				else
 					uv.y *= float(height) / float(width);
 
-				const float d = wi::math::Length(uv);
+				const float d = Protean::Math::Length(uv);
 				const float dp = std::pow(saturate(d), squish);
 				uv.x = uv.x * dp;
 				uv.y = uv.y * dp;

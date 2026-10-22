@@ -1,19 +1,19 @@
 #pragma once
 class EditorComponent;
 
-class IKWindow : public wi::gui::Window
+class IKWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::ComboBox targetCombo;
-	wi::gui::CheckBox disabledCheckBox;
-	wi::gui::Slider chainLengthSlider;
-	wi::gui::Slider iterationCountSlider;
+	Protean::Gui::ComboBox targetCombo;
+	Protean::Gui::CheckBox disabledCheckBox;
+	Protean::Gui::Slider chainLengthSlider;
+	Protean::Gui::Slider iterationCountSlider;
 
 	void ResizeLayout() override;
 };

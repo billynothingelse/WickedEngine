@@ -2,9 +2,9 @@
 #include "Protean.h"
 
 
-class Example_ImGuiRenderer : public wi::RenderPath3D
+class Example_ImGuiRenderer : public Protean::RenderPath3D
 {
-	wi::gui::Label label;
+	Protean::Gui::Label label;
 public:
 	void Load() override;
 	void Update(float dt) override;
@@ -14,13 +14,13 @@ public:
 	void igTextTitle(const char* text);
 };
 
-class Example_ImGui : public wi::Application
+class Example_ImGui : public Protean::Application
 {
 	Example_ImGuiRenderer renderer;
 
 public:
 	~Example_ImGui() override;
 	void Initialize() override;
-	void Compose(wi::graphics::CommandList cmd) override;
+	void Compose(Protean::Graphics::CommandList cmd) override;
 };
 

@@ -2,7 +2,7 @@
 #include "core/CommonInclude.h"
 #include "math/Primitive.h"
 
-namespace wi
+namespace Protean
 {
 	// Simple fast update BVH
 	//	https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/
@@ -10,20 +10,20 @@ namespace wi
 	{
 		struct Node
 		{
-			wi::primitive::AABB aabb;
+			Protean::AABB aabb;
 			uint32_t left = 0;
 			uint32_t offset = 0;
 			uint32_t count = 0;
 			constexpr bool isLeaf() const { return count > 0; }
 		};
-		wi::vector<Node> nodes;
-		wi::vector<uint32_t> leaf_indices;
+		Protean::vector<Node> nodes;
+		Protean::vector<uint32_t> leaf_indices;
 		uint32_t node_count = 0;
 
 		constexpr bool IsValid() const { return node_count > 0; }
 
 		// Completely rebuilds tree from scratch
-		void Build(const wi::primitive::AABB* aabbs, uint32_t aabb_count)
+		void Build(const Protean::AABB* aabbs, uint32_t aabb_count)
 		{
 			node_count = 0;
 
@@ -42,14 +42,14 @@ namespace wi
 			node.count = aabb_count;
 			for (uint32_t i = 0; i < aabb_count; ++i)
 			{
-				node.aabb = wi::primitive::AABB::Merge(node.aabb, aabbs[i]);
+				node.aabb = Protean::AABB::Merge(node.aabb, aabbs[i]);
 				leaf_indices[i] = i;
 			}
 			Subdivide(0, aabbs);
 		}
 
 		// Updates the AABBs, but doesn't modify the tree structure (fast update mode) 
-		void Update(const wi::primitive::AABB* aabbs, uint32_t aabb_count)
+		void Update(const Protean::AABB* aabbs, uint32_t aabb_count)
 		{
 			if (node_count == 0)
 				return;
@@ -61,18 +61,18 @@ namespace wi
 			for (uint32_t i = node_count - 1; i > 0; --i)
 			{
 				Node& node = nodes[i];
-				node.aabb = wi::primitive::AABB();
+				node.aabb = Protean::AABB();
 				if (node.isLeaf())
 				{
 					for (uint32_t j = 0; j < node.count; ++j)
 					{
-						node.aabb = wi::primitive::AABB::Merge(node.aabb, aabbs[leaf_indices[node.offset + j]]);
+						node.aabb = Protean::AABB::Merge(node.aabb, aabbs[leaf_indices[node.offset + j]]);
 					}
 				}
 				else
 				{
-					node.aabb = wi::primitive::AABB::Merge(node.aabb, nodes[node.left].aabb);
-					node.aabb = wi::primitive::AABB::Merge(node.aabb, nodes[node.left + 1].aabb);
+					node.aabb = Protean::AABB::Merge(node.aabb, nodes[node.left].aabb);
+					node.aabb = Protean::AABB::Merge(node.aabb, nodes[node.left + 1].aabb);
 				}
 			}
 		}
@@ -140,7 +140,7 @@ namespace wi
 		}
 
 	private:
-		void UpdateNodeBounds(uint32_t nodeIndex, const wi::primitive::AABB* leaf_aabb_data)
+		void UpdateNodeBounds(uint32_t nodeIndex, const Protean::AABB* leaf_aabb_data)
 		{
 			Node& node = nodes[nodeIndex];
 			node.aabb = {};
@@ -148,11 +148,11 @@ namespace wi
 			{
 				uint32_t offset = node.offset + i;
 				uint32_t index = leaf_indices[offset];
-				node.aabb = wi::primitive::AABB::Merge(node.aabb, leaf_aabb_data[index]);
+				node.aabb = Protean::AABB::Merge(node.aabb, leaf_aabb_data[index]);
 			}
 		}
 
-		void Subdivide(uint32_t nodeIndex, const wi::primitive::AABB* leaf_aabb_data)
+		void Subdivide(uint32_t nodeIndex, const Protean::AABB* leaf_aabb_data)
 		{
 			Node& node = nodes[nodeIndex];
 			if (node.count <= 2)

@@ -3,9 +3,9 @@
 #include "render/GraphicsAPI/GraphicsDevice.h"
 #include "render/Canvas.h"
 
-namespace wi
+namespace Protean
 {
-	class RenderPath : public wi::Canvas
+	class RenderPath : public Protean::Canvas
 	{
 	private:
 		uint32_t layerMask = 0xFFFFFFFF;
@@ -37,12 +37,12 @@ namespace wi
 		virtual void PostRender() {}
 		// Compose the rendered layers (for example blend the layers together as Images)
 		// This will be rendered to the backbuffer
-		virtual void Compose(wi::graphics::CommandList cmd) const {}
+		virtual void Compose(Protean::Graphics::CommandList cmd) const {}
 
 		inline uint32_t getLayerMask() const { return layerMask; }
 		inline void setlayerMask(uint32_t value) { layerMask = value; }
 
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB;
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB;
 
 		// This is an identifier of RenderPath subtype that is used for lua binding.
 		static constexpr const auto script_check_identifier = relative_path_storage(__FILE__);

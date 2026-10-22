@@ -6,10 +6,10 @@
 #include "core/UnorderedMap.h"
 #include "debug/Backlog.h"
 
-namespace wi::input::sdlinput
+namespace Protean::Input::SDL
 {
-    wi::input::KeyboardState keyboard;
-    wi::input::MouseState mouse;
+    Protean::Input::KeyboardState keyboard;
+    Protean::Input::MouseState mouse;
 
     struct Internal_ControllerState
     {
@@ -17,12 +17,12 @@ namespace wi::input::sdlinput
         SDL_JoystickID internalID;
         SDL_GameController* controller;
         Uint16 rumble_l, rumble_r = 0;
-        wi::input::ControllerState state;
+        Protean::Input::ControllerState state;
     };
-    wi::vector<Internal_ControllerState> controllers;
-    wi::unordered_map<SDL_JoystickID, size_t> controller_mapped;
+    Protean::vector<Internal_ControllerState> controllers;
+    Protean::unordered_map<SDL_JoystickID, size_t> controller_mapped;
 
-    wi::vector<SDL_Event> events;
+    Protean::vector<SDL_Event> events;
 
     int to_wicked(const SDL_Scancode &scan, const SDL_Keycode &sym);
     void controller_to_wicked(uint32_t *current, Uint8 button, bool pressed);
@@ -34,7 +34,7 @@ namespace wi::input::sdlinput
 
     void Initialize() {
         if(!SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt")){
-            wi::backlog::post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
+            Protean::Backlog::post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
         }
     }
 
@@ -204,7 +204,7 @@ namespace wi::input::sdlinput
                 case SDL_FINGERDOWN:
                 case SDL_FINGERUP:
                 case SDL_FINGERMOTION:
-                    wi::backlog::post("finger!");
+                    Protean::Backlog::post("finger!");
                     break;
 
 
@@ -212,7 +212,7 @@ namespace wi::input::sdlinput
                 case SDL_DOLLARGESTURE:
                 case SDL_DOLLARRECORD:
                 case SDL_MULTIGESTURE:
-                    wi::backlog::post("gesture!");
+                    Protean::Backlog::post("gesture!");
                     break;
                 default:
                     break;
@@ -252,73 +252,73 @@ namespace wi::input::sdlinput
         }
         switch(scan){ // Individual scancode key conversion
             case SDL_SCANCODE_SPACE:
-                return wi::input::KEYBOARD_BUTTON_SPACE;
+                return Protean::Input::KEYBOARD_BUTTON_SPACE;
             case SDL_SCANCODE_LSHIFT:
-                return wi::input::KEYBOARD_BUTTON_LSHIFT;
+                return Protean::Input::KEYBOARD_BUTTON_LSHIFT;
             case SDL_SCANCODE_RSHIFT:
-                return wi::input::KEYBOARD_BUTTON_RSHIFT;
+                return Protean::Input::KEYBOARD_BUTTON_RSHIFT;
             case SDL_SCANCODE_RETURN:
-                return wi::input::KEYBOARD_BUTTON_ENTER;
+                return Protean::Input::KEYBOARD_BUTTON_ENTER;
             case SDL_SCANCODE_ESCAPE:
-                return wi::input::KEYBOARD_BUTTON_ESCAPE;
+                return Protean::Input::KEYBOARD_BUTTON_ESCAPE;
             case SDL_SCANCODE_HOME:
-                return wi::input::KEYBOARD_BUTTON_HOME;
+                return Protean::Input::KEYBOARD_BUTTON_HOME;
             case SDL_SCANCODE_RCTRL:
-                return wi::input::KEYBOARD_BUTTON_RCONTROL;
+                return Protean::Input::KEYBOARD_BUTTON_RCONTROL;
             case SDL_SCANCODE_LCTRL:
-                return wi::input::KEYBOARD_BUTTON_LCONTROL;
+                return Protean::Input::KEYBOARD_BUTTON_LCONTROL;
             case SDL_SCANCODE_DELETE:
-                return wi::input::KEYBOARD_BUTTON_DELETE;
+                return Protean::Input::KEYBOARD_BUTTON_DELETE;
             case SDL_SCANCODE_BACKSPACE:
-                return wi::input::KEYBOARD_BUTTON_BACKSPACE;
+                return Protean::Input::KEYBOARD_BUTTON_BACKSPACE;
             case SDL_SCANCODE_PAGEDOWN:
-                return wi::input::KEYBOARD_BUTTON_PAGEDOWN;
+                return Protean::Input::KEYBOARD_BUTTON_PAGEDOWN;
             case SDL_SCANCODE_PAGEUP:
-                return wi::input::KEYBOARD_BUTTON_PAGEUP;
+                return Protean::Input::KEYBOARD_BUTTON_PAGEUP;
             case SDL_SCANCODE_KP_0:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD0;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD0;
             case SDL_SCANCODE_KP_1:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD1;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD1;
             case SDL_SCANCODE_KP_2:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD2;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD2;
             case SDL_SCANCODE_KP_3:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD3;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD3;
             case SDL_SCANCODE_KP_4:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD4;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD4;
             case SDL_SCANCODE_KP_5:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD5;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD5;
             case SDL_SCANCODE_KP_6:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD6;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD6;
             case SDL_SCANCODE_KP_7:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD7;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD7;
             case SDL_SCANCODE_KP_8:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD8;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD8;
             case SDL_SCANCODE_KP_9:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD9;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD9;
             case SDL_SCANCODE_KP_MULTIPLY:
-                return wi::input::KEYBOARD_BUTTON_MULTIPLY;
+                return Protean::Input::KEYBOARD_BUTTON_MULTIPLY;
             case SDL_SCANCODE_KP_PLUS:
-                return wi::input::KEYBOARD_BUTTON_ADD;
+                return Protean::Input::KEYBOARD_BUTTON_ADD;
             case SDL_SCANCODE_SEPARATOR:
-                return wi::input::KEYBOARD_BUTTON_SEPARATOR;
+                return Protean::Input::KEYBOARD_BUTTON_SEPARATOR;
             case SDL_SCANCODE_KP_MINUS:
-                return wi::input::KEYBOARD_BUTTON_SUBTRACT;
+                return Protean::Input::KEYBOARD_BUTTON_SUBTRACT;
             case SDL_SCANCODE_KP_DECIMAL:
-                return wi::input::KEYBOARD_BUTTON_DECIMAL;
+                return Protean::Input::KEYBOARD_BUTTON_DECIMAL;
             case SDL_SCANCODE_KP_DIVIDE:
-                return wi::input::KEYBOARD_BUTTON_DIVIDE;
+                return Protean::Input::KEYBOARD_BUTTON_DIVIDE;
             case SDL_SCANCODE_INSERT:
-                return wi::input::KEYBOARD_BUTTON_INSERT;
+                return Protean::Input::KEYBOARD_BUTTON_INSERT;
             case SDL_SCANCODE_TAB:
-                return wi::input::KEYBOARD_BUTTON_TAB;
+                return Protean::Input::KEYBOARD_BUTTON_TAB;
             case SDL_SCANCODE_GRAVE:
-                return wi::input::KEYBOARD_BUTTON_TILDE;
+                return Protean::Input::KEYBOARD_BUTTON_TILDE;
             case SDL_SCANCODE_LALT:
-                return wi::input::KEYBOARD_BUTTON_ALT;
+                return Protean::Input::KEYBOARD_BUTTON_ALT;
             case SDL_SCANCODE_RALT:
-                return wi::input::KEYBOARD_BUTTON_ALTGR;
+                return Protean::Input::KEYBOARD_BUTTON_ALTGR;
 			case SDL_SCANCODE_END:
-				return wi::input::KEYBOARD_BUTTON_END;
+				return Protean::Input::KEYBOARD_BUTTON_END;
             default:
                 break;
         }
@@ -337,23 +337,23 @@ namespace wi::input::sdlinput
     void controller_to_wicked(uint32_t *current, Uint8 button, bool pressed){
         uint32_t btnenum;
         switch(button){
-            case SDL_CONTROLLER_BUTTON_DPAD_UP: btnenum = wi::input::GAMEPAD_BUTTON_UP; break;
-            case SDL_CONTROLLER_BUTTON_DPAD_LEFT: btnenum = wi::input::GAMEPAD_BUTTON_LEFT; break;
-            case SDL_CONTROLLER_BUTTON_DPAD_DOWN: btnenum = wi::input::GAMEPAD_BUTTON_DOWN; break;
-            case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: btnenum = wi::input::GAMEPAD_BUTTON_RIGHT; break;
-            case SDL_CONTROLLER_BUTTON_X: btnenum = wi::input::GAMEPAD_BUTTON_1; break;
-            case SDL_CONTROLLER_BUTTON_A: btnenum = wi::input::GAMEPAD_BUTTON_2; break;
-            case SDL_CONTROLLER_BUTTON_B: btnenum = wi::input::GAMEPAD_BUTTON_3; break;
-            case SDL_CONTROLLER_BUTTON_Y: btnenum = wi::input::GAMEPAD_BUTTON_4; break;
-            case SDL_CONTROLLER_BUTTON_LEFTSHOULDER: btnenum = wi::input::GAMEPAD_BUTTON_5; break;
-            case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: btnenum = wi::input::GAMEPAD_BUTTON_6; break;
-            case SDL_CONTROLLER_BUTTON_LEFTSTICK: btnenum = wi::input::GAMEPAD_BUTTON_7; break;
-            case SDL_CONTROLLER_BUTTON_RIGHTSTICK: btnenum = wi::input::GAMEPAD_BUTTON_8; break;
-            case SDL_CONTROLLER_BUTTON_BACK: btnenum = wi::input::GAMEPAD_BUTTON_9; break;
-            case SDL_CONTROLLER_BUTTON_START: btnenum = wi::input::GAMEPAD_BUTTON_10; break;
+            case SDL_CONTROLLER_BUTTON_DPAD_UP: btnenum = Protean::Input::GAMEPAD_BUTTON_UP; break;
+            case SDL_CONTROLLER_BUTTON_DPAD_LEFT: btnenum = Protean::Input::GAMEPAD_BUTTON_LEFT; break;
+            case SDL_CONTROLLER_BUTTON_DPAD_DOWN: btnenum = Protean::Input::GAMEPAD_BUTTON_DOWN; break;
+            case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: btnenum = Protean::Input::GAMEPAD_BUTTON_RIGHT; break;
+            case SDL_CONTROLLER_BUTTON_X: btnenum = Protean::Input::GAMEPAD_BUTTON_1; break;
+            case SDL_CONTROLLER_BUTTON_A: btnenum = Protean::Input::GAMEPAD_BUTTON_2; break;
+            case SDL_CONTROLLER_BUTTON_B: btnenum = Protean::Input::GAMEPAD_BUTTON_3; break;
+            case SDL_CONTROLLER_BUTTON_Y: btnenum = Protean::Input::GAMEPAD_BUTTON_4; break;
+            case SDL_CONTROLLER_BUTTON_LEFTSHOULDER: btnenum = Protean::Input::GAMEPAD_BUTTON_5; break;
+            case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: btnenum = Protean::Input::GAMEPAD_BUTTON_6; break;
+            case SDL_CONTROLLER_BUTTON_LEFTSTICK: btnenum = Protean::Input::GAMEPAD_BUTTON_7; break;
+            case SDL_CONTROLLER_BUTTON_RIGHTSTICK: btnenum = Protean::Input::GAMEPAD_BUTTON_8; break;
+            case SDL_CONTROLLER_BUTTON_BACK: btnenum = Protean::Input::GAMEPAD_BUTTON_9; break;
+            case SDL_CONTROLLER_BUTTON_START: btnenum = Protean::Input::GAMEPAD_BUTTON_10; break;
             default: assert(0); return;
         }
-        btnenum = 1 << (btnenum - wi::input::GAMEPAD_RANGE_START - 1);
+        btnenum = 1 << (btnenum - Protean::Input::GAMEPAD_RANGE_START - 1);
         if(pressed){
             *current |= btnenum;
         }else{
@@ -369,15 +369,15 @@ namespace wi::input::sdlinput
         }
     }
 
-    void GetKeyboardState(wi::input::KeyboardState* state) {
+    void GetKeyboardState(Protean::Input::KeyboardState* state) {
         *state = keyboard;
     }
-    void GetMouseState(wi::input::MouseState* state) {
+    void GetMouseState(Protean::Input::MouseState* state) {
         *state = mouse;
     }
 
     int GetMaxControllerCount() { return controllers.size(); }
-    bool GetControllerState(wi::input::ControllerState* state, int index) {
+    bool GetControllerState(Protean::Input::ControllerState* state, int index) {
         if(index < controllers.size()){
             if (state != nullptr)
             {
@@ -387,7 +387,7 @@ namespace wi::input::sdlinput
         }
         return false;
     }
-    void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index) {
+    void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index) {
         if(index < controllers.size()){
 #ifdef SDL2_FEATURE_CONTROLLER_LED
             SDL_GameControllerSetLED(
@@ -407,10 +407,10 @@ namespace wi::input::sdlinput
 #include "core/UnorderedMap.h"
 #include "debug/Backlog.h"
 
-namespace wi::input::sdlinput
+namespace Protean::Input::SDL
 {
-    wi::input::KeyboardState keyboard;
-    wi::input::MouseState mouse;
+    Protean::Input::KeyboardState keyboard;
+    Protean::Input::MouseState mouse;
 
     struct Internal_ControllerState
     {
@@ -418,12 +418,12 @@ namespace wi::input::sdlinput
         SDL_JoystickID internalID;
         SDL_Gamepad* controller;
         Uint16 rumble_l, rumble_r = 0;
-        wi::input::ControllerState state;
+        Protean::Input::ControllerState state;
     };
-    wi::vector<Internal_ControllerState> controllers;
-    wi::unordered_map<SDL_JoystickID, size_t> controller_mapped;
+    Protean::vector<Internal_ControllerState> controllers;
+    Protean::unordered_map<SDL_JoystickID, size_t> controller_mapped;
 
-    wi::vector<SDL_Event> events;
+    Protean::vector<SDL_Event> events;
 
     int to_wicked(const SDL_Scancode &scan, const SDL_Keycode &sym);
     void controller_to_wicked(uint32_t *current, Uint8 button, bool pressed);
@@ -435,7 +435,7 @@ namespace wi::input::sdlinput
 
     void Initialize() {
         if(!SDL_AddGamepadMappingsFromFile("gamecontrollerdb.txt")){
-            wi::backlog::post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
+            Protean::Backlog::post("[SDL Input] No controller config loaded, add gamecontrollerdb.txt file next to the executable or download it from https://github.com/gabomdq/SDL_GameControllerDB");
         }
     }
 
@@ -615,7 +615,7 @@ namespace wi::input::sdlinput
                 case SDL_EVENT_FINGER_DOWN:
                 case SDL_EVENT_FINGER_UP:
                 case SDL_EVENT_FINGER_MOTION:
-                    wi::backlog::post("finger!");
+                    Protean::Backlog::post("finger!");
                     break;
 
                 default:
@@ -656,73 +656,73 @@ namespace wi::input::sdlinput
         }
         switch(scan){ // Individual scancode key conversion
             case SDL_SCANCODE_SPACE:
-                return wi::input::KEYBOARD_BUTTON_SPACE;
+                return Protean::Input::KEYBOARD_BUTTON_SPACE;
             case SDL_SCANCODE_LSHIFT:
-                return wi::input::KEYBOARD_BUTTON_LSHIFT;
+                return Protean::Input::KEYBOARD_BUTTON_LSHIFT;
             case SDL_SCANCODE_RSHIFT:
-                return wi::input::KEYBOARD_BUTTON_RSHIFT;
+                return Protean::Input::KEYBOARD_BUTTON_RSHIFT;
             case SDL_SCANCODE_RETURN:
-                return wi::input::KEYBOARD_BUTTON_ENTER;
+                return Protean::Input::KEYBOARD_BUTTON_ENTER;
             case SDL_SCANCODE_ESCAPE:
-                return wi::input::KEYBOARD_BUTTON_ESCAPE;
+                return Protean::Input::KEYBOARD_BUTTON_ESCAPE;
             case SDL_SCANCODE_HOME:
-                return wi::input::KEYBOARD_BUTTON_HOME;
+                return Protean::Input::KEYBOARD_BUTTON_HOME;
             case SDL_SCANCODE_RCTRL:
-                return wi::input::KEYBOARD_BUTTON_RCONTROL;
+                return Protean::Input::KEYBOARD_BUTTON_RCONTROL;
             case SDL_SCANCODE_LCTRL:
-                return wi::input::KEYBOARD_BUTTON_LCONTROL;
+                return Protean::Input::KEYBOARD_BUTTON_LCONTROL;
             case SDL_SCANCODE_DELETE:
-                return wi::input::KEYBOARD_BUTTON_DELETE;
+                return Protean::Input::KEYBOARD_BUTTON_DELETE;
             case SDL_SCANCODE_BACKSPACE:
-                return wi::input::KEYBOARD_BUTTON_BACKSPACE;
+                return Protean::Input::KEYBOARD_BUTTON_BACKSPACE;
             case SDL_SCANCODE_PAGEDOWN:
-                return wi::input::KEYBOARD_BUTTON_PAGEDOWN;
+                return Protean::Input::KEYBOARD_BUTTON_PAGEDOWN;
             case SDL_SCANCODE_PAGEUP:
-                return wi::input::KEYBOARD_BUTTON_PAGEUP;
+                return Protean::Input::KEYBOARD_BUTTON_PAGEUP;
             case SDL_SCANCODE_KP_0:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD0;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD0;
             case SDL_SCANCODE_KP_1:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD1;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD1;
             case SDL_SCANCODE_KP_2:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD2;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD2;
             case SDL_SCANCODE_KP_3:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD3;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD3;
             case SDL_SCANCODE_KP_4:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD4;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD4;
             case SDL_SCANCODE_KP_5:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD5;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD5;
             case SDL_SCANCODE_KP_6:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD6;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD6;
             case SDL_SCANCODE_KP_7:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD7;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD7;
             case SDL_SCANCODE_KP_8:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD8;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD8;
             case SDL_SCANCODE_KP_9:
-                return wi::input::KEYBOARD_BUTTON_NUMPAD9;
+                return Protean::Input::KEYBOARD_BUTTON_NUMPAD9;
             case SDL_SCANCODE_KP_MULTIPLY:
-                return wi::input::KEYBOARD_BUTTON_MULTIPLY;
+                return Protean::Input::KEYBOARD_BUTTON_MULTIPLY;
             case SDL_SCANCODE_KP_PLUS:
-                return wi::input::KEYBOARD_BUTTON_ADD;
+                return Protean::Input::KEYBOARD_BUTTON_ADD;
             case SDL_SCANCODE_SEPARATOR:
-                return wi::input::KEYBOARD_BUTTON_SEPARATOR;
+                return Protean::Input::KEYBOARD_BUTTON_SEPARATOR;
             case SDL_SCANCODE_KP_MINUS:
-                return wi::input::KEYBOARD_BUTTON_SUBTRACT;
+                return Protean::Input::KEYBOARD_BUTTON_SUBTRACT;
             case SDL_SCANCODE_KP_DECIMAL:
-                return wi::input::KEYBOARD_BUTTON_DECIMAL;
+                return Protean::Input::KEYBOARD_BUTTON_DECIMAL;
             case SDL_SCANCODE_KP_DIVIDE:
-                return wi::input::KEYBOARD_BUTTON_DIVIDE;
+                return Protean::Input::KEYBOARD_BUTTON_DIVIDE;
             case SDL_SCANCODE_INSERT:
-                return wi::input::KEYBOARD_BUTTON_INSERT;
+                return Protean::Input::KEYBOARD_BUTTON_INSERT;
             case SDL_SCANCODE_TAB:
-                return wi::input::KEYBOARD_BUTTON_TAB;
+                return Protean::Input::KEYBOARD_BUTTON_TAB;
             case SDL_SCANCODE_GRAVE:
-                return wi::input::KEYBOARD_BUTTON_TILDE;
+                return Protean::Input::KEYBOARD_BUTTON_TILDE;
             case SDL_SCANCODE_LALT:
-                return wi::input::KEYBOARD_BUTTON_ALT;
+                return Protean::Input::KEYBOARD_BUTTON_ALT;
             case SDL_SCANCODE_RALT:
-                return wi::input::KEYBOARD_BUTTON_ALTGR;
+                return Protean::Input::KEYBOARD_BUTTON_ALTGR;
 			case SDL_SCANCODE_END:
-				return wi::input::KEYBOARD_BUTTON_END;
+				return Protean::Input::KEYBOARD_BUTTON_END;
             default:
                 break;
         }
@@ -741,23 +741,23 @@ namespace wi::input::sdlinput
     void controller_to_wicked(uint32_t *current, Uint8 button, bool pressed){
         uint32_t btnenum;
         switch(button){
-            case SDL_GAMEPAD_BUTTON_DPAD_UP: btnenum = wi::input::GAMEPAD_BUTTON_UP; break;
-            case SDL_GAMEPAD_BUTTON_DPAD_LEFT: btnenum = wi::input::GAMEPAD_BUTTON_LEFT; break;
-            case SDL_GAMEPAD_BUTTON_DPAD_DOWN: btnenum = wi::input::GAMEPAD_BUTTON_DOWN; break;
-            case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: btnenum = wi::input::GAMEPAD_BUTTON_RIGHT; break;
-            case SDL_GAMEPAD_BUTTON_WEST: btnenum = wi::input::GAMEPAD_BUTTON_1; break;
-            case SDL_GAMEPAD_BUTTON_SOUTH: btnenum = wi::input::GAMEPAD_BUTTON_2; break;
-            case SDL_GAMEPAD_BUTTON_EAST: btnenum = wi::input::GAMEPAD_BUTTON_3; break;
-            case SDL_GAMEPAD_BUTTON_NORTH: btnenum = wi::input::GAMEPAD_BUTTON_4; break;
-            case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: btnenum = wi::input::GAMEPAD_BUTTON_5; break;
-            case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: btnenum = wi::input::GAMEPAD_BUTTON_6; break;
-            case SDL_GAMEPAD_BUTTON_LEFT_STICK: btnenum = wi::input::GAMEPAD_BUTTON_7; break;
-            case SDL_GAMEPAD_BUTTON_RIGHT_STICK: btnenum = wi::input::GAMEPAD_BUTTON_8; break;
-            case SDL_GAMEPAD_BUTTON_BACK: btnenum = wi::input::GAMEPAD_BUTTON_9; break;
-            case SDL_GAMEPAD_BUTTON_START: btnenum = wi::input::GAMEPAD_BUTTON_10; break;
+            case SDL_GAMEPAD_BUTTON_DPAD_UP: btnenum = Protean::Input::GAMEPAD_BUTTON_UP; break;
+            case SDL_GAMEPAD_BUTTON_DPAD_LEFT: btnenum = Protean::Input::GAMEPAD_BUTTON_LEFT; break;
+            case SDL_GAMEPAD_BUTTON_DPAD_DOWN: btnenum = Protean::Input::GAMEPAD_BUTTON_DOWN; break;
+            case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: btnenum = Protean::Input::GAMEPAD_BUTTON_RIGHT; break;
+            case SDL_GAMEPAD_BUTTON_WEST: btnenum = Protean::Input::GAMEPAD_BUTTON_1; break;
+            case SDL_GAMEPAD_BUTTON_SOUTH: btnenum = Protean::Input::GAMEPAD_BUTTON_2; break;
+            case SDL_GAMEPAD_BUTTON_EAST: btnenum = Protean::Input::GAMEPAD_BUTTON_3; break;
+            case SDL_GAMEPAD_BUTTON_NORTH: btnenum = Protean::Input::GAMEPAD_BUTTON_4; break;
+            case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: btnenum = Protean::Input::GAMEPAD_BUTTON_5; break;
+            case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: btnenum = Protean::Input::GAMEPAD_BUTTON_6; break;
+            case SDL_GAMEPAD_BUTTON_LEFT_STICK: btnenum = Protean::Input::GAMEPAD_BUTTON_7; break;
+            case SDL_GAMEPAD_BUTTON_RIGHT_STICK: btnenum = Protean::Input::GAMEPAD_BUTTON_8; break;
+            case SDL_GAMEPAD_BUTTON_BACK: btnenum = Protean::Input::GAMEPAD_BUTTON_9; break;
+            case SDL_GAMEPAD_BUTTON_START: btnenum = Protean::Input::GAMEPAD_BUTTON_10; break;
             default: assert(0); return;
         }
-        btnenum = 1 << (btnenum - wi::input::GAMEPAD_RANGE_START - 1);
+        btnenum = 1 << (btnenum - Protean::Input::GAMEPAD_RANGE_START - 1);
         if(pressed){
             *current |= btnenum;
         }else{
@@ -773,15 +773,15 @@ namespace wi::input::sdlinput
         }
     }
 
-    void GetKeyboardState(wi::input::KeyboardState* state) {
+    void GetKeyboardState(Protean::Input::KeyboardState* state) {
         *state = keyboard;
     }
-    void GetMouseState(wi::input::MouseState* state) {
+    void GetMouseState(Protean::Input::MouseState* state) {
         *state = mouse;
     }
 
     int GetMaxControllerCount() { return controllers.size(); }
-    bool GetControllerState(wi::input::ControllerState* state, int index) {
+    bool GetControllerState(Protean::Input::ControllerState* state, int index) {
         if(index < controllers.size()){
             if (state != nullptr)
             {
@@ -791,7 +791,7 @@ namespace wi::input::sdlinput
         }
         return false;
     }
-    void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index) {
+    void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index) {
         if(index < controllers.size()){
             SDL_SetGamepadLED(
                 controllers[index].controller,
@@ -804,14 +804,14 @@ namespace wi::input::sdlinput
     }
 }
 #else
-namespace wi::input::sdlinput
+namespace Protean::Input::SDL
 {
     void Initialize() {}
     void Update() {}
-    void GetKeyboardState(wi::input::KeyboardState* state) {}
-    void GetMouseState(wi::input::MouseState* state) {}
+    void GetKeyboardState(Protean::Input::KeyboardState* state) {}
+    void GetMouseState(Protean::Input::MouseState* state) {}
     int GetMaxControllerCount() { return 0; }
-    bool GetControllerState(wi::input::ControllerState* state, int index) { return false; }
-    void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index) {}
+    bool GetControllerState(Protean::Input::ControllerState* state, int index) { return false; }
+    void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index) {}
 }
 #endif // _WIN32

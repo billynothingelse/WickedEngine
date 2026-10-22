@@ -7,7 +7,7 @@
 // Note: these should be implemented independently of math library optimizations to be cross platform deterministic!
 //	Otherwise the terrain generation might be different across platforms
 
-namespace wi::noise
+namespace Protean::Noise
 {
 	// Based on: https://github.com/Reputeless/PerlinNoise
 	struct Perlin
@@ -16,7 +16,7 @@ namespace wi::noise
 
 		void init(uint32_t seed)
 		{
-			wi::random::RNG rng(seed);
+			Protean::Random::RNG rng(seed);
 			for (int i = 0; i < arraysize(state); ++i)
 			{
 				state[i] = uint8_t(rng.next_uint());
@@ -96,7 +96,7 @@ namespace wi::noise
 			return result;
 		}
 
-		void Serialize(wi::Archive& archive)
+		void Serialize(Protean::Archive& archive)
 		{
 			if (archive.IsReadMode())
 			{
@@ -116,7 +116,7 @@ namespace wi::noise
 	};
 
 	// Based on: https://www.shadertoy.com/view/MslGD8
-	namespace voronoi
+	namespace Voronoi
 	{
 		constexpr float dot(XMFLOAT2 a, XMFLOAT2 b)
 		{

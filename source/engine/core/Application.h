@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	class RenderPath;
 
@@ -21,8 +21,8 @@ namespace wi
 	class Application
 	{
 	protected:
-		std::unique_ptr<wi::graphics::GraphicsDevice> graphicsDevice;
-		wi::eventhandler::Handle swapChainVsyncChangeEvent;
+		std::unique_ptr<Protean::Graphics::GraphicsDevice> graphicsDevice;
+		Protean::EventHandler::Handle swapChainVsyncChangeEvent;
 
 		RenderPath* activePath = nullptr;
 		float targetFrameRate = 60;
@@ -31,18 +31,18 @@ namespace wi
 		bool initialized = false;
 		bool alwaysactive = false;
 
-		wi::FadeManager fadeManager;
+		Protean::FadeManager fadeManager;
 
 		float deltaTime = 0;
 		float deltaTimeAccumulator = 0;
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		float deltatimes[20] = {};
 		int fps_avg_counter = 0;
 
 		std::string infodisplay_str;
 
-		wi::graphics::Texture rendertargetPreHDR10;
+		Protean::Graphics::Texture rendertargetPreHDR10;
 
 		uint32_t renderWidth = 0;
 		uint32_t renderHeight = 0;
@@ -52,11 +52,11 @@ namespace wi
 
 		bool is_window_active = true;
 		bool allow_hdr = true;
-		wi::graphics::SwapChain swapChain;
-		wi::Canvas canvas;
-		wi::platform::window_type window;
+		Protean::Graphics::SwapChain swapChain;
+		Protean::Canvas canvas;
+		Protean::Platform::window_type window;
 
-		wi::graphics::Texture splash_screen;
+		Protean::Graphics::Texture splash_screen;
 		int splash_screen_subresource = -1;
 
 		// Runs the main engine loop
@@ -64,7 +64,7 @@ namespace wi
 
 		// This will activate a RenderPath as the active one, so it will run its Update, FixedUpdate, Render and Compose functions
 		//	You can set a fade time and fade screen color so that switching components will happen when the screen is faded out. Then it will fade back to the new component
-		void ActivatePath(RenderPath* component, float fadeSeconds = 0, wi::Color fadeColor = wi::Color(0, 0, 0, 255), FadeManager::FadeType fadetype = FadeManager::FadeType::FadeToColor);
+		void ActivatePath(RenderPath* component, float fadeSeconds = 0, Protean::Color fadeColor = Protean::Color(0, 0, 0, 255), FadeManager::FadeType fadetype = FadeManager::FadeType::FadeToColor);
 		inline RenderPath* GetActivePath() { return activePath; }
 
 		// Set the desired target framerate for the FixedUpdate() loop (default = 60)
@@ -89,12 +89,12 @@ namespace wi
 		//  RenderPath::Render is also called from here for the active component
 		virtual void Render();
 		// This is where the application will render to the screen (backbuffer). It must render to the provided command list.
-		virtual void Compose(wi::graphics::CommandList cmd);
+		virtual void Compose(Protean::Graphics::CommandList cmd);
 		// This is where the application about to exit.
 		virtual void Exit();
 
 		// You need to call this before calling Run() or Initialize() if you want to render
-		void SetWindow(wi::platform::window_type window);
+		void SetWindow(Protean::Platform::window_type window);
 
 		// Set a fixed render resolution independent of window size (for borderless fullscreen)
 		// Pass 0,0 to clear the fixed resolution and use window size
@@ -135,18 +135,18 @@ namespace wi
 			// mouse position and button informations
 			bool mouse_info = false;
 			// rect to specify where to render the information
-			wi::graphics::Rect rect;
+			Protean::Graphics::Rect rect;
 		};
 		// display all-time engine information text
 		InfoDisplayer infoDisplay;
 
-		void Fade(float fadeSeconds = 1, wi::Color fadeColor = wi::Color(0, 0, 0, 255), FadeManager::FadeType fadetype = FadeManager::FadeType::FadeToColor)
+		void Fade(float fadeSeconds = 1, Protean::Color fadeColor = Protean::Color(0, 0, 0, 255), FadeManager::FadeType fadetype = FadeManager::FadeType::FadeToColor)
 		{
 			fadeManager.Start(fadeSeconds, fadeColor, [] {}, fadetype);
 		}
 		void CrossFade(float fadeSeconds = 1)
 		{
-			Fade(fadeSeconds, wi::Color::Black(), wi::FadeManager::FadeType::CrossFade);
+			Fade(fadeSeconds, Protean::Color::Black(), Protean::FadeManager::FadeType::CrossFade);
 		}
 		bool IsFaded() const { return fadeManager.IsFaded(); }
 

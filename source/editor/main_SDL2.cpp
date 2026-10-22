@@ -37,7 +37,7 @@ int sdl_loop()
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			bool textinput_action_delete = false;
-			wi::input::sdlinput::ProcessEvent(event);
+			Protean::Input::SDL::ProcessEvent(event);
 			switch(event.type){
 				case SDL_QUIT:
 					editor.Exit();
@@ -62,23 +62,23 @@ int sdl_loop()
 				case SDL_KEYDOWN:
 					if(event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE
 					   || event.key.keysym.scancode == SDL_SCANCODE_KP_BACKSPACE) {
-						wi::gui::TextInputField::DeleteFromInput();
+						Protean::Gui::TextInputField::DeleteFromInput();
 						textinput_action_delete = true;
-					} else if(wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL)) {
+					} else if(Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCONTROL)) {
 						// HACK: AddInput will check if Ctrl is pressed and
 						// handle Ctrl-C/Ctrl-V/Ctrl-X for us, but
-						// wi::input::Down will only be accurate after
-						// wi::input::Update was run, which will happen next
+						// Protean::Input::Down will only be accurate after
+						// Protean::Input::Update was run, which will happen next
 						// frame, which is too late for us. So we just call it
 						// now and then call AddInput
-						wi::input::Update(editor.window, editor.canvas);
-						wi::gui::TextInputField::AddInput('?'); // AddInput actually ignores the argument when Ctrl is pressed
+						Protean::Input::Update(editor.window, editor.canvas);
+						Protean::Gui::TextInputField::AddInput('?'); // AddInput actually ignores the argument when Ctrl is pressed
 					}
 					break;
 				case SDL_TEXTINPUT:
 					if(!textinput_action_delete){
 						if(event.text.text[0] >= 21){
-							wi::gui::TextInputField::AddInput(event.text.text[0]);
+							Protean::Gui::TextInputField::AddInput(event.text.text[0]);
 						}
 					}
 					break;
@@ -163,7 +163,7 @@ void crash_handler(int sig)
 		"Driver: %s\n"
 		"Stacktrace:\n",
 		sig, sigdescr_np(sig),
-		wi::version::GetVersionString(),
+		Protean::Version::GetVersionString(),
 		editor.GetAdapterName(),
 		editor.GetDriverDescription()
 	);
@@ -192,7 +192,7 @@ void crash_handler(int sig)
 		fflush(logfile);
 		backtrace_symbols_fd(btbuf, size, fileno(logfile));
 		fputs("\nBacklog:\n", logfile);
-		wi::backlog::_forEachLogEntry_unsafe([&logfile] (auto&& entry) {
+		Protean::Backlog::_forEachLogEntry_unsafe([&logfile] (auto&& entry) {
 			fputs(entry.text.c_str(), logfile);
 			fflush(logfile);
 		});
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	wi::arguments::Parse(argc, argv);
+	Protean::Arguments::Parse(argc, argv);
 
 	sdl2::sdlsystem_ptr_t system = sdl2::make_sdlsystem(SDL_INIT_EVERYTHING | SDL_INIT_EVENTS);
 	if (*system) {
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 	bool fullscreen = false;
 	bool window_maximized = false;
 
-	wi::Timer timer;
+	Protean::Timer timer;
 	if (editor.config.Open("config.ini"))
 	{
 		if (editor.config.Has("width"))
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
 	height = std::max(100, height);
 
 	sdl2::window_ptr_t window = sdl2::make_window(
-			wi::helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(),
+			Protean::Helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			width, height,
 			SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 
 	int ret = sdl_loop();
 
-	wi::jobsystem::ShutDown();
+	Protean::JobSystem::ShutDown();
 
 	return ret;
 }

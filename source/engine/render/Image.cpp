@@ -8,10 +8,10 @@
 #include "core/Timer.h"
 #include "input/Input.h"
 
-using namespace wi::enums;
-using namespace wi::graphics;
+using namespace Protean;
+using namespace Protean::Graphics;
 
-namespace wi::image
+namespace Protean::Image
 {
 	static Sampler samplers[SAMPLER_COUNT];
 	static Shader vertexShader;
@@ -21,21 +21,21 @@ namespace wi::image
 	static DepthStencilState depthStencilStates[STENCILMODE_COUNT][STENCILREFMODE_COUNT][DEPTH_TEST_MODE_COUNT];
 	static PipelineState imagePSO[BLENDMODE_COUNT][STENCILMODE_COUNT][STENCILREFMODE_COUNT][DEPTH_TEST_MODE_COUNT];
 	static thread_local Texture backgroundTexture;
-	static thread_local wi::Canvas canvas;
+	static thread_local Protean::Canvas canvas;
 
 	void SetBackground(const Texture& texture)
 	{
 		backgroundTexture = texture;
 	}
 
-	void SetCanvas(const wi::Canvas& current_canvas)
+	void SetCanvas(const Protean::Canvas& current_canvas)
 	{
 		canvas = current_canvas;
 	}
 
 	void Draw(const Texture* texture, const Params& params, CommandList cmd)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		const Sampler* sampler = &samplers[SAMPLER_LINEAR_CLAMP];
 
@@ -101,7 +101,7 @@ namespace wi::image
 		color.z *= params.intensity;
 		color.w *= params.opacity;
 
-		image.packed_color = wi::math::pack_half4(color);
+		image.packed_color = Protean::Math::pack_half4(color);
 
 		if (params.angular_softness_outer_angle > 0)
 		{
@@ -110,8 +110,8 @@ namespace wi::image
 			// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_lights_punctual#inner-and-outer-cone-angles
 			const float lightAngleScale = 1.0f / std::max(0.001f, innerConeAngleCos - outerConeAngleCos);
 			const float lightAngleOffset = -outerConeAngleCos * lightAngleScale;
-			image.angular_softness_direction = wi::math::pack_half2(params.angular_softness_direction);
-			image.angular_softness_mad = wi::math::pack_half2(lightAngleScale, lightAngleOffset);
+			image.angular_softness_direction = Protean::Math::pack_half2(params.angular_softness_direction);
+			image.angular_softness_mad = Protean::Math::pack_half2(lightAngleScale, lightAngleOffset);
 		}
 
 		const float canvas_aspect = canvas.GetAspect();
@@ -148,8 +148,8 @@ namespace wi::image
 		if (params.isHighlightEnabled())
 		{
 			image.flags |= IMAGE_FLAG_HIGHLIGHT;
-			image.highlight_xy = wi::math::pack_half2(params.highlight_pos.x * canvas_aspect, params.highlight_pos.y);
-			image.highlight_color_spread = wi::math::pack_half4(params.highlight_color.x, params.highlight_color.y, params.highlight_color.z, params.highlight_spread);
+			image.highlight_xy = Protean::Math::pack_half2(params.highlight_pos.x * canvas_aspect, params.highlight_pos.y);
+			image.highlight_color_spread = Protean::Math::pack_half4(params.highlight_color.x, params.highlight_color.y, params.highlight_color.z, params.highlight_spread);
 		}
 		if (texture != nullptr && has_flag(texture->GetDesc().misc_flags, ResourceMiscFlag::TEXTURECUBE))
 		{
@@ -160,9 +160,9 @@ namespace wi::image
 			image.flags |= IMAGE_FLAG_TEXTURE1D_BASE;
 		}
 
-		image.hdr_scaling_aspect = wi::math::pack_half2(params.hdr_scaling, canvas_aspect);
-		image.bordersoften_saturation = wi::math::pack_half2(params.border_soften, params.saturation);
-		image.mask_alpha_range = wi::math::pack_half2(params.mask_alpha_range_start, params.mask_alpha_range_end);
+		image.hdr_scaling_aspect = Protean::Math::pack_half2(params.hdr_scaling, canvas_aspect);
+		image.bordersoften_saturation = Protean::Math::pack_half2(params.border_soften, params.saturation);
+		image.mask_alpha_range = Protean::Math::pack_half2(params.mask_alpha_range_start, params.mask_alpha_range_end);
 
 		uint32_t vertex_count = 0;
 
@@ -193,7 +193,7 @@ namespace wi::image
 			}
 			else
 			{
-				// Asserts will check that a proper canvas was set for this cmd with wi::image::SetCanvas()
+				// Asserts will check that a proper canvas was set for this cmd with Protean::Image::SetCanvas()
 				//	The canvas must be set to have dpi aware rendering
 				assert(canvas.width > 0);
 				assert(canvas.height > 0);
@@ -265,7 +265,7 @@ namespace wi::image
 					for (int j = 0; j < rounding.segments; ++j)
 					{
 						float t = float(j) / float(rounding.segments - 1);
-						XMVECTOR bezier = wi::math::GetQuadraticBezierPos(start, B, end, t);
+						XMVECTOR bezier = Protean::Math::GetQuadraticBezierPos(start, B, end, t);
 						XMVECTOR pos = XMVector2Transform(bezier, M);
 
 						float4 point;
@@ -357,9 +357,9 @@ namespace wi::image
 				image.flags |= IMAGE_FLAG_GRADIENT_CIRCULAR;
 				break;
 			}
-			image.gradient_color = wi::math::pack_half4(params.gradient_color);
-			image.gradient_uv_start = wi::math::pack_half2(params.gradient_uv_start);
-			image.gradient_uv_end = wi::math::pack_half2(params.gradient_uv_end);
+			image.gradient_color = Protean::Math::pack_half4(params.gradient_color);
+			image.gradient_uv_start = Protean::Math::pack_half2(params.gradient_uv_start);
+			image.gradient_uv_end = Protean::Math::pack_half2(params.gradient_uv_end);
 		}
 
 		device->EventBegin("Image", cmd);
@@ -367,7 +367,7 @@ namespace wi::image
 		uint32_t stencilRef = params.stencilRef;
 		if (params.stencilRefMode == STENCILREFMODE_USER)
 		{
-			stencilRef = wi::renderer::CombineStencilrefs(STENCILREF_EMPTY, (uint8_t)stencilRef);
+			stencilRef = Protean::Renderer::CombineStencilrefs(STENCILREF_EMPTY, (uint8_t)stencilRef);
 		}
 		device->BindStencilRef(stencilRef, cmd);
 
@@ -383,10 +383,10 @@ namespace wi::image
 
 	void LoadShaders()
 	{
-		wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "imageVS.cso");
-		wi::renderer::LoadShader(ShaderStage::PS, pixelShader, "imagePS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "imageVS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "imagePS.cso");
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		PipelineStateDesc desc;
 		desc.vs = &vertexShader;
@@ -413,9 +413,9 @@ namespace wi::image
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		RasterizerState rs;
 		rs.fill_mode = FillMode::SOLID;
@@ -632,13 +632,13 @@ namespace wi::image
 		samplerDesc.max_anisotropy = 16;
 		device->CreateSampler(&samplerDesc, &samplers[SAMPLER_ANISO_MIRROR]);
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		wilog("wi::image Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::Image Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
-	const PipelineState* GetPSO(DEPTH_TEST_MODE depth_test_mode, wi::enums::BLENDMODE blend_mode, STENCILMODE stencil_mode, STENCILREFMODE stencil_ref_mode)
+	const PipelineState* GetPSO(DEPTH_TEST_MODE depth_test_mode, Protean::BLENDMODE blend_mode, STENCILMODE stencil_mode, STENCILREFMODE stencil_ref_mode)
 	{
 		return &imagePSO[blend_mode][stencil_mode][stencil_ref_mode][depth_test_mode];
 	}

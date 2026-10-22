@@ -1,30 +1,30 @@
 #pragma once
 class EditorComponent;
 
-class VoxelGridWindow : public wi::gui::Window
+class VoxelGridWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::TextInputField dimXInput;
-	wi::gui::TextInputField dimYInput;
-	wi::gui::TextInputField dimZInput;
-	wi::gui::Button	clearButton;
-	wi::gui::Button	voxelizeObjectsButton;
-	wi::gui::Button	voxelizeNavigationButton;
-	wi::gui::Button	voxelizeCollidersButton;
-	wi::gui::Button	floodfillButton;
-	wi::gui::Button	fitToSceneButton;
-	wi::gui::Button	generateMeshButton;
-	wi::gui::Button	generateSimplifiedMeshButton;
-	wi::gui::Button	generateNavMeshButton;
-	wi::gui::CheckBox subtractCheckBox;
-	wi::gui::CheckBox debugAllCheckBox;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::TextInputField dimXInput;
+	Protean::Gui::TextInputField dimYInput;
+	Protean::Gui::TextInputField dimZInput;
+	Protean::Gui::Button	clearButton;
+	Protean::Gui::Button	voxelizeObjectsButton;
+	Protean::Gui::Button	voxelizeNavigationButton;
+	Protean::Gui::Button	voxelizeCollidersButton;
+	Protean::Gui::Button	floodfillButton;
+	Protean::Gui::Button	fitToSceneButton;
+	Protean::Gui::Button	generateMeshButton;
+	Protean::Gui::Button	generateSimplifiedMeshButton;
+	Protean::Gui::Button	generateNavMeshButton;
+	Protean::Gui::CheckBox subtractCheckBox;
+	Protean::Gui::CheckBox debugAllCheckBox;
 
 	void ResizeLayout() override;
 };

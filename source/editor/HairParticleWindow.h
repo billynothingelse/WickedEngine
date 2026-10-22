@@ -5,39 +5,39 @@ class EditorComponent;
 
 class MaterialWindow;
 
-class HairParticleWindow : public wi::gui::Window
+class HairParticleWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
 	void UpdateData();
 
-	wi::HairParticleSystem* GetHair();
+	Protean::HairParticleSystem* GetHair();
 
-	wi::gui::Label infoLabel;
-	wi::gui::ComboBox meshComboBox;
-	wi::gui::CheckBox cameraBendCheckbox;
-	wi::gui::Slider lengthSlider;
-	wi::gui::Slider widthSlider;
-	wi::gui::Slider stiffnessSlider;
-	wi::gui::Slider dragSlider;
-	wi::gui::Slider gravityPowerSlider;
-	wi::gui::Slider randomnessSlider;
-	wi::gui::Slider countSlider;
-	wi::gui::Slider segmentcountSlider;
-	wi::gui::Slider billboardcountSlider;
-	wi::gui::Slider randomSeedSlider;
-	wi::gui::Slider viewDistanceSlider;
-	wi::gui::Slider uniformitySlider;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::ComboBox meshComboBox;
+	Protean::Gui::CheckBox cameraBendCheckbox;
+	Protean::Gui::Slider lengthSlider;
+	Protean::Gui::Slider widthSlider;
+	Protean::Gui::Slider stiffnessSlider;
+	Protean::Gui::Slider dragSlider;
+	Protean::Gui::Slider gravityPowerSlider;
+	Protean::Gui::Slider randomnessSlider;
+	Protean::Gui::Slider countSlider;
+	Protean::Gui::Slider segmentcountSlider;
+	Protean::Gui::Slider billboardcountSlider;
+	Protean::Gui::Slider randomSeedSlider;
+	Protean::Gui::Slider viewDistanceSlider;
+	Protean::Gui::Slider uniformitySlider;
 
-	wi::gui::Button addSpriteButton;
-	std::deque<wi::gui::Button> sprites;
-	std::deque<wi::gui::Button> spriteRemoveButtons;
-	std::deque<wi::gui::Slider> spriteSizeSliders;
+	Protean::Gui::Button addSpriteButton;
+	std::deque<Protean::Gui::Button> sprites;
+	std::deque<Protean::Gui::Button> spriteRemoveButtons;
+	std::deque<Protean::Gui::Slider> spriteSizeSliders;
 
 	SpriteRectWindow spriterectwnd;
 

@@ -4,11 +4,11 @@
 
 #include <array>
 
-namespace wi::network
+namespace Protean::Network
 {
 	struct Socket
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		inline bool IsValid() const { return internal_state.get() != nullptr; }
 	};
 

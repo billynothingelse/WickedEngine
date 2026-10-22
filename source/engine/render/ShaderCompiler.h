@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace wi::shadercompiler
+namespace Protean::ShaderCompiler
 {
 
 	enum class Flags
@@ -18,26 +18,26 @@ namespace wi::shadercompiler
 	struct CompilerInput
 	{
 		Flags flags = Flags::NONE;
-		wi::graphics::ShaderFormat format = wi::graphics::ShaderFormat::NONE;
-		wi::graphics::ShaderStage stage = wi::graphics::ShaderStage::Count;
+		Protean::Graphics::ShaderFormat format = Protean::Graphics::ShaderFormat::NONE;
+		Protean::Graphics::ShaderStage stage = Protean::Graphics::ShaderStage::Count;
 		// if the shader relies on a higher shader model feature, it must be declared here.
 		//	But the compiler can also choose a higher one internally, if needed
-		wi::graphics::ShaderModel minshadermodel = wi::graphics::ShaderModel::SM_5_0;
+		Protean::Graphics::ShaderModel minshadermodel = Protean::Graphics::ShaderModel::SM_5_0;
 		std::string shadersourcefilename;
 		std::string entrypoint = "main";
-		wi::vector<std::string> include_directories;
-		wi::vector<std::string> defines;
+		Protean::vector<std::string> include_directories;
+		Protean::vector<std::string> defines;
 	};
 	struct CompilerOutput
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		const uint8_t* shaderdata = nullptr;
 		size_t shadersize = 0;
-		wi::vector<uint8_t> shaderhash;
+		Protean::vector<uint8_t> shaderhash;
 		std::string error_message;
-		wi::vector<std::string> dependencies;
+		Protean::vector<std::string> dependencies;
 	};
 	void Compile(const CompilerInput& input, CompilerOutput& output);
 
@@ -50,4 +50,4 @@ namespace wi::shadercompiler
 }
 
 template<>
-struct enable_bitmask_operators<wi::shadercompiler::Flags> : std::true_type {};
+struct enable_bitmask_operators<Protean::ShaderCompiler::Flags> : std::true_type {};

@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "MaterialWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean::Graphics;
+using namespace Protean;
 void MaterialPickerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create("Materials", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Materials", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("Materials " ICON_MATERIALBROWSER);
 	SetSize(XMFLOAT2(300, 400));
 
@@ -18,7 +16,7 @@ void MaterialPickerWindow::Create(EditorComponent* _editor)
 	showMeshMaterialCheckBox.Create("Mesh materials: ");
 	showMeshMaterialCheckBox.SetCheckText(ICON_EYE);
 	showMeshMaterialCheckBox.SetCheck(true);
-	showMeshMaterialCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	showMeshMaterialCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		RecreateButtons();
 	});
 	AddWidget(&showMeshMaterialCheckBox);
@@ -26,7 +24,7 @@ void MaterialPickerWindow::Create(EditorComponent* _editor)
 	showInternalMaterialCheckBox.Create("Internal materials: ");
 	showInternalMaterialCheckBox.SetCheckText(ICON_EYE);
 	showInternalMaterialCheckBox.SetCheck(false);
-	showInternalMaterialCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	showInternalMaterialCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		RecreateButtons();
 	});
 	AddWidget(&showInternalMaterialCheckBox);
@@ -34,12 +32,12 @@ void MaterialPickerWindow::Create(EditorComponent* _editor)
 	SetVisible(false);
 }
 
-bool MaterialPickerWindow::MaterialIsUsedInMesh(const wi::ecs::Entity materialEntity) const
+bool MaterialPickerWindow::MaterialIsUsedInMesh(const Protean::Entity materialEntity) const
 {
 	if (editor == nullptr)
 		return false;
 
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const Protean::Scene& scene = editor->GetCurrentScene();
 
 	// Check all meshes to see if any subset uses this material
 	for (size_t i = 0; i < scene.meshes.GetCount(); ++i)
@@ -55,7 +53,7 @@ bool MaterialPickerWindow::MaterialIsUsedInMesh(const wi::ecs::Entity materialEn
 	return false;
 }
 
-bool MaterialPickerWindow::ShouldShowMaterial(const wi::scene::MaterialComponent& material, const wi::ecs::Entity entity) const
+bool MaterialPickerWindow::ShouldShowMaterial(const Protean::MaterialComponent& material, const Protean::Entity entity) const
 {
 	const bool isInternal = material.IsInternal();
 
@@ -75,7 +73,7 @@ void MaterialPickerWindow::RecreateButtons()
 {
 	if (editor == nullptr)
 		return;
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const Protean::Scene& scene = editor->GetCurrentScene();
 	for (auto& x : buttons)
 	{
 		RemoveWidget(&x);
@@ -91,24 +89,24 @@ void MaterialPickerWindow::RecreateButtons()
 		if (!ShouldShowMaterial(material, entity))
 			continue;
 
-		wi::gui::Button& button = buttons[i];
+		Protean::Gui::Button& button = buttons[i];
 		button.Create("");
 		AddWidget(&button);
 		button.SetVisible(false);
 
-		button.OnClick([entity, this](wi::gui::EventArgs args) {
+		button.OnClick([entity, this](Protean::Gui::EventArgs args) {
 
-			wi::Archive& archive = editor->AdvanceHistory(true);
+			Protean::Archive& archive = editor->AdvanceHistory(true);
 			archive << EditorComponent::HISTORYOP_SELECTION;
 			// record PREVIOUS selection state...
 			editor->RecordSelection(archive);
 
-			if (!editor->translator.selected.empty() && wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT))
+			if (!editor->translator.selected.empty() && Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LSHIFT))
 			{
 				// Union selection:
-				wi::vector<wi::scene::PickResult> saved = editor->translator.selected;
+				Protean::vector<Protean::PickResult> saved = editor->translator.selected;
 				editor->translator.selected.clear();
-				for (const wi::scene::PickResult& picked : saved)
+				for (const Protean::PickResult& picked : saved)
 				{
 					editor->AddSelected(picked);
 				}
@@ -131,14 +129,14 @@ void MaterialPickerWindow::RecreateButtons()
 
 void MaterialPickerWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	if (editor == nullptr || IsCollapsed() || !IsVisible())
 	{
 		return;
 	}
 
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const Protean::Scene& scene = editor->GetCurrentScene();
 	if (buttons.size() != scene.materials.GetCount())
 	{
 		RecreateButtons();
@@ -156,12 +154,12 @@ void MaterialPickerWindow::ResizeLayout()
 	showInternalMaterialCheckBox.SetSize(XMFLOAT2(hei, hei));
 	layout.add_right(showInternalMaterialCheckBox);
 
-	wi::gui::Theme theme;
-	theme.image.CopyFrom(sprites[wi::gui::IDLE].params);
+	Protean::Gui::Theme theme;
+	theme.image.CopyFrom(sprites[Protean::Gui::IDLE].params);
 	theme.image.background = false;
-	theme.image.blendFlag = wi::enums::BLENDMODE_ALPHA;
+	theme.image.blendFlag = Protean::BLENDMODE_ALPHA;
 	theme.font.CopyFrom(font.params);
-	theme.shadow_color = wi::Color::lerp(theme.font.color, wi::Color::Transparent(), 0.25f);
+	theme.shadow_color = Protean::Color::lerp(theme.font.color, Protean::Color::Transparent(), 0.25f);
 	theme.tooltipFont.CopyFrom(tooltipFont.params);
 	theme.tooltipImage.CopyFrom(tooltipSprite.params);
 
@@ -180,19 +178,19 @@ void MaterialPickerWindow::ResizeLayout()
 		if (!ShouldShowMaterial(material, entity))
 			continue;
 
-		wi::gui::Button& button = buttons[i];
+		Protean::Gui::Button& button = buttons[i];
 		button.SetVisible(IsVisible() && !IsCollapsed());
 
 		button.SetTheme(theme);
-		button.SetColor(wi::Color::White());
-		button.SetColor(wi::Color(255, 255, 255, 150), wi::gui::FOCUS);
+		button.SetColor(Protean::Color::White());
+		button.SetColor(Protean::Color(255, 255, 255, 150), Protean::Gui::FOCUS);
 		button.SetShadowRadius(0);
 
 		for (const auto& picked : editor->translator.selected)
 		{
 			if (picked.entity == entity)
 			{
-				button.SetColor(wi::Color::White());
+				button.SetColor(Protean::Color::White());
 				button.SetShadowRadius(3);
 				break;
 			}
@@ -222,8 +220,8 @@ void MaterialPickerWindow::ResizeLayout()
 			}
 			button.SetTooltip(name->name);
 		}
-		button.font.params.h_align = wi::font::WIFALIGN_CENTER;
-		button.font.params.v_align = wi::font::WIFALIGN_BOTTOM;
+		button.font.params.h_align = Protean::Font::WIFALIGN_CENTER;
+		button.font.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 
 		button.SetSize(XMFLOAT2(preview_size, preview_size));
 		button.SetPos(XMFLOAT2((visible_button_index % cells) * (preview_size + border) + border, offset_y));

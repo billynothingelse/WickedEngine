@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "HairParticleWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void HairParticleWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_HAIR " Hair Particle System", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_HAIR " Hair Particle System", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(600, 1000));
 
 	closeButton.SetTooltip("Delete HairParticleSystem");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -30,10 +28,10 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
-				wi::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
+				Protean::HairParticleSystem* hair = scene.hairs.GetComponent(x.entity);
 				if (hair != nullptr) {
 					func(hair, args);
 					hair->SetDirty();
@@ -161,7 +159,7 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 	AddWidget(&uniformitySlider);
 
 	addSpriteButton.Create("Select sprite rect");
-	addSpriteButton.OnClick([this](wi::gui::EventArgs args) {
+	addSpriteButton.OnClick([this](Protean::Gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 		if (!scene.materials.Contains(entity))
@@ -169,11 +167,11 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 			scene.materials.Create(entity);
 		}
 		const MaterialComponent* material = scene.materials.GetComponent(entity);
-		wi::Sprite sprite;
+		Protean::Sprite sprite;
 		sprite.textureResource = material->textures[MaterialComponent::BASECOLORMAP].resource;
 		if (!sprite.textureResource.IsValid() || !sprite.textureResource.GetTexture().IsValid())
 		{
-			sprite.textureResource.SetTexture(*wi::texturehelper::getWhite());
+			sprite.textureResource.SetTexture(*Protean::TextureHelper::getWhite());
 		}
 
 		spriterectwnd.SetVisible(true);
@@ -183,14 +181,14 @@ void HairParticleWindow::Create(EditorComponent* _editor)
 
 		spriterectwnd.OnAccepted([=]() {
 
-			wi::HairParticleSystem* hair = GetHair();
+			Protean::HairParticleSystem* hair = GetHair();
 			if (hair == nullptr)
 				return;
 
 			hair->atlas_rects.emplace_back().texMulAdd = spriterectwnd.muladd;
 			hair->SetDirty();
 
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				RefreshSprites();
 			});
 		});
@@ -236,12 +234,12 @@ void HairParticleWindow::RefreshSprites()
 	if (!scene.materials.Contains(entity))
 		return;
 	const MaterialComponent* material = scene.materials.GetComponent(entity);
-	wi::Sprite sprite;
+	Protean::Sprite sprite;
 	sprite.textureResource = material->textures[MaterialComponent::BASECOLORMAP].resource;
 	if (!sprite.textureResource.IsValid() || !sprite.textureResource.GetTexture().IsValid())
 		return;
 
-	const wi::graphics::TextureDesc& desc = sprite.textureResource.GetTexture().GetDesc();
+	const Protean::Graphics::TextureDesc& desc = sprite.textureResource.GetTexture().GetDesc();
 
 	sprites.resize(hair->atlas_rects.size());
 	spriteRemoveButtons.resize(hair->atlas_rects.size());
@@ -258,7 +256,7 @@ void HairParticleWindow::RefreshSprites()
 			y = sprite;
 			y.params.enableDrawRect(XMFLOAT4(rect.z * desc.width, rect.w * desc.height, rect.x * desc.width, rect.y * desc.height));
 		}
-		x.OnClick([=](wi::gui::EventArgs args) {
+		x.OnClick([=](Protean::Gui::EventArgs args) {
 
 			spriterectwnd.SetVisible(true);
 
@@ -267,14 +265,14 @@ void HairParticleWindow::RefreshSprites()
 
 			spriterectwnd.OnAccepted([=]() {
 
-				wi::HairParticleSystem* hair = GetHair();
+				Protean::HairParticleSystem* hair = GetHair();
 				if (hair == nullptr)
 					return;
 
 				hair->atlas_rects[i].texMulAdd = spriterectwnd.muladd;
 				hair->SetDirty();
 
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 					RefreshSprites();
 				});
 			});
@@ -284,12 +282,12 @@ void HairParticleWindow::RefreshSprites()
 		auto& r = spriteRemoveButtons[i];
 		r.Create("X");
 		r.SetLocalizationEnabled(false);
-		r.OnClick([=](wi::gui::EventArgs args) {
+		r.OnClick([=](Protean::Gui::EventArgs args) {
 
 			hair->atlas_rects.erase(hair->atlas_rects.begin() + i);
 			hair->SetDirty();
 
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				RefreshSprites();
 				});
 		});
@@ -300,7 +298,7 @@ void HairParticleWindow::RefreshSprites()
 		s.SetValue(hair->atlas_rects[i].size);
 		s.SetLocalizationEnabled(false);
 		s.SetTooltip("Adjust sprite's overall size");
-		s.OnSlide([=](wi::gui::EventArgs args) {
+		s.OnSlide([=](Protean::Gui::EventArgs args) {
 
 			hair->atlas_rects[i].size = args.fValue;
 			hair->SetDirty();
@@ -350,7 +348,7 @@ void HairParticleWindow::SetEntity(Entity entity)
 
 }
 
-wi::HairParticleSystem* HairParticleWindow::GetHair()
+Protean::HairParticleSystem* HairParticleWindow::GetHair()
 {
 	if (entity == INVALID_ENTITY)
 	{
@@ -358,7 +356,7 @@ wi::HairParticleSystem* HairParticleWindow::GetHair()
 	}
 
 	Scene& scene = editor->GetCurrentScene();
-	wi::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
+	Protean::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
 
 	return hair;
 }
@@ -375,8 +373,8 @@ void HairParticleWindow::UpdateData()
 
 	std::string ss;
 	ss += "Tip: To use hair particle system, first you must select a surface mesh to spawn particles on, and then increase particle count to grow particles. The particles will get their texture from the Material that is created on the current entity.\n\n";
-	ss += "Position format: " + std::string(wi::graphics::GetFormatString(hair->position_format)) + "\n";
-	ss += "Memory usage: " + wi::helper::GetMemorySizeText(hair->GetMemorySizeInBytes()) + "\n";
+	ss += "Position format: " + std::string(Protean::Graphics::GetFormatString(hair->position_format)) + "\n";
+	ss += "Memory usage: " + Protean::Helper::GetMemorySizeText(hair->GetMemorySizeInBytes()) + "\n";
 
 	infoLabel.SetText(ss);
 
@@ -410,7 +408,7 @@ void HairParticleWindow::UpdateData()
 
 void HairParticleWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 100;
 
 	layout.add_fullwidth(infoLabel);

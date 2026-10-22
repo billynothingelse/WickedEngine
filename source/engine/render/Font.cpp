@@ -22,21 +22,21 @@
 #include <fstream>
 #include <mutex>
 
-using namespace wi::enums;
-using namespace wi::graphics;
+using namespace Protean;
+using namespace Protean::Graphics;
 
-namespace wi::font
+namespace Protean::Font
 {
 	namespace font_internal
 	{
-		static thread_local wi::Canvas canvas;
+		static thread_local Protean::Canvas canvas;
 
 		static Texture texture;
 
 		struct FontStyle
 		{
 			std::string name;
-			wi::vector<uint8_t> fontBuffer; // only used if loaded from file, need to keep alive
+			Protean::vector<uint8_t> fontBuffer; // only used if loaded from file, need to keep alive
 			stbtt_fontinfo fontInfo;
 			int ascent, descent, lineGap;
 			void Create(const std::string& newName, const uint8_t* data, size_t size)
@@ -46,24 +46,24 @@ namespace wi::font
 
 				if (!stbtt_InitFont(&fontInfo, data, offset))
 				{
-					wi::backlog::post("Failed to load font: " + name + " (file was unrecognized, it must be a .ttf file)");
+					Protean::Backlog::post("Failed to load font: " + name + " (file was unrecognized, it must be a .ttf file)");
 				}
 
 				stbtt_GetFontVMetrics(&fontInfo, &ascent, &descent, &lineGap);
 			}
 			void Create(const std::string& newName)
 			{
-				if (wi::helper::FileRead(newName, fontBuffer))
+				if (Protean::Helper::FileRead(newName, fontBuffer))
 				{
 					Create(newName, fontBuffer.data(), fontBuffer.size());
 				}
 				else
 				{
-					wi::backlog::post("Failed to load font: " + name + " (file could not be opened)");
+					Protean::Backlog::post("Failed to load font: " + name + " (file could not be opened)");
 				}
 			}
 		};
-		static wi::vector<std::unique_ptr<FontStyle>> fontStyles;
+		static Protean::vector<std::unique_ptr<FontStyle>> fontStyles;
 
 		struct Glyph
 		{
@@ -77,17 +77,17 @@ namespace wi::font
 			float tc_bottom;
 			const FontStyle* fontStyle = nullptr;
 		};
-		static wi::unordered_map<int32_t, Glyph> glyph_lookup;
-		static wi::unordered_map<int32_t, wi::rectpacker::Rect> rect_lookup;
+		static Protean::unordered_map<int32_t, Glyph> glyph_lookup;
+		static Protean::unordered_map<int32_t, Protean::RectPacker::Rect> rect_lookup;
 		struct Bitmap
 		{
 			int width;
 			int height;
 			int xoff;
 			int yoff;
-			wi::vector<uint8_t> data;
+			Protean::vector<uint8_t> data;
 		};
-		static wi::unordered_map<int32_t, Bitmap> bitmap_lookup;
+		static Protean::unordered_map<int32_t, Bitmap> bitmap_lookup;
 		union GlyphHash
 		{
 			struct
@@ -100,7 +100,7 @@ namespace wi::font
 			uint32_t raw;
 		};
 		static_assert(sizeof(GlyphHash) == sizeof(uint32_t));
-		static wi::unordered_set<uint32_t> pendingGlyphs;
+		static Protean::unordered_set<uint32_t> pendingGlyphs;
 		static std::mutex locker;
 
 		struct ParseStatus
@@ -111,7 +111,7 @@ namespace wi::font
 			bool start_new_word = false;
 		};
 
-		static thread_local wi::vector<XMFLOAT4> vertexList;
+		static thread_local Protean::vector<XMFLOAT4> vertexList;
 		ParseStatus ParseText(const wchar_t* text, size_t text_length, const Params& params)
 		{
 			ParseStatus status;
@@ -249,7 +249,7 @@ namespace wi::font
 		{
 			// the temp buffers are used to avoid allocations of string objects:
 			char_temp_buffer = text;
-			wi::helper::StringConvert(char_temp_buffer, wchar_temp_buffer);
+			Protean::Helper::StringConvert(char_temp_buffer, wchar_temp_buffer);
 			return ParseText(wchar_temp_buffer.c_str(), wchar_temp_buffer.length(), params);
 		}
 
@@ -263,17 +263,17 @@ namespace wi::font
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		// add default font if there is none yet:
 		if (fontStyles.empty())
 		{
-			wi::vector<uint8_t> data;
-			helper::Decompress(liberation_sans_zstd, sizeof(liberation_sans_zstd), data);
+			Protean::vector<uint8_t> data;
+			Helper::Decompress(liberation_sans_zstd, sizeof(liberation_sans_zstd), data);
 			AddFontStyle("Liberation Sans", data.data(), data.size(), true);
 		}
 
-		wilog("wi::font Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::Font Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	void InvalidateAtlas()
@@ -366,7 +366,7 @@ namespace wi::font
 					stbtt_FreeBitmap(data, nullptr);
 				}
 
-				wi::rectpacker::Rect rect = {};
+				Protean::RectPacker::Rect rect = {};
 				rect.w = bitmap.width + 2;
 				rect.h = bitmap.height + 2;
 				rect.id = hash.raw;
@@ -382,7 +382,7 @@ namespace wi::font
 			pendingGlyphs.clear();
 
 			// Setup packer, this will allocate memory if needed:
-			static thread_local wi::rectpacker::State packer;
+			static thread_local Protean::RectPacker::State packer;
 			packer.clear();
 			for (auto& it : rect_lookup)
 			{
@@ -399,7 +399,7 @@ namespace wi::font
 				const float inv_height = 1.0f / atlasHeight;
 
 				// Create the CPU-side texture atlas and fill with transparency (0):
-				wi::vector<uint8_t> atlas(size_t(atlasWidth) * size_t(atlasHeight), 0);
+				Protean::vector<uint8_t> atlas(size_t(atlasWidth) * size_t(atlasHeight), 0);
 
 				// Iterate all packed glyph rectangles:
 				for (auto& rect : packer.rects)
@@ -436,8 +436,8 @@ namespace wi::font
 				}
 
 				// Upload the CPU-side texture atlas bitmap to the GPU:
-				wi::texturehelper::CreateTexture(texture, atlas.data(), atlasWidth, atlasHeight, Format::R8_UNORM);
-				GetDevice()->SetName(&texture, "wi::font::texture");
+				Protean::TextureHelper::CreateTexture(texture, atlas.data(), atlasWidth, atlasHeight, Format::R8_UNORM);
+				GetDevice()->SetName(&texture, "Protean::Font::texture");
 			}
 			else
 			{
@@ -531,7 +531,7 @@ namespace wi::font
 		}
 		else
 		{
-			// Asserts will check that a proper canvas was set for this cmd with wi::image::SetCanvas()
+			// Asserts will check that a proper canvas was set for this cmd with Protean::Image::SetCanvas()
 			//	The canvas must be set to have dpi aware rendering
 			assert(canvas.width > 0);
 			assert(canvas.height > 0);
@@ -540,7 +540,7 @@ namespace wi::font
 		}
 
 		// frustum culling for the text:
-		wi::primitive::AABB aabb;
+		Protean::AABB aabb;
 		aabb._min.x = params.cursor.position.x;
 		aabb._min.y = params.cursor.position.y;
 		aabb._min.z = 0;
@@ -548,14 +548,14 @@ namespace wi::font
 		aabb._max.y = aabb._min.y + status.cursor.size.y;
 		aabb._max.z = 0.001f;
 		aabb = aabb.transform(M);
-		wi::primitive::Frustum frustum;
+		Protean::Frustum frustum;
 		frustum.Create(Projection);
 		if (!frustum.CheckBoxFast(aabb))
 			return status.cursor;
 
 		M = M * Projection;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		GraphicsDevice::GPUAllocation mem = device->AllocateGPU(sizeof(float4) * status.quadCount * 4, cmd);
 		if (!mem.IsValid())
 			return status.cursor;
@@ -569,7 +569,7 @@ namespace wi::font
 		if (image.buffer_index < 0 || image.texture_base_index < 0)
 			return status.cursor;
 
-		using namespace wi::math;
+		using namespace Protean::Math;
 		XMFLOAT4 color = XMFLOAT4(1, 1, 1, 1);
 		float softness = 0;
 		float bolden = 0;
@@ -590,8 +590,8 @@ namespace wi::font
 
 		device->EventBegin("Font", cmd);
 
-		const wi::image::DEPTH_TEST_MODE depth_test_mode = params.isDepthTestEnabled() ? wi::image::DEPTH_TEST_ON : wi::image::DEPTH_TEST_OFF;
-		const PipelineState* pso = wi::image::GetPSO(depth_test_mode, wi::enums::BLENDMODE_ALPHA, wi::image::STENCILMODE_DISABLED, wi::image::STENCILREFMODE_ALL);
+		const Protean::Image::DEPTH_TEST_MODE depth_test_mode = params.isDepthTestEnabled() ? Protean::Image::DEPTH_TEST_ON : Protean::Image::DEPTH_TEST_OFF;
+		const PipelineState* pso = Protean::Image::GetPSO(depth_test_mode, Protean::BLENDMODE_ALPHA, Protean::Image::STENCILMODE_DISABLED, Protean::Image::STENCILREFMODE_ALL);
 		assert(pso != nullptr);
 		assert(pso->IsValid());
 
@@ -635,7 +635,7 @@ namespace wi::font
 		return status.cursor;
 	}
 
-	void SetCanvas(const wi::Canvas& current_canvas)
+	void SetCanvas(const Protean::Canvas& current_canvas)
 	{
 		canvas = current_canvas;
 	}

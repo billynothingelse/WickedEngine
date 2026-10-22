@@ -8,11 +8,11 @@
 #include "scene/SceneComponents.h"
 #include "debug/Profiler.h"
 
-using namespace wi::math;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean::Math;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi
+namespace Protean
 {
 	static Shader computeShader;
 	static Shader computeShader_indirect;
@@ -71,7 +71,7 @@ namespace wi
 				GaussianSplat splat = {};
 
 				// position remap and quantize to 16 bit UNORM:
-				const XMFLOAT3 pos = wi::math::InverseLerp(aabb_rest._min, aabb_rest._max, positions[splatIdx]);
+				const XMFLOAT3 pos = Protean::Math::InverseLerp(aabb_rest._min, aabb_rest._max, positions[splatIdx]);
 				splat.position_radius.x = uint32_t(saturate(pos.x) * 65535.0f);
 				splat.position_radius.x |= uint32_t(saturate(pos.y) * 65535.0f) << 16u;
 				splat.position_radius.y = uint32_t(saturate(pos.z) * 65535.0f);
@@ -175,7 +175,7 @@ namespace wi
 		XMStoreFloat4x4(&transform_inverse, XMMatrixInverse(nullptr, W));
 	}
 
-	void GaussianSplatModel::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void GaussianSplatModel::Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -186,7 +186,7 @@ namespace wi
 			archive >> f_dc;
 			archive >> f_rest;
 
-			wi::jobsystem::Execute(seri.ctx, [this](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [this](Protean::JobSystem::JobArgs args) {
 				CreateRenderData();
 			});
 		}
@@ -203,15 +203,15 @@ namespace wi
 
 	void GaussianSplatModel::Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		static auto LoadShaders = []{
-			wi::renderer::LoadShader(ShaderStage::CS, computeShader, "gaussian_splatCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, computeShader_indirect, "gaussian_splat_indirectCS.cso");
-			wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "gaussian_splatVS.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader, "gaussian_splatPS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, computeShader, "gaussian_splatCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, computeShader_indirect, "gaussian_splat_indirectCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "gaussian_splatVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "gaussian_splatPS.cso");
 		};
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
 		GraphicsDevice* device = GetDevice();
@@ -243,7 +243,7 @@ namespace wi
 		bool success = device->CreatePipelineState(&desc, &pipelineState);
 		assert(success);
 
-		wilog("wi::GaussianSplatModel Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::GaussianSplatModel Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	int GaussianSplatModel::GetSphericalHarmonicsDegree() const
@@ -462,7 +462,7 @@ namespace wi
 		}
 
 		// Sorting is done globally for buffer containing all models:
-		wi::gpusortlib::Sort((uint32_t)global_splat_count, distanceBuffer, indirectBuffer, offsetof(IndirectDrawArgsInstanced, InstanceCount), sortedIndexBuffer, cmd);
+		Protean::GPUSortLib::Sort((uint32_t)global_splat_count, distanceBuffer, indirectBuffer, offsetof(IndirectDrawArgsInstanced, InstanceCount), sortedIndexBuffer, cmd);
 
 		{
 			GPUBarrier barriers[] = {

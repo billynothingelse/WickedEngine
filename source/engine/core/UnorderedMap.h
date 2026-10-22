@@ -14,7 +14,7 @@
 #include <unordered_map>
 #endif // WI_UNORDERED_MAP_TYPE
 
-namespace wi
+namespace Protean
 {
 	template<typename K, typename V, typename H = std::hash<K>, typename E = std::equal_to<K>, typename A = std::allocator<std::pair<const K, V> > >
 #if WI_UNORDERED_MAP_TYPE == 1

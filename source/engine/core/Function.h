@@ -5,7 +5,7 @@
 #include <utility>
 #include <cstring>
 
-namespace wi
+namespace Protean
 {
 	template <typename Sig, unsigned BufferSize = 32>
 	class function;

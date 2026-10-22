@@ -10,7 +10,7 @@
 #include <winsock.h>
 #pragma comment(lib,"ws2_32.lib")
 
-namespace wi::network
+namespace Protean::Network
 {
 	struct NetworkInternal
 	{
@@ -18,7 +18,7 @@ namespace wi::network
 
 		NetworkInternal()
 		{
-			wi::Timer timer;
+			Protean::Timer timer;
 
 			int result;
 
@@ -26,26 +26,26 @@ namespace wi::network
 			if (result)
 			{
 				int error = WSAGetLastError();
-				wi::backlog::post("wi::network Initialization FAILED with error: " + std::to_string(error));
+				Protean::Backlog::post("Protean::Network Initialization FAILED with error: " + std::to_string(error));
 				assert(0);
 			}
 
-			wilog("wi::network Initialized (%d ms)", (int)std::round(timer.elapsed()));
+			wilog("Protean::Network Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		}
 		~NetworkInternal()
 		{
 			WSACleanup();
 		}
 	};
-	inline wi::allocator::shared_ptr<NetworkInternal>& network_internal()
+	inline Protean::Allocator::shared_ptr<NetworkInternal>& network_internal()
 	{
-		static wi::allocator::shared_ptr<NetworkInternal> internal_state = wi::allocator::make_shared_single<NetworkInternal>();
+		static Protean::Allocator::shared_ptr<NetworkInternal> internal_state = Protean::Allocator::make_shared_single<NetworkInternal>();
 		return internal_state;
 	}
 
 	struct SocketInternal
 	{
-		wi::allocator::shared_ptr<NetworkInternal> networkinternal;
+		Protean::Allocator::shared_ptr<NetworkInternal> networkinternal;
 		SOCKET handle = NULL;
 
 		~SocketInternal()
@@ -65,7 +65,7 @@ namespace wi::network
 
 	bool CreateSocket(Socket* sock)
 	{
-		wi::allocator::shared_ptr<SocketInternal> socketinternal = wi::allocator::make_shared<SocketInternal>();
+		Protean::Allocator::shared_ptr<SocketInternal> socketinternal = Protean::Allocator::make_shared<SocketInternal>();
 		socketinternal->networkinternal = network_internal();
 		sock->internal_state = socketinternal;
 
@@ -73,7 +73,7 @@ namespace wi::network
 		if (socketinternal->handle == INVALID_SOCKET)
 		{
 			int error = WSAGetLastError();
-			wi::backlog::post("wi::network error in CreateSocket: " + std::to_string(error));
+			Protean::Backlog::post("Protean::Network error in CreateSocket: " + std::to_string(error));
 			return false;
 		}
 
@@ -98,7 +98,7 @@ namespace wi::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				wi::backlog::post("wi::network error in Send: " + std::to_string(error));
+				Protean::Backlog::post("Protean::Network error in Send: " + std::to_string(error));
 				return false;
 			}
 
@@ -122,7 +122,7 @@ namespace wi::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				wi::backlog::post("wi::network error in ListenPort: " + std::to_string(error));
+				Protean::Backlog::post("Protean::Network error in ListenPort: " + std::to_string(error));
 				return false;
 			}
 
@@ -147,7 +147,7 @@ namespace wi::network
 			if (result < 0)
 			{
 				int error = WSAGetLastError();
-				wi::backlog::post("wi::network error in CanReceive: " + std::to_string(error));
+				Protean::Backlog::post("Protean::Network error in CanReceive: " + std::to_string(error));
 				assert(0);
 				return false;
 			}
@@ -169,7 +169,7 @@ namespace wi::network
 			if (result == SOCKET_ERROR)
 			{
 				int error = WSAGetLastError();
-				wi::backlog::post("wi::network error in Receive: " + std::to_string(error));
+				Protean::Backlog::post("Protean::Network error in Receive: " + std::to_string(error));
 				return false;
 			}
 

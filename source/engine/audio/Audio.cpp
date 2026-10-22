@@ -38,10 +38,10 @@
 #define fourccXWMA 'AMWX'
 #define fourccDPDS 'sdpd'
 
-#define xaudio_assert(cond, fname) { wilog_assert(cond, "XAudio2 error: %s failed with %s (%s:%d)", fname, wi::helper::GetPlatformErrorString(hr).c_str(), relative_path(__FILE__), __LINE__); }
+#define xaudio_assert(cond, fname) { wilog_assert(cond, "XAudio2 error: %s failed with %s (%s:%d)", fname, Protean::Helper::GetPlatformErrorString(hr).c_str(), relative_path(__FILE__), __LINE__); }
 #define xaudio_check(call) [&]() { HRESULT hr = call; xaudio_assert(SUCCEEDED(hr), extract_function_name(#call).c_str()); return hr; }()
 
-namespace wi::audio
+namespace Protean::Audio
 {
 	static const XAUDIO2FX_REVERB_I3DL2_PARAMETERS reverbPresets[] =
 	{
@@ -92,7 +92,7 @@ namespace wi::audio
 
 		AudioInternal()
 		{
-			wi::Timer timer;
+			Protean::Timer timer;
 
 			HRESULT hr;
 			hr = xaudio_check(CoInitializeEx(NULL, COINIT_MULTITHREADED));
@@ -190,7 +190,7 @@ namespace wi::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			wilog("wi::audio Initialized [XAudio2] (%d ms)", (int)std::round(timer.elapsed()));
+			wilog("Protean::Audio Initialized [XAudio2] (%d ms)", (int)std::round(timer.elapsed()));
 		}
 		~AudioInternal()
 		{
@@ -213,11 +213,11 @@ namespace wi::audio
 
 		constexpr bool IsValid() const { return success; }
 	};
-	static wi::allocator::shared_ptr<AudioInternal> audio_internal;
+	static Protean::Allocator::shared_ptr<AudioInternal> audio_internal;
 
 	void Initialize()
 	{
-		audio_internal = wi::allocator::make_shared_single<AudioInternal>();
+		audio_internal = Protean::Allocator::make_shared_single<AudioInternal>();
 	}
 
 	void Deinitialize()
@@ -227,18 +227,18 @@ namespace wi::audio
 
 	struct SoundInternal
 	{
-		wi::allocator::shared_ptr<AudioInternal> audio;
+		Protean::Allocator::shared_ptr<AudioInternal> audio;
 		WAVEFORMATEX wfx = {};
-		wi::vector<uint8_t> audioData;
+		Protean::vector<uint8_t> audioData;
 	};
 	struct SoundInstanceInternal final : public IXAudio2VoiceCallback
 	{
-		wi::allocator::shared_ptr<AudioInternal> audio;
-		wi::allocator::shared_ptr<SoundInternal> soundinternal;
+		Protean::Allocator::shared_ptr<AudioInternal> audio;
+		Protean::Allocator::shared_ptr<SoundInternal> soundinternal;
 		IXAudio2SourceVoice* sourceVoice = nullptr;
 		XAUDIO2_VOICE_DETAILS voiceDetails = {};
-		wi::vector<float> outputMatrix;
-		wi::vector<float> channelAzimuths;
+		Protean::vector<float> outputMatrix;
+		Protean::vector<float> channelAzimuths;
 		XAUDIO2_BUFFER buffer = {};
 		bool ended = true;
 
@@ -456,7 +456,7 @@ namespace wi::audio
 		decoder->ProcessMessage(MFT_MESSAGE_NOTIFY_BEGIN_STREAMING, 0);
 		decoder->ProcessMessage(MFT_MESSAGE_NOTIFY_START_OF_STREAM, 0);
 
-		wi::vector<uint8_t> pcm;
+		Protean::vector<uint8_t> pcm;
 		auto append_sample = [&](IMFSample* sample)
 		{
 			if (sample == nullptr)
@@ -596,8 +596,8 @@ namespace wi::audio
 
 	bool CreateSound(const std::string& filename, Sound* sound)
 	{
-		wi::vector<uint8_t> filedata;
-		bool success = wi::helper::FileRead(filename, filedata);
+		Protean::vector<uint8_t> filedata;
+		bool success = Protean::Helper::FileRead(filename, filedata);
 		if (!success)
 		{
 			return false;
@@ -608,7 +608,7 @@ namespace wi::audio
 	{
 		if (audio_internal == nullptr || !audio_internal->IsValid())
 			return false;
-		auto soundinternal = wi::allocator::make_shared<SoundInternal>();
+		auto soundinternal = Protean::Allocator::make_shared<SoundInternal>();
 		soundinternal->audio = audio_internal;
 		sound->internal_state = soundinternal;
 
@@ -693,8 +693,8 @@ namespace wi::audio
 		if (sound == nullptr || !sound->IsValid())
 			return false;
 		HRESULT hr;
-		auto soundinternal = wi::allocator::shared_ptr<SoundInternal>(sound->internal_state);
-		auto instanceinternal = wi::allocator::make_shared<SoundInstanceInternal>();
+		auto soundinternal = Protean::Allocator::shared_ptr<SoundInternal>(sound->internal_state);
+		auto instanceinternal = Protean::Allocator::make_shared<SoundInstanceInternal>();
 		instance->internal_state = instanceinternal;
 
 		instanceinternal->audio = audio_internal;
@@ -981,7 +981,7 @@ namespace wi::audio
 #define fourccFMT 0x20746d66
 #define fourccDATA 0x61746164
 
-namespace wi::audio
+namespace Protean::Audio
 {
 	static const FAudioFXReverbI3DL2Parameters reverbPresets[] = {
 		FAUDIOFX_I3DL2_PRESET_DEFAULT,
@@ -1029,7 +1029,7 @@ namespace wi::audio
 		FAudioBuffer termination_mark = {};
 
 		AudioInternal(){
-			wi::Timer timer;
+			Protean::Timer timer;
 
 			uint32_t res;
 			res = FAudioCreate(&audioEngine, 0, FAUDIO_DEFAULT_PROCESSOR);
@@ -1037,7 +1037,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudioCreate returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 				return;
 			}
 
@@ -1051,7 +1051,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "FAudio_CreateMasteringVoice returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 				return;
 			}
 		
@@ -1068,7 +1068,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -1081,7 +1081,7 @@ namespace wi::audio
 			{
 				std::stringstream ss("");
 				ss << "F3DAudioInitialize returned error: " << res;
-				wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+				Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 				return;
 			}
 
@@ -1092,7 +1092,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudioCreateReverb returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 					return;
 				}
 
@@ -1113,7 +1113,7 @@ namespace wi::audio
 				{
 					std::stringstream ss("");
 					ss << "FAudio_CreateSubmixVoice returned error: " << res;
-					wi::backlog::post(ss.str(), wi::backlog::LogLevel::Error);
+					Protean::Backlog::post(ss.str(), Protean::Backlog::LogLevel::Error);
 					return;
 				}
 			}
@@ -1123,7 +1123,7 @@ namespace wi::audio
 			termination_mark.AudioBytes = sizeof(termination_data);
 
 			success = true;
-			wilog("wi::audio Initialized [FAudio %d.%d.%d] (%d ms)",
+			wilog("Protean::Audio Initialized [FAudio %d.%d.%d] (%d ms)",
 				  FAUDIO_MAJOR_VERSION, FAUDIO_MINOR_VERSION, FAUDIO_PATCH_VERSION,
 				  (int)std::round(timer.elapsed()));
 		}
@@ -1143,11 +1143,11 @@ namespace wi::audio
 		}
 		constexpr bool IsValid() const { return success; }
 	};
-	static wi::allocator::shared_ptr<AudioInternal> audio_internal;
+	static Protean::Allocator::shared_ptr<AudioInternal> audio_internal;
 
 	void Initialize()
 	{
-		audio_internal = wi::allocator::make_shared_single<AudioInternal>();
+		audio_internal = Protean::Allocator::make_shared_single<AudioInternal>();
 	}
 
 	void Deinitialize()
@@ -1156,17 +1156,17 @@ namespace wi::audio
 	}
 
 	struct SoundInternal{
-		wi::allocator::shared_ptr<AudioInternal> audio;
+		Protean::Allocator::shared_ptr<AudioInternal> audio;
 		FAudioWaveFormatEx wfx = {};
-		wi::vector<uint8_t> audioData;
+		Protean::vector<uint8_t> audioData;
 	};
 	struct SoundInstanceInternal{
-		wi::allocator::shared_ptr<AudioInternal> audio;
-		wi::allocator::shared_ptr<SoundInternal> soundinternal;
+		Protean::Allocator::shared_ptr<AudioInternal> audio;
+		Protean::Allocator::shared_ptr<SoundInternal> soundinternal;
 		FAudioSourceVoice* sourceVoice = nullptr;
 		FAudioVoiceDetails voiceDetails = {};
-		wi::vector<float> outputMatrix;
-		wi::vector<float> channelAzimuths;
+		Protean::vector<float> outputMatrix;
+		Protean::vector<float> channelAzimuths;
 		FAudioBuffer buffer = {};
 		bool ended = true;
 
@@ -1236,8 +1236,8 @@ namespace wi::audio
 	}
 
 	bool CreateSound(const std::string& filename, Sound* sound) { 
-		wi::vector<uint8_t> filedata;
-		bool success = wi::helper::FileRead(filename, filedata);
+		Protean::vector<uint8_t> filedata;
+		bool success = Protean::Helper::FileRead(filename, filedata);
 		if (!success)
 		{
 			return false;
@@ -1248,7 +1248,7 @@ namespace wi::audio
 	{
 		if (audio_internal == nullptr || !audio_internal->IsValid())
 			return false;
-		auto soundinternal = wi::allocator::make_shared<SoundInternal>();
+		auto soundinternal = Protean::Allocator::make_shared<SoundInternal>();
 		soundinternal->audio = audio_internal;
 		sound->internal_state = soundinternal;
 
@@ -1331,8 +1331,8 @@ namespace wi::audio
 		if (sound == nullptr || !sound->IsValid())
 			return false;
 		uint32_t res;
-		auto soundinternal = wi::allocator::shared_ptr<SoundInternal>(sound->internal_state);
-		auto instanceinternal = wi::allocator::make_shared<SoundInstanceInternal>();
+		auto soundinternal = Protean::Allocator::shared_ptr<SoundInternal>(sound->internal_state);
+		auto instanceinternal = Protean::Allocator::make_shared<SoundInstanceInternal>();
 		instance->internal_state = instanceinternal;
 
 		instanceinternal->audio = audio_internal;
@@ -1603,7 +1603,7 @@ __asm__(".linker_option \"-framework\", \"AudioToolbox\"");
 #include <AudioToolbox/AudioFile.h>
 #include <AudioToolbox/ExtendedAudioFile.h>
 
-namespace wi::audio
+namespace Protean::Audio
 {
 	struct WrappedEngine : ma_engine
 	{
@@ -1652,7 +1652,7 @@ namespace wi::audio
 		}
 	};
 
-	static wi::allocator::shared_ptr<WrappedEngine> engine;
+	static Protean::Allocator::shared_ptr<WrappedEngine> engine;
 
 	static WrappedSound* get_ma_sound(const SoundInstance* instance)
 	{
@@ -1661,9 +1661,9 @@ namespace wi::audio
 
 	void Initialize()
 	{
-		wi::Timer timer;
-		engine = wi::allocator::make_shared_single<WrappedEngine>();
-		wilog("wi::audio Initialized [miniaudio] (%d ms)", (int)std::round(timer.elapsed()));
+		Protean::Timer timer;
+		engine = Protean::Allocator::make_shared_single<WrappedEngine>();
+		wilog("Protean::Audio Initialized [miniaudio] (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 	void Deinitialize()
@@ -1673,7 +1673,7 @@ namespace wi::audio
 
 	static bool CreateSoundInternal(std::function<ma_result (ma_decoder_config* config, ma_uint64* frameCount, void** pcmFrames)> decoder, Sound* sound)
 	{
-		auto info = wi::allocator::make_shared<WrappedSampleInfo>();
+		auto info = Protean::Allocator::make_shared<WrappedSampleInfo>();
 		ma_decoder_config config{};
 		info->channel_count = config.channels = 1;
 		info->sample_rate = config.sampleRate = ma_engine_get_sample_rate(engine.get());
@@ -1771,8 +1771,8 @@ namespace wi::audio
 			return false;
 
 		const uint32_t channels = client.mChannelsPerFrame;
-		wi::vector<int16_t> chunk(size_t(4096) * channels);
-		wi::vector<int16_t> pcm;
+		Protean::vector<int16_t> chunk(size_t(4096) * channels);
+		Protean::vector<int16_t> pcm;
 		for (;;)
 		{
 			AudioBufferList buffers = {};
@@ -1807,7 +1807,7 @@ namespace wi::audio
 		{
 			if (engine == nullptr)
 				return false;
-			auto info = wi::allocator::make_shared<WrappedSampleInfo>();
+			auto info = Protean::Allocator::make_shared<WrappedSampleInfo>();
 			if (!DecodeADTS(data, size, info.get()))
 				return false;
 			sound->internal_state = info;
@@ -1824,7 +1824,7 @@ namespace wi::audio
 	bool CreateSoundInstance(const Sound* sound, SoundInstance* instance)
 	{
 		auto info = (WrappedSampleInfo*)sound->internal_state.get();
-		auto wrapped_sound = wi::allocator::make_shared<WrappedSound>();
+		auto wrapped_sound = Protean::Allocator::make_shared<WrappedSound>();
 
 		ma_audio_buffer_config config{};
 		config.channels = info->channel_count;
@@ -1993,7 +1993,7 @@ namespace wi::audio
 // PS5 audio implementation in wiAudio_PS5.cpp extension file
 #else
 
-namespace wi::audio
+namespace Protean::Audio
 {
 	void Initialize() {}
 	void Deinitialize() {}

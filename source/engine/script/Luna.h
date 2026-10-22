@@ -17,7 +17,7 @@ int Set##property (lua_State* L) { return property.Set(L); }
 template < class T > class Luna {
 public:
 
-	inline static wi::allocator::BlockAllocator<T> allocator;
+	inline static Protean::Allocator::BlockAllocator<T> allocator;
 
 	struct PropertyType {
 		const char     *name;

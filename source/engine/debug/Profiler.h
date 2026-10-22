@@ -5,8 +5,8 @@
 
 
 // QoL macros, allows writing just ScopedXxxProfiling without needing to declare a variable manually
-#define ScopedCPUProfiling(name) wi::profiler::ScopedRangeCPU WI_PROFILER_CONCAT(_wi_profiler_cpu_range,__LINE__)(name)
-#define ScopedGPUProfiling(name, cmd) wi::profiler::ScopedRangeGPU WI_PROFILER_CONCAT(_wi_profiler_gpu_range,__LINE__)(name, cmd)
+#define ScopedCPUProfiling(name) Protean::Profiler::ScopedRangeCPU WI_PROFILER_CONCAT(_wi_profiler_cpu_range,__LINE__)(name)
+#define ScopedGPUProfiling(name, cmd) Protean::Profiler::ScopedRangeGPU WI_PROFILER_CONCAT(_wi_profiler_gpu_range,__LINE__)(name, cmd)
 
 // same as ScopedXxxProfiling, just will automatically use the function name as name, should only be used at the beginning of a function
 #define ScopedCPUProfilingF ScopedCPUProfiling(__FUNCTION__)
@@ -17,7 +17,7 @@
 #define WI_PROFILER_CONCAT(x,y) WI_PROFILER_CONCAT_INDIRECT(x,y)
 #define WI_PROFILER_CONCAT_INDIRECT(x,y) x##y
 
-namespace wi::profiler
+namespace Protean::Profiler
 {
 	typedef size_t range_id;
 
@@ -25,13 +25,13 @@ namespace wi::profiler
 	void BeginFrame();
 
 	// Finalize collecting profiling data for the current frame
-	void EndFrame(wi::graphics::CommandList cmd);
+	void EndFrame(Protean::Graphics::CommandList cmd);
 
 	// Start a CPU profiling range
 	range_id BeginRangeCPU(const char* name);
 
 	// Start a GPU profiling range
-	range_id BeginRangeGPU(const char* name, wi::graphics::CommandList cmd);
+	range_id BeginRangeGPU(const char* name, Protean::Graphics::CommandList cmd);
 
 	// End a profiling range
 	void EndRange(range_id id);
@@ -48,17 +48,17 @@ namespace wi::profiler
 	struct ScopedRangeGPU
 	{
 		range_id id;
-		inline ScopedRangeGPU(const char* name, wi::graphics::CommandList cmd) { id = BeginRangeGPU(name, cmd); }
+		inline ScopedRangeGPU(const char* name, Protean::Graphics::CommandList cmd) { id = BeginRangeGPU(name, cmd); }
 		inline ~ScopedRangeGPU() { EndRange(id); }
 	};
 
 	// Renders a basic text of the Profiling results to the (x,y) screen coordinate
 	void DrawData(
-		const wi::Canvas& canvas,
+		const Protean::Canvas& canvas,
 		float x,
 		float y,
-		wi::graphics::CommandList cmd,
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB
+		Protean::Graphics::CommandList cmd,
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
 	);
 	void DisableDrawForThisFrame();
 
@@ -67,7 +67,7 @@ namespace wi::profiler
 
 	bool IsEnabled();
 
-	void SetBackgroundColor(wi::Color color);
-	void SetTextColor(wi::Color color);
+	void SetBackgroundColor(Protean::Color color);
+	void SetTextColor(Protean::Color color);
 };
 

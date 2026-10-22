@@ -12,10 +12,8 @@
 #pragma GCC diagnostic pop
 #endif
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
-
+using namespace Protean::Graphics;
+using namespace Protean;
 struct membuf : std::streambuf
 {
 	membuf(char* begin, char* end) {
@@ -42,8 +40,8 @@ public:
 			filepath = matId;
 		}
 
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filepath, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (!Protean::Helper::FileRead(filepath, filedata))
 		{
 			std::string ss;
 			ss += "WARN: Material file [ " + filepath + " ] not found.\n";
@@ -92,26 +90,26 @@ struct std::hash<index_and_mat>
 	constexpr std::size_t operator()(const index_and_mat& o) const noexcept
 	{
 		size_t vertexHash = 0;
-		wi::helper::hash_combine(vertexHash, o.index.vertex_index);
-		wi::helper::hash_combine(vertexHash, o.index.normal_index);
-		wi::helper::hash_combine(vertexHash, o.index.texcoord_index);
-		wi::helper::hash_combine(vertexHash, o.materialIndex);
+		Protean::Helper::hash_combine(vertexHash, o.index.vertex_index);
+		Protean::Helper::hash_combine(vertexHash, o.index.normal_index);
+		Protean::Helper::hash_combine(vertexHash, o.index.texcoord_index);
+		Protean::Helper::hash_combine(vertexHash, o.materialIndex);
 		return vertexHash;
 	}
 };
 
 void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 {
-	std::string directory = wi::helper::GetDirectoryFromPath(fileName);
-	std::string name = wi::helper::GetFileNameFromPath(fileName);
+	std::string directory = Protean::Helper::GetDirectoryFromPath(fileName);
+	std::string name = Protean::Helper::GetFileNameFromPath(fileName);
 
 	tinyobj::attrib_t obj_attrib;
 	std::vector<tinyobj::shape_t> obj_shapes;
 	std::vector<tinyobj::material_t> obj_materials;
 	std::string obj_errors;
 
-	wi::vector<uint8_t> filedata;
-	bool success = wi::helper::FileRead(fileName, filedata);
+	Protean::vector<uint8_t> filedata;
+	bool success = Protean::Helper::FileRead(fileName, filedata);
 
 	if (success)
 	{
@@ -127,7 +125,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 	if (!obj_errors.empty())
 	{
-		wi::backlog::post(obj_errors, wi::backlog::LogLevel::Error);
+		Protean::Backlog::post(obj_errors, Protean::Backlog::LogLevel::Error);
 	}
 
 	if (success)
@@ -137,7 +135,7 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 		scene.names.Create(rootEntity) = name;
 
 		// Load material library:
-		wi::vector<Entity> materialLibrary = {};
+		Protean::vector<Entity> materialLibrary = {};
 		for (auto& obj_material : obj_materials)
 		{
 			Entity materialEntity = scene.Entity_CreateMaterial(obj_material.name);
@@ -200,8 +198,8 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 
 			object.meshID = meshEntity;
 
-			wi::unordered_map<int, int> registered_materialIndices = {};
-			wi::unordered_map<index_and_mat, uint32_t> uniqueVertices = {};
+			Protean::unordered_map<int, int> registered_materialIndices = {};
+			Protean::unordered_map<index_and_mat, uint32_t> uniqueVertices = {};
 
 			for (size_t i = 0; i < shape.mesh.indices.size(); i += 3)
 			{
@@ -279,6 +277,6 @@ void ImportModel_OBJ(const std::string& fileName, Scene& scene)
 	}
 	else
 	{
-		wi::helper::messageBox("OBJ import failed! Check backlog for errors!", "Error!");
+		Protean::Helper::messageBox("OBJ import failed! Check backlog for errors!", "Error!");
 	}
 }

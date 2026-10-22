@@ -48,9 +48,9 @@ using namespace Microsoft::WRL;
 #include "render/GraphicsAPI/Metal/MetalDevice.h"
 #endif // PLATFORM_APPLE
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi::shadercompiler
+namespace Protean::ShaderCompiler
 {
 
 #ifdef SHADERCOMPILER_ENABLED_DXCOMPILER
@@ -62,7 +62,7 @@ namespace wi::shadercompiler
 		{
 #ifdef _WIN32
 #ifdef SHADERCOMPILER_XBOX_INCLUDED
-			wi::shadercompiler::xbox::GetSetSDKPath(); // Sets Xbox SDK path globally for DLL loading
+			Protean::ShaderCompiler::Xbox::GetSetSDKPath(); // Sets Xbox SDK path globally for DLL loading
 #endif // SHADERCOMPILER_XBOX_INCLUDED
 			const std::string library = "dxcompiler" + modifier + ".dll";
 			HMODULE dxcompiler = wiLoadLibrary(library.c_str());
@@ -73,7 +73,7 @@ namespace wi::shadercompiler
 			// "./" is relative to the process's current working directory, not the
 			// executable's location, so launching from any other directory failed to find
 			// the library.
-			const std::string library_dir = wi::helper::GetDirectoryFromPath(wi::helper::GetExecutablePath());
+			const std::string library_dir = Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetExecutablePath());
 #if defined(PLATFORM_LINUX)
 			const std::string library = library_dir + "libdxcompiler" + modifier + ".so";
 #else
@@ -96,14 +96,14 @@ namespace wi::shadercompiler
 					uint32_t major = 0;
 					hr = info->GetVersion(&major, &minor);
 					assert(SUCCEEDED(hr));
-					wi::backlog::post("wi::shadercompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
+					Protean::Backlog::post("Protean::ShaderCompiler: loaded " + library + " (version: " + std::to_string(major) + "." + std::to_string(minor) + ")");
 				}
 			}
 			else
 			{
-				wi::backlog::post("wi::shadercompiler: could not load library " + library, wi::backlog::LogLevel::Error);
+				Protean::Backlog::post("Protean::ShaderCompiler: could not load library " + library, Protean::Backlog::LogLevel::Error);
 #ifdef PLATFORM_LINUX
-				wi::backlog::post(dlerror(), wi::backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
+				Protean::Backlog::post(dlerror(), Protean::Backlog::LogLevel::Error); // print dlopen() error detail: https://linux.die.net/man/3/dlerror
 #endif // PLATFORM_LINUX
 			}
 
@@ -141,15 +141,15 @@ namespace wi::shadercompiler
 			return;
 		}
 
-		wi::vector<uint8_t> shadersourcedata;
-		if (!wi::helper::FileRead(input.shadersourcefilename, shadersourcedata))
+		Protean::vector<uint8_t> shadersourcedata;
+		if (!Protean::Helper::FileRead(input.shadersourcefilename, shadersourcedata))
 		{
 			return;
 		}
 
 		// https://github.com/microsoft/DirectXShaderCompiler/wiki/Using-dxc.exe-and-dxcompiler.dll#dxcompiler-dll-interface
 
-		wi::vector<std::wstring> args = {
+		Protean::vector<std::wstring> args = {
 			//L"-res-may-alias",
 			//L"-flegacy-macro-expansion",
 			//L"-no-legacy-cbuf-layout",
@@ -189,23 +189,23 @@ namespace wi::shadercompiler
 			args.push_back(L"-fspv-target-env=vulkan1.3");
 			args.push_back(L"-fvk-use-dx-layout");
 			args.push_back(L"-fvk-use-dx-position-w");
-			args.push_back(L"-fvk-b-shift"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_B)); args.push_back(L"0");
-			args.push_back(L"-fvk-t-shift"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_T)); args.push_back(L"0");
-			args.push_back(L"-fvk-u-shift"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_U)); args.push_back(L"0");
-			args.push_back(L"-fvk-s-shift"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_S)); args.push_back(L"0");
+			args.push_back(L"-fvk-b-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_B)); args.push_back(L"0");
+			args.push_back(L"-fvk-t-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_T)); args.push_back(L"0");
+			args.push_back(L"-fvk-u-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_U)); args.push_back(L"0");
+			args.push_back(L"-fvk-s-shift"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::VULKAN_BINDING_SHIFT_S)); args.push_back(L"0");
 
 			// These require mutable descriptor extension which have issues on linux so it's not used:
-			//args.push_back(L"-fvk-bind-sampler-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
-			//args.push_back(L"-fvk-bind-resource-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_RESOURCE));
+			//args.push_back(L"-fvk-bind-sampler-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
+			//args.push_back(L"-fvk-bind-resource-heap"); args.push_back(L"0"); args.push_back(std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_RESOURCE));
 
 			// Non-mutable bindless descriptor heap bind points:
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLER=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER));
-			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE=" + std::to_wstring((int)wi::graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_UNIFORM_TEXEL_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_SAMPLED_IMAGE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_IMAGE));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_STORAGE_TEXEL_BUFFER));
+			args.push_back(L"-D"); args.push_back(L"DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE=" + std::to_wstring((int)Protean::Graphics::GraphicsDevice_Vulkan::DESCRIPTOR_SET_BINDLESS_ACCELERATION_STRUCTURE));
 
 			args.push_back(L"-Vd"); // compiler issue
 
@@ -461,31 +461,31 @@ namespace wi::shadercompiler
 		for (auto& x : input.defines)
 		{
 			args.push_back(L"-D");
-			wi::helper::StringConvert(x, args.emplace_back());
+			Protean::Helper::StringConvert(x, args.emplace_back());
 		}
 
 		for (auto& x : input.include_directories)
 		{
 			args.push_back(L"-I");
-			wi::helper::StringConvert(x, args.emplace_back());
+			Protean::Helper::StringConvert(x, args.emplace_back());
 		}
 
 #ifdef SHADERCOMPILER_XBOX_INCLUDED
 		if (input.format == ShaderFormat::HLSL6_XS)
 		{
-			wi::shadercompiler::xbox::AddArguments(input, args);
+			Protean::ShaderCompiler::Xbox::AddArguments(input, args);
 		}
 #endif // SHADERCOMPILER_XBOX_INCLUDED
 
 		// Entry point parameter:
 		std::wstring wentry;
-		wi::helper::StringConvert(input.entrypoint, wentry);
+		Protean::Helper::StringConvert(input.entrypoint, wentry);
 		args.push_back(L"-E");
 		args.push_back(wentry.c_str());
 
 		// Add source file name as last parameter. This will be displayed in error messages
 		std::wstring wsource;
-		wi::helper::StringConvert(wi::helper::GetFileNameFromPath(input.shadersourcefilename), wsource);
+		Protean::Helper::StringConvert(Protean::Helper::GetFileNameFromPath(input.shadersourcefilename), wsource);
 		args.push_back(wsource.c_str());
 
 		DxcBuffer Source;
@@ -508,7 +508,7 @@ namespace wi::shadercompiler
 				if (SUCCEEDED(hr))
 				{
 					std::string& filename = output->dependencies.emplace_back();
-					wi::helper::StringConvert(pFilename, filename);
+					Protean::Helper::StringConvert(pFilename, filename);
 				}
 				return hr;
 			}
@@ -534,7 +534,7 @@ namespace wi::shadercompiler
 		hr = dxcUtils->CreateDefaultIncludeHandler(&includehandler.dxcIncludeHandler);
 		assert(SUCCEEDED(hr));
 
-		wi::vector<const wchar_t*> args_raw;
+		Protean::vector<const wchar_t*> args_raw;
 		args_raw.reserve(args.size());
 		for (auto& x : args)
 		{
@@ -601,7 +601,7 @@ namespace wi::shadercompiler
 			output.shadersize = pShader->GetBufferSize();
 			
 			// keep the blob alive == keep shader pointer valid!
-			auto internal_state = wi::allocator::make_shared<ComPtr<IDxcBlob>>();
+			auto internal_state = Protean::Allocator::make_shared<ComPtr<IDxcBlob>>();
 			*internal_state = pShader;
 			output.internal_state = internal_state;
 			
@@ -643,7 +643,7 @@ namespace wi::shadercompiler
 					static IRDescriptorRange1 binding_samplers[] =
 					{
 						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = 0, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(DescriptorBindingTable::SAM), .Flags = IRDescriptorRangeFlagDescriptorsVolatile },
-						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = wi::graphics::STATIC_SAMPLER_SLOT_BEGIN, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(GraphicsDevice_Metal::StaticSamplerDescriptors::samplers), .Flags = IRDescriptorRangeFlagDescriptorsVolatile }, // static samplers workaround (**)
+						{ .RangeType = IRDescriptorRangeTypeSampler, .BaseShaderRegister = Protean::Graphics::STATIC_SAMPLER_SLOT_BEGIN, .RegisterSpace = 0, .OffsetInDescriptorsFromTableStart = IRDescriptorRangeOffsetAppend, .NumDescriptors = arraysize(GraphicsDevice_Metal::StaticSamplerDescriptors::samplers), .Flags = IRDescriptorRangeFlagDescriptorsVolatile }, // static samplers workaround (**)
 					};
 					static IRRootParameter1 root_parameters[] =
 					{
@@ -764,7 +764,7 @@ namespace wi::shadercompiler
 					}
 					IRObjectGetMetalLibBinary(pOutIR, irstage, pMetallib);
 					size_t metallibSize = IRMetalLibGetBytecodeSize(pMetallib);
-					auto internal_state = wi::allocator::make_shared<wi::vector<uint8_t>>(metallibSize); // lifetime storage of pointer
+					auto internal_state = Protean::Allocator::make_shared<Protean::vector<uint8_t>>(metallibSize); // lifetime storage of pointer
 					IRMetalLibGetBytecode(pMetallib, internal_state->data());
 					if (
 						input.stage == ShaderStage::VS ||
@@ -787,7 +787,7 @@ namespace wi::shadercompiler
 						IRShaderReflection* reflection = IRShaderReflectionCreate();
 						bool success = IRObjectGetReflection(pOutIR, irstage, reflection);
 						assert(success);
-						wi::graphics::GraphicsDevice_Metal::ShaderAdditionalData reflection_append = {};
+						Protean::Graphics::GraphicsDevice_Metal::ShaderAdditionalData reflection_append = {};
 						if (input.stage == ShaderStage::VS)
 						{
 							IRVersionedVSInfo vs_info = {};
@@ -884,7 +884,7 @@ namespace wi::shadercompiler
 				D3DCompile = (PFN_D3DCOMPILE)wiGetProcAddress(d3dcompiler, "D3DCompile");
 				if (D3DCompile != nullptr)
 				{
-					wi::backlog::post("wi::shadercompiler: loaded d3dcompiler_47.dll");
+					Protean::Backlog::post("Protean::ShaderCompiler: loaded d3dcompiler_47.dll");
 				}
 			}
 		}
@@ -908,8 +908,8 @@ namespace wi::shadercompiler
 			return;
 		}
 
-		wi::vector<uint8_t> shadersourcedata;
-		if (!wi::helper::FileRead(input.shadersourcefilename, shadersourcedata))
+		Protean::vector<uint8_t> shadersourcedata;
+		if (!Protean::Helper::FileRead(input.shadersourcefilename, shadersourcedata))
 		{
 			return;
 		}
@@ -953,17 +953,17 @@ namespace wi::shadercompiler
 		{
 			const CompilerInput* input = nullptr;
 			CompilerOutput* output = nullptr;
-			wi::vector<wi::vector<uint8_t>> filedatas;
+			Protean::vector<Protean::vector<uint8_t>> filedatas;
 
 			HRESULT Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override
 			{
 				for (auto& x : input->include_directories)
 				{
 					std::string filename = x + pFileName;
-					if (!wi::helper::FileExists(filename))
+					if (!Protean::Helper::FileExists(filename))
 						continue;
-					wi::vector<uint8_t>& filedata = filedatas.emplace_back();
-					if (wi::helper::FileRead(filename, filedata))
+					Protean::vector<uint8_t>& filedata = filedatas.emplace_back();
+					if (Protean::Helper::FileRead(filename, filedata))
 					{
 						output->dependencies.push_back(filename);
 						*ppData = filedata.data();
@@ -1018,7 +1018,7 @@ namespace wi::shadercompiler
 			output.shadersize = code->GetBufferSize();
 
 			// keep the blob alive == keep shader pointer valid!
-			auto internal_state = wi::allocator::make_shared<ComPtr<ID3D10Blob>>();
+			auto internal_state = Protean::Allocator::make_shared<ComPtr<ID3D10Blob>>();
 			*internal_state = code;
 			output.internal_state = internal_state;
 		}
@@ -1052,7 +1052,7 @@ namespace wi::shadercompiler
 
 #ifdef SHADERCOMPILER_PS5_INCLUDED
 		case ShaderFormat::PS5:
-			wi::shadercompiler::ps5::Compile(input, output);
+			Protean::ShaderCompiler::ps5::Compile(input, output);
 			break;
 #endif // SHADERCOMPILER_PS5_INCLUDED
 
@@ -1064,21 +1064,21 @@ namespace wi::shadercompiler
 	bool SaveShaderAndMetadata(const std::string& shaderfilename, const CompilerOutput& output)
 	{
 #ifdef SHADERCOMPILER_ENABLED
-		wi::helper::DirectoryCreate(wi::helper::GetDirectoryFromPath(shaderfilename));
+		Protean::Helper::DirectoryCreate(Protean::Helper::GetDirectoryFromPath(shaderfilename));
 
-		wi::Archive dependencyLibrary(wi::helper::ReplaceExtension(shaderfilename, shadermetaextension), false);
+		Protean::Archive dependencyLibrary(Protean::Helper::ReplaceExtension(shaderfilename, shadermetaextension), false);
 		if (dependencyLibrary.IsOpen())
 		{
 			std::string rootdir = dependencyLibrary.GetSourceDirectory();
-			wi::vector<std::string> dependencies = output.dependencies;
+			Protean::vector<std::string> dependencies = output.dependencies;
 			for (auto& x : dependencies)
 			{
-				wi::helper::MakePathRelative(rootdir, x);
+				Protean::Helper::MakePathRelative(rootdir, x);
 			}
 			dependencyLibrary << dependencies;
 		}
 
-		if (wi::helper::FileWrite(shaderfilename, output.shaderdata, output.shadersize))
+		if (Protean::Helper::FileWrite(shaderfilename, output.shaderdata, output.shadersize))
 		{
 			return true;
 		}
@@ -1090,39 +1090,39 @@ namespace wi::shadercompiler
 	{
 #ifdef SHADERCOMPILER_ENABLED
 		std::string filepath = shaderfilename;
-		wi::helper::MakePathAbsolute(filepath);
-		if (!wi::helper::FileExists(filepath))
+		Protean::Helper::MakePathAbsolute(filepath);
+		if (!Protean::Helper::FileExists(filepath))
 		{
 			return true; // no shader file = outdated shader, apps can attempt to rebuild it
 		}
-		std::string dependencylibrarypath = wi::helper::ReplaceExtension(shaderfilename, shadermetaextension);
-		if (!wi::helper::FileExists(dependencylibrarypath))
+		std::string dependencylibrarypath = Protean::Helper::ReplaceExtension(shaderfilename, shadermetaextension);
+		if (!Protean::Helper::FileExists(dependencylibrarypath))
 		{
 			return false; // no metadata file = no dependency, up to date (for example packaged builds)
 		}
 
-		const uint64_t tim = wi::helper::FileTimestamp(filepath);
+		const uint64_t tim = Protean::Helper::FileTimestamp(filepath);
 
 		// Open the metadata silently: an incompatible (e.g. newer) cache must
 		// not pop an error box from this worker thread - it just means the
 		// cached shader is stale and should be rebuilt.
-		wi::Archive dependencyLibrary(dependencylibrarypath, true, false);
+		Protean::Archive dependencyLibrary(dependencylibrarypath, true, false);
 		if (!dependencyLibrary.IsOpen())
 		{
 			return true; // unreadable/incompatible metadata = outdated, rebuild it
 		}
 
 		std::string rootdir = dependencyLibrary.GetSourceDirectory();
-		wi::vector<std::string> dependencies;
+		Protean::vector<std::string> dependencies;
 		dependencyLibrary >> dependencies;
 
 		for (auto& x : dependencies)
 		{
 			std::string dependencypath = rootdir + x;
-			wi::helper::MakePathAbsolute(dependencypath);
-			if (wi::helper::FileExists(dependencypath))
+			Protean::Helper::MakePathAbsolute(dependencypath);
+			if (Protean::Helper::FileExists(dependencypath))
 			{
-				const uint64_t dep_tim = wi::helper::FileTimestamp(dependencypath);
+				const uint64_t dep_tim = Protean::Helper::FileTimestamp(dependencypath);
 
 				if (tim < dep_tim)
 				{
@@ -1136,7 +1136,7 @@ namespace wi::shadercompiler
 	}
 
 	std::mutex locker;
-	wi::unordered_set<std::string> registered_shaders;
+	Protean::unordered_set<std::string> registered_shaders;
 	void RegisterShader(const std::string& shaderfilename)
 	{
 #ifdef SHADERCOMPILER_ENABLED

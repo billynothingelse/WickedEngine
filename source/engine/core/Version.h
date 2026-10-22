@@ -1,7 +1,7 @@
 #ifndef WICKEDENGINE_VERSION_DEFINED
 #define WICKEDENGINE_VERSION_DEFINED
 
-namespace wi::version
+namespace Protean::Version
 {
 	// major features
 	int GetMajor();

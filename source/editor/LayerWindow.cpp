@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "LayerWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void LayerWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_LAYER " Layer", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_LAYER " Layer", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 350));
 
 	closeButton.SetTooltip("Delete LayerComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,8 +31,8 @@ void LayerWindow::Create(EditorComponent* _editor)
 	{
 		layers[i].Create("");
 		layers[i].SetText(std::to_string(i) + ": ");
-		layers[i].OnClick([=](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		layers[i].OnClick([=](Protean::Gui::EventArgs args) {
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				LayerComponent* layer = scene.layers.GetComponent(x.entity);
@@ -58,7 +56,7 @@ void LayerWindow::Create(EditorComponent* _editor)
 
 	auto forEachLayer = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				LayerComponent* layer = scene.layers.GetComponent(x.entity);
@@ -136,7 +134,7 @@ void LayerWindow::SetEntity(Entity entity)
 
 void LayerWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(label);

@@ -3,7 +3,7 @@
 #include "script/bindings/MathBindLua.h"
 #include "script/bindings/AudioBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<SpriteFont_BindLua>::FunctionType SpriteFont_BindLua::methods[] = {
@@ -70,15 +70,15 @@ namespace wi::lua
 		{ NULL, NULL }
 	};
 
-	SpriteFont_BindLua::SpriteFont_BindLua(const wi::SpriteFont& font) : font(font)
+	SpriteFont_BindLua::SpriteFont_BindLua(const Protean::SpriteFont& font) : font(font)
 	{
 	}
 	SpriteFont_BindLua::SpriteFont_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			std::string text = wi::lua::SGetString(L, 1);
+			std::string text = Protean::Lua::SGetString(L, 1);
 			font.SetText(text);
 		}
 	}
@@ -86,53 +86,53 @@ namespace wi::lua
 
 	int SpriteFont_BindLua::SetStyle(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			std::string name = wi::lua::SGetString(L, 1);
+			std::string name = Protean::Lua::SGetString(L, 1);
 			font.fontStyleName = name;
-			font.fontStyleResource = wi::resourcemanager::Load(name);
+			font.fontStyleResource = Protean::ResourceManager::Load(name);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetStyle(string style, opt int size = 16) not enough arguments!");
+			Protean::Lua::SError(L, "SetStyle(string style, opt int size = 16) not enough arguments!");
 		}
 		return 0;
 	}
 	int SpriteFont_BindLua::SetText(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
-			font.SetText(wi::lua::SGetString(L, 1));
+			font.SetText(Protean::Lua::SGetString(L, 1));
 		else
 			font.SetText("");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetSize(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			font.params.size = wi::lua::SGetInt(L, 1);
+			font.params.size = Protean::Lua::SGetInt(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetSize(int size) not enough arguments!");
+			Protean::Lua::SError(L, "SetSize(int size) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetScale(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			font.params.scaling = wi::lua::SGetFloat(L, 1);
+			font.params.scaling = Protean::Lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetScale(float scale) not enough arguments!");
+			Protean::Lua::SError(L, "SetScale(float scale) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetPos(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* param = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -142,15 +142,15 @@ namespace wi::lua
 				font.params.posY = param->data.y;
 			}
 			else
-				wi::lua::SError(L, "SetPos(Vector pos) argument is not a vector!");
+				Protean::Lua::SError(L, "SetPos(Vector pos) argument is not a vector!");
 		}
 		else
-			wi::lua::SError(L, "SetPos(Vector pos) not enough arguments!");
+			Protean::Lua::SError(L, "SetPos(Vector pos) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetSpacing(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* param = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -160,118 +160,118 @@ namespace wi::lua
 				font.params.spacingY = param->data.y;
 			}
 			else
-				wi::lua::SError(L, "SetSpacing(Vector spacing) argument is not a vector!");
+				Protean::Lua::SError(L, "SetSpacing(Vector spacing) argument is not a vector!");
 		}
 		else
-			wi::lua::SError(L, "SetSpacing(Vector spacing) not enough arguments!");
+			Protean::Lua::SError(L, "SetSpacing(Vector spacing) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetAlign(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			font.params.h_align = (wi::font::Alignment)wi::lua::SGetInt(L, 1);
+			font.params.h_align = (Protean::Font::Alignment)Protean::Lua::SGetInt(L, 1);
 			if (argc > 1)
 			{
-				font.params.v_align = (wi::font::Alignment)wi::lua::SGetInt(L, 2);
+				font.params.v_align = (Protean::Font::Alignment)Protean::Lua::SGetInt(L, 2);
 			}
 		}
 		else
-			wi::lua::SError(L, "SetAlign(WIFALIGN Halign, opt WIFALIGN Valign) not enough arguments!");
+			Protean::Lua::SError(L, "SetAlign(WIFALIGN Halign, opt WIFALIGN Valign) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetColor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* param = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (param != nullptr)
 			{
-				font.params.color = wi::Color::fromFloat4(param->data);
+				font.params.color = Protean::Color::fromFloat4(param->data);
 			}
 			else
 			{
-				int code = wi::lua::SGetInt(L, 1);
+				int code = Protean::Lua::SGetInt(L, 1);
 				font.params.color.rgba = (uint32_t)code;
 			}
 		}
 		else
-			wi::lua::SError(L, "SetColor(Vector value) not enough arguments!");
+			Protean::Lua::SError(L, "SetColor(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetShadowColor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* param = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (param != nullptr)
 			{
-				font.params.shadowColor = wi::Color::fromFloat4(param->data);
+				font.params.shadowColor = Protean::Color::fromFloat4(param->data);
 			}
 			else
 			{
-				int code = wi::lua::SGetInt(L, 1);
+				int code = Protean::Lua::SGetInt(L, 1);
 				font.params.shadowColor.rgba = (uint32_t)code;
 			}
 		}
 		else
-			wi::lua::SError(L, "SetShadowColor(Vector value) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowColor(Vector value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetBolden(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			float value = wi::lua::SGetFloat(L, 1);
+			float value = Protean::Lua::SGetFloat(L, 1);
 			font.params.bolden = value;
 		}
 		else
-			wi::lua::SError(L, "SetBolden(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetBolden(float value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetSoftness(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			float value = wi::lua::SGetFloat(L, 1);
+			float value = Protean::Lua::SGetFloat(L, 1);
 			font.params.softness = value;
 		}
 		else
-			wi::lua::SError(L, "SetSoftness(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetSoftness(float value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetShadowBolden(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			float value = wi::lua::SGetFloat(L, 1);
+			float value = Protean::Lua::SGetFloat(L, 1);
 			font.params.shadow_bolden = value;
 		}
 		else
-			wi::lua::SError(L, "SetShadowBolden(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowBolden(float value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetShadowSoftness(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			float value = wi::lua::SGetFloat(L, 1);
+			float value = Protean::Lua::SGetFloat(L, 1);
 			font.params.shadow_softness = value;
 		}
 		else
-			wi::lua::SError(L, "SetShadowSoftness(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowSoftness(float value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetShadowOffset(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* param = Luna<Vector_BindLua>::lightcheck(L, 1);
@@ -281,43 +281,43 @@ namespace wi::lua
 				font.params.shadow_offset_y = param->data.y;
 			}
 			else
-				wi::lua::SError(L, "SetShadowOffset(Vector pos) argument is not a vector!");
+				Protean::Lua::SError(L, "SetShadowOffset(Vector pos) argument is not a vector!");
 		}
 		else
-			wi::lua::SError(L, "SetShadowOffset(Vector pos) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowOffset(Vector pos) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetHorizontalWrapping(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			font.params.h_wrap = wi::lua::SGetFloat(L, 1);
+			font.params.h_wrap = Protean::Lua::SGetFloat(L, 1);
 		}
 		else
-			wi::lua::SError(L, "SetHorizontalWrapping(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetHorizontalWrapping(float value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetHidden(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			font.SetHidden(wi::lua::SGetBool(L, 1));
+			font.SetHidden(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetHidden(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetHidden(bool value) not enough arguments!");
 		return 0;
 	}
 	int SpriteFont_BindLua::SetFlippedHorizontally(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetFlippedHorizontally(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetFlippedHorizontally(bool value) not enough arguments!");
 			return 0;
 		}
-		bool enabled = wi::lua::SGetBool(L, 1);
+		bool enabled = Protean::Lua::SGetBool(L, 1);
 		if (enabled)
 		{
 			font.params.enableFlipHorizontally();
@@ -330,13 +330,13 @@ namespace wi::lua
 	}
 	int SpriteFont_BindLua::SetFlippedVertically(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetFlippedVertically(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetFlippedVertically(bool value) not enough arguments!");
 			return 0;
 		}
-		bool enabled = wi::lua::SGetBool(L, 1);
+		bool enabled = Protean::Lua::SGetBool(L, 1);
 		if (enabled)
 		{
 			font.params.enableFlipVertically();
@@ -350,17 +350,17 @@ namespace wi::lua
 
 	int SpriteFont_BindLua::GetText(lua_State* L)
 	{
-		wi::lua::SSetString(L, font.GetTextA());
+		Protean::Lua::SSetString(L, font.GetTextA());
 		return 1;
 	}
 	int SpriteFont_BindLua::GetSize(lua_State* L)
 	{
-		wi::lua::SSetInt(L, font.params.size);
+		Protean::Lua::SSetInt(L, font.params.size);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetScale(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.scaling);
+		Protean::Lua::SSetFloat(L, font.params.scaling);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetPos(lua_State* L)
@@ -375,8 +375,8 @@ namespace wi::lua
 	}
 	int SpriteFont_BindLua::GetAlign(lua_State* L)
 	{
-		wi::lua::SSetInt(L, font.params.h_align);
-		wi::lua::SSetInt(L, font.params.v_align);
+		Protean::Lua::SSetInt(L, font.params.h_align);
+		Protean::Lua::SSetInt(L, font.params.v_align);
 		return 2;
 	}
 	int SpriteFont_BindLua::GetColor(lua_State* L)
@@ -393,22 +393,22 @@ namespace wi::lua
 	}
 	int SpriteFont_BindLua::GetBolden(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.bolden);
+		Protean::Lua::SSetFloat(L, font.params.bolden);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetSoftness(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.softness);
+		Protean::Lua::SSetFloat(L, font.params.softness);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetShadowBolden(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.shadow_bolden);
+		Protean::Lua::SSetFloat(L, font.params.shadow_bolden);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetShadowSoftness(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.shadow_softness);
+		Protean::Lua::SSetFloat(L, font.params.shadow_softness);
 		return 1;
 	}
 	int SpriteFont_BindLua::GetShadowOffset(lua_State* L)
@@ -419,22 +419,22 @@ namespace wi::lua
 	}
 	int SpriteFont_BindLua::GetHorizontalWrapping(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, font.params.h_wrap);
+		Protean::Lua::SSetFloat(L, font.params.h_wrap);
 		return 1;
 	}
 	int SpriteFont_BindLua::IsHidden(lua_State* L)
 	{
-		wi::lua::SSetBool(L, font.IsHidden());
+		Protean::Lua::SSetBool(L, font.IsHidden());
 		return 1;
 	}
 	int SpriteFont_BindLua::IsFlippedHorizontally(lua_State* L)
 	{
-		wi::lua::SSetBool(L, font.params.isFlippedHorizontally());
+		Protean::Lua::SSetBool(L, font.params.isFlippedHorizontally());
 		return 1;
 	}
 	int SpriteFont_BindLua::IsFlippedVertically(lua_State* L)
 	{
-		wi::lua::SSetBool(L, font.params.isFlippedVertically());
+		Protean::Lua::SSetBool(L, font.params.isFlippedVertically());
 		return 1;
 	}
 
@@ -447,52 +447,52 @@ namespace wi::lua
 
 	int SpriteFont_BindLua::SetTypewriterTime(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetTypewriterTime(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetTypewriterTime(float value) not enough arguments!");
 		}
-		font.anim.typewriter.time = wi::lua::SGetFloat(L, 1);
+		font.anim.typewriter.time = Protean::Lua::SGetFloat(L, 1);
 		return 0;
 	}
 	int SpriteFont_BindLua::SetTypewriterLooped(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetTypewriterLooped(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetTypewriterLooped(bool value) not enough arguments!");
 		}
-		font.anim.typewriter.looped = wi::lua::SGetBool(L, 1);
+		font.anim.typewriter.looped = Protean::Lua::SGetBool(L, 1);
 		return 0;
 	}
 	int SpriteFont_BindLua::SetTypewriterCharacterStart(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetTypewriterCharacterStart(int value) not enough arguments!");
+			Protean::Lua::SError(L, "SetTypewriterCharacterStart(int value) not enough arguments!");
 		}
-		font.anim.typewriter.character_start = (size_t)wi::lua::SGetLongLong(L, 1);
+		font.anim.typewriter.character_start = (size_t)Protean::Lua::SGetLongLong(L, 1);
 		return 0;
 	}
 	int SpriteFont_BindLua::SetTypewriterSound(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 2)
 		{
-			wi::lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) not enough arguments!");
+			Protean::Lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) not enough arguments!");
 			return 0;
 		}
 		Sound_BindLua* sound = Luna<Sound_BindLua>::lightcheck(L, 1);
 		if (sound == nullptr)
 		{
-			wi::lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) first argument is not a sound!");
+			Protean::Lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) first argument is not a sound!");
 			return 0;
 		}
 		SoundInstance_BindLua* soundinstance = Luna<SoundInstance_BindLua>::lightcheck(L, 2);
 		if (soundinstance == nullptr)
 		{
-			wi::lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) second argument is not a sound instance!");
+			Protean::Lua::SError(L, "SetTypewriterSound(Sound sound, SoundInstance soundinstance) second argument is not a sound instance!");
 			return 0;
 		}
 		if (sound->soundResource.IsValid())
@@ -514,7 +514,7 @@ namespace wi::lua
 	}
 	int SpriteFont_BindLua::IsTypewriterFinished(lua_State* L)
 	{
-		wi::lua::SSetBool(L, font.anim.typewriter.IsFinished());
+		Protean::Lua::SSetBool(L, font.anim.typewriter.IsFinished());
 		return 1;
 	}
 
@@ -524,9 +524,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<SpriteFont_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<SpriteFont_BindLua>::Register(Protean::Lua::GetLuaState());
 
-			wi::lua::RunText(R"(
+			Protean::Lua::RunText(R"(
 WIFALIGN_LEFT = 0
 WIFALIGN_CENTER = 1
 WIFALIGN_RIGHT = 2

@@ -1,47 +1,47 @@
 #pragma once
 class EditorComponent;
 
-class ObjectWindow : public wi::gui::Window
+class ObjectWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::ComboBox meshCombo;
-	wi::gui::CheckBox renderableCheckBox;
-	wi::gui::CheckBox shadowCheckBox;
-	wi::gui::CheckBox navmeshCheckBox;
-	wi::gui::CheckBox foregroundCheckBox;
-	wi::gui::CheckBox notVisibleInMainCameraCheckBox;
-	wi::gui::CheckBox notVisibleInReflectionsCheckBox;
-	wi::gui::CheckBox wetmapCheckBox;
-	wi::gui::Slider ditherSlider;
-	wi::gui::Slider alphaRefSlider;
-	wi::gui::Slider rimHighlightIntesitySlider;
-	wi::gui::Slider rimHighlightFalloffSlider;
-	wi::gui::Slider cascadeMaskSlider;
-	wi::gui::Slider lodSlider;
-	wi::gui::Slider drawdistanceSlider;
-	wi::gui::Slider sortPrioritySlider;
+	Protean::Gui::ComboBox meshCombo;
+	Protean::Gui::CheckBox renderableCheckBox;
+	Protean::Gui::CheckBox shadowCheckBox;
+	Protean::Gui::CheckBox navmeshCheckBox;
+	Protean::Gui::CheckBox foregroundCheckBox;
+	Protean::Gui::CheckBox notVisibleInMainCameraCheckBox;
+	Protean::Gui::CheckBox notVisibleInReflectionsCheckBox;
+	Protean::Gui::CheckBox wetmapCheckBox;
+	Protean::Gui::Slider ditherSlider;
+	Protean::Gui::Slider alphaRefSlider;
+	Protean::Gui::Slider rimHighlightIntesitySlider;
+	Protean::Gui::Slider rimHighlightFalloffSlider;
+	Protean::Gui::Slider cascadeMaskSlider;
+	Protean::Gui::Slider lodSlider;
+	Protean::Gui::Slider drawdistanceSlider;
+	Protean::Gui::Slider sortPrioritySlider;
 
-	wi::gui::ComboBox colorComboBox;
-	wi::gui::ColorPicker colorPicker;
+	Protean::Gui::ComboBox colorComboBox;
+	Protean::Gui::ColorPicker colorPicker;
 
-	wi::gui::Slider lightmapResolutionSlider;
-	wi::gui::CheckBox lightmapBlockCompressionCheckBox;
-	wi::gui::ComboBox lightmapSourceUVSetComboBox;
-	wi::gui::Button generateLightmapButton;
-	wi::gui::Button stopLightmapGenButton;
-	wi::gui::Button clearLightmapButton;
-	wi::gui::Button lightmapPreviewButton;
+	Protean::Gui::Slider lightmapResolutionSlider;
+	Protean::Gui::CheckBox lightmapBlockCompressionCheckBox;
+	Protean::Gui::ComboBox lightmapSourceUVSetComboBox;
+	Protean::Gui::Button generateLightmapButton;
+	Protean::Gui::Button stopLightmapGenButton;
+	Protean::Gui::Button clearLightmapButton;
+	Protean::Gui::Button lightmapPreviewButton;
 
-	wi::gui::Button vertexAOButton;
+	Protean::Gui::Button vertexAOButton;
 	bool deleteAOMode = false;
-	wi::gui::Slider vertexAORayCountSlider;
-	wi::gui::Slider vertexAORayLengthSlider;
+	Protean::Gui::Slider vertexAORayCountSlider;
+	Protean::Gui::Slider vertexAORayLengthSlider;
 
 	void ResizeLayout() override;
 };

@@ -3,7 +3,7 @@
 #include "platform/Platform.h"
 #include "math/Math.h"
 
-namespace wi
+namespace Protean
 {
 	// The canvas specifies a DPI-aware drawing area
 	struct Canvas
@@ -35,10 +35,10 @@ namespace wi
 			*this = other;
 		}
 		// Create the canvas straight from window handle
-		inline void init(platform::window_type window)
+		inline void init(Platform::window_type window)
 		{
-			platform::WindowProperties windowprops;
-			platform::GetWindowProperties(window, &windowprops);
+			Platform::WindowProperties windowprops;
+			Platform::GetWindowProperties(window, &windowprops);
 			init((uint32_t)windowprops.width, (uint32_t)windowprops.height, windowprops.dpi);
 			window_inset_left = windowprops.inset_left;
 			window_inset_right = windowprops.inset_right;

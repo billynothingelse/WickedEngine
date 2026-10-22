@@ -37,7 +37,7 @@
 
 class EditorComponent;
 
-class ComponentsWindow : public wi::gui::Window
+class ComponentsWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
@@ -46,7 +46,7 @@ public:
 	void ResizeLayout() override;
 
 	EditorComponent* editor = nullptr;
-	wi::gui::ComboBox newComponentCombo;
+	Protean::Gui::ComboBox newComponentCombo;
 	MaterialWindow materialWnd;
 	WeatherWindow weatherWnd;
 	ObjectWindow objectWnd;
@@ -121,24 +121,24 @@ public:
 
 		All = ~0ull,
 	} filter = Filter::All;
-	wi::gui::ComboBox filterCombo;
-	wi::gui::TextInputField filterInput;
-	wi::gui::CheckBox filterCaseCheckBox;
-	wi::gui::TreeList entityTree;
-	wi::unordered_set<wi::ecs::Entity> entitytree_temp_items;
-	wi::unordered_set<wi::ecs::Entity> entitytree_added_items;
-	wi::unordered_set<wi::ecs::Entity> entitytree_opened_items;
-	wi::ecs::Entity entitytree_pending_focus = wi::ecs::INVALID_ENTITY;
-	wi::unordered_map<wi::ecs::Entity, wi::vector<wi::ecs::Entity>> entity_user_order; // custom display order per parent (INVALID_ENTITY = top-level)
-	void PushToEntityTree(wi::ecs::Entity entity, int level);
+	Protean::Gui::ComboBox filterCombo;
+	Protean::Gui::TextInputField filterInput;
+	Protean::Gui::CheckBox filterCaseCheckBox;
+	Protean::Gui::TreeList entityTree;
+	Protean::unordered_set<Protean::Entity> entitytree_temp_items;
+	Protean::unordered_set<Protean::Entity> entitytree_added_items;
+	Protean::unordered_set<Protean::Entity> entitytree_opened_items;
+	Protean::Entity entitytree_pending_focus = Protean::INVALID_ENTITY;
+	Protean::unordered_map<Protean::Entity, Protean::vector<Protean::Entity>> entity_user_order; // custom display order per parent (INVALID_ENTITY = top-level)
+	void PushToEntityTree(Protean::Entity entity, int level);
 	void RefreshEntityTree();
-	bool CheckEntityFilter(wi::ecs::Entity entity) const;
-	void ApplyUserOrder(wi::vector<wi::ecs::Entity>& entities, wi::ecs::Entity parent_entity) const;
+	bool CheckEntityFilter(Protean::Entity entity) const;
+	void ApplyUserOrder(Protean::vector<Protean::Entity>& entities, Protean::Entity parent_entity) const;
 
 private:
-	static int GetEntityTypePriority(wi::ecs::Entity entity, const wi::scene::Scene& scene);
-	static std::string GetEntityNameForSorting(wi::ecs::Entity entity, const wi::scene::Scene& scene);
-	void SortEntitiesByMode(wi::vector<wi::ecs::Entity>& entities, const wi::scene::Scene& scene, int sortingMode);
+	static int GetEntityTypePriority(Protean::Entity entity, const Protean::Scene& scene);
+	static std::string GetEntityNameForSorting(Protean::Entity entity, const Protean::Scene& scene);
+	void SortEntitiesByMode(Protean::vector<Protean::Entity>& entities, const Protean::Scene& scene, int sortingMode);
 };
 
 template<>

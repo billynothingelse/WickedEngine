@@ -1,20 +1,20 @@
 #pragma once
 class EditorComponent;
 
-class ScriptWindow : public wi::gui::Window
+class ScriptWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Button fileButton;
-	wi::gui::CheckBox playonceCheckBox;
-	wi::gui::Button playstopButton;
+	Protean::Gui::Button fileButton;
+	Protean::Gui::CheckBox playonceCheckBox;
+	Protean::Gui::Button playstopButton;
 
-	void Update(const wi::Canvas& canvas, float dt) override;
+	void Update(const Protean::Canvas& canvas, float dt) override;
 	void ResizeLayout() override;
 };
 

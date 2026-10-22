@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "TransformWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void TransformWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_TRANSFORM " Transform" , wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_TRANSFORM " Transform" , Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(480, 280));
 
 	closeButton.SetTooltip("Delete TransformComponent\nNote that a lot of components won't work correctly without a TransformComponent!");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -36,11 +34,11 @@ void TransformWindow::Create(EditorComponent* _editor)
 	clearButton.SetTooltip("Reset transform to identity");
 	clearButton.SetPos(XMFLOAT2(x, y));
 	clearButton.SetSize(XMFLOAT2(wid + hei + 1, hei));
-	clearButton.OnClick([=](wi::gui::EventArgs args) {
+	clearButton.OnClick([=](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -56,11 +54,11 @@ void TransformWindow::Create(EditorComponent* _editor)
 	moveToEditorCameraButton.SetTooltip("Move the selected transform(s) to match the current editor camera view");
 	moveToEditorCameraButton.SetPos(XMFLOAT2(x, y += step));
 	moveToEditorCameraButton.SetSize(XMFLOAT2(wid + hei + 1, hei));
-	moveToEditorCameraButton.OnClick([=](wi::gui::EventArgs args) {
+	moveToEditorCameraButton.OnClick([=](Protean::Gui::EventArgs args) {
 		const Scene& scene = editor->GetCurrentScene();
 		const auto& editorscene = editor->GetCurrentEditorScene();
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 
 		for (auto& x : editor->translator.selected)
@@ -87,7 +85,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	txInput.SetDescription("Position: ");
 	txInput.SetPos(XMFLOAT2(x, y += step));
 	txInput.SetSize(XMFLOAT2(siz, hei));
-	txInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	txInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -101,7 +99,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	tyInput.SetValue(0);
 	tyInput.SetPos(XMFLOAT2(x, y += step));
 	tyInput.SetSize(XMFLOAT2(siz, hei));
-	tyInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	tyInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -115,7 +113,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	tzInput.SetValue(0);
 	tzInput.SetPos(XMFLOAT2(x, y += step));
 	tzInput.SetSize(XMFLOAT2(siz, hei));
-	tzInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	tzInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -133,7 +131,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	sxInput.SetDescription("Scale: ");
 	sxInput.SetPos(XMFLOAT2(x, y));
 	sxInput.SetSize(XMFLOAT2(siz, hei));
-	sxInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	sxInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -147,7 +145,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	syInput.SetValue(1);
 	syInput.SetPos(XMFLOAT2(x, y += step));
 	syInput.SetSize(XMFLOAT2(siz, hei));
-	syInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	syInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -161,7 +159,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	szInput.SetValue(1);
 	szInput.SetPos(XMFLOAT2(x, y += step));
 	szInput.SetSize(XMFLOAT2(siz, hei));
-	szInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	szInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -176,7 +174,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	suInput.SetValue(1);
 	suInput.SetPos(XMFLOAT2(x, y += step));
 	suInput.SetSize(XMFLOAT2(siz, hei));
-	suInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	suInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -198,7 +196,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rollInput.SetTooltip("Roll (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	rollInput.SetPos(XMFLOAT2(x, y += step));
 	rollInput.SetSize(XMFLOAT2(siz, hei));
-	rollInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	rollInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -218,7 +216,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	pitchInput.SetTooltip("Pitch (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	pitchInput.SetPos(XMFLOAT2(x, y += step));
 	pitchInput.SetSize(XMFLOAT2(siz, hei));
-	pitchInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	pitchInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -238,7 +236,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	yawInput.SetTooltip("Yaw (in degrees)\n Note: Euler angle rotations can result in precision loss from quaternion conversion!");
 	yawInput.SetPos(XMFLOAT2(x, y += step));
 	yawInput.SetSize(XMFLOAT2(siz, hei));
-	yawInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	yawInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -262,7 +260,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rxInput.SetTooltip("Rotation Quaternion.X");
 	rxInput.SetPos(XMFLOAT2(x, y += step));
 	rxInput.SetSize(XMFLOAT2(siz, hei));
-	rxInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	rxInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -278,7 +276,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	ryInput.SetTooltip("Rotation Quaternion.Y");
 	ryInput.SetPos(XMFLOAT2(x, y += step));
 	ryInput.SetSize(XMFLOAT2(siz, hei));
-	ryInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	ryInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -294,7 +292,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rzInput.SetTooltip("Rotation Quaternion.Z");
 	rzInput.SetPos(XMFLOAT2(x, y += step));
 	rzInput.SetSize(XMFLOAT2(siz, hei));
-	rzInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	rzInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -310,7 +308,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	rwInput.SetTooltip("Rotation Quaternion.W");
 	rwInput.SetPos(XMFLOAT2(x, y += step));
 	rwInput.SetSize(XMFLOAT2(siz, hei));
-	rwInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	rwInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -333,7 +331,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapScaleInput.SetPos(XMFLOAT2(x, y += step));
 	snapScaleInput.SetSize(XMFLOAT2(siz, hei));
 	snapScaleInput.SetValue(editor->translator.scale_snap);
-	snapScaleInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapScaleInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		editor->translator.scale_snap = args.fValue;
 		});
 	AddWidget(&snapScaleInput);
@@ -344,7 +342,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapRotateInput.SetPos(XMFLOAT2(x, y += step));
 	snapRotateInput.SetSize(XMFLOAT2(siz, hei));
 	snapRotateInput.SetValue(editor->translator.rotate_snap / XM_PI * 180);
-	snapRotateInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapRotateInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		editor->translator.rotate_snap = args.fValue / 180.0f * XM_PI;
 		});
 	AddWidget(&snapRotateInput);
@@ -355,7 +353,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	snapTranslateInput.SetPos(XMFLOAT2(x, y += step));
 	snapTranslateInput.SetSize(XMFLOAT2(siz, hei));
 	snapTranslateInput.SetValue(editor->translator.translate_snap);
-	snapTranslateInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	snapTranslateInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		editor->translator.translate_snap = args.fValue;
 		});
 	AddWidget(&snapTranslateInput);
@@ -364,7 +362,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetTranslationButton.SetText("X");
 	resetTranslationButton.SetTooltip("Reset translation");
 	resetTranslationButton.SetSize(XMFLOAT2(hei, hei));
-	resetTranslationButton.OnClick([=](wi::gui::EventArgs args) {
+	resetTranslationButton.OnClick([=](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -378,7 +376,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetScaleButton.SetText("X");
 	resetScaleButton.SetTooltip("Reset scale");
 	resetScaleButton.SetSize(XMFLOAT2(hei, hei));
-	resetScaleButton.OnClick([=](wi::gui::EventArgs args) {
+	resetScaleButton.OnClick([=](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -392,7 +390,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetScaleUniformButton.SetText("X");
 	resetScaleUniformButton.SetTooltip("Reset scale");
 	resetScaleUniformButton.SetSize(XMFLOAT2(hei, hei));
-	resetScaleUniformButton.OnClick([=](wi::gui::EventArgs args) {
+	resetScaleUniformButton.OnClick([=](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -406,7 +404,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	resetRotationButton.SetText("X");
 	resetRotationButton.SetTooltip("Reset rotation");
 	resetRotationButton.SetSize(XMFLOAT2(hei, hei));
-	resetRotationButton.OnClick([=](wi::gui::EventArgs args) {
+	resetRotationButton.OnClick([=](Protean::Gui::EventArgs args) {
 		TransformComponent* transform = editor->GetCurrentScene().transforms.GetComponent(entity);
 		if (transform != nullptr)
 		{
@@ -419,7 +417,7 @@ void TransformWindow::Create(EditorComponent* _editor)
 	applyScaleToObjectButton.Create("Apply Scale to Object");
 	applyScaleToObjectButton.SetTooltip("Recomputes the vertex positions of child object meshes, morph target positions, and armature bones to apply the current transform scale");
 	applyScaleToObjectButton.SetSize(XMFLOAT2(wid + hei + 1, hei));
-	applyScaleToObjectButton.OnClick([=](wi::gui::EventArgs args) {
+	applyScaleToObjectButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		TransformComponent* transform = scene.transforms.GetComponent(entity);
 		if (transform == nullptr)
@@ -429,16 +427,16 @@ void TransformWindow::Create(EditorComponent* _editor)
 		if (scale.x == 1.0f && scale.y == 1.0f && scale.z == 1.0f)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
-		wi::vector<Entity> entities_to_process;
+		Protean::vector<Entity> entities_to_process;
 		entities_to_process.push_back(entity);
 		scene.GatherChildren(entity, entities_to_process);
 
-		wi::unordered_set<Entity> processed_meshes;
-		wi::unordered_set<Entity> processed_armatures;
+		Protean::unordered_set<Entity> processed_meshes;
+		Protean::unordered_set<Entity> processed_armatures;
 
 		for (Entity e : entities_to_process)
 		{
@@ -569,7 +567,7 @@ void TransformWindow::SetEntity(Entity entity)
 		tyInput.SetValue(transform->translation_local.y);
 		tzInput.SetValue(transform->translation_local.z);
 
-		XMFLOAT3 roll_pitch_yaw = wi::math::QuaternionToRollPitchYaw(transform->rotation_local);
+		XMFLOAT3 roll_pitch_yaw = Protean::Math::QuaternionToRollPitchYaw(transform->rotation_local);
 		rollInput.SetValue(roll_pitch_yaw.x / XM_PI * 180.0f);
 		pitchInput.SetValue(roll_pitch_yaw.y / XM_PI * 180.0f);
 		yawInput.SetValue(roll_pitch_yaw.z / XM_PI * 180.0f);
@@ -594,7 +592,7 @@ void TransformWindow::SetEntity(Entity entity)
 
 void TransformWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(clearButton);

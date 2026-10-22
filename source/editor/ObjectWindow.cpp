@@ -4,9 +4,7 @@
 
 #include "xatlas.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 static void SetPixel(uint8_t *dest, int destWidth, int x, int y, const uint8_t *color)
 {
 	uint8_t *pixel = &dest[x * 4 + y * (destWidth * 4)];
@@ -89,7 +87,7 @@ static Atlas_Dim GenerateMeshAtlas(Scene& scene, Entity entity, uint32_t resolut
 		mesh.indexFormat = xatlas::IndexFormat::UInt32;
 		xatlas::AddMeshError error = xatlas::AddMesh(atlas, mesh);
 		if (error != xatlas::AddMeshError::Success) {
-			wi::helper::messageBox(xatlas::StringForEnum(error), "Adding mesh to xatlas failed!");
+			Protean::Helper::messageBox(xatlas::StringForEnum(error), "Adding mesh to xatlas failed!");
 			return dim;
 		}
 	}
@@ -116,19 +114,19 @@ static Atlas_Dim GenerateMeshAtlas(Scene& scene, Entity entity, uint32_t resolut
 		// Note: we must recreate all vertex buffers, because the index buffer will be different (the atlas could have removed shared vertices)
 		meshcomponent.indices.clear();
 		meshcomponent.indices.resize(mesh.indexCount);
-		wi::vector<XMFLOAT3> positions(mesh.vertexCount);
-		wi::vector<XMFLOAT2> atlas(mesh.vertexCount);
-		wi::vector<XMFLOAT3> normals;
-		wi::vector<uint8_t> winds;
-		wi::vector<XMFLOAT4> tangents;
-		wi::vector<XMFLOAT2> uvset_0;
-		wi::vector<XMFLOAT2> uvset_1;
-		wi::vector<uint32_t> colors;
-		wi::vector<XMUINT4> boneindices;
-		wi::vector<XMFLOAT4> boneweights;
-		wi::vector<XMUINT4> boneindices2;
-		wi::vector<XMFLOAT4> boneweights2;
-		wi::vector<float> softbodyweights;
+		Protean::vector<XMFLOAT3> positions(mesh.vertexCount);
+		Protean::vector<XMFLOAT2> atlas(mesh.vertexCount);
+		Protean::vector<XMFLOAT3> normals;
+		Protean::vector<uint8_t> winds;
+		Protean::vector<XMFLOAT4> tangents;
+		Protean::vector<XMFLOAT2> uvset_0;
+		Protean::vector<XMFLOAT2> uvset_1;
+		Protean::vector<uint32_t> colors;
+		Protean::vector<XMUINT4> boneindices;
+		Protean::vector<XMFLOAT4> boneweights;
+		Protean::vector<XMUINT4> boneindices2;
+		Protean::vector<XMFLOAT4> boneweights2;
+		Protean::vector<float> softbodyweights;
 		if (!meshcomponent.vertex_normals.empty())
 		{
 			normals.resize(mesh.vertexCount);
@@ -324,13 +322,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_OBJECT " Object", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_OBJECT " Object", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 980));
 
 	closeButton.SetTooltip("Delete ObjectComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -349,13 +347,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 	meshCombo.Create("Mesh: ");
 	meshCombo.SetSize(XMFLOAT2(wid, hei));
-	meshCombo.OnSelect([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	meshCombo.OnSelect([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		ObjectComponent* object = scene.objects.GetComponent(entity);
 		if (object == nullptr)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -367,7 +365,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				ObjectComponent* object = scene.objects.GetComponent(x.entity);
@@ -406,7 +404,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	navmeshCheckBox.OnClick(forEachSelected([this] (auto object, auto args) {
 		if (args.bValue)
 		{
-			object->filterMask |= wi::enums::FILTER_NAVIGATION_MESH;
+			object->filterMask |= Protean::FILTER_NAVIGATION_MESH;
 
 			auto& scene = editor->GetCurrentScene();
 			MeshComponent* mesh = scene.meshes.GetComponent(object->meshID);
@@ -417,7 +415,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			object->filterMask &= ~wi::enums::FILTER_NAVIGATION_MESH;
+			object->filterMask &= ~Protean::FILTER_NAVIGATION_MESH;
 		}
 	}));
 	AddWidget(&navmeshCheckBox);
@@ -540,7 +538,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	lightmapPreviewButton.SetVisible(false);
 	for (auto& x : lightmapPreviewButton.sprites)
 	{
-		x.params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
+		x.params.blendFlag = Protean::BLENDMODE_OPAQUE;
 	}
 	AddWidget(&lightmapPreviewButton);
 
@@ -548,8 +546,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	lightmapResolutionSlider.SetTooltip("Set the approximate resolution for this object's lightmap. This will be packed into the larger global lightmap later.");
 	lightmapResolutionSlider.SetSize(XMFLOAT2(wid, hei));
 	lightmapResolutionSlider.SetPos(XMFLOAT2(x, y += step));
-	lightmapResolutionSlider.OnSlide([this](wi::gui::EventArgs args) {
-		lightmapResolutionSlider.SetValue(float(wi::math::GetNextPowerOfTwo(uint32_t(args.fValue))));
+	lightmapResolutionSlider.OnSlide([this](Protean::Gui::EventArgs args) {
+		lightmapResolutionSlider.SetValue(float(Protean::Math::GetNextPowerOfTwo(uint32_t(args.fValue))));
 	});
 	AddWidget(&lightmapResolutionSlider);
 
@@ -578,7 +576,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	generateLightmapButton.SetTooltip("Render the lightmap for only this object. It will automatically combined with the global lightmap.");
 	generateLightmapButton.SetPos(XMFLOAT2(x, y += step));
 	generateLightmapButton.SetSize(XMFLOAT2(wid, hei));
-	generateLightmapButton.OnClick([this](wi::gui::EventArgs args) {
+	generateLightmapButton.OnClick([this](Protean::Gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 
@@ -591,8 +589,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 		};
 		UV_GEN_TYPE gen_type = (UV_GEN_TYPE)lightmapSourceUVSetComboBox.GetSelected();
 
-		wi::unordered_set<ObjectComponent*> gen_objects;
-		wi::unordered_map<Entity, Atlas_Dim> gen_meshes;
+		Protean::unordered_set<ObjectComponent*> gen_objects;
+		Protean::unordered_map<Entity, Atlas_Dim> gen_meshes;
 
 		for (auto& x : this->editor->translator.selected)
 		{
@@ -610,7 +608,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 		}
 
-		wi::jobsystem::context ctx;
+		Protean::JobSystem::context ctx;
 
 		for (auto& it : gen_meshes)
 		{
@@ -627,12 +625,12 @@ void ObjectWindow::Create(EditorComponent* _editor)
 			}
 			else if (gen_type == UV_GEN_GENERATE_ATLAS)
 			{
-				wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [&](Protean::JobSystem::JobArgs args) {
 					it.second = GenerateMeshAtlas(scene, it.first, (uint32_t)lightmapResolutionSlider.GetValue());
 				});
 			}
 		}
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
 		for (auto& x : gen_objects)
 		{
@@ -681,13 +679,13 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	vertexAOButton.SetPos(XMFLOAT2(x, y += step));
 	vertexAOButton.SetSize(XMFLOAT2(wid, hei));
 	vertexAOButton.SetLocalizationEnabled(false);
-	vertexAOButton.OnClick([this](wi::gui::EventArgs args) {
+	vertexAOButton.OnClick([this](Protean::Gui::EventArgs args) {
 		const Scene& scene = editor->GetCurrentScene();
 
 		// Build BVHs for everything selected:
 		if (!deleteAOMode)
 		{
-			wi::Timer timer;
+			Protean::Timer timer;
 			for (auto& x : this->editor->translator.selected)
 			{
 				ObjectComponent* objectcomponent = scene.objects.GetComponent(x.entity);
@@ -703,7 +701,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 					}
 				}
 			}
-			wi::backlog::post("Building BVHs for vertex AO took " + wi::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
+			Protean::Backlog::post("Building BVHs for vertex AO took " + Protean::Helper::GetTimerDurationText((float)timer.elapsed_seconds()));
 		}
 
 		for (auto& x : this->editor->translator.selected)
@@ -722,35 +720,35 @@ void ObjectWindow::Create(EditorComponent* _editor)
 						continue;
 					if (meshcomponent->vertex_normals.size() != meshcomponent->vertex_positions.size())
 						continue;
-					wi::Timer timer;
-					using namespace wi::primitive;
+					Protean::Timer timer;
+					using namespace Protean;
 					objectcomponent->vertex_ao.resize(meshcomponent->vertex_positions.size());
 					const size_t objectcomponentIndex = scene.objects.GetIndex(x.entity);
 
-					uint32_t groupSizePerCore = wi::jobsystem::DispatchGroupCount((uint32_t)objectcomponent->vertex_ao.size(), wi::jobsystem::GetThreadCount());
+					uint32_t groupSizePerCore = Protean::JobSystem::DispatchGroupCount((uint32_t)objectcomponent->vertex_ao.size(), Protean::JobSystem::GetThreadCount());
 
-					wi::jobsystem::context ctx;
-					wi::jobsystem::Dispatch(ctx, (uint32_t)objectcomponent->vertex_ao.size(), groupSizePerCore, [&](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::context ctx;
+					Protean::JobSystem::Dispatch(ctx, (uint32_t)objectcomponent->vertex_ao.size(), groupSizePerCore, [&](Protean::JobSystem::JobArgs args) {
 						XMFLOAT3 position = meshcomponent->vertex_positions[args.jobIndex];
 						XMFLOAT3 normal = meshcomponent->vertex_normals[args.jobIndex];
 						const XMMATRIX W = XMLoadFloat4x4(&scene.matrix_objects[objectcomponentIndex]);
 						XMStoreFloat3(&position, XMVector3Transform(XMLoadFloat3(&position), W));
 						XMStoreFloat3(&normal, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&normal), XMMatrixTranspose(XMMatrixInverse(nullptr, W)))));
-						const XMMATRIX TBN = wi::math::GetTangentSpace(normal);
+						const XMMATRIX TBN = Protean::Math::GetTangentSpace(normal);
 						float accum = 0;
 						const uint32_t samplecount = (uint32_t)vertexAORayCountSlider.GetValue();
 						const float raylength = vertexAORayLengthSlider.GetValue();
 						const XMVECTOR rayOrigin = XMLoadFloat3(&position);
 						for (uint32_t sam = 0; sam < samplecount; ++sam)
 						{
-							XMFLOAT2 hamm = wi::math::Hammersley2D(sam, samplecount);
-							XMFLOAT3 hemi = wi::math::HemispherePoint_Cos(hamm.x, hamm.y);
+							XMFLOAT2 hamm = Protean::Math::Hammersley2D(sam, samplecount);
+							XMFLOAT3 hemi = Protean::Math::HemispherePoint_Cos(hamm.x, hamm.y);
 							XMVECTOR rayDirection = XMLoadFloat3(&hemi);
 							rayDirection = XMVector3TransformNormal(rayDirection, TBN);
 							rayDirection = XMVector3Normalize(rayDirection);
 							XMStoreFloat3(&hemi, rayDirection);
 
-							wi::primitive::Ray ray(position, hemi, 0.0001f, raylength);
+							Protean::Ray ray(position, hemi, 0.0001f, raylength);
 
 							bool hit = false;
 							for (size_t objectIndex = 0; (objectIndex < scene.aabb_objects.size()) && !hit; ++objectIndex)
@@ -786,7 +784,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 
 									float distance;
 									XMFLOAT2 bary;
-									if (wi::math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary, ray.TMin, ray.TMax))
+									if (Protean::Math::RayTriangleIntersects(rayOrigin_local, rayDirection_local, p0, p1, p2, distance, bary, ray.TMin, ray.TMax))
 										return true;
 									return false;
 								};
@@ -803,7 +801,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 										if (subset.indexCount == 0)
 											return false;
 										const MaterialComponent* material = scene.materials.GetComponent(subset.materialID);
-										if (material != nullptr && material->GetBlendMode() != wi::enums::BLENDMODE_OPAQUE)
+										if (material != nullptr && material->GetBlendMode() != Protean::BLENDMODE_OPAQUE)
 											return false;
 										const uint32_t indexOffset = subset.indexOffset;
 										if (intersect_triangle(subsetIndex, indexOffset, triangleIndex))
@@ -823,7 +821,7 @@ void ObjectWindow::Create(EditorComponent* _editor)
 										if (subset.indexCount == 0)
 											continue;
 										const MaterialComponent* material = scene.materials.GetComponent(subset.materialID);
-										if (material != nullptr && material->GetBlendMode() != wi::enums::BLENDMODE_OPAQUE)
+										if (material != nullptr && material->GetBlendMode() != Protean::BLENDMODE_OPAQUE)
 											continue;
 										const uint32_t indexOffset = subset.indexOffset;
 										const uint32_t triangleCount = subset.indexCount / 3;
@@ -842,8 +840,8 @@ void ObjectWindow::Create(EditorComponent* _editor)
 						accum /= float(samplecount);
 						objectcomponent->vertex_ao[args.jobIndex] = uint8_t(accum * 255);
 					});
-					wi::jobsystem::Wait(ctx);
-					wi::backlog::post("Vertex AO baking took " + wi::helper::GetTimerDurationText((float)timer.elapsed_seconds()));
+					Protean::JobSystem::Wait(ctx);
+					Protean::Backlog::post("Vertex AO baking took " + Protean::Helper::GetTimerDurationText((float)timer.elapsed_seconds()));
 				}
 				objectcomponent->CreateRenderData();
 			}
@@ -894,11 +892,11 @@ void ObjectWindow::Create(EditorComponent* _editor)
 	colorComboBox.SetTooltip("Choose the destination data of the color picker.");
 	AddWidget(&colorComboBox);
 
-	colorPicker.Create("Object Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Object Color", Protean::Gui::Window::WindowControls::NONE);
 	colorPicker.SetPos(XMFLOAT2(5, y += step));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(true);
-	colorPicker.OnColorChanged([this](wi::gui::EventArgs args) {
+	colorPicker.OnColorChanged([this](Protean::Gui::EventArgs args) {
 		ObjectComponent* object = editor->GetCurrentScene().objects.GetComponent(entity);
 		if (object != nullptr)
 		{
@@ -986,7 +984,7 @@ void ObjectWindow::SetEntity(Entity entity)
 		notVisibleInMainCameraCheckBox.SetCheck(object->IsNotVisibleInMainCamera());
 		notVisibleInReflectionsCheckBox.SetCheck(object->IsNotVisibleInReflections());
 		wetmapCheckBox.SetCheck(object->IsWetmapEnabled());
-		navmeshCheckBox.SetCheck(object->filterMask & wi::enums::FILTER_NAVIGATION_MESH);
+		navmeshCheckBox.SetCheck(object->filterMask & Protean::FILTER_NAVIGATION_MESH);
 		cascadeMaskSlider.SetValue((float)object->cascadeMask);
 		ditherSlider.SetValue(object->GetTransparency());
 		alphaRefSlider.SetValue(object->alphaRef);
@@ -1000,13 +998,13 @@ void ObjectWindow::SetEntity(Entity entity)
 		{
 		default:
 		case 0:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->color));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(object->color));
 			break;
 		case 1:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->emissiveColor));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(object->emissiveColor));
 			break;
 		case 2:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(object->rimHighlightColor));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(object->rimHighlightColor));
 			break;
 		}
 
@@ -1024,7 +1022,7 @@ void ObjectWindow::SetEntity(Entity entity)
 
 void ObjectWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 140;
 
 	layout.margin_left = 80;
@@ -1070,7 +1068,7 @@ void ObjectWindow::ResizeLayout()
 	{
 		if (object->lightmap.IsValid())
 		{
-			wi::Resource res;
+			Protean::Resource res;
 			res.SetTexture(object->lightmap);
 			lightmapPreviewButton.SetImage(res);
 			lightmapPreviewButton.SetVisible(true);

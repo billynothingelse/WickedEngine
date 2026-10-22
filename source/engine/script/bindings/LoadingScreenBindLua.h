@@ -4,7 +4,7 @@
 #include "render/LoadingScreen.h"
 #include "script/bindings/RenderPath2DBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	class LoadingScreen_BindLua : public RenderPath2D_BindLua

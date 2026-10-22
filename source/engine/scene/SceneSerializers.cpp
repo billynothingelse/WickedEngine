@@ -8,16 +8,16 @@
 #include "core/Vector.h"
 #include "render/shaders/ShaderInterop_DDGI.h"
 
-using namespace wi::ecs;
+using namespace Protean;
 
-namespace wi::scene
+namespace Protean
 {
 	struct DEPRECATED_PreviousFrameTransformComponent
 	{
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri) { /*this never serialized any data*/ }
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri) { /*this never serialized any data*/ }
 	};
 
-	void NameComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void NameComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -28,7 +28,7 @@ namespace wi::scene
 			archive << name;
 		}
 	}
-	void LayerComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void LayerComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -39,7 +39,7 @@ namespace wi::scene
 			archive << layerMask;
 		}
 	}
-	void TransformComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void TransformComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -59,7 +59,7 @@ namespace wi::scene
 			archive << translation_local;
 		}
 	}
-	void HierarchyComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void HierarchyComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		SerializeEntity(archive, parentID, seri);
 
@@ -77,7 +77,7 @@ namespace wi::scene
 			archive << layerMask_bind;
 		}
 	}
-	void MaterialComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void MaterialComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -279,7 +279,7 @@ namespace wi::scene
 				}
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				CreateRenderData();
 			});
 		}
@@ -320,19 +320,19 @@ namespace wi::scene
 			archive << texAnimFrameRate;
 			archive << texAnimElapsedTime;
 
-			archive << wi::helper::GetPathRelative(dir, textures[BASECOLORMAP].name);
-			archive << wi::helper::GetPathRelative(dir, textures[SURFACEMAP].name);
-			archive << wi::helper::GetPathRelative(dir, textures[NORMALMAP].name);
-			archive << wi::helper::GetPathRelative(dir, textures[DISPLACEMENTMAP].name);
+			archive << Protean::Helper::GetPathRelative(dir, textures[BASECOLORMAP].name);
+			archive << Protean::Helper::GetPathRelative(dir, textures[SURFACEMAP].name);
+			archive << Protean::Helper::GetPathRelative(dir, textures[NORMALMAP].name);
+			archive << Protean::Helper::GetPathRelative(dir, textures[DISPLACEMENTMAP].name);
 
 			if (archive.GetVersion() >= 24)
 			{
-				archive << wi::helper::GetPathRelative(dir, textures[EMISSIVEMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[EMISSIVEMAP].name);
 			}
 
 			if (archive.GetVersion() >= 28)
 			{
-				archive << wi::helper::GetPathRelative(dir, textures[OCCLUSIONMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[OCCLUSIONMAP].name);
 
 				archive << textures[BASECOLORMAP].uvset;
 				archive << textures[SURFACEMAP].uvset;
@@ -368,7 +368,7 @@ namespace wi::scene
 			if (archive.GetVersion() >= 59)
 			{
 				archive << transmission;
-				archive << wi::helper::GetPathRelative(dir, textures[TRANSMISSIONMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[TRANSMISSIONMAP].name);
 				archive << textures[TRANSMISSIONMAP].uvset;
 			}
 
@@ -376,16 +376,16 @@ namespace wi::scene
 			{
 				archive << sheenColor;
 				archive << sheenRoughness;
-				archive << wi::helper::GetPathRelative(dir, textures[SHEENCOLORMAP].name);
-				archive << wi::helper::GetPathRelative(dir, textures[SHEENROUGHNESSMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[SHEENCOLORMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[SHEENROUGHNESSMAP].name);
 				archive << textures[SHEENCOLORMAP].uvset;
 				archive << textures[SHEENROUGHNESSMAP].uvset;
 
 				archive << clearcoat;
 				archive << clearcoatRoughness;
-				archive << wi::helper::GetPathRelative(dir, textures[CLEARCOATMAP].name);
-				archive << wi::helper::GetPathRelative(dir, textures[CLEARCOATROUGHNESSMAP].name);
-				archive << wi::helper::GetPathRelative(dir, textures[CLEARCOATNORMALMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[CLEARCOATMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[CLEARCOATROUGHNESSMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[CLEARCOATNORMALMAP].name);
 				archive << textures[CLEARCOATMAP].uvset;
 				archive << textures[CLEARCOATROUGHNESSMAP].uvset;
 				archive << textures[CLEARCOATNORMALMAP].uvset;
@@ -393,7 +393,7 @@ namespace wi::scene
 
 			if (archive.GetVersion() >= 68)
 			{
-				archive << wi::helper::GetPathRelative(dir, textures[SPECULARMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[SPECULARMAP].name);
 				archive << textures[SPECULARMAP].uvset;
 			}
 
@@ -406,13 +406,13 @@ namespace wi::scene
 			{
 				archive << anisotropy_strength;
 				archive << anisotropy_rotation;
-				archive << wi::helper::GetPathRelative(dir, textures[ANISOTROPYMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[ANISOTROPYMAP].name);
 				archive << textures[ANISOTROPYMAP].uvset;
 			}
 
 			if (seri.GetVersion() >= 3)
 			{
-				archive << wi::helper::GetPathRelative(dir, textures[TRANSPARENCYMAP].name);
+				archive << Protean::Helper::GetPathRelative(dir, textures[TRANSPARENCYMAP].name);
 				archive << textures[TRANSPARENCYMAP].uvset;
 			}
 			if (seri.GetVersion() >= 4)
@@ -451,7 +451,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void MeshComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void MeshComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -540,7 +540,7 @@ namespace wi::scene
 				archive >> vertex_boneweights2;
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				CreateRenderData();
 
 				if (IsBVHEnabled())
@@ -634,7 +634,7 @@ namespace wi::scene
 
 		}
 	}
-	void ImpostorComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ImpostorComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -649,7 +649,7 @@ namespace wi::scene
 			archive << swapInDistance;
 		}
 	}
-	void ObjectComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ObjectComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -703,7 +703,7 @@ namespace wi::scene
 				archive >> rimHighlightFalloff;
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				CreateRenderData();
 			});
 		}
@@ -755,7 +755,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void RigidBodyPhysicsComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void RigidBodyPhysicsComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -929,7 +929,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void PhysicsConstraintComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void PhysicsConstraintComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1020,9 +1020,9 @@ namespace wi::scene
 			}
 		}
 	}
-	void SoftBodyPhysicsComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void SoftBodyPhysicsComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
-		wi::vector<uint32_t> graphicsToPhysicsVertexMapping;
+		Protean::vector<uint32_t> graphicsToPhysicsVertexMapping;
 
 		if (archive.IsReadMode())
 		{
@@ -1035,7 +1035,7 @@ namespace wi::scene
 
 			if (archive.GetVersion() >= 29 && archive.GetVersion() < 34)
 			{
-				wi::vector<XMFLOAT3> temp;
+				Protean::vector<XMFLOAT3> temp;
 				archive >> temp;
 			}
 
@@ -1067,7 +1067,7 @@ namespace wi::scene
 			{
 				// Convert weights from per-physics to per-graphics vertex:
 				//	Per graphics vertex is better, because regenerating soft body with different detail will keep the pinning
-				wi::vector<float> weights2(graphicsToPhysicsVertexMapping.size());
+				Protean::vector<float> weights2(graphicsToPhysicsVertexMapping.size());
 				for (size_t i = 0; i < weights2.size(); ++i)
 				{
 					weights2[i] = weights[graphicsToPhysicsVertexMapping[i]];
@@ -1112,7 +1112,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void ArmatureComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ArmatureComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1158,7 +1158,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void LightComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void LightComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -1228,14 +1228,14 @@ namespace wi::scene
 				SerializeEntity(archive, cameraSource, seri);
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				lensFlareRimTextures.resize(lensFlareNames.size());
 				for (size_t i = 0; i < lensFlareNames.size(); ++i)
 				{
 					if (!lensFlareNames[i].empty())
 					{
 						lensFlareNames[i] = dir + lensFlareNames[i];
-						lensFlareRimTextures[i] = wi::resourcemanager::Load(lensFlareNames[i]);
+						lensFlareRimTextures[i] = Protean::ResourceManager::Load(lensFlareNames[i]);
 					}
 				}
 			});
@@ -1266,12 +1266,12 @@ namespace wi::scene
 			}
 
 			// If detecting an absolute path in textures, remove it and convert to relative:
-			wi::vector<std::string> lensFlareNamesRelative = lensFlareNames;
+			Protean::vector<std::string> lensFlareNamesRelative = lensFlareNames;
 			if (!dir.empty())
 			{
 				for (size_t i = 0; i < lensFlareNamesRelative.size(); ++i)
 				{
-					wi::helper::MakePathRelative(dir, lensFlareNamesRelative[i]);
+					Protean::Helper::MakePathRelative(dir, lensFlareNamesRelative[i]);
 				}
 			}
 			archive << lensFlareNamesRelative;
@@ -1309,7 +1309,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void CameraComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void CameraComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1378,7 +1378,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void EnvironmentProbeComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void EnvironmentProbeComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -1416,7 +1416,7 @@ namespace wi::scene
 			if (seri.GetVersion() >= 1)
 			{
 				archive << resolution;
-				archive << wi::helper::GetPathRelative(dir, textureName);
+				archive << Protean::Helper::GetPathRelative(dir, textureName);
 			}
 
 			if (seri.GetVersion() >= 2)
@@ -1429,7 +1429,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void ForceFieldComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ForceFieldComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1455,7 +1455,7 @@ namespace wi::scene
 			archive << range;
 		}
 	}
-	void DecalComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void DecalComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1476,7 +1476,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void AnimationComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void AnimationComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1597,7 +1597,7 @@ namespace wi::scene
 			SerializeEntity(archive, rootMotionBone, seri);
 		}
 	}
-	void AnimationDataComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void AnimationDataComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -1612,7 +1612,7 @@ namespace wi::scene
 			archive << keyframe_data;
 		}
 	}
-	void WeatherComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void WeatherComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		std::string dir = archive.GetSourceDirectory();
 
@@ -1675,7 +1675,7 @@ namespace wi::scene
 				if (!skyMapName.empty())
 				{
 					skyMapName = dir + skyMapName;
-					skyMap = wi::resourcemanager::Load(skyMapName);
+					skyMap = Protean::ResourceManager::Load(skyMapName);
 				}
 			}
 			if (archive.GetVersion() >= 40)
@@ -1688,7 +1688,7 @@ namespace wi::scene
 				if (!colorGradingMapName.empty())
 				{
 					colorGradingMapName = dir + colorGradingMapName;
-					colorGradingMap = wi::resourcemanager::Load(colorGradingMapName, wi::resourcemanager::Flags::IMPORT_COLORGRADINGLUT);
+					colorGradingMap = Protean::ResourceManager::Load(colorGradingMapName, Protean::ResourceManager::Flags::IMPORT_COLORGRADINGLUT);
 				}
 			}
 
@@ -1820,7 +1820,7 @@ namespace wi::scene
 				if (!volumetricCloudsWeatherMapFirstName.empty())
 				{
 					volumetricCloudsWeatherMapFirstName = dir + volumetricCloudsWeatherMapFirstName;
-					volumetricCloudsWeatherMapFirst = wi::resourcemanager::Load(volumetricCloudsWeatherMapFirstName);
+					volumetricCloudsWeatherMapFirst = Protean::ResourceManager::Load(volumetricCloudsWeatherMapFirstName);
 				}
 			}
 
@@ -1830,7 +1830,7 @@ namespace wi::scene
 				if (!volumetricCloudsWeatherMapSecondName.empty())
 				{
 					volumetricCloudsWeatherMapSecondName = dir + volumetricCloudsWeatherMapSecondName;
-					volumetricCloudsWeatherMapSecond = wi::resourcemanager::Load(volumetricCloudsWeatherMapSecondName);
+					volumetricCloudsWeatherMapSecond = Protean::ResourceManager::Load(volumetricCloudsWeatherMapSecondName);
 				}
 
 				archive >> volumetricCloudParameters.layerFirst.curlNoiseHeightFraction;
@@ -1934,7 +1934,7 @@ namespace wi::scene
 
 			if (archive.GetVersion() >= 32)
 			{
-				archive << wi::helper::GetPathRelative(dir, skyMapName);
+				archive << Protean::Helper::GetPathRelative(dir, skyMapName);
 			}
 			if (archive.GetVersion() >= 40)
 			{
@@ -1942,7 +1942,7 @@ namespace wi::scene
 			}
 			if (archive.GetVersion() >= 62)
 			{
-				archive << wi::helper::GetPathRelative(dir, colorGradingMapName);
+				archive << Protean::Helper::GetPathRelative(dir, colorGradingMapName);
 			}
 
 			if (archive.GetVersion() >= 66)
@@ -2050,12 +2050,12 @@ namespace wi::scene
 
 			if (archive.GetVersion() >= 86)
 			{
-				archive << wi::helper::GetPathRelative(dir, volumetricCloudsWeatherMapFirstName);
+				archive << Protean::Helper::GetPathRelative(dir, volumetricCloudsWeatherMapFirstName);
 			}
 
 			if (archive.GetVersion() >= 88)
 			{
-				archive << wi::helper::GetPathRelative(dir, volumetricCloudsWeatherMapSecondName);
+				archive << Protean::Helper::GetPathRelative(dir, volumetricCloudsWeatherMapSecondName);
 
 				archive << volumetricCloudParameters.layerFirst.curlNoiseHeightFraction;
 				archive << volumetricCloudParameters.layerFirst.skewAlongCoverageWindDirection;
@@ -2125,7 +2125,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void SoundComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void SoundComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -2144,11 +2144,11 @@ namespace wi::scene
 				archive >> soundinstance.loop_length;
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				if (!filename.empty())
 				{
 					filename = dir + filename;
-					soundResource = wi::resourcemanager::Load(filename);
+					soundResource = Protean::ResourceManager::Load(filename);
 					// Note: sound instance can't be created yet, as soundResource is not necessarily ready at this point
 					//	Consider when multiple threads are loading the same sound, one thread will be loading the data,
 					//	the others return early with the resource that will be containing the data once it has been loaded.
@@ -2160,7 +2160,7 @@ namespace wi::scene
 			seri.RegisterResource(filename);
 
 			archive << _flags;
-			archive << wi::helper::GetPathRelative(dir, filename);
+			archive << Protean::Helper::GetPathRelative(dir, filename);
 			archive << volume;
 			archive << soundinstance.type;
 
@@ -2173,7 +2173,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void VideoComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void VideoComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -2192,11 +2192,11 @@ namespace wi::scene
 				archive >> volume;
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				if (!filename.empty())
 				{
 					filename = dir + filename;
-					videoResource = wi::resourcemanager::Load(filename);
+					videoResource = Protean::ResourceManager::Load(filename);
 					// Note: video instance can't be created yet, as videoResource is not necessarily ready at this point
 					//	Consider when multiple threads are loading the same sound, one thread will be loading the data,
 					//	the others return early with the resource that will be containing the data once it has been loaded.
@@ -2208,7 +2208,7 @@ namespace wi::scene
 			seri.RegisterResource(filename);
 
 			archive << _flags;
-			archive << wi::helper::GetPathRelative(dir, filename);
+			archive << Protean::Helper::GetPathRelative(dir, filename);
 
 			if (seri.GetVersion() >= 1)
 			{
@@ -2222,7 +2222,7 @@ namespace wi::scene
 
 		}
 	}
-	void InverseKinematicsComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void InverseKinematicsComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		SerializeEntity(archive, target, seri);
 
@@ -2239,7 +2239,7 @@ namespace wi::scene
 			archive << iteration_count;
 		}
 	}
-	void SpringComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void SpringComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2272,7 +2272,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void ColliderComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ColliderComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2304,7 +2304,7 @@ namespace wi::scene
 			archive << tail;
 		}
 	}
-	void ScriptComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ScriptComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -2318,7 +2318,7 @@ namespace wi::scene
 				Play();
 			}
 
-			wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 				CreateFromFile(dir + filename);
 				});
 		}
@@ -2327,10 +2327,10 @@ namespace wi::scene
 			seri.RegisterResource(filename);
 
 			archive << _flags;
-			archive << wi::helper::GetPathRelative(dir, filename);
+			archive << Protean::Helper::GetPathRelative(dir, filename);
 		}
 	}
-	void ExpressionComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void ExpressionComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2419,7 +2419,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void HumanoidComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void HumanoidComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		XMFLOAT3 default_look_direction = XMFLOAT3(0, 0, 1);
 		if (archive.IsReadMode())
@@ -2485,7 +2485,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void MetadataComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void MetadataComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2576,7 +2576,7 @@ namespace wi::scene
 			}
 		}
 	}
-	void CharacterComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void CharacterComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2597,7 +2597,7 @@ namespace wi::scene
 			archive << scale;
 		}
 	}
-	void SplineComponent::Serialize(wi::Archive& archive, EntitySerializer& seri)
+	void SplineComponent::Serialize(Protean::Archive& archive, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -2659,9 +2659,9 @@ namespace wi::scene
 		}
 	}
 
-	void Scene::Serialize(wi::Archive& archive)
+	void Scene::Serialize(Protean::Archive& archive)
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		if (archive.IsReadMode())
 		{
@@ -2685,7 +2685,7 @@ namespace wi::scene
 				archive >> jump_before;
 				archive >> jump_after;
 				original_pos = archive.GetPos();
-				archive.Jump(jump_before); // jump before resourcemanager::Serialize_WRITE
+				archive.Jump(jump_before); // jump before ResourceManager::Serialize_WRITE
 			}
 			else
 			{
@@ -2695,10 +2695,10 @@ namespace wi::scene
 		}
 
 		// Keeping this alive to keep serialized resources alive until entity serialization ends:
-		wi::resourcemanager::ResourceSerializer resource_seri;
+		Protean::ResourceManager::ResourceSerializer resource_seri;
 		if (archive.IsReadMode() && archive.GetVersion() >= 63)
 		{
-			wi::resourcemanager::Serialize_READ(archive, resource_seri);
+			Protean::ResourceManager::Serialize_READ(archive, resource_seri);
 			if (archive.GetVersion() >= 90)
 			{
 				// After resource serialization, jump back to entity serialization area:
@@ -2708,7 +2708,7 @@ namespace wi::scene
 
 		// With this we will ensure that serialized entities are unique and persistent across the scene:
 		EntitySerializer seri;
-		seri.ctx.priority = wi::jobsystem::Priority::Low; // serialization tasks will be low priority to not block rendering if scene loading is asynchronous
+		seri.ctx.priority = Protean::JobSystem::Priority::Low; // serialization tasks will be low priority to not block rendering if scene loading is asynchronous
 
 		if(archive.GetVersion() >= 84)
 		{
@@ -2731,7 +2731,7 @@ namespace wi::scene
 			meshes.Serialize(archive, seri);
 			impostors.Serialize(archive, seri);
 			objects.Serialize(archive, seri);
-			ComponentManager<wi::primitive::AABB> aabbs_tmp; // no longer needed from serializer
+			ComponentManager<Protean::AABB> aabbs_tmp; // no longer needed from serializer
 			aabbs_tmp.Serialize(archive, seri);
 			rigidbodies.Serialize(archive, seri);
 			softbodies.Serialize(archive, seri);
@@ -2798,7 +2798,7 @@ namespace wi::scene
 		FixupNans();
 #endif // _DEBUG
 
-		wi::jobsystem::Wait(seri.ctx); // This is needed before emitter material fixup that is below, because material CreateRenderDatas might be pending!
+		Protean::JobSystem::Wait(seri.ctx); // This is needed before emitter material fixup that is below, because material CreateRenderDatas might be pending!
 
 		// Fixup old emittedparticle distortion basecolor slot -> normalmap slot
 		if (archive.GetVersion() < 89)
@@ -2821,12 +2821,12 @@ namespace wi::scene
 		{
 			if (archive.IsReadMode())
 			{
-				archive.Jump(jump_after); // jump after resourcemanager::Serialize_WRITE
+				archive.Jump(jump_after); // jump after ResourceManager::Serialize_WRITE
 			}
 			else
 			{
 				archive.PatchUnknownJumpPosition(jump_before);
-				wi::resourcemanager::Serialize_WRITE(archive, seri.resource_registration);
+				Protean::ResourceManager::Serialize_WRITE(archive, seri.resource_registration);
 				archive.PatchUnknownJumpPosition(jump_after);
 			}
 		}
@@ -2834,9 +2834,9 @@ namespace wi::scene
 		wilog("Scene::Serialize took %.2f seconds", timer.elapsed_seconds());
 	}
 
-	void Scene::DDGI::Serialize(wi::Archive& archive)
+	void Scene::DDGI::Serialize(Protean::Archive& archive)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 		GraphicsDevice* device = GetDevice();
 
 		if (archive.IsReadMode())
@@ -2851,7 +2851,7 @@ namespace wi::scene
 				archive >> smooth_backface;
 			}
 
-			wi::vector<uint8_t> data;
+			Protean::vector<uint8_t> data;
 
 			// color texture:
 			archive >> data;
@@ -2894,7 +2894,7 @@ namespace wi::scene
 
 				if (!data.empty())
 				{
-					wi::backlog::post("Found older DDGI data in the scene which is now incompatible. Please recompute the DDGI if you need it.", wi::backlog::LogLevel::Warning);
+					Protean::Backlog::post("Found older DDGI data in the scene which is now incompatible. Please recompute the DDGI if you need it.", Protean::Backlog::LogLevel::Warning);
 					depth_texture = {};
 					probe_buffer = {};
 				}
@@ -2912,19 +2912,19 @@ namespace wi::scene
 				archive << smooth_backface;
 			}
 
-			wi::vector<uint8_t> data;
+			Protean::vector<uint8_t> data;
 
 			// Save probe buffer:
 			if (probe_buffer.IsValid())
 			{
-				wi::helper::saveBufferToMemory(probe_buffer, data);
+				Protean::Helper::saveBufferToMemory(probe_buffer, data);
 			}
 			archive << data;
 
 			data.clear();
 			if (depth_texture.IsValid())
 			{
-				bool success = wi::helper::saveTextureToMemory(depth_texture, data);
+				bool success = Protean::Helper::saveTextureToMemory(depth_texture, data);
 				assert(success);
 			}
 			archive << data;
@@ -2933,7 +2933,7 @@ namespace wi::scene
 
 	Entity Entity_Serialize_Internal(
 		Scene& scene,
-		wi::Archive& archive,
+		Protean::Archive& archive,
 		EntitySerializer& seri,
 		Entity entity,
 		Scene::EntitySerializeFlags flags
@@ -2957,7 +2957,7 @@ namespace wi::scene
 				// Wait the job system, because from this point, component managers could be resized
 				//	due to more serialization tasks in recursive operation
 				//	The pointers must not be invalidated while serialization jobs are not finished
-				wi::jobsystem::Wait(seri.ctx);
+				Protean::JobSystem::Wait(seri.ctx);
 
 				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
 				{
@@ -2984,13 +2984,13 @@ namespace wi::scene
 				// Wait the job system, because from this point, component managers could be resized
 				//	due to more serialization tasks in recursive operation
 				//	The pointers must not be invalidated while serialization jobs are not finished
-				wi::jobsystem::Wait(seri.ctx);
+				Protean::JobSystem::Wait(seri.ctx);
 
 				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
 				{
 					// Recursive serialization for all children:
 					seri.allow_remap = restore_remap;
-					wi::vector<Entity> children;
+					Protean::vector<Entity> children;
 					for (size_t i = 0; i < scene.hierarchy.GetCount(); ++i)
 					{
 						const HierarchyComponent& hier = scene.hierarchy[i];
@@ -3103,7 +3103,7 @@ namespace wi::scene
 					archive >> component_exists;
 					if (component_exists)
 					{
-						auto component = wi::primitive::AABB(); // no longer needed to be serialized
+						auto component = Protean::AABB(); // no longer needed to be serialized
 						component.Serialize(archive, seri);
 					}
 				}
@@ -3148,7 +3148,7 @@ namespace wi::scene
 					archive >> component_exists;
 					if (component_exists)
 					{
-						auto component = wi::primitive::AABB(); // no longer needed to be serialized
+						auto component = Protean::AABB(); // no longer needed to be serialized
 						component.Serialize(archive, seri);
 					}
 				}
@@ -3175,7 +3175,7 @@ namespace wi::scene
 					archive >> component_exists;
 					if (component_exists)
 					{
-						auto component = wi::primitive::AABB(); // no longer needed to be serialized
+						auto component = Protean::AABB(); // no longer needed to be serialized
 						component.Serialize(archive, seri);
 					}
 				}
@@ -3202,7 +3202,7 @@ namespace wi::scene
 					archive >> component_exists;
 					if (component_exists)
 					{
-						auto component = wi::primitive::AABB(); // no longer needed to be serialized
+						auto component = Protean::AABB(); // no longer needed to be serialized
 						component.Serialize(archive, seri);
 					}
 				}
@@ -3286,7 +3286,7 @@ namespace wi::scene
 				// Wait the job system, because from this point, component managers could be resized
 				//	due to more serialization tasks in recursive operation
 				//	The pointers must not be invalidated while serialization jobs are not finished
-				wi::jobsystem::Wait(seri.ctx);
+				Protean::JobSystem::Wait(seri.ctx);
 
 				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
 				{
@@ -3619,13 +3619,13 @@ namespace wi::scene
 				// Wait the job system, because from this point, component managers could be resized
 				//	due to more serialization tasks in recursive operation
 				//	The pointers must not be invalidated while serialization jobs are not finished
-				wi::jobsystem::Wait(seri.ctx);
+				Protean::JobSystem::Wait(seri.ctx);
 
 				if (archive.GetVersion() >= 72 && has_flag(flags, Scene::EntitySerializeFlags::RECURSIVE))
 				{
 					// Recursive serialization for all children:
 					seri.allow_remap = restore_remap;
-					wi::vector<Entity> children;
+					Protean::vector<Entity> children;
 					for (size_t i = 0; i < scene.hierarchy.GetCount(); ++i)
 					{
 						const HierarchyComponent& hier = scene.hierarchy[i];
@@ -3649,7 +3649,7 @@ namespace wi::scene
 	}
 
 	Entity Scene::Entity_Serialize(
-		wi::Archive& archive,
+		Protean::Archive& archive,
 		EntitySerializer& seri,
 		Entity entity,
 		EntitySerializeFlags flags
@@ -3666,7 +3666,7 @@ namespace wi::scene
 				archive >> jump_before;
 				archive >> jump_after;
 				original_pos = archive.GetPos();
-				archive.Jump(jump_before); // jump before resourcemanager::Serialize_WRITE
+				archive.Jump(jump_before); // jump before ResourceManager::Serialize_WRITE
 			}
 			else
 			{
@@ -3676,10 +3676,10 @@ namespace wi::scene
 		}
 
 		// Keeping this alive to keep serialized resources alive until entity serialization ends:
-		wi::resourcemanager::ResourceSerializer resource_seri;
+		Protean::ResourceManager::ResourceSerializer resource_seri;
 		if (archive.IsReadMode() && archive.GetVersion() >= 90)
 		{
-			wi::resourcemanager::Serialize_READ(archive, resource_seri);
+			Protean::ResourceManager::Serialize_READ(archive, resource_seri);
 			// After resource serialization, jump back to entity serialization area:
 			archive.Jump(original_pos); // jump back to entity serialize
 		}
@@ -3696,12 +3696,12 @@ namespace wi::scene
 		{
 			if (archive.IsReadMode())
 			{
-				archive.Jump(jump_after); // jump after resourcemanager::Serialize_WRITE
+				archive.Jump(jump_after); // jump after ResourceManager::Serialize_WRITE
 			}
 			else
 			{
 				archive.PatchUnknownJumpPosition(jump_before);
-				wi::resourcemanager::Serialize_WRITE(archive, seri.resource_registration);
+				Protean::ResourceManager::Serialize_WRITE(archive, seri.resource_registration);
 				archive.PatchUnknownJumpPosition(jump_after);
 			}
 		}

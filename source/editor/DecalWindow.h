@@ -1,19 +1,19 @@
 #pragma once
 class EditorComponent;
 
-class DecalWindow : public wi::gui::Window
+class DecalWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::CheckBox placementCheckBox;
-	wi::gui::CheckBox onlyalphaCheckBox;
-	wi::gui::Slider slopeBlendPowerSlider;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::CheckBox placementCheckBox;
+	Protean::Gui::CheckBox onlyalphaCheckBox;
+	Protean::Gui::Slider slopeBlendPowerSlider;
 
 	void ResizeLayout() override;
 };

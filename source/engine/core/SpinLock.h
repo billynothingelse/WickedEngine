@@ -12,7 +12,7 @@
 #include <emmintrin.h> // _mm_pause()
 #endif // efined(_M_ARM64) || defined(__arm64__)
 
-namespace wi
+namespace Protean
 {
 	class SpinLock
 	{

@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace wi::physics
+namespace Protean::Physics
 {
 	// Initializes the physics engine
 	void Initialize();
@@ -56,43 +56,43 @@ namespace wi::physics
 
 	// Update the physics state, run simulation, etc.
 	void RunPhysicsUpdateSystem(
-		wi::jobsystem::context& ctx,
-		wi::scene::Scene& scene,
+		Protean::JobSystem::context& ctx,
+		Protean::Scene& scene,
 		float dt
 	);
 
 	// Teleport a dynamic rigid body:
 	void SetPosition(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& position
 	);
 	void SetPositionAndRotation(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& position,
 		const XMFLOAT4& rotation
 	);
 
 	// Set linear velocity to rigid body
 	void SetLinearVelocity(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& velocity
 	);
 	// Set angular velocity to rigid body
 	void SetAngularVelocity(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& velocity
 	);
 
-	XMFLOAT3 GetVelocity(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
-	XMFLOAT3 GetPosition(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
-	XMFLOAT4 GetRotation(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT3 GetVelocity(Protean::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT3 GetPosition(Protean::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT4 GetRotation(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
-	XMFLOAT3 GetCharacterGroundPosition(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
-	XMFLOAT3 GetCharacterGroundNormal(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
-	XMFLOAT3 GetCharacterGroundVelocity(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT3 GetCharacterGroundPosition(Protean::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT3 GetCharacterGroundNormal(Protean::RigidBodyPhysicsComponent& physicscomponent);
+	XMFLOAT3 GetCharacterGroundVelocity(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
 	// Returns true if character is standing on the ground or steep ground, false otherwise
-	bool IsCharacterGroundSupported(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
+	bool IsCharacterGroundSupported(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
 	enum class CharacterGroundStates
 	{
@@ -101,10 +101,10 @@ namespace wi::physics
 		NotSupported,	// Character is touching an object, but is not supported by it and should fall. The GetGroundXXX functions will return information about the touched object.
 		InAir,			// Character is in the air and is not touching anything.
 	};
-	CharacterGroundStates GetCharacterGroundState(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
+	CharacterGroundStates GetCharacterGroundState(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
 	// Tries to change the physics character's shape, returns tru if successful, false if character would be blocked with the new shape
-	bool ChangeCharacterShape(wi::scene::RigidBodyPhysicsComponent& physicscomponent, const wi::scene::RigidBodyPhysicsComponent::CapsuleParams& capsule);
+	bool ChangeCharacterShape(Protean::RigidBodyPhysicsComponent& physicscomponent, const Protean::RigidBodyPhysicsComponent::CapsuleParams& capsule);
 
 	// Apply movement logic to a physics character
 	//	movement_direction : a normalized or zero direction
@@ -112,7 +112,7 @@ namespace wi::physics
 	//	jump	: vertical jump speed (positive)
 	//	controlMovementDuringJump	: whether movement can be applied when character is in the air
 	void MoveCharacter(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& movement_direction,
 		float movement_speed = 6,
 		float jump = 0,
@@ -121,12 +121,12 @@ namespace wi::physics
 
 	// Apply force at body center
 	void ApplyForce(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& force
 	);
 	// Apply force at position
 	void ApplyForceAt(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& force,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
@@ -134,31 +134,31 @@ namespace wi::physics
 
 	// Apply impulse at body center
 	void ApplyImpulse(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& impulse
 	);
 	void ApplyImpulse(
-		wi::scene::HumanoidComponent& humanoid,
-		wi::scene::HumanoidComponent::HumanoidBone bone,
+		Protean::HumanoidComponent& humanoid,
+		Protean::HumanoidComponent::HumanoidBone bone,
 		const XMFLOAT3& impulse
 	);
 	// Apply impulse at position
 	void ApplyImpulseAt(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& impulse,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
 	);
 	void ApplyImpulseAt(
-		wi::scene::HumanoidComponent& humanoid,
-		wi::scene::HumanoidComponent::HumanoidBone bone,
+		Protean::HumanoidComponent& humanoid,
+		Protean::HumanoidComponent::HumanoidBone bone,
 		const XMFLOAT3& impulse,
 		const XMFLOAT3& at,
 		bool at_local = true // whether at is in local space of the body or not (global)
 	);
 
 	void ApplyTorque(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& torque
 	);
 
@@ -168,7 +168,7 @@ namespace wi::physics
 	//	brake:		Value between 0 and 1 indicating how strong the brake pedal is pressed
 	//	handbrake:	Value between 0 and 1 indicating how strong the hand brake is pulled (back brake for motorcycles)
 	void DriveVehicle(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		float forward,
 		float right = 0,
 		float brake = 0,
@@ -176,13 +176,13 @@ namespace wi::physics
 	);
 
 	// Signed velocity amount in forward direction
-	float GetVehicleForwardVelocity(wi::scene::RigidBodyPhysicsComponent& physicscomponent);
+	float GetVehicleForwardVelocity(Protean::RigidBodyPhysicsComponent& physicscomponent);
 
 	// Override all vehicle wheel transforms in world space
-	void OverrideWehicleWheelTransforms(wi::scene::Scene& scene);
+	void OverrideWehicleWheelTransforms(Protean::Scene& scene);
 
-	bool IsConstraintBroken(const wi::scene::PhysicsConstraintComponent& physicscomponent);
-	void SetConstraintBroken(wi::scene::PhysicsConstraintComponent& physicscomponent, bool broken = true);
+	bool IsConstraintBroken(const Protean::PhysicsConstraintComponent& physicscomponent);
+	void SetConstraintBroken(Protean::PhysicsConstraintComponent& physicscomponent, bool broken = true);
 
 	enum class ActivationState
 	{
@@ -190,55 +190,55 @@ namespace wi::physics
 		Inactive,
 	};
 	void SetActivationState(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		ActivationState state
 	);
 	void SetActivationState(
-		wi::scene::SoftBodyPhysicsComponent& physicscomponent,
+		Protean::SoftBodyPhysicsComponent& physicscomponent,
 		ActivationState state
 	);
-	void ActivateAllRigidBodies(wi::scene::Scene& scene);
+	void ActivateAllRigidBodies(Protean::Scene& scene);
 
 	// Request broadphase optimization to reclaim nodes from previously removed bodies
-	void OptimizeBroadPhase(wi::scene::Scene& scene);
+	void OptimizeBroadPhase(Protean::Scene& scene);
 
-	void ResetPhysicsObjects(wi::scene::Scene& scene);
+	void ResetPhysicsObjects(Protean::Scene& scene);
 
 	XMFLOAT3 GetSoftBodyNodePosition(
-		wi::scene::SoftBodyPhysicsComponent& physicscomponent,
+		Protean::SoftBodyPhysicsComponent& physicscomponent,
 		uint32_t physicsIndex
 	);
 
 	void SetGhostMode(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		bool value
 	);
 	void SetGhostMode(
-		wi::scene::HumanoidComponent& humanoid,
+		Protean::HumanoidComponent& humanoid,
 		bool value
 	);
-	void SetRagdollGhostMode(wi::scene::HumanoidComponent& humanoid, bool value);
+	void SetRagdollGhostMode(Protean::HumanoidComponent& humanoid, bool value);
 
 	struct RayIntersectionResult
 	{
-		wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
+		Protean::Entity entity = Protean::INVALID_ENTITY;
 		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 position_local = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 normal = XMFLOAT3(0, 0, 0);
-		wi::ecs::Entity humanoid_ragdoll_entity = wi::ecs::INVALID_ENTITY;
-		wi::scene::HumanoidComponent::HumanoidBone humanoid_bone = wi::scene::HumanoidComponent::HumanoidBone::Count;
+		Protean::Entity humanoid_ragdoll_entity = Protean::INVALID_ENTITY;
+		Protean::HumanoidComponent::HumanoidBone humanoid_bone = Protean::HumanoidComponent::HumanoidBone::Count;
 		int softbody_triangleID = -1;
 		const void* physicsobject = nullptr;
-		constexpr bool IsValid() const { return entity != wi::ecs::INVALID_ENTITY; }
+		constexpr bool IsValid() const { return entity != Protean::INVALID_ENTITY; }
 	};
 	RayIntersectionResult Intersects(
-		const wi::scene::Scene& scene,
-		wi::primitive::Ray ray
+		const Protean::Scene& scene,
+		Protean::Ray ray
 	);
 
 	struct PickDragOperation
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		inline bool IsValid() const { return internal_state != nullptr; }
 	};
 	enum class ConstraintType
@@ -247,8 +247,8 @@ namespace wi::physics
 		Point,	// Fixes the object to rotate around a point
 	};
 	void PickDrag(
-		const wi::scene::Scene& scene,
-		wi::primitive::Ray ray,
+		const Protean::Scene& scene,
+		Protean::Ray ray,
 		PickDragOperation& op,
 		ConstraintType constraint_type = ConstraintType::Fixed,
 		float break_distance = FLT_MAX
@@ -257,8 +257,8 @@ namespace wi::physics
 	// Create the shape immediately, useful when you want to do this from a thread
 	//	Otherwise this will be created on demand before it's used for the first time
 	void CreateRigidBodyShape(
-		wi::scene::RigidBodyPhysicsComponent& physicscomponent,
+		Protean::RigidBodyPhysicsComponent& physicscomponent,
 		const XMFLOAT3& scale_local = XMFLOAT3(1, 1, 1),
-		const wi::scene::MeshComponent* mesh = nullptr
+		const Protean::MeshComponent* mesh = nullptr
 	);
 }

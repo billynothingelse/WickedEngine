@@ -30,7 +30,7 @@ __asm__(".linker_option \"-framework\", \"CoreFoundation\"");
 __asm__(".linker_option \"-framework\", \"CoreGraphics\"");
 #endif // __APPLE__
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
 //#define RESOURCE_LOGGING
 
@@ -40,7 +40,7 @@ using namespace wi::graphics;
 #define resource_log(str,...)
 #endif // RESOURCE_LOGGING
 
-namespace wi
+namespace Protean
 {
 	struct StreamingTexture
 	{
@@ -62,14 +62,14 @@ namespace wi
 
 	struct ResourceInternal
 	{
-		resourcemanager::Flags flags = resourcemanager::Flags::NONE;
-		wi::graphics::Texture texture;
+		ResourceManager::Flags flags = ResourceManager::Flags::NONE;
+		Protean::Graphics::Texture texture;
 		int srgb_subresource = -1;
-		wi::audio::Sound sound;
+		Protean::Audio::Sound sound;
 		std::string script;
 		size_t script_hash = 0;
-		wi::video::Video video;
-		wi::vector<uint8_t> filedata;
+		Protean::Video::Video video;
+		Protean::vector<uint8_t> filedata;
 		int font_style = -1;
 
 		// Original filename:
@@ -88,22 +88,22 @@ namespace wi
 		uint32_t streaming_unload_delay = 0;
 
 		// Virtual texture things:
-		wi::graphics::GPUBuffer tile_pool;
-		wi::graphics::Texture texture_feedback;
-		wi::graphics::Texture texture_residency;
+		Protean::Graphics::GPUBuffer tile_pool;
+		Protean::Graphics::Texture texture_feedback;
+		Protean::Graphics::Texture texture_residency;
 	};
 
-	const wi::vector<uint8_t>& Resource::GetFileData() const
+	const Protean::vector<uint8_t>& Resource::GetFileData() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->filedata;
 	}
-	const wi::graphics::Texture& Resource::GetTexture() const
+	const Protean::Graphics::Texture& Resource::GetTexture() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->texture;
 	}
-	const wi::audio::Sound& Resource::GetSound() const
+	const Protean::Audio::Sound& Resource::GetSound() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->sound;
@@ -120,7 +120,7 @@ namespace wi
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->script_hash;
 	}
-	const wi::video::Video& Resource::GetVideo() const
+	const Protean::Video::Video& Resource::GetVideo() const
 	{
 		const ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		return resourceinternal->video;
@@ -143,29 +143,29 @@ namespace wi
 		return resourceinternal->font_style;
 	}
 
-	void Resource::SetFileData(const wi::vector<uint8_t>& data)
+	void Resource::SetFileData(const Protean::vector<uint8_t>& data)
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->filedata = data;
 	}
-	void Resource::SetFileData(wi::vector<uint8_t>&& data)
+	void Resource::SetFileData(Protean::vector<uint8_t>&& data)
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->filedata = std::move(data);
 	}
-	void Resource::SetTexture(const wi::graphics::Texture& texture, int srgb_subresource)
+	void Resource::SetTexture(const Protean::Graphics::Texture& texture, int srgb_subresource)
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->texture = texture;
@@ -175,18 +175,18 @@ namespace wi
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->tile_pool = tile_pool;
 		resourceinternal->texture_residency = residency;
 		resourceinternal->texture_feedback = feedback;
 	}
-	void Resource::SetSound(const wi::audio::Sound& sound)
+	void Resource::SetSound(const Protean::Audio::Sound& sound)
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->sound = sound;
@@ -195,16 +195,16 @@ namespace wi
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->script = script;
 	}
-	void Resource::SetVideo(const wi::video::Video& video)
+	void Resource::SetVideo(const Protean::Video::Video& video)
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->video = video;
@@ -214,7 +214,7 @@ namespace wi
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->timestamp = 0;
@@ -224,16 +224,16 @@ namespace wi
 	{
 		if (internal_state == nullptr)
 		{
-			internal_state = wi::allocator::make_shared<ResourceInternal>();
+			internal_state = Protean::Allocator::make_shared<ResourceInternal>();
 		}
 		ResourceInternal* resourceinternal = (ResourceInternal*)internal_state.get();
 		resourceinternal->streaming_resolution.fetch_or(resolution);
 	}
 
-	namespace resourcemanager
+	namespace ResourceManager
 	{
 		static std::mutex locker;
-		static wi::unordered_map<std::string, wi::allocator::weak_ptr<ResourceInternal>> resources;
+		static Protean::unordered_map<std::string, Protean::Allocator::weak_ptr<ResourceInternal>> resources;
 		static Mode mode = Mode::NO_EMBEDDING;
 
 		void SetMode(Mode param)
@@ -254,7 +254,7 @@ namespace wi
 			VIDEO_H264_RAW,
 			FONTSTYLE,
 		};
-		static const wi::unordered_map<std::string, DataType> types = {
+		static const Protean::unordered_map<std::string, DataType> types = {
 			{"JPG", DataType::IMAGE},
 			{"JPEG", DataType::IMAGE},
 			{"PNG", DataType::IMAGE},
@@ -271,9 +271,9 @@ namespace wi
 			{"H264", DataType::VIDEO_H264_RAW},
 			{"TTF", DataType::FONTSTYLE},
 		};
-		wi::vector<std::string> GetSupportedImageExtensions()
+		Protean::vector<std::string> GetSupportedImageExtensions()
 		{
-			wi::vector<std::string> ret;
+			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::IMAGE)
@@ -283,9 +283,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedSoundExtensions()
+		Protean::vector<std::string> GetSupportedSoundExtensions()
 		{
-			wi::vector<std::string> ret;
+			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::SOUND)
@@ -295,9 +295,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedVideoExtensions()
+		Protean::vector<std::string> GetSupportedVideoExtensions()
 		{
-			wi::vector<std::string> ret;
+			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::VIDEO_MP4 || x.second == DataType::VIDEO_H264_RAW)
@@ -307,9 +307,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedScriptExtensions()
+		Protean::vector<std::string> GetSupportedScriptExtensions()
 		{
-			wi::vector<std::string> ret;
+			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::SCRIPT)
@@ -319,9 +319,9 @@ namespace wi
 			}
 			return ret;
 		}
-		wi::vector<std::string> GetSupportedFontStyleExtensions()
+		Protean::vector<std::string> GetSupportedFontStyleExtensions()
 		{
-			wi::vector<std::string> ret;
+			Protean::vector<std::string> ret;
 			for (auto& x : types)
 			{
 				if (x.second == DataType::FONTSTYLE)
@@ -340,7 +340,7 @@ namespace wi
 			ResourceInternal* resource
 		)
 		{
-			std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(name));
+			std::string ext = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(name));
 			DataType type;
 
 			// dynamic type selection:
@@ -362,7 +362,7 @@ namespace wi
 			{
 			case DataType::IMAGE:
 			{
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 				if (!ext.compare("DDS"))
 				{
 					dds::Header header = dds::read_header(filedata, filesize);
@@ -493,7 +493,7 @@ namespace wi
 							desc.height = align(desc.height, GetFormatBlockSize(desc.format));
 						}
 
-						wi::vector<SubresourceData> initdata_heap;
+						Protean::vector<SubresourceData> initdata_heap;
 						SubresourceData initdata_stack[16] = {};
 						SubresourceData* initdata = nullptr;
 
@@ -509,7 +509,7 @@ namespace wi
 						}
 
 						const uint8_t* texturedata = filedata;
-						wi::vector<uint8_t> converted_texturedata_D3DFMT_R8G8B8;
+						Protean::vector<uint8_t> converted_texturedata_D3DFMT_R8G8B8;
 
 						if (ddsFormat == dds::D3DFMT_R8G8B8)
 						{
@@ -524,13 +524,13 @@ namespace wi
 							const size_t rgb_datasize = header.data_size();
 							const size_t pixelcount = rgb_datasize / sizeof(RGBPixel);
 							dds::write_header(&header, dds::DXGI_FORMAT_B8G8R8A8_UNORM, header.width(), header.height(), header.mip_levels(), header.array_size(), header.is_cubemap(), header.depth());
-							converted_texturedata_D3DFMT_R8G8B8.resize(sizeof(dds::Header) + sizeof(wi::Color) * pixelcount);
+							converted_texturedata_D3DFMT_R8G8B8.resize(sizeof(dds::Header) + sizeof(Protean::Color) * pixelcount);
 							texturedata = converted_texturedata_D3DFMT_R8G8B8.data();
-							wi::Color* rgba_data = (wi::Color*)(converted_texturedata_D3DFMT_R8G8B8.data() + header.data_offset());
+							Protean::Color* rgba_data = (Protean::Color*)(converted_texturedata_D3DFMT_R8G8B8.data() + header.data_offset());
 							for (size_t i = 0; i < pixelcount; ++i)
 							{
 								const RGBPixel& rgb = rgb_data[i];
-								rgba_data[i] = wi::Color(rgb.r, rgb.g, rgb.b, 255);
+								rgba_data[i] = Protean::Color(rgb.r, rgb.g, rgb.b, 255);
 							}
 						}
 
@@ -788,7 +788,7 @@ namespace wi
 								uint16_t r, g, b;
 							};
 							const Color3* color3 = (const Color3*)rgba;
-							wi::Color16* color4 = (wi::Color16*)malloc(width * height * sizeof(wi::Color16));
+							Protean::Color16* color4 = (Protean::Color16*)malloc(width * height * sizeof(Protean::Color16));
 							for (int i = 0; i < width * height; ++i)
 							{
 								color4[i].setR(color3[i].r);
@@ -834,7 +834,7 @@ namespace wi
 								uint8_t r, g, b;
 							};
 							const Color3* color3 = (const Color3*)rgba;
-							wi::Color* color4 = (wi::Color*)malloc(width * height * sizeof(wi::Color));
+							Protean::Color* color4 = (Protean::Color*)malloc(width * height * sizeof(Protean::Color));
 							for (int i = 0; i < width * height; ++i)
 							{
 								color4[i].setR(color3[i].r);
@@ -874,7 +874,7 @@ namespace wi
 								desc.height != 16 ||
 								format != Format::R8G8B8A8_UNORM)
 							{
-								wi::helper::messageBox("The Dimensions must be 256 x 16 for color grading LUT and format must be RGB or RGBA!", "Error");
+								Protean::Helper::messageBox("The Dimensions must be 256 x 16 for color grading LUT and format must be RGB or RGBA!", "Error");
 							}
 							else
 							{
@@ -939,7 +939,7 @@ namespace wi
 								);
 							}
 
-							wi::renderer::AddDeferredMIPGen(resource->texture, true);
+							Protean::Renderer::AddDeferredMIPGen(resource->texture, true);
 
 							if (has_flag(flags, Flags::IMPORT_BLOCK_COMPRESSED))
 							{
@@ -978,7 +978,7 @@ namespace wi
 									);
 								}
 
-								wi::renderer::AddDeferredBlockCompression(uncompressed_src, resource->texture);
+								Protean::Renderer::AddDeferredBlockCompression(uncompressed_src, resource->texture);
 							}
 						}
 					}
@@ -989,7 +989,7 @@ namespace wi
 
 			case DataType::SOUND:
 			{
-				success = wi::audio::CreateSound(filedata, filesize, &resource->sound);
+				success = Protean::Audio::CreateSound(filedata, filesize, &resource->sound);
 			}
 			break;
 
@@ -997,26 +997,26 @@ namespace wi
 			{
 				resource->script.resize(filesize);
 				std::memcpy(resource->script.data(), filedata, filesize);
-				resource->script_hash = wi::helper::string_hash(resource->script.c_str());
+				resource->script_hash = Protean::Helper::string_hash(resource->script.c_str());
 				success = true;
 			}
 			break;
 
 			case DataType::VIDEO_MP4:
 			{
-				success = wi::video::CreateVideoMP4(filedata, filesize, &resource->video);
+				success = Protean::Video::CreateVideoMP4(filedata, filesize, &resource->video);
 			}
 			break;
 
 			case DataType::VIDEO_H264_RAW:
 			{
-				success = wi::video::CreateVideoH264RAW(filedata, filesize, &resource->video);
+				success = Protean::Video::CreateVideoH264RAW(filedata, filesize, &resource->video);
 			}
 			break;
 
 			case DataType::FONTSTYLE:
 			{
-				resource->font_style = wi::font::AddFontStyle(name, filedata, filesize, true);
+				resource->font_style = Protean::Font::AddFontStyle(name, filedata, filesize, true);
 				success = resource->font_style >= 0;
 			}
 			break;
@@ -1043,22 +1043,22 @@ namespace wi
 		)
 		{
 			locker.lock();
-			wi::allocator::weak_ptr<ResourceInternal>& weak_resource = resources[name];
-			wi::allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
+			Protean::Allocator::weak_ptr<ResourceInternal>& weak_resource = resources[name];
+			Protean::Allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
 
 			uint64_t timestamp = 0;
 			if(!container_filename.empty())
 			{
-				timestamp = wi::helper::FileTimestamp(container_filename);
+				timestamp = Protean::Helper::FileTimestamp(container_filename);
 			}
 			else
 			{
-				timestamp = wi::helper::FileTimestamp(name);
+				timestamp = Protean::Helper::FileTimestamp(name);
 			}
 
 			if (resource == nullptr || resource->timestamp < timestamp)
 			{
-				resource = wi::allocator::make_shared<ResourceInternal>();
+				resource = Protean::Allocator::make_shared<ResourceInternal>();
 				resources[name] = resource;
 				resource->filename = name;
 
@@ -1106,7 +1106,7 @@ namespace wi
 			{
 				if (resource->filedata.empty())
 				{
-					if (!wi::helper::FileRead(resource->container_filename, resource->filedata, resource->container_filesize, resource->container_fileoffset))
+					if (!Protean::Helper::FileRead(resource->container_filename, resource->filedata, resource->container_filesize, resource->container_fileoffset))
 					{
 						resource.reset();
 						return Resource();
@@ -1164,16 +1164,16 @@ namespace wi
 			locker.unlock();
 		}
 
-		wi::jobsystem::context streaming_ctx;
-		wi::vector<wi::allocator::shared_ptr<ResourceInternal>> streaming_texture_jobs;
+		Protean::JobSystem::context streaming_ctx;
+		Protean::vector<Protean::Allocator::shared_ptr<ResourceInternal>> streaming_texture_jobs;
 		struct StreamingTextureReplace
 		{
-			wi::allocator::shared_ptr<ResourceInternal> resource;
+			Protean::Allocator::shared_ptr<ResourceInternal> resource;
 			Texture texture;
 			int srgb_subresource = -1;
 		};
 		std::mutex streaming_replacement_mutex;
-		wi::vector<StreamingTextureReplace> streaming_texture_replacements;
+		Protean::vector<StreamingTextureReplace> streaming_texture_replacements;
 		float streaming_threshold = 0.8f;
 		float streaming_fade_speed = 4;
 
@@ -1207,15 +1207,15 @@ namespace wi
 				return; // Streaming is not that important, we can abandon it if some resource loading is holding the lock
 			for (auto& x : resources)
 			{
-				wi::allocator::weak_ptr<ResourceInternal>& weak_resource = x.second;
-				wi::allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
+				Protean::Allocator::weak_ptr<ResourceInternal>& weak_resource = x.second;
+				Protean::Allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
 				if (resource != nullptr && resource->texture.IsValid() && has_flag(resource->flags, Flags::STREAMING) && resource->streaming_texture.mip_count > 1)
 				{
 					const TextureDesc& desc = resource->texture.desc;
 					const float mip_offset = float(resource->streaming_texture.mip_count - desc.mip_levels);
 					float min_lod_clamp_absolute_next = resource->streaming_texture.min_lod_clamp_absolute - dt * streaming_fade_speed;
 					min_lod_clamp_absolute_next = std::max(mip_offset, min_lod_clamp_absolute_next);
-					if (wi::math::float_equal(min_lod_clamp_absolute_next, resource->streaming_texture.min_lod_clamp_absolute))
+					if (Protean::Math::float_equal(min_lod_clamp_absolute_next, resource->streaming_texture.min_lod_clamp_absolute))
 						continue;
 					resource->streaming_texture.min_lod_clamp_absolute = min_lod_clamp_absolute_next;
 
@@ -1253,7 +1253,7 @@ namespace wi
 			}
 
 			// If previous streaming jobs were not finished, we cancel this until next frame:
-			if (wi::jobsystem::IsBusy(streaming_ctx))
+			if (Protean::JobSystem::IsBusy(streaming_ctx))
 			{
 				locker.unlock();
 				return;
@@ -1261,7 +1261,7 @@ namespace wi
 
 			streaming_texture_jobs.clear();
 
-			static wi::vector<const std::string*> removals; // string ptr to avoid string copies, or string constructions from char*
+			static Protean::vector<const std::string*> removals; // string ptr to avoid string copies, or string constructions from char*
 
 			// Gather the streaming jobs, unload lost resources:
 			for (auto& x : resources)
@@ -1272,8 +1272,8 @@ namespace wi
 					continue;
 				}
 
-				wi::allocator::weak_ptr<ResourceInternal>& weak_resource = x.second;
-				wi::allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
+				Protean::Allocator::weak_ptr<ResourceInternal>& weak_resource = x.second;
+				Protean::Allocator::shared_ptr<ResourceInternal> resource = weak_resource.lock();
 				if (resource != nullptr && resource->texture.IsValid() && resource->streaming_texture.mip_count > 1)
 				{
 					streaming_texture_jobs.push_back(resource);
@@ -1292,8 +1292,8 @@ namespace wi
 				return;
 
 			// One low priority thread will be responsible for streaming, to not cause any hitching while rendering:
-			streaming_ctx.priority = wi::jobsystem::Priority::Streaming;
-			wi::jobsystem::Execute(streaming_ctx, [](wi::jobsystem::JobArgs args) {
+			streaming_ctx.priority = Protean::JobSystem::Priority::Streaming;
+			Protean::JobSystem::Execute(streaming_ctx, [](Protean::JobSystem::JobArgs args) {
 				for(auto& resource : streaming_texture_jobs)
 				{
 					TextureDesc desc = resource->texture.desc;
@@ -1345,13 +1345,13 @@ namespace wi
 						const size_t mip_data_offset = resource->streaming_texture.streaming_data[mip_offset].data_offset;
 						const uint8_t* firstmipdata = resource->filedata.data();
 
-						static wi::vector<uint8_t> streaming_file; // make this static to not reallocate for each file loading
+						static Protean::vector<uint8_t> streaming_file; // make this static to not reallocate for each file loading
 						if (firstmipdata == nullptr)
 						{
 							// If file data is not available, then open the file partially with the streaming file parameters:
 							size_t filesize = resource->container_filesize - mip_data_offset;
 							size_t fileoffset = resource->container_fileoffset + mip_data_offset;
-							if (!wi::helper::FileRead(
+							if (!Protean::Helper::FileRead(
 								resource->container_filename,
 								streaming_file,
 								filesize,
@@ -1417,7 +1417,7 @@ namespace wi
 				if (resourceinternal == nullptr)
 					continue;
 
-				uint64_t timestamp = wi::helper::FileTimestamp(resourceinternal->filename);
+				uint64_t timestamp = Protean::Helper::FileTimestamp(resourceinternal->filename);
 				if (resourceinternal->timestamp < timestamp)
 					return true;
 			}
@@ -1434,36 +1434,36 @@ namespace wi
 				if (resourceinternal == nullptr)
 					continue;
 
-				uint64_t timestamp = wi::helper::FileTimestamp(resourceinternal->filename);
+				uint64_t timestamp = Protean::Helper::FileTimestamp(resourceinternal->filename);
 				if (resourceinternal->timestamp < timestamp)
 				{
-					wi::vector<uint8_t> filedata;
-					if (wi::helper::FileRead(resourceinternal->filename, filedata))
+					Protean::vector<uint8_t> filedata;
+					if (Protean::Helper::FileRead(resourceinternal->filename, filedata))
 					{
 						if (resourceinternal->streaming_texture.mip_count > 1)
-							wi::jobsystem::Wait(streaming_ctx); // reloading a resource that is potentially streaming needs to wait for current streaming job to end
+							Protean::JobSystem::Wait(streaming_ctx); // reloading a resource that is potentially streaming needs to wait for current streaming job to end
 						if (LoadResourceDirectly(resourceinternal->filename, resourceinternal->flags, filedata.data(), filedata.size(), resourceinternal.get()))
 						{
 							resourceinternal->timestamp = timestamp;
 							resourceinternal->container_filename = resourceinternal->filename;
 							resourceinternal->container_fileoffset = 0;
 							resourceinternal->container_filesize = ~0ull;
-							wi::backlog::post("[resourcemanager] reload success: " + resourceinternal->filename);
+							Protean::Backlog::post("[resourcemanager] reload success: " + resourceinternal->filename);
 						}
 						else
 						{
-							wi::backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, wi::backlog::LogLevel::Error);
+							Protean::Backlog::post("[resourcemanager] reload failure - LoadResourceDirectly returned false: " + resourceinternal->filename, Protean::Backlog::LogLevel::Error);
 						}
 					}
 					else
 					{
-						wi::backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, wi::backlog::LogLevel::Error);
+						Protean::Backlog::post("[resourcemanager] reload failure - file data could not be read: " + resourceinternal->filename, Protean::Backlog::LogLevel::Error);
 					}
 				}
 			}
 		}
 
-		void CollectResources(wi::unordered_map<std::string, wi::Resource>& out_resources, ResourceType types)
+		void CollectResources(Protean::unordered_map<std::string, Protean::Resource>& out_resources, ResourceType types)
 		{
 			std::scoped_lock lck(locker);
 			for (auto& x : resources)
@@ -1508,10 +1508,10 @@ namespace wi
 			return max_texture_resolution;
 		}
 
-		void Serialize_READ(wi::Archive& archive, ResourceSerializer& seri)
+		void Serialize_READ(Protean::Archive& archive, ResourceSerializer& seri)
 		{
 			assert(archive.IsReadMode());
-			wi::jobsystem::Wait(streaming_ctx); // stop streaming at this point
+			Protean::JobSystem::Wait(streaming_ctx); // stop streaming at this point
 
 			size_t serializable_count = 0;
 			archive >> serializable_count;
@@ -1522,11 +1522,11 @@ namespace wi
 				const uint8_t* filedata = nullptr;
 				size_t filesize = 0;
 			};
-			wi::vector<TempResource> temp_resources;
+			Protean::vector<TempResource> temp_resources;
 			temp_resources.resize(serializable_count);
 
-			wi::jobsystem::context ctx;
-			ctx.priority = wi::jobsystem::Priority::Low;
+			Protean::JobSystem::context ctx;
+			ctx.priority = Protean::JobSystem::Priority::Low;
 
 			for (size_t i = 0; i < serializable_count; ++i)
 			{
@@ -1553,7 +1553,7 @@ namespace wi
 				resource_log("Resource read from archive: %s", resource.name.c_str());
 
 				// "Loading" the resource can happen asynchronously to serialization of file data, to improve performance
-				wi::jobsystem::Execute(ctx, [i, &temp_resources, &seri, &archive, file_offset](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [i, &temp_resources, &seri, &archive, file_offset](Protean::JobSystem::JobArgs args) {
 					auto& tmp_resource = temp_resources[i];
 					Flags flags = Flags::IMPORT_DELAY;
 					if (archive.IsCompressionEnabled())
@@ -1575,13 +1575,13 @@ namespace wi
 					seri_locker.unlock();
 				});
 			}
-			wi::jobsystem::Wait(ctx);
+			Protean::JobSystem::Wait(ctx);
 		}
-		void Serialize_WRITE(wi::Archive& archive, const wi::unordered_set<std::string>& resource_names)
+		void Serialize_WRITE(Protean::Archive& archive, const Protean::unordered_set<std::string>& resource_names)
 		{
 			assert(!archive.IsReadMode());
 
-			wi::jobsystem::Wait(streaming_ctx); // stop streaming at this point
+			Protean::JobSystem::Wait(streaming_ctx); // stop streaming at this point
 
 			locker.lock();
 			size_t serializable_count = 0;
@@ -1600,7 +1600,7 @@ namespace wi
 					auto it = resources.find(name);
 					if (it == resources.end())
 						continue;
-					wi::allocator::shared_ptr<ResourceInternal> resource = it->second.lock();
+					Protean::Allocator::shared_ptr<ResourceInternal> resource = it->second.lock();
 					if (resource != nullptr)
 					{
 						serializable_count++;
@@ -1614,17 +1614,17 @@ namespace wi
 					auto it = resources.find(name);
 					if (it == resources.end())
 						continue;
-					wi::allocator::shared_ptr<ResourceInternal> resource = it->second.lock();
+					Protean::Allocator::shared_ptr<ResourceInternal> resource = it->second.lock();
 
 					if (resource != nullptr)
 					{
 						std::string name = it->first;
-						wi::helper::MakePathRelative(archive.GetSourceDirectory(), name);
+						Protean::Helper::MakePathRelative(archive.GetSourceDirectory(), name);
 
 						if (resource->filedata.empty())
 						{
 							// Directly re-read the file part that is needed:
-							wi::helper::FileRead(
+							Protean::Helper::FileRead(
 								resource->container_filename,
 								resource->filedata,
 								resource->container_filesize,

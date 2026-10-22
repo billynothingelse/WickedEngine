@@ -1,79 +1,79 @@
 #pragma once
 class EditorComponent;
 
-class RigidBodyWindow : public wi::gui::Window
+class RigidBodyWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	wi::ecs::Entity driving_entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	Protean::Entity driving_entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
 	void RefreshShapeType();
 
-	wi::gui::ComboBox collisionShapeComboBox;
-	wi::gui::Slider XSlider;
-	wi::gui::Slider YSlider;
-	wi::gui::Slider ZSlider;
-	wi::gui::Slider massSlider;
-	wi::gui::Slider frictionSlider;
-	wi::gui::Slider restitutionSlider;
-	wi::gui::Slider lineardampingSlider;
-	wi::gui::Slider angulardampingSlider;
-	wi::gui::Slider buoyancySlider;
-	wi::gui::Slider physicsMeshLODSlider;
-	wi::gui::CheckBox startDeactivatedCheckBox;
-	wi::gui::CheckBox disabledeactivationCheckBox;
-	wi::gui::CheckBox kinematicCheckBox;
-	wi::gui::CheckBox locked2DCheckBox;
-	wi::gui::Slider offsetXSlider;
-	wi::gui::Slider offsetYSlider;
-	wi::gui::Slider offsetZSlider;
-	wi::gui::CheckBox physicsDebugCheckBox;
+	Protean::Gui::ComboBox collisionShapeComboBox;
+	Protean::Gui::Slider XSlider;
+	Protean::Gui::Slider YSlider;
+	Protean::Gui::Slider ZSlider;
+	Protean::Gui::Slider massSlider;
+	Protean::Gui::Slider frictionSlider;
+	Protean::Gui::Slider restitutionSlider;
+	Protean::Gui::Slider lineardampingSlider;
+	Protean::Gui::Slider angulardampingSlider;
+	Protean::Gui::Slider buoyancySlider;
+	Protean::Gui::Slider physicsMeshLODSlider;
+	Protean::Gui::CheckBox startDeactivatedCheckBox;
+	Protean::Gui::CheckBox disabledeactivationCheckBox;
+	Protean::Gui::CheckBox kinematicCheckBox;
+	Protean::Gui::CheckBox locked2DCheckBox;
+	Protean::Gui::Slider offsetXSlider;
+	Protean::Gui::Slider offsetYSlider;
+	Protean::Gui::Slider offsetZSlider;
+	Protean::Gui::CheckBox physicsDebugCheckBox;
 
-	wi::gui::Label characterLabel;
-	wi::gui::CheckBox characterCheckBox;
-	wi::gui::Slider characterSlopeSlider;
-	wi::gui::Slider characterGravitySlider;
+	Protean::Gui::Label characterLabel;
+	Protean::Gui::CheckBox characterCheckBox;
+	Protean::Gui::Slider characterSlopeSlider;
+	Protean::Gui::Slider characterGravitySlider;
 
-	wi::gui::Label vehicleLabel;
-	wi::gui::ComboBox vehicleCombo;
-	wi::gui::ComboBox vehicleCollisionCombo;
-	wi::gui::Slider wheelRadiusSlider;
-	wi::gui::Slider wheelWidthSlider;
-	wi::gui::Slider chassisHalfWidthSlider;
-	wi::gui::Slider chassisHalfHeightSlider;
-	wi::gui::Slider chassisHalfLengthSlider;
-	wi::gui::Slider frontWheelOffsetSlider;
-	wi::gui::Slider rearWheelOffsetSlider;
-	wi::gui::Slider maxTorqueSlider;
-	wi::gui::Slider clutchStrengthSlider;
-	wi::gui::Slider maxRollAngleSlider;
-	wi::gui::Slider maxSteeringAngleSlider;
+	Protean::Gui::Label vehicleLabel;
+	Protean::Gui::ComboBox vehicleCombo;
+	Protean::Gui::ComboBox vehicleCollisionCombo;
+	Protean::Gui::Slider wheelRadiusSlider;
+	Protean::Gui::Slider wheelWidthSlider;
+	Protean::Gui::Slider chassisHalfWidthSlider;
+	Protean::Gui::Slider chassisHalfHeightSlider;
+	Protean::Gui::Slider chassisHalfLengthSlider;
+	Protean::Gui::Slider frontWheelOffsetSlider;
+	Protean::Gui::Slider rearWheelOffsetSlider;
+	Protean::Gui::Slider maxTorqueSlider;
+	Protean::Gui::Slider clutchStrengthSlider;
+	Protean::Gui::Slider maxRollAngleSlider;
+	Protean::Gui::Slider maxSteeringAngleSlider;
 
-	wi::gui::Slider fSuspensionMinSlider;
-	wi::gui::Slider fSuspensionMaxSlider;
-	wi::gui::Slider fSuspensionFrequencySlider;
-	wi::gui::Slider fSuspensionDampingSlider;
+	Protean::Gui::Slider fSuspensionMinSlider;
+	Protean::Gui::Slider fSuspensionMaxSlider;
+	Protean::Gui::Slider fSuspensionFrequencySlider;
+	Protean::Gui::Slider fSuspensionDampingSlider;
 
-	wi::gui::Slider rSuspensionMinSlider;
-	wi::gui::Slider rSuspensionMaxSlider;
-	wi::gui::Slider rSuspensionFrequencySlider;
-	wi::gui::Slider rSuspensionDampingSlider;
+	Protean::Gui::Slider rSuspensionMinSlider;
+	Protean::Gui::Slider rSuspensionMaxSlider;
+	Protean::Gui::Slider rSuspensionFrequencySlider;
+	Protean::Gui::Slider rSuspensionDampingSlider;
 
-	wi::gui::Slider motorcycleFBrakeSuspensionAngleSlider;
-	wi::gui::Slider motorcycleFBrakeTorqueSlider;
-	wi::gui::Slider motorcycleRBrakeTorqueSlider;
+	Protean::Gui::Slider motorcycleFBrakeSuspensionAngleSlider;
+	Protean::Gui::Slider motorcycleFBrakeTorqueSlider;
+	Protean::Gui::Slider motorcycleRBrakeTorqueSlider;
 
-	wi::gui::ComboBox wheelEntityFrontLeftCombo;
-	wi::gui::ComboBox wheelEntityFrontRightCombo;
-	wi::gui::ComboBox wheelEntityRearLeftCombo;
-	wi::gui::ComboBox wheelEntityRearRightCombo;
-	wi::gui::CheckBox fourwheelCheckbox;
-	wi::gui::CheckBox motorleanCheckbox;
-	wi::gui::CheckBox driveCheckbox;
+	Protean::Gui::ComboBox wheelEntityFrontLeftCombo;
+	Protean::Gui::ComboBox wheelEntityFrontRightCombo;
+	Protean::Gui::ComboBox wheelEntityRearLeftCombo;
+	Protean::Gui::ComboBox wheelEntityRearRightCombo;
+	Protean::Gui::CheckBox fourwheelCheckbox;
+	Protean::Gui::CheckBox motorleanCheckbox;
+	Protean::Gui::CheckBox driveCheckbox;
 
 	void ResizeLayout() override;
 };

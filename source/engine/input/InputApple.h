@@ -2,7 +2,7 @@
 #include "core/CommonInclude.h"
 #include "input/Input.h"
 
-namespace wi::input::apple
+namespace Protean::Input::Apple
 {
 // Initialize once
 void Initialize();
@@ -12,9 +12,9 @@ int GetMaxControllerCount();
 
 // Returns whether the controller identified by index parameter is available or not.
 //	Id state parameter is not nullptr, and the controller is available, the state will be written into it
-bool GetControllerState(wi::input::ControllerState* state, int index);
+bool GetControllerState(Protean::Input::ControllerState* state, int index);
 
 // Sends feedback data for the controller identified by index parameter to output
-void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index);
+void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index);
 }
 

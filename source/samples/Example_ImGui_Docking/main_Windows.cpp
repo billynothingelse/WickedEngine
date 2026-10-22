@@ -33,7 +33,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     BOOL dpi_success = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     assert(dpi_success);
 
-	wi::arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
+	Protean::Arguments::Parse(lpCmdLine); // if you wish to use command line arguments, here is a good place to parse them...
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -178,20 +178,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_BACK:
-			wi::gui::TextInputField::DeleteFromInput();
+			Protean::Gui::TextInputField::DeleteFromInput();
 			break;
 		case VK_RETURN:
 			break;
 		default:
 		{
 			const wchar_t c = (const wchar_t)wParam;
-			wi::gui::TextInputField::AddInput(c);
+			Protean::Gui::TextInputField::AddInput(c);
 		}
 		break;
 		}
 		break;
 	case WM_INPUT:
-		wi::input::rawinput::ParseMessage((void*)lParam);
+		Protean::Input::RawInput::ParseMessage((void*)lParam);
 		break;
 	case WM_KILLFOCUS:
 		example_imgui.is_window_active = false;

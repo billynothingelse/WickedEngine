@@ -23,10 +23,10 @@ __asm__(".linker_option \"-framework\", \"VideoToolbox\"");
 
 #include "h264.h"
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 
-namespace metal_internal
+namespace MetalInternal
 {
 	static constexpr MTL::SparsePageSize sparse_page_size = MTL::SparsePageSize256;
 
@@ -709,7 +709,7 @@ namespace metal_internal
 
 	struct Buffer_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::Buffer> buffer;
 		MTL::GPUAddress gpu_address = {};
 		
@@ -727,8 +727,8 @@ namespace metal_internal
 		};
 		Subresource srv;
 		Subresource uav;
-		wi::vector<Subresource> subresources_srv;
-		wi::vector<Subresource> subresources_uav;
+		Protean::vector<Subresource> subresources_srv;
+		Protean::vector<Subresource> subresources_uav;
 		
 		void destroy_subresources()
 		{
@@ -782,13 +782,13 @@ namespace metal_internal
 	};
 	struct Texture_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::Texture> texture;
 		NS::SharedPtr<MTL::Texture> texture_chroma; // NV12 chrominance plane (RG8), half resolution
 		
 		// Things for readback and upload texture types, linear tiling, using buffer:
 		NS::SharedPtr<MTL::Buffer> buffer;
-		wi::vector<SubresourceData> mapped_subresources;
+		Protean::vector<SubresourceData> mapped_subresources;
 		
 		struct Subresource
 		{
@@ -809,10 +809,10 @@ namespace metal_internal
 		Subresource uav;
 		Subresource rtv;
 		Subresource dsv;
-		wi::vector<Subresource> subresources_srv;
-		wi::vector<Subresource> subresources_uav;
-		wi::vector<Subresource> subresources_rtv;
-		wi::vector<Subresource> subresources_dsv;
+		Protean::vector<Subresource> subresources_srv;
+		Protean::vector<Subresource> subresources_uav;
+		Protean::vector<Subresource> subresources_rtv;
+		Protean::vector<Subresource> subresources_dsv;
 		
 		SparseTextureProperties sparse_properties;
 		
@@ -883,7 +883,7 @@ namespace metal_internal
 	};
 	struct Sampler_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		int index = -1;
 		NS::SharedPtr<MTL::SamplerState> sampler;
 		IRDescriptorTableEntry entry = {};
@@ -902,7 +902,7 @@ namespace metal_internal
 	};
 	struct QueryHeap_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::Buffer> buffer;
 		NS::SharedPtr<MTL4::CounterHeap> counter_heap;
 
@@ -919,7 +919,7 @@ namespace metal_internal
 	};
 	struct Shader_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::Library> library;
 		NS::SharedPtr<MTL::Function> function;
 		NS::SharedPtr<MTL::ComputePipelineState> compute_pipeline;
@@ -939,7 +939,7 @@ namespace metal_internal
 	};
 	struct PipelineState_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::RenderPipelineDescriptor> descriptor;
 		NS::SharedPtr<MTL::MeshRenderPipelineDescriptor> ms_descriptor;
 		NS::SharedPtr<MTL::RenderPipelineState> render_pipeline;
@@ -962,7 +962,7 @@ namespace metal_internal
 	};
 	struct BVH_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		NS::SharedPtr<MTL::AccelerationStructure> acceleration_structure;
 		NS::SharedPtr<MTL::Buffer> scratch;
 		NS::SharedPtr<MTL::Buffer> tlas_header_instancecontributions;
@@ -987,7 +987,7 @@ namespace metal_internal
 	};
 	struct RTPipelineState_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 
 		~RTPipelineState_Metal()
 		{
@@ -1000,7 +1000,7 @@ namespace metal_internal
 	};
 	struct SwapChain_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		ColorSpace colorSpace = ColorSpace::SRGB;
 		CA::MetalLayer* layer = nullptr;
 		NS::SharedPtr<CA::MetalDrawable> current_drawable;
@@ -1028,7 +1028,7 @@ namespace metal_internal
 
 	struct VideoDecoder_Metal
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Metal::AllocationHandler> allocationhandler;
 		CMVideoFormatDescriptionRef format_desc = nullptr;
 		VTDecompressionSessionRef session = nullptr;
 		CVPixelBufferRef decoded = nullptr;
@@ -1038,7 +1038,7 @@ namespace metal_internal
 		OSStatus decode_status = noErr;
 		uint64_t frames_decoded = 0;
 		bool logged_error = false;
-		wi::vector<uint8_t> sample_bytes;
+		Protean::vector<uint8_t> sample_bytes;
 
 		struct PendingCopy
 		{
@@ -1047,7 +1047,7 @@ namespace metal_internal
 			MTL::Texture* textures[2] = {};
 			uint64_t frame = 0;
 		};
-		wi::vector<PendingCopy> pending_copies;
+		Protean::vector<PendingCopy> pending_copies;
 
 		void release_pending(uint64_t framecount, bool all)
 		{
@@ -1169,7 +1169,7 @@ namespace metal_internal
 		return static_cast<typename MetalType<T>::type*>(res->internal_state.get());
 	}
 }
-using namespace metal_internal;
+using namespace MetalInternal;
 
 	void GraphicsDevice_Metal::binder_flush(CommandList cmd)
 	{
@@ -1611,18 +1611,18 @@ using namespace metal_internal;
 
 	GraphicsDevice_Metal::GraphicsDevice_Metal(ValidationMode validationMode_, GPUPreference preference)
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 		device = NS::TransferPtr(MTL::CreateSystemDefaultDevice());
 		
 		if (device.get() == nullptr)
 		{
 			wilog_messagebox("Metal graphics device creation failed, exiting!");
-			wi::platform::Exit();
+			Protean::Platform::Exit();
 		}
 		if (!device->supportsFamily(MTL::GPUFamilyMetal4))
 		{
 			wilog_messagebox("Metal 4 graphics is not supported by your system, exiting!");
-			wi::platform::Exit();
+			Protean::Platform::Exit();
 		}
 		
 		adapterName = device->name()->cString(NS::UTF8StringEncoding);
@@ -1660,7 +1660,7 @@ using namespace metal_internal;
 		
 		TIMESTAMP_FREQUENCY = device->queryTimestampFrequency();
 		
-		allocationhandler = wi::allocator::make_shared_single<AllocationHandler>();
+		allocationhandler = Protean::Allocator::make_shared_single<AllocationHandler>();
 		
 		argument_table_desc = NS::TransferPtr(MTL4::ArgumentTableDescriptor::alloc()->init());
 		argument_table_desc->setInitializeBindings(false);
@@ -1825,9 +1825,9 @@ using namespace metal_internal;
 		WaitForGPU();
 	}
 
-	bool GraphicsDevice_Metal::CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const
+	bool GraphicsDevice_Metal::CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const
 	{
-		auto internal_state = swapchain->IsValid() ? wi::allocator::shared_ptr<SwapChain_Metal>(swapchain->internal_state) : wi::allocator::make_shared<SwapChain_Metal>();
+		auto internal_state = swapchain->IsValid() ? Protean::Allocator::shared_ptr<SwapChain_Metal>(swapchain->internal_state) : Protean::Allocator::make_shared<SwapChain_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		swapchain->internal_state = internal_state;
 		swapchain->desc = *desc;
@@ -1840,7 +1840,7 @@ using namespace metal_internal;
 			internal_state->layer->setDevice(device.get());
 			internal_state->layer->setMaximumDrawableCount(swapchain->desc.buffer_count);
 			internal_state->layer->setFramebufferOnly(false); // GetBackBuffer() srv
-			wi::apple::SetMetalLayerToWindow(window, internal_state->layer);
+			Protean::Apple::SetMetalLayerToWindow(window, internal_state->layer);
 		}
 		
 		CGSize size = {(CGFloat)desc->width, (CGFloat)desc->height};
@@ -1852,7 +1852,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias, uint64_t alias_offset) const
 	{
-		auto internal_state = wi::allocator::make_shared<Buffer_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<Buffer_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		buffer->internal_state = internal_state;
 		buffer->type = GPUResource::Type::BUFFER;
@@ -1973,7 +1973,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias, uint64_t alias_offset) const
 	{
-		auto internal_state = wi::allocator::make_shared<Texture_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<Texture_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		texture->internal_state = internal_state;
 		texture->type = GPUResource::Type::TEXTURE;
@@ -2195,7 +2195,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader, const char* entrypoint) const
 	{
-		auto internal_state = wi::allocator::make_shared<Shader_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<Shader_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		shader->internal_state = internal_state;
 		
@@ -2261,7 +2261,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateSampler(const SamplerDesc* desc, Sampler* sampler) const
 	{
-		auto internal_state = wi::allocator::make_shared<Sampler_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<Sampler_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		sampler->internal_state = internal_state;
 		sampler->desc = *desc;
@@ -2407,7 +2407,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateQueryHeap(const GPUQueryHeapDesc* desc, GPUQueryHeap* queryheap) const
 	{
-		auto internal_state = wi::allocator::make_shared<QueryHeap_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<QueryHeap_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		queryheap->internal_state = internal_state;
 		queryheap->desc = *desc;
@@ -2444,7 +2444,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreatePipelineState(const PipelineStateDesc* desc, PipelineState* pso, const RenderPassInfo* renderpass_info) const
 	{
-		auto internal_state = wi::allocator::make_shared<PipelineState_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<PipelineState_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		pso->internal_state = internal_state;
 		pso->desc = *desc;
@@ -2694,8 +2694,8 @@ using namespace metal_internal;
 		NS::SharedPtr<MTL4::AccelerationStructureDescriptor> descriptor;
 		
 		NS::SharedPtr<NS::Array> object_array;
-		wi::vector<NS::SharedPtr<MTL4::AccelerationStructureGeometryDescriptor>> geometry_descs;
-		wi::vector<MTL4::AccelerationStructureGeometryDescriptor*> geometry_descs_raw;
+		Protean::vector<NS::SharedPtr<MTL4::AccelerationStructureGeometryDescriptor>> geometry_descs;
+		Protean::vector<MTL4::AccelerationStructureGeometryDescriptor*> geometry_descs_raw;
 		
 		if (desc->type == RaytracingAccelerationStructureDesc::Type::TOPLEVEL)
 		{
@@ -2782,7 +2782,7 @@ using namespace metal_internal;
 	}
 	bool GraphicsDevice_Metal::CreateRaytracingAccelerationStructure(const RaytracingAccelerationStructureDesc* desc, RaytracingAccelerationStructure* bvh) const
 	{
-		auto internal_state = wi::allocator::make_shared<BVH_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<BVH_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		bvh->internal_state = internal_state;
 		bvh->type = GPUResource::Type::RAYTRACING_ACCELERATION_STRUCTURE;
@@ -2804,7 +2804,7 @@ using namespace metal_internal;
 		{
 			internal_state->tlas_header_instancecontributions = NS::TransferPtr(device->newBuffer(sizeof(IRRaytracingAccelerationStructureGPUHeader) + sizeof(uint32_t) * desc->top_level.count, MTL::ResourceStorageModeShared));
 			allocationhandler->make_resident(internal_state->tlas_header_instancecontributions.get());
-			wi::vector<uint32_t> instance_contributions(desc->top_level.count);
+			Protean::vector<uint32_t> instance_contributions(desc->top_level.count);
 			std::fill(instance_contributions.begin(), instance_contributions.end(), 0);
 			IRRaytracingAccelerationStructureGPUHeader* header = (IRRaytracingAccelerationStructureGPUHeader*)internal_state->tlas_header_instancecontributions->contents();
 			uint8_t* instancecontributions_gpudata = (uint8_t*)header + sizeof(IRRaytracingAccelerationStructureGPUHeader);
@@ -2917,7 +2917,7 @@ using namespace metal_internal;
 			return false;
 		}
 
-		auto internal_state = wi::allocator::make_shared<VideoDecoder_Metal>();
+		auto internal_state = Protean::Allocator::make_shared<VideoDecoder_Metal>();
 		internal_state->allocationhandler = allocationhandler;
 		internal_state->format_desc = format_desc;
 		internal_state->texture_cache = texture_cache;
@@ -3660,7 +3660,7 @@ using namespace metal_internal;
 		auto swapchain_internal = to_internal(swapchain);
 		Texture result;
 		result.type = GPUResource::Type::TEXTURE;
-		auto texture_internal = wi::allocator::make_shared<Texture_Metal>();
+		auto texture_internal = Protean::Allocator::make_shared<Texture_Metal>();
 		texture_internal->texture = swapchain_internal->current_texture;
 		texture_internal->srv.index = allocationhandler->allocate_resource_index();
 		texture_internal->srv.entry = create_entry(texture_internal->texture.get());
@@ -3696,7 +3696,7 @@ using namespace metal_internal;
 			if (command.sparse_resource->IsTexture())
 			{
 				auto sparse_internal = to_internal<Texture>(command.sparse_resource);
-				wi::vector<MTL4::UpdateSparseTextureMappingOperation> operations;
+				Protean::vector<MTL4::UpdateSparseTextureMappingOperation> operations;
 				operations.reserve(command.num_resource_regions);
 				for (uint32_t j = 0; j < command.num_resource_regions; ++j)
 				{
@@ -3719,7 +3719,7 @@ using namespace metal_internal;
 			else if (command.sparse_resource->IsBuffer())
 			{
 				auto sparse_internal = to_internal<GPUBuffer>(command.sparse_resource);
-				wi::vector<MTL4::UpdateSparseBufferMappingOperation> operations;
+				Protean::vector<MTL4::UpdateSparseBufferMappingOperation> operations;
 				operations.reserve(command.num_resource_regions);
 				for (uint32_t j = 0; j < command.num_resource_regions; ++j)
 				{

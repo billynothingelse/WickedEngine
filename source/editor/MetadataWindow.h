@@ -1,24 +1,24 @@
 #pragma once
 class EditorComponent;
 
-class MetadataWindow : public wi::gui::Window
+class MetadataWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::ComboBox presetCombo;
-	wi::gui::ComboBox addCombo;
+	Protean::Gui::ComboBox presetCombo;
+	Protean::Gui::ComboBox addCombo;
 
 	struct Entry
 	{
-		wi::gui::Button remove;
-		wi::gui::TextInputField name;
-		wi::gui::TextInputField value;
-		wi::gui::CheckBox check;
+		Protean::Gui::Button remove;
+		Protean::Gui::TextInputField name;
+		Protean::Gui::TextInputField value;
+		Protean::Gui::CheckBox check;
 		bool is_bool = false;
 	};
 	std::deque<Entry> entries;

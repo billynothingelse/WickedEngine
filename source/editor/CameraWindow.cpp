@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CameraWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void CameraWindow::ResetCam()
 {
 	if (editor == nullptr)
@@ -41,7 +39,7 @@ void CameraWindow::ResetCam()
 void CameraWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create("Camera", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Camera", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("Camera " ICON_CAMERAOPTIONS);
 
 	editor->GetCurrentEditorScene().camera_transform.MatrixTransform(editor->GetCurrentEditorScene().camera.GetInvView());
@@ -58,7 +56,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	ResetCam();
 
 	auto updateCamera = [this](auto func) {
-		return [this, func](wi::gui::EventArgs args) {
+		return [this, func](Protean::Gui::EventArgs args) {
 			CameraComponent& camera = editor->GetCurrentEditorScene().camera;
 			func(camera, args);
 			camera.UpdateCamera();
@@ -157,7 +155,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	{
 		movespeedSlider.SetValue(editor->main->config.GetSection("camera").GetFloat("move_speed"));
 	}
-	movespeedSlider.OnSlide([=](wi::gui::EventArgs args) {
+	movespeedSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("camera").Set("move_speed", args.fValue);
 		editor->main->config.Commit();
 		});
@@ -170,7 +168,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	{
 		accelerationSlider.SetValue(editor->main->config.GetSection("camera").GetFloat("acceleration"));
 	}
-	accelerationSlider.OnSlide([=](wi::gui::EventArgs args) {
+	accelerationSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("camera").Set("acceleration", args.fValue);
 		editor->main->config.Commit();
 		});
@@ -183,7 +181,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	{
 		rotationspeedSlider.SetValue(editor->main->config.GetSection("camera").GetFloat("rotation_speed"));
 	}
-	rotationspeedSlider.OnSlide([=](wi::gui::EventArgs args) {
+	rotationspeedSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("camera").Set("rotation_speed", args.fValue);
 		editor->main->config.Commit();
 		});
@@ -192,7 +190,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	resetButton.Create("Reset Camera");
 	resetButton.SetSize(XMFLOAT2(wid, hei));
 	resetButton.SetPos(XMFLOAT2(x, y += step));
-	resetButton.OnClick([this](wi::gui::EventArgs args) {
+	resetButton.OnClick([this](Protean::Gui::EventArgs args) {
 		ResetCam();
 
 		CameraComponent& camera = editor->GetCurrentEditorScene().camera;
@@ -211,7 +209,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	{
 		fpsCheckBox.SetCheck(editor->main->config.GetSection("camera").GetBool("fps"));
 	}
-	fpsCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	fpsCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("camera").Set("fps", args.bValue);
 		editor->main->config.Commit();
 
@@ -255,11 +253,11 @@ void CameraWindow::Create(EditorComponent* _editor)
 	orthoCheckBox.SetSize(XMFLOAT2(hei, hei));
 	orthoCheckBox.SetPos(XMFLOAT2(x, y += step));
 	orthoCheckBox.SetCheck(editor->GetCurrentEditorScene().camera.IsOrtho());
-	orthoCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	orthoCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		CameraComponent& camera = editor->GetCurrentEditorScene().camera;
 		camera.SetOrtho(args.bValue);
-		camera.ortho_vertical_size = camera.ComputeOrthoVerticalSizeFromPerspective(wi::math::Length(camera.Eye)); // camera distance from origin
+		camera.ortho_vertical_size = camera.ComputeOrthoVerticalSizeFromPerspective(Protean::Math::Length(camera.Eye)); // camera distance from origin
 	});
 	AddWidget(&orthoCheckBox);
 
@@ -269,7 +267,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 	proxyButton.SetTooltip("Copy the current camera and place a proxy of it in the world.");
 	proxyButton.SetSize(XMFLOAT2(wid, hei));
 	proxyButton.SetPos(XMFLOAT2(x, y += step * 2));
-	proxyButton.OnClick([=](wi::gui::EventArgs args) {
+	proxyButton.OnClick([=](Protean::Gui::EventArgs args) {
 
 		const CameraComponent& camera = editor->GetCurrentEditorScene().camera;
 
@@ -284,7 +282,7 @@ void CameraWindow::Create(EditorComponent* _editor)
 
 		scene.transforms.GetComponent(entity)->MatrixTransform(camera.InvView);
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_ADD;
 		editor->RecordSelection(archive);
 
@@ -360,7 +358,7 @@ void CameraWindow::UpdateData()
 
 void CameraWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	layout.add_fullwidth(resetButton);
 	layout.add(farPlaneSlider);

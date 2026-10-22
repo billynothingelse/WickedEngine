@@ -1,6 +1,6 @@
 #include "math/Math.h"
 
-namespace wi::math
+namespace Protean::Math
 {
 	float TriangleArea(const XMVECTOR& A, const XMVECTOR& B, const XMVECTOR& C)
 	{

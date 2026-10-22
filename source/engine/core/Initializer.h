@@ -1,6 +1,6 @@
 #pragma once
 
-namespace wi::initializer
+namespace Protean::Initializer
 {
 	enum INITIALIZED_SYSTEM
 	{

@@ -2,7 +2,7 @@
 
 #include <time.h>
 
-namespace wi::random
+namespace Protean::Random
 {
 	static thread_local RNG rng(time(nullptr));
 

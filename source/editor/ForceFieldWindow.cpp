@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "ForceFieldWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void ForceFieldWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_FORCE " Force Field", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_FORCE " Force Field", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 120));
 
 	closeButton.SetTooltip("Delete ForceFieldComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,8 +31,8 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 	typeComboBox.Create("Type: ");
 	typeComboBox.SetPos(XMFLOAT2(x, y));
 	typeComboBox.SetSize(XMFLOAT2(wid, hei));
-	typeComboBox.OnSelect([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	typeComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ForceFieldComponent* force = scene.forces.GetComponent(x.entity);
@@ -62,7 +60,7 @@ void ForceFieldWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this](auto func) {
 		return [this, func](auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				ForceFieldComponent* force = scene.forces.GetComponent(x.entity);
@@ -128,7 +126,7 @@ void ForceFieldWindow::SetEntity(Entity entity)
 
 void ForceFieldWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 70;
 
 	layout.add(typeComboBox);

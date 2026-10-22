@@ -8,7 +8,7 @@
 
 #include <queue>
 
-namespace wi
+namespace Protean
 {
 	struct PathQuery
 	{
@@ -39,11 +39,11 @@ namespace wi
 			constexpr operator uint64_t() const { return uint64_t(uint64_t(x) | (uint64_t(y) << 16ull) | (uint64_t(z) << 32ull)); } // for unordered_map
 		};
 
-		std::priority_queue<Node, wi::vector<Node>, std::greater<Node>> frontier;
-		wi::unordered_map<uint64_t, Node> came_from;
-		wi::unordered_map<uint64_t, uint16_t> cost_so_far;
-		wi::vector<XMFLOAT3> result_path_goal_to_start;
-		wi::vector<XMFLOAT3> result_path_goal_to_start_simplified;
+		std::priority_queue<Node, Protean::vector<Node>, std::greater<Node>> frontier;
+		Protean::unordered_map<uint64_t, Node> came_from;
+		Protean::unordered_map<uint64_t, uint16_t> cost_so_far;
+		Protean::vector<XMFLOAT3> result_path_goal_to_start;
+		Protean::vector<XMFLOAT3> result_path_goal_to_start_simplified;
 		XMFLOAT3 process_startpos = XMFLOAT3(0, 0, 0);
 		bool flying = false; // if set to true, it will switch to navigating on empty voxels
 		int agent_height = 1; // keep away from vertical obstacles by this many voxels
@@ -53,7 +53,7 @@ namespace wi
 		void process(
 			const XMFLOAT3& startpos,
 			const XMFLOAT3& goalpos,
-			const wi::VoxelGrid& voxelgrid
+			const Protean::VoxelGrid& voxelgrid
 		);
 
 		bool is_succesful() const;
@@ -70,7 +70,7 @@ namespace wi
 			const XMFLOAT3& subject,
 			const XMFLOAT3& direction,
 			float max_distance,
-			const wi::VoxelGrid& voxelgrid
+			const Protean::VoxelGrid& voxelgrid
 		);
 
 		// Gets the next upcoming waypoint between start and goal that was used in process():
@@ -92,6 +92,6 @@ namespace wi
 		XMFLOAT3 debugstartnode = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 debuggoalnode = XMFLOAT3(0, 0, 0);
 		bool debug_waypoints = false; // if true, waypoint voxels will be drawn. Blue = waypoint, Pink = simplified waypoint
-		void debugdraw(const XMFLOAT4X4& ViewProjection, wi::graphics::CommandList cmd) const;
+		void debugdraw(const XMFLOAT4X4& ViewProjection, Protean::Graphics::CommandList cmd) const;
 	};
 }

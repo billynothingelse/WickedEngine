@@ -6,11 +6,9 @@
 #include "render/TextureHelper.h"
 #include "scene/Scene.h"
 
-using namespace wi::graphics;
-using namespace wi::enums;
-using namespace wi::scene;
-
-namespace wi
+using namespace Protean::Graphics;
+using namespace Protean;
+namespace Protean
 {
 	static Shader vertexShader;
 	static Shader pixelShader;
@@ -85,7 +83,7 @@ namespace wi
 
 		device->EventBegin("TrailRenderer", cmd);
 
-		if (wi::renderer::IsWireRender())
+		if (Protean::Renderer::IsWireRender())
 		{
 			device->BindPipelineState(&PSO_wire, cmd);
 		}
@@ -100,8 +98,8 @@ namespace wi
 		sb.g_xTrailTexMulAdd = texMulAdd;
 		sb.g_xTrailTexMulAdd2 = texMulAdd2;
 		sb.g_xTrailDepthSoften = 1.0f / (width * depth_soften);
-		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : wi::texturehelper::getWhite(), SubresourceType::SRV);
-		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture2 : wi::texturehelper::getWhite(), SubresourceType::SRV);
+		sb.g_xTrailTextureIndex1 = device->GetDescriptorIndex(texture.IsValid() ? &texture : Protean::TextureHelper::getWhite(), SubresourceType::SRV);
+		sb.g_xTrailTextureIndex2 = device->GetDescriptorIndex(texture2.IsValid() ? &texture2 : Protean::TextureHelper::getWhite(), SubresourceType::SRV);
 		sb.g_xTrailDepthTextureIndex = camera.texture_depth_index;
 		sb.g_xTrailCameraFar = camera.zFarP;
 		device->BindDynamicConstantBuffer(sb, CBSLOT_TRAILRENDERER, cmd);
@@ -212,9 +210,9 @@ namespace wi
 				{
 					float t = float(j) / float(subdivision - 1);
 
-					const XMVECTOR P = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t);
-					const XMVECTOR P_prev = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp);
-					const XMVECTOR P_next = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp);
+					const XMVECTOR P = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, t);
+					const XMVECTOR P_prev = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, t - resolution_rcp);
+					const XMVECTOR P_next = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, t + resolution_rcp);
 					const float width_interpolated = XMVectorGetX(XMVectorCatmullRom(W0, W1, W2, W3, t));
 					const XMVECTOR C = XMVectorCatmullRom(C0, C1, C2, C3, t);
 					XMFLOAT4 color_interpolated;
@@ -298,8 +296,8 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "trailVS.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader, "trailPS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "trailVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader, "trailPS.cso");
 
 			inputLayout.elements = {
 				{ "POSITION", 0, Format::R32G32B32_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
@@ -307,7 +305,7 @@ namespace wi
 				{ "COLOR", 0, Format::R16G16B16A16_FLOAT, 0, InputLayout::APPEND_ALIGNED_ELEMENT, InputClassification::PER_VERTEX_DATA },
 			};
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			for (int i = 0; i < BLENDMODE_COUNT; ++i)
 			{
@@ -338,7 +336,7 @@ namespace wi
 	}
 	void TrailRenderer::Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		RasterizerState rs;
 		rs.fill_mode = FillMode::SOLID;
@@ -435,9 +433,9 @@ namespace wi
 		blendStates[BLENDMODE_OPAQUE] = bd;
 
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { TrailRenderer_Internal::LoadShaders(); });
 		TrailRenderer_Internal::LoadShaders();
 
-		wilog("wi::TrailRenderer Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::TrailRenderer Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 }

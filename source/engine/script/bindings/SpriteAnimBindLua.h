@@ -3,19 +3,19 @@
 #include "script/Luna.h"
 #include "render/Sprite.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	class SpriteAnim_BindLua
 	{
 	public:
-		wi::Sprite::Anim anim;
+		Protean::Sprite::Anim anim;
 
 		inline static constexpr char className[] = "SpriteAnim";
 		static Luna<SpriteAnim_BindLua>::FunctionType methods[];
 		static Luna<SpriteAnim_BindLua>::PropertyType properties[];
 
-		SpriteAnim_BindLua(const wi::Sprite::Anim& anim);
+		SpriteAnim_BindLua(const Protean::Sprite::Anim& anim);
 		SpriteAnim_BindLua(lua_State* L);
 
 		int SetRot(lua_State* L);
@@ -49,13 +49,13 @@ namespace wi::lua
 	class MovingTexAnim_BindLua
 	{
 	public:
-		wi::Sprite::Anim::MovingTexAnim anim;
+		Protean::Sprite::Anim::MovingTexAnim anim;
 
 		inline static constexpr char className[] = "MovingTexAnim";
 		static Luna<MovingTexAnim_BindLua>::FunctionType methods[];
 		static Luna<MovingTexAnim_BindLua>::PropertyType properties[];
 
-		MovingTexAnim_BindLua(const wi::Sprite::Anim::MovingTexAnim& anim);
+		MovingTexAnim_BindLua(const Protean::Sprite::Anim::MovingTexAnim& anim);
 		MovingTexAnim_BindLua(lua_State* L);
 		~MovingTexAnim_BindLua();
 
@@ -69,13 +69,13 @@ namespace wi::lua
 	class DrawRectAnim_BindLua
 	{
 	public:
-		wi::Sprite::Anim::DrawRectAnim anim;
+		Protean::Sprite::Anim::DrawRectAnim anim;
 
 		inline static constexpr char className[] = "DrawRectAnim";
 		static Luna<DrawRectAnim_BindLua>::FunctionType methods[];
 		static Luna<DrawRectAnim_BindLua>::PropertyType properties[];
 
-		DrawRectAnim_BindLua(const wi::Sprite::Anim::DrawRectAnim& anim);
+		DrawRectAnim_BindLua(const Protean::Sprite::Anim::DrawRectAnim& anim);
 		DrawRectAnim_BindLua(lua_State* L);
 		~DrawRectAnim_BindLua();
 

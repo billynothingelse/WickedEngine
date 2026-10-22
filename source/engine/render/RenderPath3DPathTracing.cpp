@@ -19,11 +19,11 @@
 #endif // OIDN_VERSION_MAJOR >= 2
 #endif // __has_include("OpenImageDenoise/oidn.hpp")
 
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace Protean::Graphics;
+using namespace Protean;
 
 
-namespace wi
+namespace Protean
 {
 #ifdef OPEN_IMAGE_DENOISE
 	bool DenoiserCallback(void* userPtr, double n)
@@ -44,27 +44,27 @@ namespace wi
 
 	RenderPath3D_PathTracing::~RenderPath3D_PathTracing()
 	{
-		wi::jobsystem::Wait(denoiserContext);
+		Protean::JobSystem::Wait(denoiserContext);
 	}
 
 	void RenderPath3D_PathTracing::ResizeBuffers()
 	{
 		DeleteGPUResources();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		XMUINT2 internalResolution = GetInternalResolution();
 
 		{
 			TextureDesc desc;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtMain);
 			device->SetName(&rtMain, "pathtracing.rtMain");
 
-			desc.format = wi::renderer::format_idbuffer;
+			desc.format = Protean::Renderer::format_idbuffer;
 			desc.bind_flags = BindFlag::UNORDERED_ACCESS | BindFlag::SHADER_RESOURCE;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
@@ -102,7 +102,7 @@ namespace wi
 
 				desc.layout = ResourceState::DEPTHSTENCIL;
 				desc.bind_flags = BindFlag::DEPTH_STENCIL;
-				desc.format = wi::renderer::format_depthbuffer_main;
+				desc.format = Protean::Renderer::format_depthbuffer_main;
 				device->CreateTexture(&desc, nullptr, &depthBuffer_Main);
 				device->SetName(&depthBuffer_Main, "pathtracing.depthBuffer_Main");
 			}
@@ -131,8 +131,8 @@ namespace wi
 			device->SetName(&rtGUIBlurredBackground[2], "pathtracing.rtGUIBlurredBackground[2]");
 		}
 
-		wi::renderer::CreateLuminanceResources(luminanceResources, internalResolution);
-		wi::renderer::CreateBloomResources(bloomResources, internalResolution);
+		Protean::Renderer::CreateLuminanceResources(luminanceResources, internalResolution);
+		Protean::Renderer::CreateBloomResources(bloomResources, internalResolution);
 
 		setLightShaftsEnabled(getLightShaftsEnabled());
 		setVolumeLightsEnabled(getVolumeLightsEnabled());
@@ -193,24 +193,24 @@ namespace wi
 #ifdef OPEN_IMAGE_DENOISE
 		if (sam == target)
 		{
-			if (!denoiserResult.IsValid() && !wi::jobsystem::IsBusy(denoiserContext))
+			if (!denoiserResult.IsValid() && !Protean::JobSystem::IsBusy(denoiserContext))
 			{
-				//wi::helper::saveTextureToFile(denoiserAlbedo, "C:/PROJECTS/WickedEngine/Editor/_albedo.png");
-				//wi::helper::saveTextureToFile(denoiserNormal, "C:/PROJECTS/WickedEngine/Editor/_normal.png");
+				//Protean::Helper::saveTextureToFile(denoiserAlbedo, "C:/PROJECTS/WickedEngine/Editor/_albedo.png");
+				//Protean::Helper::saveTextureToFile(denoiserNormal, "C:/PROJECTS/WickedEngine/Editor/_normal.png");
 
 				texturedata_src.clear();
 				texturedata_dst.clear();
 				texturedata_albedo.clear();
 				texturedata_normal.clear();
 
-				if (wi::helper::saveTextureToMemory(traceResult, texturedata_src))
+				if (Protean::Helper::saveTextureToMemory(traceResult, texturedata_src))
 				{
-					wi::helper::saveTextureToMemory(denoiserAlbedo, texturedata_albedo);
-					wi::helper::saveTextureToMemory(denoiserNormal, texturedata_normal);
+					Protean::Helper::saveTextureToMemory(denoiserAlbedo, texturedata_albedo);
+					Protean::Helper::saveTextureToMemory(denoiserNormal, texturedata_normal);
 
 					texturedata_dst.resize(texturedata_src.size());
 
-					wi::jobsystem::Execute(denoiserContext, [&](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Execute(denoiserContext, [&](Protean::JobSystem::JobArgs args) {
 
 						size_t width = (size_t)traceResult.desc.width;
 						size_t height = (size_t)traceResult.desc.height;
@@ -264,7 +264,7 @@ namespace wi
 							auto error = device.getError(errorMessage);
 							if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 							{
-								wi::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+								Protean::Backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
 							}
 							else
 							{
@@ -272,7 +272,7 @@ namespace wi
 							}
 						}
 
-						GraphicsDevice* device = wi::graphics::GetDevice();
+						GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 						TextureDesc desc;
 						desc.width = (uint32_t)width;
@@ -292,7 +292,7 @@ namespace wi
 		}
 		else
 		{
-			wi::jobsystem::Wait(denoiserContext);
+			Protean::JobSystem::Wait(denoiserContext);
 			denoiserResult = {};
 			denoiserProgress = 0;
 		}
@@ -301,8 +301,8 @@ namespace wi
 
 	void RenderPath3D_PathTracing::Render() const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
-		wi::jobsystem::context ctx;
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
+		Protean::JobSystem::context ctx;
 
 		if (sam < target)
 		{
@@ -310,7 +310,7 @@ namespace wi
 			if (scene->terrains.GetCount() > 0)
 			{
 				cmd_copypages = device->BeginCommandList(QUEUE_COPY);
-				wi::jobsystem::Execute(ctx, [this, cmd_copypages](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [this, cmd_copypages](Protean::JobSystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].CopyVirtualTexturePageStatusGPU(cmd_copypages);
@@ -320,19 +320,19 @@ namespace wi
 
 			// Setup:
 			CommandList cmd = device->BeginCommandList();
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::UpdateRenderData(visibility_main, frameCB, cmd);
+				Protean::Renderer::UpdateRenderData(visibility_main, frameCB, cmd);
 
 				if (scene->IsAccelerationStructureUpdateRequested())
 				{
-					wi::renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
+					Protean::Renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
 				}
 			});
 
@@ -342,18 +342,18 @@ namespace wi
 			{
 				device->WaitCommandList(cmd, cmd_copypages);
 			}
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::BindCommonResources(cmd);
-				wi::renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
+				Protean::Renderer::BindCommonResources(cmd);
+				Protean::Renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
 
 				// just clear depth for safety:
 				RenderPassImage rp[] = {
@@ -364,11 +364,11 @@ namespace wi
 
 				if (scene->weather.IsRealisticSky())
 				{
-					wi::renderer::ComputeSkyAtmosphereTextures(cmd);
-					wi::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
+					Protean::Renderer::ComputeSkyAtmosphereTextures(cmd);
+					Protean::Renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
 				}
 
-				if (wi::renderer::GetRaytraceDebugBVHVisualizerEnabled())
+				if (Protean::Renderer::GetRaytraceDebugBVHVisualizerEnabled())
 				{
 					RenderPassImage rp[] = {
 						RenderPassImage::RenderTarget(&traceResult, RenderPassImage::LoadOp::CLEAR)
@@ -380,15 +380,15 @@ namespace wi
 					vp.height = (float)traceResult.GetDesc().height;
 					device->BindViewports(1, &vp, cmd);
 
-					wi::renderer::RayTraceSceneBVH(*scene, cmd);
+					Protean::Renderer::RayTraceSceneBVH(*scene, cmd);
 
 					device->RenderPassEnd(cmd);
 				}
 				else
 				{
-					auto range = wi::profiler::BeginRangeGPU("Traced Scene", cmd);
+					auto range = Protean::Profiler::BeginRangeGPU("Traced Scene", cmd);
 
-					wi::renderer::RayTraceScene(
+					Protean::Renderer::RayTraceScene(
 						*scene,
 						traceResult,
 						sam,
@@ -401,22 +401,22 @@ namespace wi
 						&rtPrimitiveID
 					);
 
-					wi::profiler::EndRange(range); // Traced Scene
+					Protean::Profiler::EndRange(range); // Traced Scene
 
 					if (sam == 0 && getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 					{
-						wi::renderer::PostProcess_MeshBlend_EdgeProcess(meshblendResources, cmd);
+						Protean::Renderer::PostProcess_MeshBlend_EdgeProcess(meshblendResources, cmd);
 					}
 				}
 
 				if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 				{
-					wi::renderer::DrawShadowmaps(visibility_main, cmd);
+					Protean::Renderer::DrawShadowmaps(visibility_main, cmd);
 				}
 
 				if (scene->weather.IsVolumetricClouds())
 				{
-					wi::renderer::Postprocess_VolumetricClouds(
+					Protean::Renderer::Postprocess_VolumetricClouds(
 						volumetriccloudResources,
 						cmd,
 						*camera,
@@ -434,7 +434,7 @@ namespace wi
 			{
 				CommandList cmd_allocation_tilerequest = device->BeginCommandList(QUEUE_COMPUTE);
 				device->WaitCommandList(cmd_allocation_tilerequest, cmd); // wait for opaque scene
-				wi::jobsystem::Execute(ctx, [this, cmd_allocation_tilerequest](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [this, cmd_allocation_tilerequest](Protean::JobSystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].AllocateVirtualTextureTileRequestsGPU(cmd_allocation_tilerequest);
@@ -443,7 +443,7 @@ namespace wi
 
 				CommandList cmd_writeback_tilerequest = device->BeginCommandList(QUEUE_COPY);
 				device->WaitCommandList(cmd_writeback_tilerequest, cmd_allocation_tilerequest);
-				wi::jobsystem::Execute(ctx, [this, cmd_writeback_tilerequest](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(ctx, [this, cmd_writeback_tilerequest](Protean::JobSystem::JobArgs args) {
 					for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 					{
 						scene->terrains[i].WritebackTileRequestsGPU(cmd_writeback_tilerequest);
@@ -454,30 +454,30 @@ namespace wi
 
 		// Composite, tonemap etc:
 		CommandList cmd = device->BeginCommandList();
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
-			wi::renderer::BindCommonResources(cmd);
+			Protean::Renderer::BindCommonResources(cmd);
 
 			if (scene->weather.IsRealisticSky())
 			{
-				wi::renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
+				Protean::Renderer::ComputeSkyAtmosphereSkyViewLut(cmd);
 
 				if (scene->weather.IsRealisticSkyAerialPerspective())
 				{
-					wi::renderer::ComputeSkyAtmosphereCameraVolumeLut(cmd);
+					Protean::Renderer::ComputeSkyAtmosphereCameraVolumeLut(cmd);
 				}
 			}
 			if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 			{
-				wi::renderer::Postprocess_AerialPerspective(
+				Protean::Renderer::Postprocess_AerialPerspective(
 					aerialperspectiveResources,
 					cmd
 				);
@@ -503,16 +503,16 @@ namespace wi
 				// Clear to trace result:
 				{
 					device->EventBegin("Clear to trace result", cmd);
-					wi::image::Params fx;
+					Protean::Image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-					if (denoiserResult.IsValid() && !wi::jobsystem::IsBusy(denoiserContext))
+					fx.blendFlag = Protean::BLENDMODE_OPAQUE;
+					if (denoiserResult.IsValid() && !Protean::JobSystem::IsBusy(denoiserContext))
 					{
-						wi::image::Draw(&denoiserResult, fx, cmd);
+						Protean::Image::Draw(&denoiserResult, fx, cmd);
 					}
 					else
 					{
-						wi::image::Draw(&traceResult, fx, cmd);
+						Protean::Image::Draw(&traceResult, fx, cmd);
 					}
 					device->EventEnd(cmd);
 				}
@@ -521,27 +521,27 @@ namespace wi
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
 					device->EventBegin("Aerial Perspective Blend", cmd);
-					wi::image::Params fx;
+					Protean::Image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
-					wi::image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
+					fx.blendFlag = Protean::BLENDMODE_PREMULTIPLIED;
+					Protean::Image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
 					device->EventEnd(cmd);
 				}
 
 				// Blend the volumetric clouds on top:
 				if (scene->weather.IsVolumetricClouds())
 				{
-					wi::renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
+					Protean::Renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
 				}
 
-				wi::renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
-				wi::renderer::DrawLightVisualizers(visibility_main, cmd);
-				wi::renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
+				Protean::Renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
+				Protean::Renderer::DrawLightVisualizers(visibility_main, cmd);
+				Protean::Renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
 
 				if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 				{
 					device->EventBegin("Contribute Volumetric Lights", cmd);
-					wi::renderer::Postprocess_Upsample_Bilateral(
+					Protean::Renderer::Postprocess_Upsample_Bilateral(
 						rtVolumetricLights,
 						depthBuffer_Copy,
 						rtMain,
@@ -556,15 +556,15 @@ namespace wi
 				if (getLightShaftsEnabled() && XMVectorGetX(XMVector3Dot(sunDirection, camera->GetAt())) > 0)
 				{
 					device->EventBegin("Contribute LightShafts", cmd);
-					wi::image::Params fx;
+					Protean::Image::Params fx;
 					fx.enableFullScreen();
-					fx.blendFlag = wi::enums::BLENDMODE_ADDITIVE;
-					wi::image::Draw(&rtSun[1], fx, cmd);
+					fx.blendFlag = Protean::BLENDMODE_ADDITIVE;
+					Protean::Image::Draw(&rtSun[1], fx, cmd);
 					device->EventEnd(cmd);
 				}
 				if (getLensFlareEnabled())
 				{
-					wi::renderer::DrawLensFlares(
+					Protean::Renderer::DrawLensFlares(
 						visibility_main,
 						cmd
 					);
@@ -575,7 +575,7 @@ namespace wi
 				if (getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 				{
 					rp[0].loadop = RenderPassImage::LoadOp::LOAD;
-					wi::renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, arraysize(rp), cmd);
+					Protean::Renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, arraysize(rp), cmd);
 				}
 			}
 
@@ -587,7 +587,7 @@ namespace wi
 			{
 				if (x.stage == CustomPostprocess::Stage::BeforeTonemap)
 				{
-					wi::renderer::Postprocess_Custom(
+					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
 						*rt_read,
 						*rt_write,
@@ -603,7 +603,7 @@ namespace wi
 
 			if (getEyeAdaptionEnabled())
 			{
-				wi::renderer::ComputeLuminance(
+				Protean::Renderer::ComputeLuminance(
 					luminanceResources,
 					*rt_read,
 					cmd,
@@ -613,7 +613,7 @@ namespace wi
 			}
 			if (getBloomEnabled())
 			{
-				wi::renderer::ComputeBloom(
+				Protean::Renderer::ComputeBloom(
 					bloomResources,
 					*rt_read,
 					cmd,
@@ -623,7 +623,7 @@ namespace wi
 				);
 			}
 
-			wi::renderer::Postprocess_Tonemap(
+			Protean::Renderer::Postprocess_Tonemap(
 				*rt_read,
 				*rt_write,
 				cmd,
@@ -647,7 +647,7 @@ namespace wi
 			{
 				if (x.stage == CustomPostprocess::Stage::AfterTonemap)
 				{
-					wi::renderer::Postprocess_Custom(
+					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
 						*rt_read,
 						*rt_write,
@@ -663,28 +663,28 @@ namespace wi
 
 			if (getSharpenFilterEnabled())
 			{
-				wi::renderer::Postprocess_Sharpen(*rt_read, *rt_write, cmd, getSharpenFilterAmount());
+				Protean::Renderer::Postprocess_Sharpen(*rt_read, *rt_write, cmd, getSharpenFilterAmount());
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getFXAAEnabled())
 			{
-				wi::renderer::Postprocess_FXAA(*rt_read, *rt_write, cmd);
+				Protean::Renderer::Postprocess_FXAA(*rt_read, *rt_write, cmd);
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getChromaticAberrationEnabled())
 			{
-				wi::renderer::Postprocess_Chromatic_Aberration(*rt_read, *rt_write, cmd, getChromaticAberrationAmount());
+				Protean::Renderer::Postprocess_Chromatic_Aberration(*rt_read, *rt_write, cmd, getChromaticAberrationAmount());
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getCRTFilterEnabled())
 			{
-				wi::renderer::Postprocess_CRT(*rt_read, *rt_write, cmd);
+				Protean::Renderer::Postprocess_CRT(*rt_read, *rt_write, cmd);
 
 				std::swap(rt_read, rt_write);
 			}
@@ -694,36 +694,36 @@ namespace wi
 
 			// GUI Background blurring:
 			{
-				auto range = wi::profiler::BeginRangeGPU("GUI Background Blur", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("GUI Background Blur", cmd);
 				device->EventBegin("GUI Background Blur", cmd);
-				wi::renderer::Postprocess_Downsample4x(rtPostprocess, rtGUIBlurredBackground[0], cmd);
-				wi::renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
-				wi::renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
+				Protean::Renderer::Postprocess_Downsample4x(rtPostprocess, rtGUIBlurredBackground[0], cmd);
+				Protean::Renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
+				Protean::Renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
 				device->EventEnd(cmd);
-				wi::profiler::EndRange(range);
+				Protean::Profiler::EndRange(range);
 			}
 
-			wi::renderer::TextureStreamingReadbackCopy(*scene, cmd);
+			Protean::Renderer::TextureStreamingReadbackCopy(*scene, cmd);
 		});
 
 		RenderPath2D::Render();
 
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 	}
 
 	void RenderPath3D_PathTracing::Compose(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("RenderPath3D_PathTracing::Compose", cmd);
 
-		wi::renderer::BindCommonResources(cmd);
+		Protean::Renderer::BindCommonResources(cmd);
 
-		wi::image::Params fx;
+		Protean::Image::Params fx;
 		fx.enableFullScreen();
-		fx.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-		fx.quality = wi::image::QUALITY_LINEAR;
-		wi::image::Draw(lastPostprocessRT, fx, cmd);
+		fx.blendFlag = Protean::BLENDMODE_OPAQUE;
+		fx.quality = Protean::Image::QUALITY_LINEAR;
+		Protean::Image::Draw(lastPostprocessRT, fx, cmd);
 
 		device->EventEnd(cmd);
 

@@ -1,41 +1,41 @@
 #pragma once
 class EditorComponent;
 
-class ThemeEditorWindow : public wi::gui::Window
+class ThemeEditorWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
 
-	wi::gui::TextInputField nameInput;
+	Protean::Gui::TextInputField nameInput;
 
-	wi::gui::Button idleButton;
-	wi::gui::Button focusButton;
-	wi::gui::Button backgroundButton;
-	wi::gui::Button shadowButton;
-	wi::gui::Button fontButton;
-	wi::gui::Button fontShadowButton;
-	wi::gui::Button gradientButton;
-	wi::gui::Button waveButton;
+	Protean::Gui::Button idleButton;
+	Protean::Gui::Button focusButton;
+	Protean::Gui::Button backgroundButton;
+	Protean::Gui::Button shadowButton;
+	Protean::Gui::Button fontButton;
+	Protean::Gui::Button fontShadowButton;
+	Protean::Gui::Button gradientButton;
+	Protean::Gui::Button waveButton;
 
-	wi::gui::ColorPicker colorpicker;
+	Protean::Gui::ColorPicker colorpicker;
 
-	wi::gui::Button imageButton;
-	wi::gui::Slider imageSlider;
+	Protean::Gui::Button imageButton;
+	Protean::Gui::Slider imageSlider;
 
-	wi::gui::Button saveButton;
+	Protean::Gui::Button saveButton;
 
-	wi::Color idleColor;
-	wi::Color focusColor;
-	wi::Color backgroundColor;
-	wi::Color shadowColor;
-	wi::Color fontColor;
-	wi::Color fontShadowColor;
-	wi::Color gradientColor;
-	wi::Color waveColor;
+	Protean::Color idleColor;
+	Protean::Color focusColor;
+	Protean::Color backgroundColor;
+	Protean::Color shadowColor;
+	Protean::Color fontColor;
+	Protean::Color fontShadowColor;
+	Protean::Color gradientColor;
+	Protean::Color waveColor;
 
-	wi::Resource imageResource;
+	Protean::Resource imageResource;
 	std::string imageResourceName;
 
 	enum class ColorPickerMode
@@ -52,7 +52,7 @@ public:
 	} mode;
 	void UpdateColorPickerMode();
 
-	void Update(const wi::Canvas& canvas, float dt) override;
+	void Update(const Protean::Canvas& canvas, float dt) override;
 	void ResizeLayout() override;
 };
 

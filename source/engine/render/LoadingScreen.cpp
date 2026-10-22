@@ -4,14 +4,14 @@
 
 #include <thread>
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi
+namespace Protean
 {
 
 	bool LoadingScreen::isActive() const
 	{
-		return wi::jobsystem::IsBusy(ctx);
+		return Protean::JobSystem::IsBusy(ctx);
 	}
 
 	bool LoadingScreen::isFinished() const
@@ -23,12 +23,12 @@ namespace wi
 	{
 		if (launchedTasks == 0)
 			return 100;
-		uint32_t counter = wi::jobsystem::GetRemainingJobCount(ctx);
+		uint32_t counter = Protean::JobSystem::GetRemainingJobCount(ctx);
 		float percent = 1 - float(counter) / float(launchedTasks);
 		return (int)std::round(percent * 100);
 	}
 
-	void LoadingScreen::addLoadingFunction(const std::function<void(wi::jobsystem::JobArgs)>& loadingFunction)
+	void LoadingScreen::addLoadingFunction(const std::function<void(Protean::JobSystem::JobArgs)>& loadingFunction)
 	{
 		if (loadingFunction != nullptr)
 		{
@@ -36,9 +36,9 @@ namespace wi
 		}
 	}
 
-	void LoadingScreen::addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds, wi::Color fadeColor, wi::FadeManager::FadeType fadetype)
+	void LoadingScreen::addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds, Protean::Color fadeColor, Protean::FadeManager::FadeType fadetype)
 	{
-		addLoadingFunction([=](wi::jobsystem::JobArgs args) {
+		addLoadingFunction([=](Protean::JobSystem::JobArgs args) {
 			component->Load();
 			});
 		onFinished([=] {
@@ -58,11 +58,11 @@ namespace wi
 		launchedTasks = (uint32_t)tasks.size();
 		for (auto& x : tasks)
 		{
-			wi::jobsystem::Execute(ctx, x);
+			Protean::JobSystem::Execute(ctx, x);
 		}
 		std::thread([this]() {
-			wi::jobsystem::Wait(ctx);
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t) {
+			Protean::JobSystem::Wait(ctx);
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t) {
 				if (finish != nullptr)
 					finish();
 				tasks.clear();
@@ -80,11 +80,11 @@ namespace wi
 		finished = true;
 	}
 
-	void LoadingScreen::Compose(wi::graphics::CommandList cmd) const
+	void LoadingScreen::Compose(Protean::Graphics::CommandList cmd) const
 	{
 		if (backgroundTexture.IsValid())
 		{
-			wi::image::Params fx;
+			Protean::Image::Params fx;
 			const Texture& tex = backgroundTexture.GetTexture();
 			const TextureDesc& desc = tex.GetDesc();
 
@@ -94,7 +94,7 @@ namespace wi
 			switch (background_mode)
 			{
 			default:
-			case wi::LoadingScreen::BackgroundMode::Fill:
+			case Protean::LoadingScreen::BackgroundMode::Fill:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -110,7 +110,7 @@ namespace wi
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case wi::LoadingScreen::BackgroundMode::Fit:
+			case Protean::LoadingScreen::BackgroundMode::Fit:
 				if (canvas_aspect > image_aspect)
 				{
 					// display aspect is wider than image:
@@ -126,18 +126,18 @@ namespace wi
 				fx.pos = XMFLOAT3(GetLogicalWidth() * 0.5f, GetLogicalHeight() * 0.5f, 0);
 				fx.pivot = XMFLOAT2(0.5f, 0.5f);
 				break;
-			case wi::LoadingScreen::BackgroundMode::Stretch:
+			case Protean::LoadingScreen::BackgroundMode::Stretch:
 				fx.enableFullScreen();
 				break;
 			}
 
-			fx.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			fx.blendFlag = Protean::BLENDMODE_ALPHA;
 			if (colorspace != ColorSpace::SRGB)
 			{
 				fx.enableLinearOutputMapping(hdr_scaling);
 			}
 
-			wi::image::Draw(&tex, fx, cmd);
+			Protean::Image::Draw(&tex, fx, cmd);
 		}
 
 		RenderPath2D::Compose(cmd);

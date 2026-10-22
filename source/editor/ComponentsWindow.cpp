@@ -1,17 +1,15 @@
 #include "stdafx.h"
 #include "ComponentsWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean::Graphics;
+using namespace Protean;
 void ComponentsWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create("Components ", wi::gui::Window::WindowControls::RESIZE_LEFT | wi::gui::Window::WindowControls::DISABLE_TITLE_BAR);
+	Protean::Gui::Window::Create("Components ", Protean::Gui::Window::WindowControls::RESIZE_LEFT | Protean::Gui::Window::WindowControls::DISABLE_TITLE_BAR);
 	SetText("Entity - Component System");
-	font.params.h_align = wi::font::WIFALIGN_RIGHT;
+	font.params.h_align = Protean::Font::WIFALIGN_RIGHT;
 	SetShadowRadius(2);
 
 	filterCombo.Create("");
@@ -54,8 +52,8 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterCombo.AddItem(ICON_SPLINE, (uint64_t)Filter::Spline);
 	filterCombo.AddItem(ICON_GAUSSIAN_SPLAT, (uint64_t)Filter::GaussianSplat);
 	filterCombo.SetTooltip("Apply filtering to the Entities by components");
-	filterCombo.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	filterCombo.OnSelect([this](wi::gui::EventArgs args) {
+	filterCombo.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	filterCombo.OnSelect([this](Protean::Gui::EventArgs args) {
 		filter = (Filter)args.userdata;
 		RefreshEntityTree();
 		});
@@ -67,10 +65,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterInput.SetTooltip("Search entities by name");
 	filterInput.SetDescription(ICON_SEARCH "  ");
 	filterInput.SetCancelInputEnabled(false);
-	filterInput.OnInput([=](wi::gui::EventArgs args) {
+	filterInput.OnInput([=](Protean::Gui::EventArgs args) {
 		RefreshEntityTree();
 		});
-	filterInput.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
+	filterInput.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
 	AddWidget(&filterInput);
 
 	filterCaseCheckBox.Create("");
@@ -78,8 +76,8 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	filterCaseCheckBox.SetCheckText("Aa");
 	filterCaseCheckBox.SetUnCheckText("a");
 	filterCaseCheckBox.SetTooltip("Toggle case-sensitive name filtering");
-	filterCaseCheckBox.SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip);
-	filterCaseCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	filterCaseCheckBox.SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip);
+	filterCaseCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		RefreshEntityTree();
 		});
 	AddWidget(&filterCaseCheckBox);
@@ -87,12 +85,12 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 
 	entityTree.Create("Entities");
 	entityTree.SetSize(XMFLOAT2(300, 300));
-	entityTree.OnSelect([this](wi::gui::EventArgs args) {
+	entityTree.OnSelect([this](Protean::Gui::EventArgs args) {
 
 		if (args.iValue < 0)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory(true);
+		Protean::Archive& archive = editor->AdvanceHistory(true);
 		archive << EditorComponent::HISTORYOP_SELECTION;
 		// record PREVIOUS selection state...
 		editor->RecordSelection(archive);
@@ -101,10 +99,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 
 		for (int i = 0; i < entityTree.GetItemCount(); ++i)
 		{
-			const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+			const Protean::Gui::TreeList::Item& item = entityTree.GetItem(i);
 			if (item.selected)
 			{
-				wi::scene::PickResult pick;
+				Protean::PickResult pick;
 				pick.entity = (Entity)item.userdata;
 				editor->AddSelected(pick, false);
 			}
@@ -114,15 +112,15 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		editor->RecordSelection(archive);
 
 		});
-	entityTree.OnDelete([=](wi::gui::EventArgs args) {
+	entityTree.OnDelete([=](Protean::Gui::EventArgs args) {
 		// Deletions will be performed in a batch next frame:
 		//	We don't delete here, because this callback will execute once for each item
 		editor->deleting = true;
 		});
-	entityTree.OnDoubleClick([this](wi::gui::EventArgs args) {
+	entityTree.OnDoubleClick([this](Protean::Gui::EventArgs args) {
 		editor->FocusCameraOnSelected();
 		});
-	entityTree.OnReorder([this](wi::gui::EventArgs args) {
+	entityTree.OnReorder([this](Protean::Gui::EventArgs args) {
 		// Re-parent: drop ON another entity (bValue == true)
 		if (args.bValue)
 		{
@@ -147,7 +145,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 				if (parent_hier != nullptr)
 					grandparent = parent_hier->parentID;
 
-				wi::Archive& archive2 = editor->AdvanceHistory();
+				Protean::Archive& archive2 = editor->AdvanceHistory();
 				archive2 << EditorComponent::HISTORYOP_COMPONENT_DATA;
 				editor->RecordEntity(archive2, source_entity);
 				if (grandparent != INVALID_ENTITY)
@@ -189,7 +187,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 				return;
 
 			// Record undo history
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, source_entity);
 
@@ -243,7 +241,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		};
 
 		auto collect_siblings = [&](Entity parent_entity) {
-			wi::vector<Entity> siblings;
+			Protean::vector<Entity> siblings;
 			if (parent_entity == INVALID_ENTITY)
 			{
 				for (auto& e : entitytree_temp_items)
@@ -267,7 +265,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 			auto order_it = entity_user_order.find(parent_entity);
 			if (order_it == entity_user_order.end())
 				return;
-			wi::vector<Entity>& order = order_it->second;
+			Protean::vector<Entity>& order = order_it->second;
 			order.erase(std::remove(order.begin(), order.end(), entity), order.end());
 			if (order.empty())
 				entity_user_order.erase(order_it);
@@ -280,7 +278,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		{
 			for (int i = target_idx - 1; i >= 0; --i)
 			{
-				const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+				const Protean::Gui::TreeList::Item& item = entityTree.GetItem(i);
 				if (item.level == target_level - 1)
 				{
 					target_parent_entity = (Entity)item.userdata;
@@ -292,7 +290,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		if (target_parent_entity == source_entity || is_descendant_of(target_parent_entity, source_entity))
 			return;
 
-		wi::vector<Entity> siblings = collect_siblings(parent_entity);
+		Protean::vector<Entity> siblings = collect_siblings(parent_entity);
 
 		// Validate that source_entity belongs to this sibling group before touching the map
 		bool source_in_siblings = false;
@@ -305,7 +303,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 
 		if (parent_entity != target_parent_entity)
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, source_entity);
 
@@ -324,11 +322,11 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		}
 
 		// Build (or refresh) the ordered list for this parent, preserving existing custom order
-		wi::vector<Entity> new_order;
+		Protean::vector<Entity> new_order;
 		new_order.reserve(siblings.size());
 		{
 			// Build a lookup set so merging is O(n) not O(n²)
-			wi::unordered_set<Entity> sibling_set(siblings.begin(), siblings.end());
+			Protean::unordered_set<Entity> sibling_set(siblings.begin(), siblings.end());
 			auto order_it = entity_user_order.find(parent_entity);
 			if (order_it != entity_user_order.end())
 			{
@@ -347,13 +345,13 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 		else
 			entity_user_order[parent_entity] = new_order;
 
-		wi::vector<Entity>& order = entity_user_order[parent_entity];
+		Protean::vector<Entity>& order = entity_user_order[parent_entity];
 
 		// Find which sibling is just above the drop point (same parent)
 		Entity entity_above = INVALID_ENTITY;
 		for (int i = target_idx - 1; i >= 0; --i)
 		{
-			const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+			const Protean::Gui::TreeList::Item& item = entityTree.GetItem(i);
 			if (item.level != target_level)
 				continue;
 			Entity e = (Entity)item.userdata;
@@ -502,10 +500,10 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 	newComponentCombo.AddItem("Metadata " ICON_METADATA, ADD_METADATA);
 	newComponentCombo.AddItem("Constraint " ICON_CONSTRAINT, ADD_CONSTRAINT);
 	newComponentCombo.AddItem("Spline " ICON_SPLINE, ADD_SPLINE);
-	newComponentCombo.OnSelect([=](wi::gui::EventArgs args) {
+	newComponentCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		newComponentCombo.SetSelectedWithoutCallback(-1);
-		wi::scene::Scene& scene = editor->GetCurrentScene();
-		wi::vector<Entity> entities;
+		Protean::Scene& scene = editor->GetCurrentScene();
+		Protean::vector<Entity> entities;
 		for (auto& x : editor->translator.selected)
 		{
 			Entity entity = x.entity;
@@ -656,7 +654,7 @@ void ComponentsWindow::Create(EditorComponent* _editor)
 			}
 		}
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entities);
 
@@ -867,8 +865,8 @@ void ComponentsWindow::UpdateData(float dt)
 
 void ComponentsWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	Protean::Gui::Window::ResizeLayout();
+	const Protean::Scene& scene = editor->GetCurrentScene();
 	float padding = 2;
 	XMFLOAT2 pos = XMFLOAT2(padding, 0);
 	const float width = GetWidgetAreaSize().x;
@@ -896,7 +894,7 @@ void ComponentsWindow::ResizeLayout()
 
 		pos.x = 0;
 		entityTree.SetPos(pos);
-		entityTree.SetSize(XMFLOAT2(width, wi::math::Clamp(entityTree.GetSize().y, 0, height - pos.y - 50)));
+		entityTree.SetSize(XMFLOAT2(width, Protean::Math::Clamp(entityTree.GetSize().y, 0, height - pos.y - 50)));
 		pos.y += entityTree.GetSize().y;
 		pos.y += padding * 4;
 	}
@@ -1386,7 +1384,7 @@ void ComponentsWindow::ResizeLayout()
 }
 
 
-void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
+void ComponentsWindow::PushToEntityTree(Protean::Entity entity, int level)
 {
 	if (entitytree_added_items.count(entity) != 0)
 	{
@@ -1396,7 +1394,7 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 
 	if (CheckEntityFilter(entity))
 	{
-		wi::gui::TreeList::Item item;
+		Protean::Gui::TreeList::Item item;
 		if (filter == Filter::All)
 		{
 			item.level = level;
@@ -1433,7 +1431,7 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 			{
 				filter_valid = false;
 			}
-			else if (wi::helper::toUpper(name_string).find(wi::helper::toUpper(name_filter)) == std::string::npos)
+			else if (Protean::Helper::toUpper(name_string).find(Protean::Helper::toUpper(name_filter)) == std::string::npos)
 			{
 				filter_valid = false;
 			}
@@ -1619,7 +1617,7 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 	}
 
 	// Collect children
-	wi::vector<Entity> children;
+	Protean::vector<Entity> children;
 	for (size_t i = 0; i < scene.hierarchy.GetCount(); ++i)
 	{
 		if (scene.hierarchy[i].parentID == entity)
@@ -1645,19 +1643,19 @@ void ComponentsWindow::PushToEntityTree(wi::ecs::Entity entity, int level)
 		PushToEntityTree(child, level + 1);
 	}
 }
-void ComponentsWindow::ApplyUserOrder(wi::vector<wi::ecs::Entity>& entities, wi::ecs::Entity parent_entity) const
+void ComponentsWindow::ApplyUserOrder(Protean::vector<Protean::Entity>& entities, Protean::Entity parent_entity) const
 {
 	auto it = entity_user_order.find(parent_entity);
 	if (it == entity_user_order.end() || it->second.empty())
 		return;
 
-	const wi::vector<Entity>& order = it->second;
-	wi::vector<Entity> result;
+	const Protean::vector<Entity>& order = it->second;
+	Protean::vector<Entity> result;
 	result.reserve(entities.size());
 
 	// Build lookup sets for O(1) membership checks
-	wi::unordered_set<Entity> entity_set(entities.begin(), entities.end());
-	wi::unordered_set<Entity> result_set;
+	Protean::unordered_set<Entity> entity_set(entities.begin(), entities.end());
+	Protean::unordered_set<Entity> result_set;
 	result_set.reserve(entities.size());
 
 	// First, add entities that appear in the custom order (in that order)
@@ -1688,7 +1686,7 @@ void ComponentsWindow::RefreshEntityTree()
 
 	for (int i = 0; i < entityTree.GetItemCount(); ++i)
 	{
-		const wi::gui::TreeList::Item& item = entityTree.GetItem(i);
+		const Protean::Gui::TreeList::Item& item = entityTree.GetItem(i);
 		if (item.open)
 		{
 			entitytree_opened_items.insert((Entity)item.userdata);
@@ -1702,7 +1700,7 @@ void ComponentsWindow::RefreshEntityTree()
 
 	// Add items to level 0 that are not in hierarchy (not in hierarchy can also mean top level parent):
 	//	Note that PushToEntityTree will add children recursively, so this is all we need
-	wi::vector<Entity> topLevelEntities;
+	Protean::vector<Entity> topLevelEntities;
 	for (auto& x : entitytree_temp_items)
 	{
 		const HierarchyComponent* hier = scene.hierarchy.GetComponent(x);
@@ -1748,7 +1746,7 @@ void ComponentsWindow::RefreshEntityTree()
 //   3. Effects & media
 //   4. Animation & data
 //   5. Scene & logic
-int ComponentsWindow::GetEntityTypePriority(const wi::ecs::Entity entity, const wi::scene::Scene& scene)
+int ComponentsWindow::GetEntityTypePriority(const Protean::Entity entity, const Protean::Scene& scene)
 {
 	if (scene.layers.Contains(entity)) return 0;
 	if (scene.transforms.Contains(entity)) return 1;
@@ -1785,17 +1783,17 @@ int ComponentsWindow::GetEntityTypePriority(const wi::ecs::Entity entity, const 
 	return INT_MAX; // Entities with no specific component (sorted last)
 }
 
-std::string ComponentsWindow::GetEntityNameForSorting(const wi::ecs::Entity entity, const wi::scene::Scene& scene)
+std::string ComponentsWindow::GetEntityNameForSorting(const Protean::Entity entity, const Protean::Scene& scene)
 {
 	const NameComponent* name = scene.names.GetComponent(entity);
 	if (name && !name->name.empty())
 	{
-		return wi::helper::toUpper(name->name);
+		return Protean::Helper::toUpper(name->name);
 	}
 	return "[unnamed] " + std::to_string(entity);
 }
 
-void ComponentsWindow::SortEntitiesByMode(wi::vector<wi::ecs::Entity>& entities, const wi::scene::Scene& scene, const int sortingMode)
+void ComponentsWindow::SortEntitiesByMode(Protean::vector<Protean::Entity>& entities, const Protean::Scene& scene, const int sortingMode)
 {
 	if (sortingMode == 1) // By name
 	{
@@ -1821,7 +1819,7 @@ void ComponentsWindow::SortEntitiesByMode(wi::vector<wi::ecs::Entity>& entities,
 	// else sortingMode == 0 (Unsorted) - don't sort, keep original order
 }
 
-bool ComponentsWindow::CheckEntityFilter(const wi::ecs::Entity entity) const
+bool ComponentsWindow::CheckEntityFilter(const Protean::Entity entity) const
 {
 	if (filter == Filter::All)
 		return true;

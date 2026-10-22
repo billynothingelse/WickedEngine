@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "FontWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void FontWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_FONT " Font", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_FONT " Font", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 1020));
 
 	closeButton.SetTooltip("Delete Font");
-	OnClose([this](wi::gui::EventArgs args) {
+	OnClose([this](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,10 +31,10 @@ void FontWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelectedFont = [this] (auto func) {
 		return [this, func](auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
-				wi::SpriteFont* font = scene.fonts.GetComponent(x.entity);
+				Protean::SpriteFont* font = scene.fonts.GetComponent(x.entity);
 				if (font != nullptr) {
 					func(font, args);
 				}
@@ -52,22 +50,22 @@ void FontWindow::Create(EditorComponent* _editor)
 	AddWidget(&textInput);
 
 	fileButton.Create("From file...");
-	fileButton.OnClick([this](wi::gui::EventArgs args) {
+	fileButton.OnClick([this](Protean::Gui::EventArgs args) {
 
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::OPEN;
 		params.description = "Text (*.txt)";
 		params.extensions = { "txt" };
-		wi::helper::FileDialog(params, [&](std::string fileName) {
-			wi::vector<uint8_t> filedata;
-			wi::helper::FileRead(fileName, filedata);
+		Protean::Helper::FileDialog(params, [&](std::string fileName) {
+			Protean::vector<uint8_t> filedata;
+			Protean::Helper::FileRead(fileName, filedata);
 			std::string fileText;
 			fileText.resize(filedata.size() + 1);
 			std::memcpy(fileText.data(), filedata.data(), filedata.size());
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
-				wi::SpriteFont* font = scene.fonts.GetComponent(x.entity);
+				Protean::SpriteFont* font = scene.fonts.GetComponent(x.entity);
 				if (font == nullptr)
 					continue;
 				font->SetText(fileText);
@@ -83,7 +81,7 @@ void FontWindow::Create(EditorComponent* _editor)
 	fontStyleButton.OnClick(forEachSelectedFont([this] (auto font, auto args) {
 		if (font->fontStyleResource.IsValid())
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -97,14 +95,14 @@ void FontWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Font (*.TTF)";
-			params.extensions = wi::resourcemanager::GetSupportedFontStyleExtensions();
-			wi::helper::FileDialog(params, [&](std::string fileName) {
-				font->fontStyleResource = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedFontStyleExtensions();
+			Protean::Helper::FileDialog(params, [&](std::string fileName) {
+				font->fontStyleResource = Protean::ResourceManager::Load(fileName);
 				font->fontStyleName = fileName;
-				fontStyleButton.SetText(wi::helper::GetFileNameFromPath(font->fontStyleName));
+				fontStyleButton.SetText(Protean::Helper::GetFileNameFromPath(font->fontStyleName));
 				fontStyleButton.font.fontStyleResource = font->fontStyleResource;
 			});
 		}
@@ -136,28 +134,28 @@ void FontWindow::Create(EditorComponent* _editor)
 
 	hAlignCombo.Create("H Align: ");
 	hAlignCombo.SetTooltip("Horizontal alignment.");
-	hAlignCombo.AddItem("Left", wi::font::WIFALIGN_LEFT);
-	hAlignCombo.AddItem("Center", wi::font::WIFALIGN_CENTER);
-	hAlignCombo.AddItem("Right", wi::font::WIFALIGN_RIGHT);
+	hAlignCombo.AddItem("Left", Protean::Font::WIFALIGN_LEFT);
+	hAlignCombo.AddItem("Center", Protean::Font::WIFALIGN_CENTER);
+	hAlignCombo.AddItem("Right", Protean::Font::WIFALIGN_RIGHT);
 	hAlignCombo.OnSelect(forEachSelectedFont([] (auto font, auto args) {
-		font->params.h_align = wi::font::Alignment(args.userdata);
+		font->params.h_align = Protean::Font::Alignment(args.userdata);
 	}));
 	AddWidget(&hAlignCombo);
 
 	vAlignCombo.Create("V Align: ");
 	vAlignCombo.SetTooltip("Vertical alignment.");
-	vAlignCombo.AddItem("Top", wi::font::WIFALIGN_TOP);
-	vAlignCombo.AddItem("Center", wi::font::WIFALIGN_CENTER);
-	vAlignCombo.AddItem("Bottom", wi::font::WIFALIGN_BOTTOM);
+	vAlignCombo.AddItem("Top", Protean::Font::WIFALIGN_TOP);
+	vAlignCombo.AddItem("Center", Protean::Font::WIFALIGN_CENTER);
+	vAlignCombo.AddItem("Bottom", Protean::Font::WIFALIGN_BOTTOM);
 	vAlignCombo.OnSelect(forEachSelectedFont([] (auto font, auto args) {
-		font->params.v_align = wi::font::Alignment(args.userdata);
+		font->params.v_align = Protean::Font::Alignment(args.userdata);
 	}));
 	AddWidget(&vAlignCombo);
 
 	rotationSlider.Create(0, 360, 0, 10000, "Rotation: ");
 	rotationSlider.SetTooltip("Z Rotation around alignment center point. The editor input is in degrees.");
 	rotationSlider.OnSlide(forEachSelectedFont([] (auto font, auto args) {
-		font->params.rotation = wi::math::DegreesToRadians(args.fValue);
+		font->params.rotation = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&rotationSlider);
 
@@ -283,7 +281,7 @@ void FontWindow::Create(EditorComponent* _editor)
 	}));
 	AddWidget(&colorModeCombo);
 
-	colorPicker.Create("Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
 	colorPicker.OnColorChanged(forEachSelectedFont([this] (auto font, auto args) {
 		switch (colorModeCombo.GetSelected())
 		{
@@ -332,19 +330,19 @@ void FontWindow::Create(EditorComponent* _editor)
 	SetEntity(INVALID_ENTITY);
 }
 
-void FontWindow::SetEntity(wi::ecs::Entity entity)
+void FontWindow::SetEntity(Protean::Entity entity)
 {
 	this->entity = entity;
 
 	Scene& scene = editor->GetCurrentScene();
-	const wi::SpriteFont* font = scene.fonts.GetComponent(entity);
+	const Protean::SpriteFont* font = scene.fonts.GetComponent(entity);
 	if (font == nullptr)
 		return;
 
 	textInput.SetText(font->GetTextA());
 	if (font->fontStyleResource.IsValid())
 	{
-		fontStyleButton.SetText(wi::helper::GetFileNameFromPath(font->fontStyleName));
+		fontStyleButton.SetText(Protean::Helper::GetFileNameFromPath(font->fontStyleName));
 		fontStyleButton.font.fontStyleResource = font->fontStyleResource;
 	}
 	else
@@ -356,7 +354,7 @@ void FontWindow::SetEntity(wi::ecs::Entity entity)
 	fontSizeCombo.SetSelectedByUserdataWithoutCallback(font->params.size);
 	hAlignCombo.SetSelectedByUserdataWithoutCallback(font->params.h_align);
 	vAlignCombo.SetSelectedByUserdataWithoutCallback(font->params.v_align);
-	rotationSlider.SetValue(wi::math::RadiansToDegrees(font->params.rotation));
+	rotationSlider.SetValue(Protean::Math::RadiansToDegrees(font->params.rotation));
 	spacingSlider.SetValue(font->params.spacingX);
 	softnessSlider.SetValue(font->params.softness);
 	boldenSlider.SetValue(font->params.bolden);
@@ -386,7 +384,7 @@ void FontWindow::SetEntity(wi::ecs::Entity entity)
 
 void FontWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 120;
 
 	layout.add_fullwidth(textInput);

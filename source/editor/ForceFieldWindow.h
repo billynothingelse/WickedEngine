@@ -1,18 +1,18 @@
 #pragma once
 class EditorComponent;
 
-class ForceFieldWindow : public wi::gui::Window
+class ForceFieldWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::ComboBox typeComboBox;
-	wi::gui::Slider gravitySlider;
-	wi::gui::Slider rangeSlider;
+	Protean::Gui::ComboBox typeComboBox;
+	Protean::Gui::Slider gravitySlider;
+	Protean::Gui::Slider rangeSlider;
 
 	void ResizeLayout() override;
 };

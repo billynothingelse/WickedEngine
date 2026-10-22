@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "SpringWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void SpringWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SPRING " Spring", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SPRING " Spring", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(460, 220));
 
 	closeButton.SetTooltip("Delete SpringComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -34,7 +32,7 @@ void SpringWindow::Create(EditorComponent* _editor)
 	resetAllButton.SetTooltip("Reset all springs in the scene to initial pose.");
 	resetAllButton.SetPos(XMFLOAT2(x, y));
 	resetAllButton.SetSize(XMFLOAT2(siz, hei));
-	resetAllButton.OnClick([this](wi::gui::EventArgs args) {
+	resetAllButton.OnClick([this](Protean::Gui::EventArgs args) {
 		auto& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.springs.GetCount(); ++i)
 		{
@@ -45,7 +43,7 @@ void SpringWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				SpringComponent* spring = scene.springs.GetComponent(x.entity);
@@ -153,7 +151,7 @@ void SpringWindow::SetEntity(Entity entity)
 
 void SpringWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 120;
 
 	layout.add_fullwidth(resetAllButton);

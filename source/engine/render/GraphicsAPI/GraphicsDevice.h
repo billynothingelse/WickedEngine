@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 	// CommandList can be used to record graphics commands from a CPU thread
 	//	Use GraphicsDevice::BeginCommandList() to start a command list
@@ -88,7 +88,7 @@ namespace wi::graphics
 		virtual ~GraphicsDevice() = default;
 
 		// Create a SwapChain. If the SwapChain is to be recreated, the window handle can be nullptr.
-		virtual bool CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const = 0;
+		virtual bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const = 0;
 		// Create a buffer with a callback to initialize its data. Note: don't read from callback's dest pointer, reads will be very slow! Use memcpy to write to it to make sure only writes happen!
 		virtual bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void* dest)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const = 0;
 		virtual bool CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const = 0;
@@ -304,8 +304,8 @@ namespace wi::graphics
 		// This can be used to create a texture filled with a single value
 		bool CreateTextureCleared(const TextureDesc* desc, uint8_t value, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const
 		{
-			wi::vector<uint8_t> texturedata(ComputeTextureMemorySizeInBytes(*desc), value);
-			wi::vector<SubresourceData> initdata;
+			Protean::vector<uint8_t> texturedata(ComputeTextureMemorySizeInBytes(*desc), value);
+			Protean::vector<SubresourceData> initdata;
 			CreateTextureSubresourceDatas(*desc, texturedata.data(), initdata);
 			return CreateTexture(desc, initdata.data(), texture, alias, alias_offset);
 		}

@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "MetadataWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void MetadataWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_METADATA " Metadata", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_METADATA " Metadata", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 240));
 
 	closeButton.SetTooltip("Delete MetadataComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -26,7 +24,7 @@ void MetadataWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -143,7 +141,7 @@ void MetadataWindow::RefreshEntries()
 
 	auto forEachSelectedWithRefresh = [this] (auto name, auto func) {
 		return [this, func, name] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MetadataComponent* metadata = scene.metadatas.GetComponent(x.entity);
@@ -152,7 +150,7 @@ void MetadataWindow::RefreshEntries()
 					func(metadata, args);
 				}
 			}
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 			});
 		};
@@ -312,7 +310,7 @@ void MetadataWindow::RefreshEntries()
 
 void MetadataWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 100;
 
 	layout.add(presetCombo);
@@ -328,14 +326,14 @@ void MetadataWindow::ResizeLayout()
 		{
 			entry.check.SetPos(XMFLOAT2(layout.width - layout.padding - entry.check.GetSize().x, layout.y));
 
-			entry.name.SetSize(XMFLOAT2(layout.width - wi::font::TextWidth(entry.check.GetText(), entry.check.font.params) - layout.padding * 3 - entry.check.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
+			entry.name.SetSize(XMFLOAT2(layout.width - Protean::Font::TextWidth(entry.check.GetText(), entry.check.font.params) - layout.padding * 3 - entry.check.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
 		}
 		else
 		{
-			entry.value.SetSize(XMFLOAT2(std::max(wi::font::TextWidth(entry.value.GetCurrentInputValue(), entry.value.font.params) + layout.padding, entry.value.GetSize().y), entry.value.GetSize().y));
+			entry.value.SetSize(XMFLOAT2(std::max(Protean::Font::TextWidth(entry.value.GetCurrentInputValue(), entry.value.font.params) + layout.padding, entry.value.GetSize().y), entry.value.GetSize().y));
 			entry.value.SetPos(XMFLOAT2(layout.width - layout.padding - entry.value.GetSize().x, layout.y));
 
-			entry.name.SetSize(XMFLOAT2(layout.width - wi::font::TextWidth(entry.value.GetDescription(), entry.value.font.params) - layout.padding * 3 - entry.value.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
+			entry.name.SetSize(XMFLOAT2(layout.width - Protean::Font::TextWidth(entry.value.GetDescription(), entry.value.font.params) - layout.padding * 3 - entry.value.GetSize().x - entry.remove.GetSize().x, entry.name.GetSize().y));
 		}
 
 		entry.name.SetPos(XMFLOAT2(entry.remove.GetPos().x + entry.remove.GetSize().x + layout.padding, layout.y));

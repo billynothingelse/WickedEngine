@@ -1,16 +1,16 @@
 #pragma once
 class EditorComponent;
 
-class NameWindow : public wi::gui::Window
+class NameWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::TextInputField nameInput;
+	Protean::Gui::TextInputField nameInput;
 
 	void ResizeLayout() override;
 };

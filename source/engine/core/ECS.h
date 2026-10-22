@@ -15,7 +15,7 @@
 #include <string>
 
 // Entity-Component System
-namespace wi::ecs
+namespace Protean
 {
 	// The Entity is a global unique persistent identifier within the entity-component system
 	//	It can be stored and used for the duration of the application
@@ -35,17 +35,17 @@ namespace wi::ecs
 	class ComponentLibrary;
 	struct EntitySerializer
 	{
-		wi::jobsystem::context ctx; // allow components to spawn serialization subtasks
-		wi::unordered_map<uint64_t, Entity> remap;
+		Protean::JobSystem::context ctx; // allow components to spawn serialization subtasks
+		Protean::unordered_map<uint64_t, Entity> remap;
 		bool allow_remap = true;
 		uint64_t version = 0; // The ComponentLibrary serialization will modify this by the registered component's version number
-		wi::unordered_set<std::string> resource_registration; // register for resource manager serialization
+		Protean::unordered_set<std::string> resource_registration; // register for resource manager serialization
 		ComponentLibrary* componentlibrary = nullptr;
-		wi::unordered_map<std::string, uint64_t> library_versions;
+		Protean::unordered_map<std::string, uint64_t> library_versions;
 
 		~EntitySerializer()
 		{
-			wi::jobsystem::Wait(ctx); // automatically wait for all subtasks after serialization
+			Protean::JobSystem::Wait(ctx); // automatically wait for all subtasks after serialization
 		}
 
 		// Returns the library version of the currently serializing Component
@@ -72,7 +72,7 @@ namespace wi::ecs
 		}
 	};
 	// This is the safe way to serialize an entity
-	inline void SerializeEntity(wi::Archive& archive, Entity& entity, EntitySerializer& seri)
+	inline void SerializeEntity(Protean::Archive& archive, Entity& entity, EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -122,8 +122,8 @@ namespace wi::ecs
 		virtual void Copy(const ComponentManager_Interface& other) = 0;
 		virtual void Merge(ComponentManager_Interface& other) = 0;
 		virtual void Clear() = 0;
-		virtual void Serialize(wi::Archive& archive, EntitySerializer& seri) = 0;
-		virtual void Component_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri) = 0;
+		virtual void Serialize(Protean::Archive& archive, EntitySerializer& seri) = 0;
+		virtual void Component_Serialize(Entity entity, Protean::Archive& archive, EntitySerializer& seri) = 0;
 		virtual void Remove(Entity entity) = 0;
 		virtual void Remove_KeepSorted(Entity entity) = 0;
 		virtual void MoveItem(size_t index_from, size_t index_to) = 0;
@@ -131,7 +131,7 @@ namespace wi::ecs
 		virtual size_t GetIndex(Entity entity) const = 0;
 		virtual size_t GetCount() const = 0;
 		virtual Entity GetEntity(size_t index) const = 0;
-		virtual const wi::vector<Entity>& GetEntityArray() const = 0;
+		virtual const Protean::vector<Entity>& GetEntityArray() const = 0;
 	};
 
 
@@ -139,7 +139,7 @@ namespace wi::ecs
 	struct has_serialize : std::false_type {};
 
 	template<typename Component>
-	struct has_serialize<Component, std::void_t<decltype(std::declval<Component>().Serialize(std::declval<wi::Archive&>(), std::declval<EntitySerializer&>()))>> : std::true_type {};
+	struct has_serialize<Component, std::void_t<decltype(std::declval<Component>().Serialize(std::declval<Protean::Archive&>(), std::declval<EntitySerializer&>()))>> : std::true_type {};
 
 	// The ComponentManager is a container that stores components and matches them with entities
 	//	Note: final keyword is used to indicate this is a final implementation.
@@ -215,7 +215,7 @@ namespace wi::ecs
 		}
 
 		// Read/Write everything to an archive depending on the archive state
-		inline void Serialize(wi::Archive& archive, EntitySerializer& seri)
+		inline void Serialize(Protean::Archive& archive, EntitySerializer& seri)
 		{
 			if constexpr (has_serialize<Component>::value)
 			{
@@ -262,7 +262,7 @@ namespace wi::ecs
 		}
 
 		//Read one single component onto an archive, make sure entity are serialized first
-		inline void Component_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri)
+		inline void Component_Serialize(Entity entity, Protean::Archive& archive, EntitySerializer& seri)
 		{
 			if constexpr (has_serialize<Component>::value)
 			{
@@ -447,10 +447,10 @@ namespace wi::ecs
 		inline const Component& operator[](size_t index) const { return components[index]; }
 
 		// Returns the tightly packed [read only] entity array
-		inline const wi::vector<Entity>& GetEntityArray() const { return entities; }
+		inline const Protean::vector<Entity>& GetEntityArray() const { return entities; }
 
 		// Returns the tightly packed [read only] component array
-		inline const wi::vector<Component>& GetComponentArray() const { return components; }
+		inline const Protean::vector<Component>& GetComponentArray() const { return components; }
 
 		// Returns the raw data pointer of components:
 		inline const Component* GetData() const { return components.data(); }
@@ -458,9 +458,9 @@ namespace wi::ecs
 
 	private:
 		// This is a linear array of alive components
-		wi::vector<Component> components;
+		Protean::vector<Component> components;
 		// This is a linear array of entities corresponding to each alive component
-		wi::vector<Entity> entities;
+		Protean::vector<Entity> entities;
 
 //#define LOOKUP_STRAIGHT
 //#define LOOKUP_SPARSE
@@ -480,7 +480,7 @@ namespace wi::ecs
 			{
 				size_t index = INVALID_INDEX;
 			};
-			wi::vector<Item> table;
+			Protean::vector<Item> table;
 
 			inline void clear()
 			{
@@ -527,9 +527,9 @@ namespace wi::ecs
 				uint64_t status = 0; // bitmask of active L1 blocks
 				BlockL1 blocks_l1[64];
 			};
-			wi::vector<BlockL2*> blocks_l2;
-			wi::allocator::BlockAllocator<BlockData, 8> block_allocator; // block allocator manages memory per 8 blocks here (sizeof(BlockData) * 8 = 4 KB pages)
-			wi::allocator::BlockAllocator<BlockL2, 4> block_allocator_l2;
+			Protean::vector<BlockL2*> blocks_l2;
+			Protean::Allocator::BlockAllocator<BlockData, 8> block_allocator; // block allocator manages memory per 8 blocks here (sizeof(BlockData) * 8 = 4 KB pages)
+			Protean::Allocator::BlockAllocator<BlockL2, 4> block_allocator_l2;
 
 			inline void clear()
 			{
@@ -625,7 +625,7 @@ namespace wi::ecs
 				};
 				Item items[64];
 			};
-			wi::unordered_map<uint64_t, Block> table;
+			Protean::unordered_map<uint64_t, Block> table;
 
 			inline void clear()
 			{
@@ -673,7 +673,7 @@ namespace wi::ecs
 #ifdef LOOKUP_HASH
 			// Implementation with hash table:
 			// The standard hashing method, performance depends on hashing, hash collisions
-			wi::unordered_map<Entity, size_t> table;
+			Protean::unordered_map<Entity, size_t> table;
 
 			inline void clear()
 			{
@@ -714,7 +714,7 @@ namespace wi::ecs
 			std::unique_ptr<ComponentManager_Interface> component_manager;
 			uint64_t version = 0;
 		};
-		wi::unordered_map<std::string, LibraryEntry> entries;
+		Protean::unordered_map<std::string, LibraryEntry> entries;
 
 		// Create an instance of ComponentManager of a certain data type
 		//	The name must be unique, it will be used in serialization
@@ -754,7 +754,7 @@ namespace wi::ecs
 		}
 
 		// Serialize all registered component managers
-		inline void Serialize(wi::Archive& archive, EntitySerializer& seri)
+		inline void Serialize(Protean::Archive& archive, EntitySerializer& seri)
 		{
 			seri.componentlibrary = this;
 			if(archive.IsReadMode())
@@ -835,7 +835,7 @@ namespace wi::ecs
 		}
 
 		// Serialize all components for one entity
-		inline void Entity_Serialize(Entity entity, wi::Archive& archive, EntitySerializer& seri)
+		inline void Entity_Serialize(Entity entity, Protean::Archive& archive, EntitySerializer& seri)
 		{
 			seri.componentlibrary = this;
 			if(archive.IsReadMode())

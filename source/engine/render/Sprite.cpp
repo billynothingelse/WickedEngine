@@ -4,9 +4,9 @@
 #include "render/TextureHelper.h"
 #include "core/Helper.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi
+namespace Protean
 {
 
 	Sprite::Sprite(const std::string& newTexture, const std::string& newMask)
@@ -14,12 +14,12 @@ namespace wi
 		if (!newTexture.empty())
 		{
 			textureName = newTexture;
-			textureResource = wi::resourcemanager::Load(newTexture);
+			textureResource = Protean::ResourceManager::Load(newTexture);
 		}
 		if (!newMask.empty())
 		{
 			maskName = newMask;
-			maskResource = wi::resourcemanager::Load(newMask);
+			maskResource = Protean::ResourceManager::Load(newMask);
 			params.setMaskMap(&maskResource.GetTexture());
 		}
 	}
@@ -32,7 +32,7 @@ namespace wi
 		{
 			// The mask/background resource in sprite is used when it's not specified in params:
 			//	It is mostly a fix for unexpected behaviour in scripts where sprite.SetParams() would overwrite the mask map too
-			wi::image::Params temp = params;
+			Protean::Image::Params temp = params;
 			if (maskResource.IsValid() && params.maskMap == nullptr)
 			{
 				temp.setMaskMap(&maskResource.GetTexture());
@@ -41,11 +41,11 @@ namespace wi
 			{
 				temp.setBackgroundMap(&backgroundResource.GetTexture());
 			}
-			wi::image::Draw(GetTexture(), temp, cmd);
+			Protean::Image::Draw(GetTexture(), temp, cmd);
 		}
 		else
 		{
-			wi::image::Draw(GetTexture(), params, cmd);
+			Protean::Image::Draw(GetTexture(), params, cmd);
 		}
 	}
 
@@ -137,7 +137,7 @@ namespace wi
 			// Rotate each corner on a scaled circle (ellipsoid):
 			//	Since the rotations are randomized, it will look like a wobble effect
 			//	Also use two circles on each other to achieve more random look
-			wi::image::Params default_params; // contains corners in idle positions
+			Protean::Image::Params default_params; // contains corners in idle positions
 			for (int i = 0; i < 4; ++i)
 			{
 				anim.wobbleAnim.corner_angles[i] += XM_2PI * anim.wobbleAnim.speed * anim.wobbleAnim.corner_speeds[i] * dt;
@@ -152,12 +152,12 @@ namespace wi
 
 	}
 
-	const wi::graphics::Texture* Sprite::GetTexture() const
+	const Protean::Graphics::Texture* Sprite::GetTexture() const
 	{
 		return textureResource.IsValid() ? &textureResource.GetTexture() : nullptr;
 	}
 
-	void Sprite::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void Sprite::Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri)
 	{
 		const std::string& dir = archive.GetSourceDirectory();
 
@@ -224,16 +224,16 @@ namespace wi
 
 			if (!textureName.empty() || !maskName.empty())
 			{
-				wi::jobsystem::Execute(seri.ctx, [&](wi::jobsystem::JobArgs args) {
+				Protean::JobSystem::Execute(seri.ctx, [&](Protean::JobSystem::JobArgs args) {
 					if (!textureName.empty())
 					{
 						textureName = dir + textureName;
-						textureResource = wi::resourcemanager::Load(textureName);
+						textureResource = Protean::ResourceManager::Load(textureName);
 					}
 					if (!maskName.empty())
 					{
 						maskName = dir + maskName;
-						maskResource = wi::resourcemanager::Load(maskName);
+						maskResource = Protean::ResourceManager::Load(maskName);
 					}
 				});
 			}
@@ -244,8 +244,8 @@ namespace wi
 			seri.RegisterResource(maskName);
 
 			archive << _flags;
-			archive << wi::helper::GetPathRelative(dir, textureName);
-			archive << wi::helper::GetPathRelative(dir, maskName);
+			archive << Protean::Helper::GetPathRelative(dir, textureName);
+			archive << Protean::Helper::GetPathRelative(dir, maskName);
 
 			archive << params._flags;
 			archive << params.pos;

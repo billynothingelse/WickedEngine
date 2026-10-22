@@ -12,7 +12,7 @@
 using namespace XInputOnGameInput;
 #endif // PLATFORM_XBOX
 
-namespace wi::input::xinput
+namespace Protean::Input::XInput
 {
 	XINPUT_STATE controllers[4] = {};
 	bool connected[arraysize(controllers)] = {};
@@ -49,7 +49,7 @@ namespace wi::input::xinput
 			x = 1.0f;
 		return x;
 	}
-	bool GetControllerState(wi::input::ControllerState* state, int index)
+	bool GetControllerState(Protean::Input::ControllerState* state, int index)
 	{
 		if (index < arraysize(controllers))
 		{
@@ -57,34 +57,34 @@ namespace wi::input::xinput
 			{
 				if (state != nullptr)
 				{
-					*state = wi::input::ControllerState();
+					*state = Protean::Input::ControllerState();
 					const XINPUT_STATE& xinput_state = controllers[index];
 
 					// Retrieve buttons:
-					for (int button = wi::input::GAMEPAD_RANGE_START + 1; button < wi::input::GAMEPAD_RANGE_END; ++button)
+					for (int button = Protean::Input::GAMEPAD_RANGE_START + 1; button < Protean::Input::GAMEPAD_RANGE_END; ++button)
 					{
 						bool down = false;
 						switch (button)
 						{
-						case wi::input::GAMEPAD_BUTTON_UP: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP; break;
-						case wi::input::GAMEPAD_BUTTON_LEFT: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT; break;
-						case wi::input::GAMEPAD_BUTTON_DOWN: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN; break;
-						case wi::input::GAMEPAD_BUTTON_RIGHT: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT; break;
-						case wi::input::GAMEPAD_BUTTON_1: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_X; break;
-						case wi::input::GAMEPAD_BUTTON_2: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_A; break;
-						case wi::input::GAMEPAD_BUTTON_3: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_B; break;
-						case wi::input::GAMEPAD_BUTTON_4: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y; break;
-						case wi::input::GAMEPAD_BUTTON_5: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER; break;
-						case wi::input::GAMEPAD_BUTTON_6: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER; break;
-						case wi::input::GAMEPAD_BUTTON_7: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB; break;
-						case wi::input::GAMEPAD_BUTTON_8: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB; break;
-						case wi::input::GAMEPAD_BUTTON_9: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK; break;
-						case wi::input::GAMEPAD_BUTTON_10: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_START; break;
+						case Protean::Input::GAMEPAD_BUTTON_UP: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP; break;
+						case Protean::Input::GAMEPAD_BUTTON_LEFT: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT; break;
+						case Protean::Input::GAMEPAD_BUTTON_DOWN: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN; break;
+						case Protean::Input::GAMEPAD_BUTTON_RIGHT: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT; break;
+						case Protean::Input::GAMEPAD_BUTTON_1: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_X; break;
+						case Protean::Input::GAMEPAD_BUTTON_2: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_A; break;
+						case Protean::Input::GAMEPAD_BUTTON_3: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_B; break;
+						case Protean::Input::GAMEPAD_BUTTON_4: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_Y; break;
+						case Protean::Input::GAMEPAD_BUTTON_5: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER; break;
+						case Protean::Input::GAMEPAD_BUTTON_6: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER; break;
+						case Protean::Input::GAMEPAD_BUTTON_7: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB; break;
+						case Protean::Input::GAMEPAD_BUTTON_8: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB; break;
+						case Protean::Input::GAMEPAD_BUTTON_9: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK; break;
+						case Protean::Input::GAMEPAD_BUTTON_10: down = xinput_state.Gamepad.wButtons & XINPUT_GAMEPAD_START; break;
 						}
 
 						if (down)
 						{
-							state->buttons |= 1 << (button - wi::input::GAMEPAD_RANGE_START - 1);
+							state->buttons |= 1 << (button - Protean::Input::GAMEPAD_RANGE_START - 1);
 						}
 					}
 
@@ -101,7 +101,7 @@ namespace wi::input::xinput
 		}
 		return false;
 	}
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index)
+	void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index)
 	{
 		if (index < arraysize(controllers))
 		{
@@ -114,11 +114,11 @@ namespace wi::input::xinput
 }
 
 #else
-namespace wi::input::xinput
+namespace Protean::Input::XInput
 {
 	void Update() {}
 	int GetMaxControllerCount() { return 0; }
-	bool GetControllerState(wi::input::ControllerState* state, int index) { return false; }
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index) {}
+	bool GetControllerState(Protean::Input::ControllerState* state, int index) { return false; }
+	void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index) {}
 }
 #endif // __has_include(<xinput.h>)

@@ -7,18 +7,16 @@
 #include "ufbx.h"
 #include "ufbx.c"
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::ecs;
-
-void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, TransformComponent>& transforms_original);
+using namespace Protean::Graphics;
+using namespace Protean;
+void FlipZAxis(Scene& scene, Entity rootEntity, Protean::unordered_map<size_t, TransformComponent>& transforms_original);
 void Import_Mixamo_Bone(Scene& scene, Entity rootEntity, Entity boneEntity);
 void Import_Makehuman_Bone(Scene& scene, Entity rootEntity, Entity boneEntity);
 
 // File callbacks are implemented for platforms that don't support default c++ filesystem correctly (like UWP)
 struct FileDataStream
 {
-	wi::vector<uint8_t> data;
+	Protean::vector<uint8_t> data;
 	size_t offset = 0;
 };
 size_t read_cb(void* user, void* data, size_t size)
@@ -44,8 +42,8 @@ void close_cb(void* user)
 }
 bool open_file_cb(void* user, ufbx_stream* stream, const char* path, size_t path_len, const ufbx_open_file_info* info)
 {
-	wi::vector<uint8_t> filedata;
-	if (wi::helper::FileRead(path, filedata))
+	Protean::vector<uint8_t> filedata;
+	if (Protean::Helper::FileRead(path, filedata))
 	{
 		FileDataStream* datastream = new FileDataStream;
 		datastream->data = std::move(filedata);
@@ -58,7 +56,7 @@ bool open_file_cb(void* user, ufbx_stream* stream, const char* path, size_t path
 	return false;
 }
 
-void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
+void ImportModel_FBX(const std::string& filename, Protean::Scene& scene)
 {
 	ufbx_load_opts opts = {};
 	//opts.target_axes = ufbx_axes_left_handed_y_up;
@@ -76,19 +74,19 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 	{
 		std::string str = "FBX import error: ";
 		str += error.description.data;
-		wi::backlog::post(str, wi::backlog::LogLevel::Error);
-		wi::helper::messageBox(str, "Error!");
+		Protean::Backlog::post(str, Protean::Backlog::LogLevel::Error);
+		Protean::Helper::messageBox(str, "Error!");
 		return;
 	}
 
-	wi::unordered_map<const ufbx_material*, Entity> material_lookup;
-	wi::unordered_map<const ufbx_skin_deformer*, Entity> skin_lookup;
-	wi::unordered_map<const ufbx_mesh*, Entity> mesh_lookup;
-	wi::unordered_map<const ufbx_node*, Entity> node_lookup;
+	Protean::unordered_map<const ufbx_material*, Entity> material_lookup;
+	Protean::unordered_map<const ufbx_skin_deformer*, Entity> skin_lookup;
+	Protean::unordered_map<const ufbx_mesh*, Entity> mesh_lookup;
+	Protean::unordered_map<const ufbx_node*, Entity> node_lookup;
 
 	Entity rootEntity = CreateEntity();
 	{
-		scene.names.Create(rootEntity) = wi::helper::GetFileNameFromPath(filename);
+		scene.names.Create(rootEntity) = Protean::Helper::GetFileNameFromPath(filename);
 		const ufbx_node* node = fbxscene->root_node;
 		node_lookup[node] = rootEntity;
 		TransformComponent& transform = scene.transforms.Create(rootEntity);
@@ -104,7 +102,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		transform.translation_local.z = node->local_transform.translation.z;
 	}
 
-	wi::vector<wi::Resource> embedded_resources;
+	Protean::vector<Protean::Resource> embedded_resources;
 	auto preload_embedded_texture = [&](ufbx_texture* texture) {
 		if (texture->content.data == nullptr)
 			return;
@@ -113,12 +111,12 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		if (filename.empty())
 		{
 			// Force some image resource name:
-			filename = "fbximport_" + std::to_string(wi::helper::HashByteData((const uint8_t*)texture->content.data, texture->content.size)) + ".png";
+			filename = "fbximport_" + std::to_string(Protean::Helper::HashByteData((const uint8_t*)texture->content.data, texture->content.size)) + ".png";
 		}
 
-		auto resource = wi::resourcemanager::Load(
+		auto resource = Protean::ResourceManager::Load(
 			filename,
-			wi::resourcemanager::Flags::IMPORT_RETAIN_FILEDATA | wi::resourcemanager::Flags::IMPORT_DELAY,
+			Protean::ResourceManager::Flags::IMPORT_RETAIN_FILEDATA | Protean::ResourceManager::Flags::IMPORT_DELAY,
 			(const uint8_t*)texture->content.data,
 			texture->content.size
 		);
@@ -234,7 +232,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		}
 		MeshComponent& meshcomponent = scene.meshes.Create(entity);
 		uint32_t vertexOffset = 0;
-		wi::vector<uint32_t> tri_indices(mesh->max_face_triangles * 3);
+		Protean::vector<uint32_t> tri_indices(mesh->max_face_triangles * 3);
 		const ufbx_skin_deformer* skin = nullptr;
 		if (mesh->skin_deformers.count > 0)
 		{
@@ -254,16 +252,16 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 		}
 		for (const ufbx_mesh_part& part : mesh->material_parts)
 		{
-			wi::vector<XMFLOAT3> positions;
-			wi::vector<XMFLOAT3> normals;
-			wi::vector<XMFLOAT2> uvset0;
-			wi::vector<XMFLOAT2> uvset1;
-			wi::vector<wi::Color> colors;
-			wi::vector<XMUINT4> boneindices;
-			wi::vector<XMFLOAT4> boneweights;
-			wi::vector<XMUINT4> boneindices2;
-			wi::vector<XMFLOAT4> boneweights2;
-			wi::vector<MeshComponent::MorphTarget> morphs(meshcomponent.morph_targets.size());
+			Protean::vector<XMFLOAT3> positions;
+			Protean::vector<XMFLOAT3> normals;
+			Protean::vector<XMFLOAT2> uvset0;
+			Protean::vector<XMFLOAT2> uvset1;
+			Protean::vector<Protean::Color> colors;
+			Protean::vector<XMUINT4> boneindices;
+			Protean::vector<XMFLOAT4> boneweights;
+			Protean::vector<XMUINT4> boneindices2;
+			Protean::vector<XMFLOAT4> boneweights2;
+			Protean::vector<MeshComponent::MorphTarget> morphs(meshcomponent.morph_targets.size());
 
 			for (uint32_t face_index : part.face_indices)
 			{
@@ -294,7 +292,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 					}
 					if (mesh->vertex_color.exists)
 					{
-						colors.push_back(wi::Color::fromFloat4(XMFLOAT4(mesh->vertex_color[index].v)));
+						colors.push_back(Protean::Color::fromFloat4(XMFLOAT4(mesh->vertex_color[index].v)));
 					}
 
 					if (skin)
@@ -347,10 +345,10 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			}
 			assert(positions.size() == part.num_triangles * 3);
 
-			wi::vector<uint32_t> indices;
+			Protean::vector<uint32_t> indices;
 			indices.resize(part.num_triangles * 3);
 
-			wi::vector<ufbx_vertex_stream> streams;
+			Protean::vector<ufbx_vertex_stream> streams;
 			if (!positions.empty())
 			{
 				streams.push_back({ positions.data(), positions.size(), sizeof(positions[0]) });
@@ -562,7 +560,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			CameraComponent& camera = scene.cameras.Create(entity);
 			camera.zNearP = node->camera->near_plane * 0.01f;
 			camera.zFarP = node->camera->far_plane * 0.01f;
-			camera.fov = wi::math::DegreesToRadians(node->camera->field_of_view_deg.y);
+			camera.fov = Protean::Math::DegreesToRadians(node->camera->field_of_view_deg.y);
 		}
 	}
 
@@ -595,7 +593,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			Entity boneEntity = node_lookup[cluster->bone_node];
 			armature->boneCollection.push_back(boneEntity);
 
-			XMFLOAT4X4 inverseBindMatrix = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 inverseBindMatrix = Protean::Math::IDENTITY_MATRIX;
 			inverseBindMatrix._11 = cluster->geometry_to_bone.m00;
 			inverseBindMatrix._12 = cluster->geometry_to_bone.m10;
 			inverseBindMatrix._13 = cluster->geometry_to_bone.m20;
@@ -634,7 +632,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 
 			armatureWithoutMesh.boneCollection.push_back(boneEntity);
 
-			XMFLOAT4X4 inverseBindMatrix = wi::math::IDENTITY_MATRIX;
+			XMFLOAT4X4 inverseBindMatrix = Protean::Math::IDENTITY_MATRIX;
 			inverseBindMatrix._11 = node->geometry_to_world.m00;
 			inverseBindMatrix._12 = node->geometry_to_world.m10;
 			inverseBindMatrix._13 = node->geometry_to_world.m20;
@@ -692,7 +690,7 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 			if (name == "mixamo.com")
 			{
 				// Mixamo animation name is converted to file name without extension for easy animation importing and differentiation:
-				name = wi::helper::RemoveExtension(wi::helper::GetFileNameFromPath(filename));
+				name = Protean::Helper::RemoveExtension(Protean::Helper::GetFileNameFromPath(filename));
 			}
 		}
 
@@ -774,13 +772,13 @@ void ImportModel_FBX(const std::string& filename, wi::scene::Scene& scene)
 
 	// Note: we use custom FlipZAxis function for transforming to left-handed space
 	//	because it works better than ufbx library's space conversion helpers, especially for ragdolls that will be generated
-	wi::unordered_map<size_t, TransformComponent> transforms_original; // original transform states, can be used to restore after flip (like GLTF export)
+	Protean::unordered_map<size_t, TransformComponent> transforms_original; // original transform states, can be used to restore after flip (like GLTF export)
 	FlipZAxis(scene, rootEntity, transforms_original);
 
 	scene.Update(0);
 }
 
-void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, TransformComponent>& transforms_original)
+void FlipZAxis(Scene& scene, Entity rootEntity, Protean::unordered_map<size_t, TransformComponent>& transforms_original)
 {
 	// Flip mesh data first
 	for (size_t i = 0; i < scene.meshes.GetCount(); ++i)
@@ -816,8 +814,8 @@ void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, Transf
 	bool state_restore = (transforms_original.size() > 0);
 	if (!state_restore)
 	{
-		wi::unordered_map<wi::ecs::Entity, wi::ecs::Entity> hierarchy_list;
-		wi::unordered_map<size_t, wi::scene::TransformComponent> correction_queue;
+		Protean::unordered_map<Protean::Entity, Protean::Entity> hierarchy_list;
+		Protean::unordered_map<size_t, Protean::TransformComponent> correction_queue;
 
 		for (size_t i = 0; i < scene.transforms.GetCount(); ++i)
 		{
@@ -920,14 +918,14 @@ void FlipZAxis(Scene& scene, Entity rootEntity, wi::unordered_map<size_t, Transf
 		{
 			auto data = scene.animation_datas.GetComponent(animation.samplers[channel.samplerIndex].data);
 
-			if (channel.path == wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION)
+			if (channel.path == Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION)
 			{
 				for (size_t k = 0; k < data->keyframe_data.size() / 3; ++k)
 				{
 					data->keyframe_data[k * 3 + 2] *= -1.f;
 				}
 			}
-			if (channel.path == wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION)
+			if (channel.path == Protean::AnimationComponent::AnimationChannel::Path::ROTATION)
 			{
 				for (size_t k = 0; k < data->keyframe_data.size() / 4; ++k)
 				{

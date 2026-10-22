@@ -10,35 +10,35 @@
 #include <shellapi.h>
 #endif
 
-namespace wi::lua::backlog
+namespace Protean::Lua::BacklogBindings
 {
 	int backlog_clear(lua_State* L)
 	{
-		wi::backlog::clear();
+		Protean::Backlog::clear();
 		return 0;
 	}
 	int backlog_post(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 
 		std::string ss;
 
 		for (int i = 1; i <= argc; i++)
 		{
-			if (wi::lua::SIsString(L, i))
+			if (Protean::Lua::SIsString(L, i))
 			{
-				ss += wi::lua::SGetString(L, i);
+				ss += Protean::Lua::SGetString(L, i);
 			}
-			else if (wi::lua::SIsNumber(L, i))
+			else if (Protean::Lua::SIsNumber(L, i))
 			{
-				double arg = wi::lua::SGetDouble(L, i);
+				double arg = Protean::Lua::SGetDouble(L, i);
 				ss += std::to_string(arg);
 			}
-			else if (wi::lua::SIsBool(L, i)) {
-				bool arg = wi::lua::SGetBool(L, i);
+			else if (Protean::Lua::SIsBool(L, i)) {
+				bool arg = Protean::Lua::SGetBool(L, i);
 				ss += arg ? "true" : "false";
 			}
-			else if (wi::lua::SIsNil(L, i)) {
+			else if (Protean::Lua::SIsNil(L, i)) {
 				ss += "nil";
 			}
 			else
@@ -66,115 +66,115 @@ namespace wi::lua::backlog
 
 		if (!ss.empty())
 		{
-			wi::backlog::post(ss);
+			Protean::Backlog::post(ss);
 		}
 
 		return 0;
 	}
 	int backlog_fontsize(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 
 		if (argc > 0)
 		{
-			wi::backlog::setFontSize(wi::lua::SGetInt(L, 1));
+			Protean::Backlog::setFontSize(Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_fontsize(int val) not enough arguments!");
+			Protean::Lua::SError(L, "backlog_fontsize(int val) not enough arguments!");
 
 		return 0;
 	}
 	int backlog_isactive(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::backlog::isActive());
+		Protean::Lua::SSetBool(L, Protean::Backlog::isActive());
 		return 1;
 	}
 	int backlog_fontrowspacing(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::backlog::setFontRowspacing(wi::lua::SGetFloat(L, 1));
+			Protean::Backlog::setFontRowspacing(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_fontrowspacing(int val) not enough arguments!");
+			Protean::Lua::SError(L, "backlog_fontrowspacing(int val) not enough arguments!");
 		return 0;
 	}
 	int backlog_setlevel(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::backlog::SetLogLevel((wi::backlog::LogLevel)wi::lua::SGetInt(L, 1));
+			Protean::Backlog::SetLogLevel((Protean::Backlog::LogLevel)Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_setlevel(LogLevel val) not enough arguments!");
+			Protean::Lua::SError(L, "backlog_setlevel(LogLevel val) not enough arguments!");
 		return 0;
 	}
 	int backlog_lock(lua_State* L)
 	{
-		wi::backlog::Lock();
+		Protean::Backlog::Lock();
 		return 0;
 	}
 	int backlog_unlock(lua_State* L)
 	{
-		wi::backlog::Unlock();
+		Protean::Backlog::Unlock();
 		return 0;
 	}
 	int backlog_blocklua(lua_State* L)
 	{
-		wi::backlog::BlockLuaExecution();
+		Protean::Backlog::BlockLuaExecution();
 		return 0;
 	}
 	int backlog_unblocklua(lua_State* L)
 	{
-		wi::backlog::UnblockLuaExecution();
+		Protean::Backlog::UnblockLuaExecution();
 		return 0;
 	}
 	int backlog_open(lua_State* L)
 	{
-		wi::backlog::Flush();
-		const std::string logfile = wi::backlog::GetLogFile();
+		Protean::Backlog::Flush();
+		const std::string logfile = Protean::Backlog::GetLogFile();
 #ifdef PLATFORM_WINDOWS_DESKTOP
 		HINSTANCE result = ShellExecuteA(NULL, "open", logfile.c_str(), NULL, NULL, SW_SHOWNORMAL);
 		if ((INT_PTR)result > 32)
 		{
-			wi::backlog::post("Opening log file: " + logfile);
+			Protean::Backlog::post("Opening log file: " + logfile);
 		}
 		else
 		{
-			wi::backlog::post("Failed to open log file: " + logfile, wi::backlog::LogLevel::Error);
+			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel::Error);
 		}
 #elif defined(PLATFORM_LINUX)
 		std::string op = "xdg-open \"" + logfile + "\"";
 		int status = system(op.c_str());
 		if (status == 0)
 		{
-			wi::backlog::post("Opening log file: " + logfile);
+			Protean::Backlog::post("Opening log file: " + logfile);
 		}
 		else
 		{
-			wi::backlog::post("Failed to open log file: " + logfile, wi::backlog::LogLevel::Error);
+			Protean::Backlog::post("Failed to open log file: " + logfile, Protean::Backlog::LogLevel::Error);
 		}
 #else
-		wi::backlog::post("backlog_open(): not implemented for this operating system!", wi::backlog::LogLevel::Warning);
+		Protean::Backlog::post("backlog_open(): not implemented for this operating system!", Protean::Backlog::LogLevel::Warning);
 #endif
 		return 0;
 	}
 	int backlog_flush(lua_State* L)
 	{
-		wi::backlog::Flush();
+		Protean::Backlog::Flush();
 		return 0;
 	}
 	int backlog_setautoflushinterval(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::backlog::SetAutoFlushInterval((uint32_t)wi::lua::SGetInt(L, 1));
+			Protean::Backlog::SetAutoFlushInterval((uint32_t)Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "backlog_setautoflushinterval(int milliseconds) not enough arguments!");
+			Protean::Lua::SError(L, "backlog_setautoflushinterval(int milliseconds) not enough arguments!");
 		return 0;
 	}
 
@@ -184,21 +184,21 @@ namespace wi::lua::backlog
 		if (!initialized)
 		{
 			initialized = true;
-			wi::lua::RegisterFunc("backlog_clear", backlog_clear);
-			wi::lua::RegisterFunc("backlog_post", backlog_post);
-			wi::lua::RegisterFunc("backlog_fontsize", backlog_fontsize);
-			wi::lua::RegisterFunc("backlog_isactive", backlog_isactive);
-			wi::lua::RegisterFunc("backlog_fontrowspacing", backlog_fontrowspacing);
-			wi::lua::RegisterFunc("backlog_setlevel", backlog_setlevel);
-			wi::lua::RegisterFunc("backlog_lock", backlog_lock);
-			wi::lua::RegisterFunc("backlog_unlock", backlog_unlock);
-			wi::lua::RegisterFunc("backlog_blocklua", backlog_blocklua);
-			wi::lua::RegisterFunc("backlog_unblocklua", backlog_unblocklua);
-			wi::lua::RegisterFunc("backlog_open", backlog_open);
-			wi::lua::RegisterFunc("backlog_flush", backlog_flush);
-			wi::lua::RegisterFunc("backlog_setautoflushinterval", backlog_setautoflushinterval);
+			Protean::Lua::RegisterFunc("backlog_clear", backlog_clear);
+			Protean::Lua::RegisterFunc("backlog_post", backlog_post);
+			Protean::Lua::RegisterFunc("backlog_fontsize", backlog_fontsize);
+			Protean::Lua::RegisterFunc("backlog_isactive", backlog_isactive);
+			Protean::Lua::RegisterFunc("backlog_fontrowspacing", backlog_fontrowspacing);
+			Protean::Lua::RegisterFunc("backlog_setlevel", backlog_setlevel);
+			Protean::Lua::RegisterFunc("backlog_lock", backlog_lock);
+			Protean::Lua::RegisterFunc("backlog_unlock", backlog_unlock);
+			Protean::Lua::RegisterFunc("backlog_blocklua", backlog_blocklua);
+			Protean::Lua::RegisterFunc("backlog_unblocklua", backlog_unblocklua);
+			Protean::Lua::RegisterFunc("backlog_open", backlog_open);
+			Protean::Lua::RegisterFunc("backlog_flush", backlog_flush);
+			Protean::Lua::RegisterFunc("backlog_setautoflushinterval", backlog_setautoflushinterval);
 
-			wi::lua::RunText(R"(
+			Protean::Lua::RunText(R"(
 LogLevel = {
 	None = 0,
 	Default = 1,

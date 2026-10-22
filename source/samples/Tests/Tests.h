@@ -1,10 +1,10 @@
 #pragma once
 
-class TestsRenderer : public wi::RenderPath3D
+class TestsRenderer : public Protean::RenderPath3D
 {
-	wi::gui::Label label;
-	wi::gui::ComboBox testSelector;
-	wi::ecs::Entity ik_entity = wi::ecs::INVALID_ENTITY;
+	Protean::Gui::Label label;
+	Protean::Gui::ComboBox testSelector;
+	Protean::Entity ik_entity = Protean::INVALID_ENTITY;
 public:
 	void Load() override;
 	void Update(float dt) override;
@@ -17,7 +17,7 @@ public:
 	void ContainerTest();
 };
 
-class Tests : public wi::Application
+class Tests : public Protean::Application
 {
 	TestsRenderer renderer;
 public:

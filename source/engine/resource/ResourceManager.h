@@ -13,43 +13,43 @@
 #include <memory>
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	// This can hold an asset
-	//	It can be loaded from file or memory using wi::resourcemanager::Load()
+	//	It can be loaded from file or memory using Protean::ResourceManager::Load()
 	struct Resource
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
-		const wi::vector<uint8_t>& GetFileData() const;
-		const wi::graphics::Texture& GetTexture() const;
+		const Protean::vector<uint8_t>& GetFileData() const;
+		const Protean::Graphics::Texture& GetTexture() const;
 		uint32_t GetTextureFullMipCount() const;
-		const wi::audio::Sound& GetSound() const;
+		const Protean::Audio::Sound& GetSound() const;
 		const std::string& GetScript() const;
 		size_t GetScriptHash() const;
-		const wi::video::Video& GetVideo() const;
+		const Protean::Video::Video& GetVideo() const;
 		int GetTextureSRGBSubresource() const;
 		int GetFontStyle() const;
 
-		void SetFileData(const wi::vector<uint8_t>& data);
-		void SetFileData(wi::vector<uint8_t>&& data);
+		void SetFileData(const Protean::vector<uint8_t>& data);
+		void SetFileData(Protean::vector<uint8_t>&& data);
 		// Allows to set a Texture to the resource from outside
 		//	srgb_subresource: you can provide a subresource for SRGB view if the texture is going to be used as SRGB with the GetTextureSRGBSubresource() (optional)
-		void SetTexture(const wi::graphics::Texture& texture, int srgb_subresource = -1);
-		void SetTextureVirtual(const wi::graphics::GPUBuffer& tile_pool, const wi::graphics::Texture& residency, const wi::graphics::Texture& feedback); // for virtual texture, bind additional resources to have same lifetime
-		void SetSound(const wi::audio::Sound& sound);
+		void SetTexture(const Protean::Graphics::Texture& texture, int srgb_subresource = -1);
+		void SetTextureVirtual(const Protean::Graphics::GPUBuffer& tile_pool, const Protean::Graphics::Texture& residency, const Protean::Graphics::Texture& feedback); // for virtual texture, bind additional resources to have same lifetime
+		void SetSound(const Protean::Audio::Sound& sound);
 		void SetScript(const std::string& script);
-		void SetVideo(const wi::video::Video& script);
+		void SetVideo(const Protean::Video::Video& script);
 
-		// Resource marked for recreate on resourcemanager::Load()
+		// Resource marked for recreate on ResourceManager::Load()
 		void SetOutdated();
 
 		// Let the streaming system know the required resolution of this resource
 		void StreamingRequestResolution(uint32_t resolution);
 	};
 
-	namespace resourcemanager
+	namespace ResourceManager
 	{
 		enum class Mode
 		{
@@ -63,11 +63,11 @@ namespace wi
 		};
 		void SetMode(Mode param);
 		Mode GetMode();
-		wi::vector<std::string> GetSupportedImageExtensions();
-		wi::vector<std::string> GetSupportedSoundExtensions();
-		wi::vector<std::string> GetSupportedVideoExtensions();
-		wi::vector<std::string> GetSupportedScriptExtensions();
-		wi::vector<std::string> GetSupportedFontStyleExtensions();
+		Protean::vector<std::string> GetSupportedImageExtensions();
+		Protean::vector<std::string> GetSupportedSoundExtensions();
+		Protean::vector<std::string> GetSupportedVideoExtensions();
+		Protean::vector<std::string> GetSupportedScriptExtensions();
+		Protean::vector<std::string> GetSupportedFontStyleExtensions();
 
 		// Order of these must not change as the flags can be serialized!
 		enum class Flags
@@ -134,20 +134,20 @@ namespace wi
 
 		// Returns a collection of all resources that are alive
 		//	you can filter by resource types bitmask
-		void CollectResources(wi::unordered_map<std::string, wi::Resource>& out_resources, ResourceType types = ResourceType::ALL);
+		void CollectResources(Protean::unordered_map<std::string, Protean::Resource>& out_resources, ResourceType types = ResourceType::ALL);
 
 		struct ResourceSerializer
 		{
-			wi::vector<Resource> resources;
+			Protean::vector<Resource> resources;
 		};
 
-		void Serialize_READ(wi::Archive& archive, ResourceSerializer& resources);
-		void Serialize_WRITE(wi::Archive& archive, const wi::unordered_set<std::string>& resource_names);
+		void Serialize_READ(Protean::Archive& archive, ResourceSerializer& resources);
+		void Serialize_WRITE(Protean::Archive& archive, const Protean::unordered_set<std::string>& resource_names);
 	}
 
 }
 
 template<>
-struct enable_bitmask_operators<wi::resourcemanager::Flags> : std::true_type {};
+struct enable_bitmask_operators<Protean::ResourceManager::Flags> : std::true_type {};
 template<>
-struct enable_bitmask_operators<wi::resourcemanager::ResourceType> : std::true_type {};
+struct enable_bitmask_operators<Protean::ResourceManager::ResourceType> : std::true_type {};

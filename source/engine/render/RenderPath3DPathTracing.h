@@ -2,7 +2,7 @@
 #include "render/RenderPath3D.h"
 #include "core/Vector.h"
 
-namespace wi
+namespace Protean
 {
 
 	class RenderPath3D_PathTracing : public RenderPath3D
@@ -10,18 +10,18 @@ namespace wi
 	protected:
 		int sam = -1;
 		int target = 1024;
-		wi::graphics::Texture traceResult;
-		wi::graphics::Texture traceDepth;
-		wi::graphics::Texture traceStencil;
+		Protean::Graphics::Texture traceResult;
+		Protean::Graphics::Texture traceDepth;
+		Protean::Graphics::Texture traceStencil;
 
-		wi::vector<uint8_t> texturedata_src;
-		wi::vector<uint8_t> texturedata_dst;
-		wi::vector<uint8_t> texturedata_albedo;
-		wi::vector<uint8_t> texturedata_normal;
-		wi::graphics::Texture denoiserAlbedo;
-		wi::graphics::Texture denoiserNormal;
-		wi::graphics::Texture denoiserResult;
-		wi::jobsystem::context denoiserContext;
+		Protean::vector<uint8_t> texturedata_src;
+		Protean::vector<uint8_t> texturedata_dst;
+		Protean::vector<uint8_t> texturedata_albedo;
+		Protean::vector<uint8_t> texturedata_normal;
+		Protean::Graphics::Texture denoiserAlbedo;
+		Protean::Graphics::Texture denoiserNormal;
+		Protean::Graphics::Texture denoiserResult;
+		Protean::JobSystem::context denoiserContext;
 
 		void ResizeBuffers() override;
 
@@ -31,7 +31,7 @@ namespace wi
 
 		void Update(float dt) override;
 		void Render() const override;
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(Protean::Graphics::CommandList cmd) const override;
 
 		int getCurrentSampleCount() const { return sam; }
 		void setTargetSampleCount(int value) { target = value; }
@@ -41,7 +41,7 @@ namespace wi
 		float getDenoiserProgress() const { return denoiserProgress; }
 		bool isDenoiserAvailable() const;
 
-		void resetProgress() { wi::jobsystem::Wait(denoiserContext); sam = -1; denoiserProgress = 0; volumetriccloudResources.ResetFrame(); }
+		void resetProgress() { Protean::JobSystem::Wait(denoiserContext); sam = -1; denoiserProgress = 0; volumetriccloudResources.ResetFrame(); }
 
 		uint8_t instanceInclusionMask_PathTrace = 0xFF;
 

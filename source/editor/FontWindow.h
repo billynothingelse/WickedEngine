@@ -1,43 +1,43 @@
 #pragma once
 class EditorComponent;
 
-class FontWindow : public wi::gui::Window
+class FontWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::TextInputField textInput;
-	wi::gui::Button fileButton;
-	wi::gui::Button fontStyleButton;
-	wi::gui::ComboBox fontSizeCombo;
-	wi::gui::ComboBox hAlignCombo;
-	wi::gui::ComboBox vAlignCombo;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider spacingSlider;
-	wi::gui::Slider softnessSlider;
-	wi::gui::Slider boldenSlider;
-	wi::gui::Slider shadowSoftnessSlider;
-	wi::gui::Slider shadowBoldenSlider;
-	wi::gui::Slider shadowOffsetXSlider;
-	wi::gui::Slider shadowOffsetYSlider;
-	wi::gui::Slider intensitySlider;
-	wi::gui::Slider shadowIntensitySlider;
-	wi::gui::CheckBox hiddenCheckBox;
-	wi::gui::CheckBox cameraFacingCheckBox;
-	wi::gui::CheckBox cameraScalingCheckBox;
-	wi::gui::CheckBox depthTestCheckBox;
-	wi::gui::CheckBox sdfCheckBox;
-	wi::gui::ComboBox colorModeCombo;
-	wi::gui::ColorPicker colorPicker;
+	Protean::Gui::TextInputField textInput;
+	Protean::Gui::Button fileButton;
+	Protean::Gui::Button fontStyleButton;
+	Protean::Gui::ComboBox fontSizeCombo;
+	Protean::Gui::ComboBox hAlignCombo;
+	Protean::Gui::ComboBox vAlignCombo;
+	Protean::Gui::Slider rotationSlider;
+	Protean::Gui::Slider spacingSlider;
+	Protean::Gui::Slider softnessSlider;
+	Protean::Gui::Slider boldenSlider;
+	Protean::Gui::Slider shadowSoftnessSlider;
+	Protean::Gui::Slider shadowBoldenSlider;
+	Protean::Gui::Slider shadowOffsetXSlider;
+	Protean::Gui::Slider shadowOffsetYSlider;
+	Protean::Gui::Slider intensitySlider;
+	Protean::Gui::Slider shadowIntensitySlider;
+	Protean::Gui::CheckBox hiddenCheckBox;
+	Protean::Gui::CheckBox cameraFacingCheckBox;
+	Protean::Gui::CheckBox cameraScalingCheckBox;
+	Protean::Gui::CheckBox depthTestCheckBox;
+	Protean::Gui::CheckBox sdfCheckBox;
+	Protean::Gui::ComboBox colorModeCombo;
+	Protean::Gui::ColorPicker colorPicker;
 
-	wi::gui::Label typewriterInfoLabel;
-	wi::gui::Slider typewriterTimeSlider;
-	wi::gui::CheckBox typewriterLoopedCheckBox;
-	wi::gui::TextInputField typewriterStartInput;
+	Protean::Gui::Label typewriterInfoLabel;
+	Protean::Gui::Slider typewriterTimeSlider;
+	Protean::Gui::CheckBox typewriterLoopedCheckBox;
+	Protean::Gui::TextInputField typewriterStartInput;
 
 	void ResizeLayout() override;
 };

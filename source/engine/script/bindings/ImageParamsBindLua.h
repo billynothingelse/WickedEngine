@@ -3,18 +3,18 @@
 #include "script/Luna.h"
 #include "render/Image.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class ImageParams_BindLua
 	{
 	public:
-		wi::image::Params params;
+		Protean::Image::Params params;
 
 		inline static constexpr char className[] = "ImageParams";
 		static Luna<ImageParams_BindLua>::FunctionType methods[];
 		static Luna<ImageParams_BindLua>::PropertyType properties[];
 
-		ImageParams_BindLua(const wi::image::Params& params);
+		ImageParams_BindLua(const Protean::Image::Params& params);
 		ImageParams_BindLua(lua_State* L);
 
 		int GetPos(lua_State* L);

@@ -1,20 +1,20 @@
 #pragma once
 class EditorComponent;
 
-class ArmatureWindow : public wi::gui::Window
+class ArmatureWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 	void RefreshBoneList();
 
-	wi::gui::Label infoLabel;
-	wi::gui::Button resetPoseButton;
-	wi::gui::Button createHumanoidButton;
-	wi::gui::TreeList boneList;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Button resetPoseButton;
+	Protean::Gui::Button createHumanoidButton;
+	Protean::Gui::TreeList boneList;
 
 	void ResizeLayout() override;
 };

@@ -2,16 +2,16 @@
 
 class EditorComponent;
 
-class GaussianSplatWindow : public wi::gui::Window
+class GaussianSplatWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
+	Protean::Gui::Label infoLabel;
 
 	void ResizeLayout() override;
 };

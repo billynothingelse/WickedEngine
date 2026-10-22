@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "VoxelGridWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void VoxelGridWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_VOXELGRID " VoxelGrid", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_VOXELGRID " VoxelGrid", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(520, 480));
 
 	closeButton.SetTooltip("Delete VoxelGrid");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -30,9 +28,9 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	dimXInput.Create("DimX");
 	dimXInput.SetDescription("Dimension X: ");
-	dimXInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	dimXInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
 		voxelgrid->init(uint32_t(std::max(1, args.iValue)), voxelgrid->resolution.y, voxelgrid->resolution.z);
@@ -41,9 +39,9 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	dimYInput.Create("DimY");
 	dimYInput.SetDescription("Y: ");
-	dimYInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	dimYInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
 		voxelgrid->init(voxelgrid->resolution.x, uint32_t(std::max(1, args.iValue)), voxelgrid->resolution.z);
@@ -52,9 +50,9 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	dimZInput.Create("DimZ");
 	dimZInput.SetDescription("Z: ");
-	dimZInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	dimZInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
 		voxelgrid->init(voxelgrid->resolution.x, voxelgrid->resolution.y, uint32_t(std::max(1, args.iValue)));
@@ -62,9 +60,9 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 	AddWidget(&dimZInput);
 
 	clearButton.Create("Clear voxels " ICON_CLEARVOXELS);
-	clearButton.OnClick([=](wi::gui::EventArgs args) {
+	clearButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
 		voxelgrid->cleardata();
@@ -73,45 +71,45 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	voxelizeObjectsButton.Create("Voxelize objects " ICON_VOXELIZE);
 	voxelizeObjectsButton.SetTooltip("Generate navigation grid including all meshes.");
-	voxelizeObjectsButton.OnClick([=](wi::gui::EventArgs args) {
+	voxelizeObjectsButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), wi::enums::FILTER_OBJECT_ALL);
+		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), Protean::FILTER_OBJECT_ALL);
 	});
 	AddWidget(&voxelizeObjectsButton);
 
 	voxelizeNavigationButton.Create("Voxelize navigation " ICON_VOXELIZE);
 	voxelizeNavigationButton.SetTooltip("Generate navigation grid including all navmeshes (object tagged as navmesh).");
-	voxelizeNavigationButton.OnClick([=](wi::gui::EventArgs args) {
+	voxelizeNavigationButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), wi::enums::FILTER_NAVIGATION_MESH);
+		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), Protean::FILTER_NAVIGATION_MESH);
 		});
 	AddWidget(&voxelizeNavigationButton);
 
 	voxelizeCollidersButton.Create("Voxelize CPU colliders " ICON_VOXELIZE);
 	voxelizeCollidersButton.SetTooltip("Generate navigation grid including all CPU colliders.");
-	voxelizeCollidersButton.OnClick([=](wi::gui::EventArgs args) {
+	voxelizeCollidersButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), wi::enums::FILTER_COLLIDER);
+		scene.VoxelizeScene(*voxelgrid, subtractCheckBox.GetCheck(), Protean::FILTER_COLLIDER);
 		});
 	AddWidget(&voxelizeCollidersButton);
 
 	floodfillButton.Create("Flood fill " ICON_VOXELFILL);
 	floodfillButton.SetTooltip("Fill enclosed empty voxel areas to solid.\nThis can take long if there are large enclosed empty areas.");
-	floodfillButton.OnClick([=](wi::gui::EventArgs args) {
+	floodfillButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		wi::Timer tim;
+		Protean::Timer tim;
 		voxelgrid->flood_fill();
 		wilog(text, arraysize(text), "Flood filling took %.2f seconds.", tim.elapsed_seconds());
 		});
@@ -119,11 +117,11 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	fitToSceneButton.Create("Fit bounds to scene " ICON_VOXELBOUNDS);
 	fitToSceneButton.SetTooltip("Fit the bounds of the voxel grid onto the whole scene.");
-	fitToSceneButton.OnClick([=](wi::gui::EventArgs args) {
+	fitToSceneButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		if (scene.bounds.getArea() < 0)
 			return;
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
 		voxelgrid->from_aabb(scene.bounds);
@@ -140,17 +138,17 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	generateMeshButton.Create("Generate Mesh " ICON_MESH);
 	generateMeshButton.SetTooltip("Generate a mesh from the voxels.");
-	generateMeshButton.OnClick([=](wi::gui::EventArgs args) {
+	generateMeshButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		wi::vector<uint32_t> indices;
-		wi::vector<XMFLOAT3> vertices;
+		Protean::vector<uint32_t> indices;
+		Protean::vector<XMFLOAT3> vertices;
 		voxelgrid->create_mesh(indices, vertices, false);
 		if (vertices.empty())
 		{
-			wi::backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", wi::backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());
@@ -159,17 +157,17 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	generateSimplifiedMeshButton.Create("Generate Simplified Mesh " ICON_MESH);
 	generateSimplifiedMeshButton.SetTooltip("Generate a simplified mesh from the voxels.");
-	generateSimplifiedMeshButton.OnClick([=](wi::gui::EventArgs args) {
+	generateSimplifiedMeshButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		wi::vector<uint32_t> indices;
-		wi::vector<XMFLOAT3> vertices;
+		Protean::vector<uint32_t> indices;
+		Protean::vector<XMFLOAT3> vertices;
 		voxelgrid->create_mesh(indices, vertices, true);
 		if (vertices.empty())
 		{
-			wi::backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", wi::backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
 			return;
 		}
 		scene.Entity_CreateMeshFromData("voxelgrid_to_mesh", indices.size(), indices.data(), vertices.size(), vertices.data());
@@ -178,24 +176,24 @@ void VoxelGridWindow::Create(EditorComponent* _editor)
 
 	generateNavMeshButton.Create("Generate Navigation Mesh " ICON_NAVIGATION);
 	generateNavMeshButton.SetTooltip("Generate a simplified navigation mesh from the voxels.");
-	generateNavMeshButton.OnClick([=](wi::gui::EventArgs args) {
+	generateNavMeshButton.OnClick([=](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
-		wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+		Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 		if (voxelgrid == nullptr)
 			return;
-		wi::vector<uint32_t> indices;
-		wi::vector<XMFLOAT3> vertices;
+		Protean::vector<uint32_t> indices;
+		Protean::vector<XMFLOAT3> vertices;
 		voxelgrid->create_mesh(indices, vertices, true, &scene);
 		if (vertices.empty())
 		{
-			wi::backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", wi::backlog::LogLevel::Warning);
+			Protean::Backlog::post("VoxelGrid.create_mesh() : no voxels were found, so mesh creation is aborted.", Protean::Backlog::LogLevel::Warning);
 			return;
 		}
 		Entity entity = scene.Entity_CreateMeshFromData("voxelgrid_to_navmesh", indices.size(), indices.data(), vertices.size(), vertices.data());
 		ObjectComponent* object = scene.objects.GetComponent(entity);
 		if (object != nullptr)
 		{
-			object->filterMask |= wi::enums::FILTER_NAVIGATION_MESH;
+			object->filterMask |= Protean::FILTER_NAVIGATION_MESH;
 
 			MeshComponent* mesh = scene.meshes.GetComponent(object->meshID);
 			if (mesh != nullptr)
@@ -226,13 +224,13 @@ void VoxelGridWindow::SetEntity(Entity entity)
 	this->entity = entity;
 
 	Scene& scene = editor->GetCurrentScene();
-	wi::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
+	Protean::VoxelGrid* voxelgrid = scene.voxel_grids.GetComponent(entity);
 
 	if (voxelgrid != nullptr)
 	{
 		std::string infotext = "Voxel grid can be used for navigation. By voxelizing the scene into the grid, path finding can be used on the resulting voxel grid.";
 		infotext += "\n\nMemory usage: ";
-		infotext += wi::helper::GetMemorySizeText(voxelgrid->get_memory_size());
+		infotext += Protean::Helper::GetMemorySizeText(voxelgrid->get_memory_size());
 		infoLabel.SetText(infotext);
 
 		dimXInput.SetValue((int)voxelgrid->resolution.x);
@@ -243,7 +241,7 @@ void VoxelGridWindow::SetEntity(Entity entity)
 
 void VoxelGridWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 90;
 
 	layout.add_fullwidth(infoLabel);

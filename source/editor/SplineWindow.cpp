@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "SplineWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void SplineWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_SPLINE " Spline", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SPLINE " Spline", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete SplineComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,7 +31,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelectedAndIndirect = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				SplineComponent* spline = scene.splines.GetComponent(x.entity);
@@ -55,7 +53,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 	};
 
 	loopedCheck.Create("Looped: ");
-	loopedCheck.OnClick([this, forEachSelectedAndIndirect](wi::gui::EventArgs args) {
+	loopedCheck.OnClick([this, forEachSelectedAndIndirect](Protean::Gui::EventArgs args) {
 		forEachSelectedAndIndirect([](auto spline, auto args) {
 			spline->SetLooped(args.bValue);
 		})(args);
@@ -74,7 +72,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 
 	filledCheck.Create("Filled: ");
 	filledCheck.SetTooltip("Fill the interior of the looped spline.");
-	filledCheck.OnClick([this, forEachSelectedAndIndirect](wi::gui::EventArgs args) {
+	filledCheck.OnClick([this, forEachSelectedAndIndirect](Protean::Gui::EventArgs args) {
 		forEachSelectedAndIndirect([](auto spline, auto args) {
 			spline->SetFilled(args.bValue);
 		})(args);
@@ -98,7 +96,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 	rotSlider.Create(0, 360, 0, 360, "Rotation: ");
 	rotSlider.SetTooltip("Set overall rotation for all nodes, used in mesh generation.");
 	rotSlider.OnSlide(forEachSelectedAndIndirect([] (auto spline, auto args) {
-		float rad = wi::math::DegreesToRadians(args.fValue);
+		float rad = Protean::Math::DegreesToRadians(args.fValue);
 		spline->rotation = rad;
 	}));
 	AddWidget(&rotSlider);
@@ -140,8 +138,8 @@ void SplineWindow::Create(EditorComponent* _editor)
 
 	recenterButton.Create("Recenter");
 	recenterButton.SetTooltip("Recompute the parent transform position to the center of spline nodes.");
-	recenterButton.OnClick([this](wi::gui::EventArgs args) {
-		auto recenterSpline = [](wi::scene::Scene& scene, Entity splineEntity) {
+	recenterButton.OnClick([this](Protean::Gui::EventArgs args) {
+		auto recenterSpline = [](Protean::Scene& scene, Entity splineEntity) {
 			SplineComponent* spline = scene.splines.GetComponent(splineEntity);
 			if (spline == nullptr || spline->spline_node_entities.empty())
 				return;
@@ -191,7 +189,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 			spline->SetDirty();
 		};
 
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		Protean::Scene& scene = editor->GetCurrentScene();
 		// Apply to all selected splines
 		for (auto& x : editor->translator.selected)
 		{
@@ -212,10 +210,10 @@ void SplineWindow::Create(EditorComponent* _editor)
 
 	fillNormalsComboBox.Create("Compute Normals for Fill: ");
 	fillNormalsComboBox.SetTooltip("Select the normals computation method for the filled spline mesh.");
-	fillNormalsComboBox.AddItem("SMOOTH", (uint64_t)wi::scene::MeshComponent::COMPUTE_NORMALS_SMOOTH);
-	fillNormalsComboBox.AddItem("HARD", (uint64_t)wi::scene::MeshComponent::COMPUTE_NORMALS_HARD);
+	fillNormalsComboBox.AddItem("SMOOTH", (uint64_t)Protean::MeshComponent::COMPUTE_NORMALS_SMOOTH);
+	fillNormalsComboBox.AddItem("HARD", (uint64_t)Protean::MeshComponent::COMPUTE_NORMALS_HARD);
 	fillNormalsComboBox.OnSelect(forEachSelectedAndIndirect([](auto spline, auto args) {
-		spline->fill_normals_mode = (wi::scene::MeshComponent::COMPUTE_NORMALS)args.userdata;
+		spline->fill_normals_mode = (Protean::MeshComponent::COMPUTE_NORMALS)args.userdata;
 		spline->SetDirty();
 	}));
 	AddWidget(&fillNormalsComboBox);
@@ -223,7 +221,7 @@ void SplineWindow::Create(EditorComponent* _editor)
 	addButton.Create("AddNode");
 	addButton.SetText("+");
 	addButton.SetTooltip("Add an entity as a node to the spline (it must have TransformComponent). Hotkey: Ctrl + E");
-	addButton.OnClick([this](wi::gui::EventArgs args) {
+	addButton.OnClick([this](Protean::Gui::EventArgs args) {
 		NewNode();
 	});
 	AddWidget(&addButton);
@@ -253,7 +251,7 @@ void SplineWindow::SetEntity(Entity entity)
 		fillNormalsComboBox.SetSelectedByUserdataWithoutCallback((uint64_t)spline->fill_normals_mode);
 		fillNormalsComboBox.SetEnabled(spline->IsFilled());
 		widthSlider.SetValue(spline->width);
-		rotSlider.SetValue(wi::math::RadiansToDegrees(spline->rotation));
+		rotSlider.SetValue(Protean::Math::RadiansToDegrees(spline->rotation));
 		subdivSlider.SetValue(spline->mesh_generation_subdivision);
 		subdivVerticalSlider.SetValue(spline->mesh_generation_vertical_subdivision);
 		terrainSlider.SetValue(spline->terrain_modifier_amount);
@@ -302,7 +300,7 @@ void SplineWindow::RefreshEntries()
 		{
 			entry.entityButton.SetText("[unnamed] " + std::to_string(entity));
 		}
-		entry.entityButton.OnClick([this, entity](wi::gui::EventArgs args) {
+		entry.entityButton.OnClick([this, entity](Protean::Gui::EventArgs args) {
 			editor->ClearSelected();
 			editor->AddSelected(entity);
 			});
@@ -311,12 +309,12 @@ void SplineWindow::RefreshEntries()
 		entry.removeButton.Create("");
 		entry.removeButton.SetText("X");
 		entry.removeButton.SetSize(XMFLOAT2(entry.removeButton.GetSize().y, entry.removeButton.GetSize().y));
-		entry.removeButton.OnClick([i, spline, this](wi::gui::EventArgs args) {
+		entry.removeButton.OnClick([i, spline, this](Protean::Gui::EventArgs args) {
 			Scene& scene = editor->GetCurrentScene();
 			scene.Entity_Remove(spline->spline_node_entities[i]);
 			spline->spline_node_entities.erase(spline->spline_node_entities.begin() + i);
 			spline->spline_node_transforms.erase(spline->spline_node_transforms.begin() + i);
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this](uint64_t userdata) {
 				RefreshEntries();
 				editor->componentsWnd.RefreshEntityTree();
 				});
@@ -329,7 +327,7 @@ void SplineWindow::RefreshEntries()
 
 void SplineWindow::NewNode()
 {
-	wi::scene::Scene& scene = editor->GetCurrentScene();
+	Protean::Scene& scene = editor->GetCurrentScene();
 	SplineComponent* spline = scene.splines.GetComponent(entity);
 	if (spline == nullptr)
 		return;
@@ -357,7 +355,7 @@ void SplineWindow::NewNode()
 	scene.Component_Attach(node_entity, entity);
 	RefreshEntries();
 
-	wi::Archive& archive = editor->AdvanceHistory();
+	Protean::Archive& archive = editor->AdvanceHistory();
 	archive << EditorComponent::HISTORYOP_ADD_TO_SPLINE;
 	editor->RecordSelection(archive);
 
@@ -374,7 +372,7 @@ void SplineWindow::NewNode()
 
 void SplineWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 145;
 
 	layout.add_fullwidth(infoLabel);

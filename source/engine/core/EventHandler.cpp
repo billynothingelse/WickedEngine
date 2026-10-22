@@ -6,20 +6,20 @@
 #include <mutex>
 #include <utility>
 
-namespace wi::eventhandler
+namespace Protean::EventHandler
 {
 	struct EventManager
 	{
 		// Note: list is used because events can also add events from within and that mustn't cause invalidation like vector
-		wi::unordered_map<int, std::list<std::function<void(uint64_t)>*>> subscribers;
-		wi::unordered_map<int, std::list<std::function<void(uint64_t)>>> subscribers_once;
+		Protean::unordered_map<int, std::list<std::function<void(uint64_t)>*>> subscribers;
+		Protean::unordered_map<int, std::list<std::function<void(uint64_t)>>> subscribers_once;
 		std::mutex locker;
 	};
-	wi::allocator::shared_ptr<EventManager> manager = wi::allocator::make_shared_single<EventManager>();
+	Protean::Allocator::shared_ptr<EventManager> manager = Protean::Allocator::make_shared_single<EventManager>();
 
 	struct EventInternal
 	{
-		wi::allocator::shared_ptr<EventManager> manager;
+		Protean::Allocator::shared_ptr<EventManager> manager;
 		int id = 0;
 		std::function<void(uint64_t)> callback;
 
@@ -37,7 +37,7 @@ namespace wi::eventhandler
 	Handle Subscribe(int id, std::function<void(uint64_t)> callback)
 	{
 		Handle handle;
-		auto eventinternal = wi::allocator::make_shared<EventInternal>();
+		auto eventinternal = Protean::Allocator::make_shared<EventInternal>();
 		handle.internal_state = eventinternal;
 		eventinternal->manager = manager;
 		eventinternal->id = id;

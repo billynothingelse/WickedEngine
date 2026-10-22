@@ -24,18 +24,17 @@
 #endif // OIDN_VERSION_MAJOR >= 2
 #endif // __has_include("OpenImageDenoise/oidn.hpp")
 
-using namespace wi::ecs;
-using namespace wi::enums;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi::scene
+namespace Protean
 {
 
 
 	XMFLOAT3 TransformComponent::GetPosition() const
 	{
-		return wi::math::GetPosition(world);
+		return Protean::Math::GetPosition(world);
 	}
 	XMFLOAT4 TransformComponent::GetRotation() const
 	{
@@ -77,29 +76,29 @@ namespace wi::scene
 	}
 	XMFLOAT3 TransformComponent::GetForward() const
 	{
-		return wi::math::GetForward(world);
+		return Protean::Math::GetForward(world);
 	}
 	XMFLOAT3 TransformComponent::GetUp() const
 	{
-		return wi::math::GetUp(world);
+		return Protean::Math::GetUp(world);
 	}
 	XMFLOAT3 TransformComponent::GetRight() const
 	{
-		return wi::math::GetRight(world);
+		return Protean::Math::GetRight(world);
 	}
 	XMVECTOR TransformComponent::GetForwardV() const
 	{
-		XMFLOAT3 v = wi::math::GetForward(world);
+		XMFLOAT3 v = Protean::Math::GetForward(world);
 		return XMLoadFloat3(&v);
 	}
 	XMVECTOR TransformComponent::GetUpV() const
 	{
-		XMFLOAT3 v = wi::math::GetUp(world);
+		XMFLOAT3 v = Protean::Math::GetUp(world);
 		return XMLoadFloat3(&v);
 	}
 	XMVECTOR TransformComponent::GetRightV() const
 	{
-		XMFLOAT3 v = wi::math::GetRight(world);
+		XMFLOAT3 v = Protean::Math::GetRight(world);
 		return XMLoadFloat3(&v);
 	}
 	void TransformComponent::GetPositionRotationScale(XMFLOAT3& position, XMFLOAT4& rotation, XMFLOAT3& scale) const
@@ -281,7 +280,7 @@ namespace wi::scene
 
 	void MaterialComponent::WriteShaderMaterial(ShaderMaterial* dest) const
 	{
-		using namespace wi::math;
+		using namespace Protean::Math;
 
 		ShaderMaterial material = shader_material_null;
 		material.baseColor = pack_half4(baseColor);
@@ -388,9 +387,9 @@ namespace wi::scene
 			material.options_stencilref |= SHADERMATERIAL_OPTION_BIT_CAPSULE_SHADOW_DISABLED;
 		}
 
-		material.options_stencilref |= wi::renderer::CombineStencilrefs(engineStencilRef, userStencilRef) << 24u;
+		material.options_stencilref |= Protean::Renderer::CombineStencilrefs(engineStencilRef, userStencilRef) << 24u;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		for (int i = 0; i < TEXTURESLOT_COUNT; ++i)
 		{
 			const MaterialComponent::TextureMap& texturemap = textures[i];
@@ -428,7 +427,7 @@ namespace wi::scene
 		// Do not use the cached sampler indices here, using this function doesn't rely on material update system which caches them
 		if (sampler_descriptor < 0)
 		{
-			material.sampler_descriptor = device->GetDescriptorIndex(wi::renderer::GetSampler(wi::enums::SAMPLER_OBJECTSHADER));
+			material.sampler_descriptor = device->GetDescriptorIndex(Protean::Renderer::GetSampler(Protean::SAMPLER_OBJECTSHADER));
 		}
 		else
 		{
@@ -447,7 +446,7 @@ namespace wi::scene
 	{
 		std::memcpy(&dest->textures[slot].texture_descriptor, &descriptor, sizeof(descriptor)); // memcpy into mapped pointer to avoid read from uncached memory
 	}
-	void MaterialComponent::WriteTextures(const wi::graphics::GPUResource** dest, int count) const
+	void MaterialComponent::WriteTextures(const Protean::Graphics::GPUResource** dest, int count) const
 	{
 		count = std::min(count, (int)TEXTURESLOT_COUNT);
 		for (int i = 0; i < count; ++i)
@@ -459,8 +458,8 @@ namespace wi::scene
 	{
 		if (IsCustomShader())
 		{
-			wi::renderer::CustomShader customShader;
-			if (wi::renderer::GetCustomShader(customShaderID, customShader))
+			Protean::Renderer::CustomShader customShader;
+			if (Protean::Renderer::GetCustomShader(customShaderID, customShader))
 			{
 				return customShader.filterMask;
 			}
@@ -479,22 +478,22 @@ namespace wi::scene
 		}
 		return FILTER_TRANSPARENT;
 	}
-	wi::resourcemanager::Flags MaterialComponent::GetTextureSlotResourceFlags(TEXTURESLOT slot)
+	Protean::ResourceManager::Flags MaterialComponent::GetTextureSlotResourceFlags(TEXTURESLOT slot)
 	{
-		wi::resourcemanager::Flags flags = wi::resourcemanager::Flags::NONE;
+		Protean::ResourceManager::Flags flags = Protean::ResourceManager::Flags::NONE;
 		if (!IsPreferUncompressedTexturesEnabled())
 		{
-			flags |= wi::resourcemanager::Flags::IMPORT_BLOCK_COMPRESSED;
+			flags |= Protean::ResourceManager::Flags::IMPORT_BLOCK_COMPRESSED;
 		}
 		if (!IsTextureStreamingDisabled())
 		{
-			flags |= wi::resourcemanager::Flags::STREAMING;
+			flags |= Protean::ResourceManager::Flags::STREAMING;
 		}
 		switch (slot)
 		{
 		case NORMALMAP:
 		case CLEARCOATNORMALMAP:
-			flags |= wi::resourcemanager::Flags::IMPORT_NORMALMAP;
+			flags |= Protean::ResourceManager::Flags::IMPORT_NORMALMAP;
 			break;
 		default:
 			break;
@@ -519,14 +518,14 @@ namespace wi::scene
 			auto& textureslot = textures[slot];
 			if (!textureslot.name.empty())
 			{
-				wi::resourcemanager::Flags flags = GetTextureSlotResourceFlags(TEXTURESLOT(slot));
-				textureslot.resource = wi::resourcemanager::Load(textureslot.name, flags);
+				Protean::ResourceManager::Flags flags = GetTextureSlotResourceFlags(TEXTURESLOT(slot));
+				textureslot.resource = Protean::ResourceManager::Load(textureslot.name, flags);
 			}
 		}
 	}
 	uint32_t MaterialComponent::GetStencilRef() const
 	{
-		return wi::renderer::CombineStencilrefs(engineStencilRef, userStencilRef);
+		return Protean::Renderer::CombineStencilrefs(engineStencilRef, userStencilRef);
 	}
 
 	void MeshComponent::DeleteRenderData()
@@ -560,7 +559,7 @@ namespace wi::scene
 	{
 		DeleteRenderData();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (vertex_tangents.empty() && !vertex_uvset_0.empty() && !vertex_normals.empty())
 		{
@@ -580,7 +579,7 @@ namespace wi::scene
 			{
 				const uint32_t indexCountLOD0 = indexEndLOD0 - indexOffsetLOD0;
 				const uint32_t* indicesLOD0 = indices.data() + indexOffsetLOD0;
-				wi::vector<XMFLOAT4> index_tangents(indexCountLOD0);
+				Protean::vector<XMFLOAT4> index_tangents(indexCountLOD0);
 				meshopt_generateTangents((float*)index_tangents.data(), indicesLOD0, indexCountLOD0, (float*)vertex_positions.data(), vertex_positions.size(), sizeof(XMFLOAT3), (float*)vertex_normals.data(), sizeof(XMFLOAT3), (float*)vertex_uvset_0.data(), sizeof(XMFLOAT2));
 				vertex_tangents.resize(vertex_positions.size());
 				for (size_t i = 0; i < indexCountLOD0; ++i)
@@ -592,8 +591,8 @@ namespace wi::scene
 
 		// SV_PrimitiveID avoiding workaround: provoking vertex can refer to triangel index
 		//	SV_PrimitiveID needs geometry shader emulation on some platforms (on PC is can happen automatically by driver), but with this that can be avoided.
-		wi::vector<unsigned int> provoke(indices.size()); // mesh needs to be drawn with this as index buffer when SV_PrimitiveID is required
-		wi::vector<unsigned int> reorder(vertex_positions.size() + indices.size() / 3); // This can be used as vertexID lookup from current index
+		Protean::vector<unsigned int> provoke(indices.size()); // mesh needs to be drawn with this as index buffer when SV_PrimitiveID is required
+		Protean::vector<unsigned int> reorder(vertex_positions.size() + indices.size() / 3); // This can be used as vertexID lookup from current index
 		reorder.resize(meshopt_generateProvokingIndexBuffer(&provoke[0], &reorder[0], &indices[0], indices.size(), vertex_positions.size()));
 
 		const size_t uv_count = std::max(vertex_uvset_0.size(), vertex_uvset_1.size());
@@ -604,8 +603,8 @@ namespace wi::scene
 		for (size_t i = 0; i < vertex_positions.size(); ++i)
 		{
 			const XMFLOAT3& pos = vertex_positions[i];
-			_min = wi::math::Min(_min, pos);
-			_max = wi::math::Max(_max, pos);
+			_min = Protean::Math::Min(_min, pos);
+			_max = Protean::Math::Max(_max, pos);
 		}
 		aabb = AABB(_min, _max);
 
@@ -684,10 +683,10 @@ namespace wi::scene
 			uv_range_max = XMFLOAT2(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
 			for (size_t i = 0; i < uv_count; ++i)
 			{
-				uv_range_max = wi::math::Max(uv_range_max, uv0_stream[i]);
-				uv_range_max = wi::math::Max(uv_range_max, uv1_stream[i]);
-				uv_range_min = wi::math::Min(uv_range_min, uv0_stream[i]);
-				uv_range_min = wi::math::Min(uv_range_min, uv1_stream[i]);
+				uv_range_max = Protean::Math::Max(uv_range_max, uv0_stream[i]);
+				uv_range_max = Protean::Math::Max(uv_range_max, uv1_stream[i]);
+				uv_range_min = Protean::Math::Min(uv_range_min, uv0_stream[i]);
+				uv_range_min = Protean::Math::Min(uv_range_min, uv1_stream[i]);
 			}
 
 			if (std::abs(uv_range_max.x - uv_range_min.x) > 65536 || std::abs(uv_range_max.y - uv_range_min.y) > 65536)
@@ -745,11 +744,11 @@ namespace wi::scene
 			}
 		}
 
-		wi::vector<ShaderCluster> clusters;
-		wi::vector<ShaderClusterBounds> cluster_bounds;
+		Protean::vector<ShaderCluster> clusters;
+		Protean::vector<ShaderClusterBounds> cluster_bounds;
 		cluster_ranges.clear();
 
-		if (wi::renderer::IsMeshShaderAllowed())
+		if (Protean::Renderer::IsMeshShaderAllowed())
 		{
 			const size_t max_vertices = MESHLET_VERTEX_COUNT;
 			const size_t max_triangles = MESHLET_TRIANGLE_COUNT;
@@ -1217,7 +1216,7 @@ namespace wi::scene
 		// The suballocation strategy is used to have all mesh buffers reside in a global buffer
 		//	With this we can avoid rebinding the index buffer for every mesh and can work with purely offsets
 		//	Though the index buffer will still need to be rebound if the index format changes, but that happens less frequently
-		wi::renderer::BufferSuballocation suballoc = wi::renderer::SuballocateGPUBuffer(bd.size);
+		Protean::Renderer::BufferSuballocation suballoc = Protean::Renderer::SuballocateGPUBuffer(bd.size);
 		if (suballoc.IsValid())
 		{
 			bool success = device->CreateBuffer2(&bd, init_callback, &generalBuffer, &suballoc.alias, suballoc.allocation.byte_offset);
@@ -1303,7 +1302,7 @@ namespace wi::scene
 	}
 	void MeshComponent::CreateStreamoutRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		GPUBufferDesc desc;
 		desc.usage = Usage::DEFAULT;
@@ -1368,7 +1367,7 @@ namespace wi::scene
 	}
 	void MeshComponent::CreateRaytracingRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (!device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
 			return;
@@ -1446,7 +1445,7 @@ namespace wi::scene
 				const XMFLOAT3& p0 = vertex_positions[i0];
 				const XMFLOAT3& p1 = vertex_positions[i1];
 				const XMFLOAT3& p2 = vertex_positions[i2];
-				AABB aabb = wi::primitive::AABB(wi::math::Min(p0, wi::math::Min(p1, p2)), wi::math::Max(p0, wi::math::Max(p1, p2)));
+				AABB aabb = Protean::AABB(Protean::Math::Min(p0, Protean::Math::Min(p1, p2)), Protean::Math::Max(p0, Protean::Math::Max(p1, p2)));
 				aabb.layerMask = triangleIndex;
 				aabb.userdata = subsetIndex;
 				bvh_leaf_aabbs.push_back(aabb);
@@ -1464,15 +1463,15 @@ namespace wi::scene
 
 			// Right now they are always computed even before smooth setting
 
-			wi::vector<uint32_t> newIndexBuffer;
-			wi::vector<XMFLOAT3> newPositionsBuffer;
-			wi::vector<XMFLOAT3> newNormalsBuffer;
-			wi::vector<XMFLOAT2> newUV0Buffer;
-			wi::vector<XMFLOAT2> newUV1Buffer;
-			wi::vector<XMFLOAT2> newAtlasBuffer;
-			wi::vector<XMUINT4> newBoneIndicesBuffer;
-			wi::vector<XMFLOAT4> newBoneWeightsBuffer;
-			wi::vector<uint32_t> newColorsBuffer;
+			Protean::vector<uint32_t> newIndexBuffer;
+			Protean::vector<XMFLOAT3> newPositionsBuffer;
+			Protean::vector<XMFLOAT3> newNormalsBuffer;
+			Protean::vector<XMFLOAT2> newUV0Buffer;
+			Protean::vector<XMFLOAT2> newUV1Buffer;
+			Protean::vector<XMFLOAT2> newAtlasBuffer;
+			Protean::vector<XMUINT4> newBoneIndicesBuffer;
+			Protean::vector<XMFLOAT4> newBoneWeightsBuffer;
+			Protean::vector<uint32_t> newColorsBuffer;
 
 			for (size_t face = 0; face < indices.size() / 3; face++)
 			{
@@ -1598,19 +1597,19 @@ namespace wi::scene
 
 
 					bool match_pos0 =
-						wi::math::float_equal(v_search_pos.x, v0.x) &&
-						wi::math::float_equal(v_search_pos.y, v0.y) &&
-						wi::math::float_equal(v_search_pos.z, v0.z);
+						Protean::Math::float_equal(v_search_pos.x, v0.x) &&
+						Protean::Math::float_equal(v_search_pos.y, v0.y) &&
+						Protean::Math::float_equal(v_search_pos.z, v0.z);
 
 					bool match_pos1 =
-						wi::math::float_equal(v_search_pos.x, v1.x) &&
-						wi::math::float_equal(v_search_pos.y, v1.y) &&
-						wi::math::float_equal(v_search_pos.z, v1.z);
+						Protean::Math::float_equal(v_search_pos.x, v1.x) &&
+						Protean::Math::float_equal(v_search_pos.y, v1.y) &&
+						Protean::Math::float_equal(v_search_pos.z, v1.z);
 
 					bool match_pos2 =
-						wi::math::float_equal(v_search_pos.x, v2.x) &&
-						wi::math::float_equal(v_search_pos.y, v2.y) &&
-						wi::math::float_equal(v_search_pos.z, v2.z);
+						Protean::Math::float_equal(v_search_pos.x, v2.x) &&
+						Protean::Math::float_equal(v_search_pos.y, v2.y) &&
+						Protean::Math::float_equal(v_search_pos.z, v2.z);
 
 					if (match_pos0 || match_pos1 || match_pos2)
 					{
@@ -1661,21 +1660,21 @@ namespace wi::scene
 						const XMFLOAT2& at1 = vertex_atlas.empty() ? XMFLOAT2(0, 0) : vertex_atlas[ind1];
 
 						const bool duplicated_pos =
-							wi::math::float_equal(p0.x, p1.x) &&
-							wi::math::float_equal(p0.y, p1.y) &&
-							wi::math::float_equal(p0.z, p1.z);
+							Protean::Math::float_equal(p0.x, p1.x) &&
+							Protean::Math::float_equal(p0.y, p1.y) &&
+							Protean::Math::float_equal(p0.z, p1.z);
 
 						const bool duplicated_uv0 =
-							wi::math::float_equal(u00.x, u01.x) &&
-							wi::math::float_equal(u00.y, u01.y);
+							Protean::Math::float_equal(u00.x, u01.x) &&
+							Protean::Math::float_equal(u00.y, u01.y);
 
 						const bool duplicated_uv1 =
-							wi::math::float_equal(u10.x, u11.x) &&
-							wi::math::float_equal(u10.y, u11.y);
+							Protean::Math::float_equal(u10.x, u11.x) &&
+							Protean::Math::float_equal(u10.y, u11.y);
 
 						const bool duplicated_atl =
-							wi::math::float_equal(at0.x, at1.x) &&
-							wi::math::float_equal(at0.y, at1.y);
+							Protean::Math::float_equal(at0.x, at1.x) &&
+							Protean::Math::float_equal(at0.y, at1.y);
 
 						if (duplicated_pos && duplicated_uv0 && duplicated_uv1 && duplicated_atl)
 						{
@@ -1904,7 +1903,7 @@ namespace wi::scene
 		return
 			bvh.nodes.size() * sizeof(BVH::Node) +
 			bvh.leaf_indices.size() * sizeof(uint32_t) +
-			bvh_leaf_aabbs.size() * sizeof(wi::primitive::AABB);
+			bvh_leaf_aabbs.size() * sizeof(Protean::AABB);
 	}
 	size_t MeshComponent::GetClusterCount() const
 	{
@@ -1917,7 +1916,7 @@ namespace wi::scene
 	}
 	size_t MeshComponent::CreateSubset()
 	{
-		wi::vector<MeshSubset> new_subsets;
+		Protean::vector<MeshSubset> new_subsets;
 		int ret = 0;
 		const uint32_t lod_count = GetLODCount();
 		for (uint32_t lod = 0; lod < lod_count; ++lod)
@@ -1950,7 +1949,7 @@ namespace wi::scene
 			subsets_per_lod++;
 		}
 		std::swap(subsets, new_subsets);
-		if (wi::renderer::IsMeshShaderAllowed() || !cluster_ranges.empty())
+		if (Protean::Renderer::IsMeshShaderAllowed() || !cluster_ranges.empty())
 		{
 			// mesh shader needs to rebuild clusters, otherwise not be needed
 			CreateRenderData();
@@ -1959,7 +1958,7 @@ namespace wi::scene
 	}
 	void MeshComponent::DeleteSubset(uint32_t subsetIndexToDelete)
 	{
-		wi::vector<MeshSubset> new_subsets;
+		Protean::vector<MeshSubset> new_subsets;
 		const uint32_t lod_count = GetLODCount();
 		for (uint32_t lod = 0; lod < lod_count; ++lod)
 		{
@@ -1981,7 +1980,7 @@ namespace wi::scene
 			subsets_per_lod--;
 		}
 		std::swap(subsets, new_subsets);
-		if (wi::renderer::IsMeshShaderAllowed() || !cluster_ranges.empty())
+		if (Protean::Renderer::IsMeshShaderAllowed() || !cluster_ranges.empty())
 		{
 			// mesh shader needs to rebuild clusters, otherwise not be needed
 			CreateRenderData();
@@ -2031,7 +2030,7 @@ namespace wi::scene
 		{
 			SetLightmapRenderRequest(false);
 
-			bool success = wi::helper::saveTextureToMemory(lightmap, lightmapTextureData);
+			bool success = Protean::Helper::saveTextureToMemory(lightmap, lightmapTextureData);
 			assert(success);
 
 #ifdef OPEN_IMAGE_DENOISE
@@ -2070,7 +2069,7 @@ namespace wi::scene
 					auto error = device.getError(errorMessage);
 					if (error != oidn::Error::None && error != oidn::Error::Cancelled)
 					{
-						wi::backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
+						Protean::Backlog::post(std::string("[OpenImageDenoise error] ") + errorMessage);
 					}
 					else
 					{
@@ -2082,8 +2081,8 @@ namespace wi::scene
 
 			CompressLightmap();
 
-			wi::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
-			wi::graphics::GetDevice()->SetName(&lightmap, "lightmap");
+			Protean::TextureHelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
+			Protean::Graphics::GetDevice()->SetName(&lightmap, "lightmap");
 		}
 	}
 	void ObjectComponent::CompressLightmap()
@@ -2092,7 +2091,7 @@ namespace wi::scene
 		{
 			// Simple packing to R11G11B10_FLOAT format on CPU:
 			using namespace PackedVector;
-			wi::vector<uint8_t> packed_data;
+			Protean::vector<uint8_t> packed_data;
 			packed_data.resize(sizeof(XMFLOAT3PK) * lightmapWidth * lightmapHeight);
 			XMFLOAT3PK* packed_ptr = (XMFLOAT3PK*)packed_data.data();
 			XMHALF4* raw_ptr = (XMHALF4*)lightmapTextureData.data();
@@ -2110,7 +2109,7 @@ namespace wi::scene
 		else
 		{
 			// BC6 compress on GPU:
-			wi::texturehelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
+			Protean::TextureHelper::CreateTexture(lightmap, lightmapTextureData.data(), lightmapWidth, lightmapHeight, lightmap.desc.format);
 			TextureDesc desc = lightmap.desc;
 			desc.format = Format::BC6H_UF16;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE;
@@ -2118,8 +2117,8 @@ namespace wi::scene
 			GraphicsDevice* device = GetDevice();
 			device->CreateTexture(&desc, nullptr, &bc6tex);
 			CommandList cmd = device->BeginCommandList();
-			wi::renderer::BlockCompress(lightmap, bc6tex, cmd);
-			wi::helper::saveTextureToMemory(bc6tex, lightmapTextureData); // internally waits for GPU completion
+			Protean::Renderer::BlockCompress(lightmap, bc6tex, cmd);
+			Protean::Helper::saveTextureToMemory(bc6tex, lightmapTextureData); // internally waits for GPU completion
 			lightmap.desc = desc;
 		}
 	}
@@ -2132,7 +2131,7 @@ namespace wi::scene
 	{
 		DeleteRenderData();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (!vertex_ao.empty())
 		{
@@ -2157,7 +2156,7 @@ namespace wi::scene
 	{
 		if (!textureName.empty() && !resource.IsValid())
 		{
-			resource = wi::resourcemanager::Load(textureName);
+			resource = Protean::ResourceManager::Load(textureName);
 		}
 		if (resource.IsValid())
 		{
@@ -2166,12 +2165,12 @@ namespace wi::scene
 			SetDirty(false);
 			return;
 		}
-		resolution = wi::math::GetNextPowerOfTwo(resolution);
+		resolution = Protean::Math::GetNextPowerOfTwo(resolution);
 		if (texture.IsValid() && resolution == texture.desc.width)
 			return;
 		SetDirty();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		TextureDesc desc;
 		desc.array_size = 6;
@@ -2207,50 +2206,50 @@ namespace wi::scene
 	{
 		switch (path)
 		{
-		case wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+		case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION:
+		case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
 			return PathDataType::Float4;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCALE:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+		case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
 			return PathDataType::Weights;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
 			return PathDataType::Float3;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
 			return PathDataType::Event;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+		case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
 			return PathDataType::Float;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
 			return PathDataType::Float;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
 			return PathDataType::Float2;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
 			return PathDataType::Event;
 
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
 			return PathDataType::Float4;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
 			return PathDataType::Float;
 
 		default:
@@ -2269,7 +2268,7 @@ namespace wi::scene
 		if (physicsIndices.empty())
 		{
 			bool pinning_required = false;
-			wi::vector<uint32_t> source;
+			Protean::vector<uint32_t> source;
 			uint32_t first_subset = 0;
 			uint32_t last_subset = 0;
 			mesh.GetLODSubsetRange(0, first_subset, last_subset);
@@ -2288,7 +2287,7 @@ namespace wi::scene
 			if (pinning_required)
 			{
 				// If there is pinning, we need to use precise LOD to retain difference between pinned and soft vertices:
-				wi::vector<XMFLOAT4> vertices(mesh.vertex_positions.size());
+				Protean::vector<XMFLOAT4> vertices(mesh.vertex_positions.size());
 				for (size_t i = 0; i < mesh.vertex_positions.size(); ++i)
 				{
 					vertices[i].x = mesh.vertex_positions[i].x;
@@ -2298,7 +2297,7 @@ namespace wi::scene
 				}
 
 				// Generate shadow indices for position+weight-only stream:
-				wi::vector<uint32_t> shadow_indices(source.size());
+				Protean::vector<uint32_t> shadow_indices(source.size());
 				meshopt_generateShadowIndexBuffer(
 					shadow_indices.data(), source.data(), source.size(),
 					vertices.data(), vertices.size(), sizeof(XMFLOAT4), sizeof(XMFLOAT4)
@@ -2354,7 +2353,7 @@ namespace wi::scene
 
 			// Remap physics indices to point to physics indices:
 			physicsToGraphicsVertexMapping.clear();
-			wi::unordered_map<uint32_t, size_t> physicsVertices;
+			Protean::unordered_map<uint32_t, size_t> physicsVertices;
 			for (size_t i = 0; i < physicsIndices.size(); ++i)
 			{
 				const uint32_t graphicsInd = physicsIndices[i];
@@ -2446,8 +2445,8 @@ namespace wi::scene
 				mesh.vertex_boneindices2.resize(mesh.vertex_positions.size());
 				mesh.vertex_boneweights2.resize(mesh.vertex_positions.size());
 			}
-			wi::jobsystem::context ctx;
-			wi::jobsystem::Dispatch(ctx, (uint32_t)mesh.vertex_positions.size(), 64, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::context ctx;
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)mesh.vertex_positions.size(), 64, [&](Protean::JobSystem::JobArgs args) {
 				const XMFLOAT3 position = mesh.vertex_positions[args.jobIndex];
 
 				BoneQueue bones;
@@ -2455,7 +2454,7 @@ namespace wi::scene
 				{
 					const uint32_t graphicsInd = physicsToGraphicsVertexMapping[physicsInd];
 					const XMFLOAT3 position2 = mesh.vertex_positions[graphicsInd];
-					const float dist = wi::math::DistanceSquared(position, position2);
+					const float dist = Protean::Math::DistanceSquared(position, position2);
 					// Note: 0.01 correction is carefully tweaked so that cloth_test and sponza curtains look good
 					// (larger values blow up the curtains, lower values make the shading of the cloth look bad)
 					const float weight = 1.0f / (0.01f + dist);
@@ -2471,7 +2470,7 @@ namespace wi::scene
 					mesh.vertex_boneweights2[args.jobIndex] = bones.get_weights2();
 				}
 			});
-			wi::jobsystem::Wait(ctx);
+			Protean::JobSystem::Wait(ctx);
 			mesh.CreateRenderData();
 		}
 	}
@@ -2612,32 +2611,32 @@ namespace wi::scene
 	{
 		SetDirty();
 
-		width = wi::math::Lerp(a.width, b.width, t);
-		height = wi::math::Lerp(a.height, b.height, t);
-		zNearP = wi::math::Lerp(a.zNearP, b.zNearP, t);
-		zFarP = wi::math::Lerp(a.zFarP, b.zFarP, t);
-		fov = wi::math::Lerp(a.fov, b.fov, t);
-		focal_length = wi::math::Lerp(a.focal_length, b.focal_length, t);
-		aperture_size = wi::math::Lerp(a.aperture_size, b.aperture_size, t);
-		aperture_shape = wi::math::Lerp(a.aperture_shape, b.aperture_shape, t);
+		width = Protean::Math::Lerp(a.width, b.width, t);
+		height = Protean::Math::Lerp(a.height, b.height, t);
+		zNearP = Protean::Math::Lerp(a.zNearP, b.zNearP, t);
+		zFarP = Protean::Math::Lerp(a.zFarP, b.zFarP, t);
+		fov = Protean::Math::Lerp(a.fov, b.fov, t);
+		focal_length = Protean::Math::Lerp(a.focal_length, b.focal_length, t);
+		aperture_size = Protean::Math::Lerp(a.aperture_size, b.aperture_size, t);
+		aperture_shape = Protean::Math::Lerp(a.aperture_shape, b.aperture_shape, t);
 	}
 
 	void ScriptComponent::CreateFromFile(const std::string& filename)
 	{
 		this->filename = filename;
-		resource = wi::resourcemanager::Load(filename);
+		resource = Protean::ResourceManager::Load(filename);
 		script.clear(); // will be created on first Update()
 	}
 
 	void SoundComponent::Play()
 	{
 		_flags |= PLAYING;
-		wi::audio::Play(&soundinstance);
+		Protean::Audio::Play(&soundinstance);
 	}
 	void SoundComponent::Stop()
 	{
 		_flags &= ~PLAYING;
-		wi::audio::Stop(&soundinstance);
+		Protean::Audio::Stop(&soundinstance);
 	}
 	void SoundComponent::SetLooped(bool value)
 	{
@@ -2645,12 +2644,12 @@ namespace wi::scene
 		if (value)
 		{
 			_flags |= LOOPED;
-			wi::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
+			Protean::Audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
 		}
 		else
 		{
 			_flags &= ~LOOPED;
-			wi::audio::ExitLoop(&soundinstance);
+			Protean::Audio::ExitLoop(&soundinstance);
 		}
 	}
 	void SoundComponent::SetDisable3D(bool value)
@@ -2663,7 +2662,7 @@ namespace wi::scene
 		{
 			_flags &= ~DISABLE_3D;
 		}
-		wi::audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
+		Protean::Audio::CreateSoundInstance(&soundResource.GetSound(), &soundinstance);
 	}
 
 	float VideoComponent::GetLength() const
@@ -2674,7 +2673,7 @@ namespace wi::scene
 	}
 	void VideoComponent::Seek(float timerSeconds)
 	{
-		wi::video::Seek(&videoinstance, timerSeconds);
+		Protean::Video::Seek(&videoinstance, timerSeconds);
 	}
 
 	bool HumanoidComponent::IsValid() const
@@ -2796,7 +2795,7 @@ namespace wi::scene
 	}
 	XMFLOAT3 CharacterComponent::GetPositionInterpolated() const
 	{
-		return wi::math::Lerp(position_prev, position, alpha);
+		return Protean::Math::Lerp(position_prev, position, alpha);
 	}
 	void CharacterComponent::SetVelocity(const XMFLOAT3& value)
 	{
@@ -2851,7 +2850,7 @@ namespace wi::scene
 	{
 		return foot_placement_enabled;
 	}
-	void CharacterComponent::SetPathGoal(const XMFLOAT3& goal, const wi::VoxelGrid* voxelgrid)
+	void CharacterComponent::SetPathGoal(const XMFLOAT3& goal, const Protean::VoxelGrid* voxelgrid)
 	{
 		this->goal = goal;
 		this->voxelgrid = voxelgrid;
@@ -2986,9 +2985,9 @@ namespace wi::scene
 		XMVECTOR Q2 = XMQuaternionNormalize(XMLoadFloat4(&spline_node_transforms[t2].rotation_local));
 		XMVECTOR Q3 = XMQuaternionNormalize(XMLoadFloat4(&spline_node_transforms[t3].rotation_local));
 
-		XMVECTOR P = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, tmid);
-		XMVECTOR P_prev = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, saturate(tmid - 0.01f));
-		XMVECTOR P_next = wi::math::CatmullRomCentripetal(P0, P1, P2, P3, saturate(tmid + 0.01f));
+		XMVECTOR P = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, tmid);
+		XMVECTOR P_prev = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, saturate(tmid - 0.01f));
+		XMVECTOR P_next = Protean::Math::CatmullRomCentripetal(P0, P1, P2, P3, saturate(tmid + 0.01f));
 		XMVECTOR squadA, squadB, squadC;
 		XMQuaternionSquadSetup(&squadA, &squadB, &squadC, Q0, Q1, Q2, Q3);
 		XMVECTOR Q = XMQuaternionNormalize(XMQuaternionSquad(Q1, squadA, squadB, squadC, tmid));
@@ -3016,19 +3015,19 @@ namespace wi::scene
 		steps *= (int)spline_node_transforms.size();
 		float mindist = FLT_MAX;
 		XMVECTOR MIN = XMVectorZero();
-		XMVECTOR A = wi::math::GetPosition(EvaluateSplineAt(0.0f));
+		XMVECTOR A = Protean::Math::GetPosition(EvaluateSplineAt(0.0f));
 		for (int i = 1; i < steps; ++i)
 		{
 			const float t = float(i) / float(steps - 1);
 			const XMMATRIX M = EvaluateSplineAt(t);
-			XMVECTOR R = wi::math::GetRight(M);
+			XMVECTOR R = Protean::Math::GetRight(M);
 			float nodewidth = XMVectorGetX(XMVector3Length(R));
 			nodewidth *= width;
 			R = XMVector3Normalize(R) * nodewidth;
-			const XMVECTOR B = wi::math::GetPosition(M);
-			XMVECTOR C = wi::math::ClosestPointOnLineSegment(A, B, P); // point on spline center
-			C = wi::math::ClosestPointOnLineSegment(C - R, C + R, P); // extruded segment by spline width
-			const float dist = wi::math::Distance(P, C);
+			const XMVECTOR B = Protean::Math::GetPosition(M);
+			XMVECTOR C = Protean::Math::ClosestPointOnLineSegment(A, B, P); // point on spline center
+			C = Protean::Math::ClosestPointOnLineSegment(C - R, C + R, P); // extruded segment by spline width
+			const float dist = Protean::Math::Distance(P, C);
 			if (dist < mindist)
 			{
 				mindist = dist;
@@ -3053,11 +3052,11 @@ namespace wi::scene
 		{
 			const float t = float(i) / float(steps - 1);
 			const XMMATRIX M = EvaluateSplineAt(t);
-			const XMVECTOR P = wi::math::GetPosition(M);
-			const XMVECTOR N = wi::math::GetUp(M);
+			const XMVECTOR P = Protean::Math::GetPosition(M);
+			const XMVECTOR N = Protean::Math::GetUp(M);
 			const XMVECTOR PLANE = XMPlaneFromPointNormal(P, N);
 			const XMVECTOR I = XMPlaneIntersectLine(PLANE, ORIGIN, ORIGIN + DIRECTION * 100000);
-			const float dist = wi::math::Distance(P, I);
+			const float dist = Protean::Math::Distance(P, I);
 			if (dist < mindist)
 			{
 				mindist = dist;
@@ -3080,12 +3079,12 @@ namespace wi::scene
 		{
 			const float t = float(i) / float(steps - 1);
 			const XMMATRIX M = EvaluateSplineAt(t);
-			const float nodewidth = XMVectorGetX(XMVector3Length(wi::math::GetRight(M)));
+			const float nodewidth = XMVectorGetX(XMVector3Length(Protean::Math::GetRight(M)));
 			const float range = nodewidth * rangemod;
-			const XMVECTOR P = wi::math::GetPosition(M);
-			const XMVECTOR R = XMVector3Normalize(wi::math::GetRight(M)) * range;
-			const XMVECTOR N = XMVector3Normalize(wi::math::GetUp(M)) * range;
-			const XMVECTOR F = XMVector3Normalize(wi::math::GetForward(M)) * range;
+			const XMVECTOR P = Protean::Math::GetPosition(M);
+			const XMVECTOR R = XMVector3Normalize(Protean::Math::GetRight(M)) * range;
+			const XMVECTOR N = XMVector3Normalize(Protean::Math::GetUp(M)) * range;
+			const XMVECTOR F = XMVector3Normalize(Protean::Math::GetForward(M)) * range;
 			ret.AddPoint(P - R);
 			ret.AddPoint(P + R);
 			ret.AddPoint(P - N);
@@ -3116,7 +3115,7 @@ namespace wi::scene
 		{
 			const XMFLOAT3& pos0 = spline_node_transforms[(i + first) % cnt].translation_local;
 			const XMFLOAT3& pos1 = spline_node_transforms[(i + second) % cnt].translation_local;
-			const float distance = wi::math::Distance(pos0, pos1);
+			const float distance = Protean::Math::Distance(pos0, pos1);
 			precomputed_total_distance += distance;
 			precomputed_node_distances[i] = distance;
 		}
@@ -3145,8 +3144,8 @@ namespace wi::scene
 				const float t1 = float(i + 1) / count;
 				const XMMATRIX M0 = EvaluateSplineAt(t0);
 				const XMMATRIX M1 = EvaluateSplineAt(t1);
-				const XMVECTOR P0 = wi::math::GetPosition(M0);
-				const XMVECTOR P1 = wi::math::GetPosition(M1);
+				const XMVECTOR P0 = Protean::Math::GetPosition(M0);
+				const XMVECTOR P1 = Protean::Math::GetPosition(M1);
 				const XMVECTOR C = XMVectorLerp(P0, P1, 0.5f);
 				const XMVECTOR T = XMVector3Normalize(P1 - P0);
 				const XMVECTOR A = XMVector3Normalize(XMVector3Cross(XAXIS, T));
@@ -3154,14 +3153,14 @@ namespace wi::scene
 				const XMVECTOR Q = XMQuaternionNormalize(XMQuaternionRotationNormal(A, angle));
 				BoundingOrientedBox& obb = precomputed_obbs[i];
 				XMStoreFloat3(&obb.Center, C);
-				obb.Extents = XMFLOAT3(wi::math::Distance(P0, P1) * 0.5f + rangemod, rangemod, rangemod);
+				obb.Extents = XMFLOAT3(Protean::Math::Distance(P0, P1) * 0.5f + rangemod, rangemod, rangemod);
 				XMStoreFloat4(&obb.Orientation, Q);
 
 #if 0
 				// DEBUG OBB:
-				static wi::SpinLock locker;
+				static Protean::SpinLock locker;
 				locker.lock();
-				wi::renderer::DrawBox(precomputed_obbs[i]);
+				Protean::Renderer::DrawBox(precomputed_obbs[i]);
 				locker.unlock();
 #endif
 
@@ -3176,9 +3175,9 @@ namespace wi::scene
 
 #if 0
 				// DEBUG AABB:
-				static wi::SpinLock locker;
+				static Protean::SpinLock locker;
 				locker.lock();
-				wi::renderer::DrawBox(precomputed_aabbs[i]);
+				Protean::Renderer::DrawBox(precomputed_aabbs[i]);
 				locker.unlock();
 #endif
 			}

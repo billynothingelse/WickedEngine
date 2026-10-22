@@ -32,7 +32,7 @@
 #define vulkan_assert(cond, fname) { wilog_assert(cond, "Vulkan error: %s failed with %s (%s:%d)", fname, string_VkResult(res), relative_path(__FILE__), __LINE__); }
 #define vulkan_check(call) [&]() { VkResult res = call; vulkan_assert((res >= VK_SUCCESS), extract_function_name(#call).c_str()); return res; }()
 
-namespace wi::graphics::vulkan_internal
+namespace Protean::Graphics::VulkanInternal
 {
 	struct PSOLayoutHash
 	{
@@ -62,11 +62,11 @@ namespace wi::graphics::vulkan_internal
 			hash = 0;
 			for (auto& x : SRV)
 			{
-				wi::helper::hash_combine(hash, x);
+				Protean::Helper::hash_combine(hash, x);
 			}
 			for (auto& x : UAV)
 			{
-				wi::helper::hash_combine(hash, x);
+				Protean::Helper::hash_combine(hash, x);
 			}
 		}
 		constexpr size_t get_hash() const
@@ -78,16 +78,16 @@ namespace wi::graphics::vulkan_internal
 namespace std
 {
 	template <>
-	struct hash<wi::graphics::vulkan_internal::PSOLayoutHash>
+	struct hash<Protean::Graphics::VulkanInternal::PSOLayoutHash>
 	{
-		constexpr size_t operator()(const wi::graphics::vulkan_internal::PSOLayoutHash& hash) const
+		constexpr size_t operator()(const Protean::Graphics::VulkanInternal::PSOLayoutHash& hash) const
 		{
 			return hash.get_hash();
 		}
 	};
 }
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 	class GraphicsDevice_Vulkan final : public GraphicsDevice
 	{
@@ -135,15 +135,15 @@ namespace wi::graphics
 	    VkDebugUtilsMessengerEXT debugUtilsMessenger = VK_NULL_HANDLE;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 		VkDevice device = VK_NULL_HANDLE;
-		wi::vector<VkQueueFamilyProperties2> queueFamilies;
-		wi::vector<VkQueueFamilyVideoPropertiesKHR> queueFamiliesVideo;
+		Protean::vector<VkQueueFamilyProperties2> queueFamilies;
+		Protean::vector<VkQueueFamilyVideoPropertiesKHR> queueFamiliesVideo;
 		uint32_t graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t computeFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t copyFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t videoFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t initFamily = VK_QUEUE_FAMILY_IGNORED;
 		uint32_t sparseFamily = VK_QUEUE_FAMILY_IGNORED;
-		wi::vector<uint32_t> families;
+		Protean::vector<uint32_t> families;
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue computeQueue = VK_NULL_HANDLE;
 		VkQueue copyQueue = VK_NULL_HANDLE;
@@ -193,7 +193,7 @@ namespace wi::graphics
 		VkVideoDecodeH265CapabilitiesKHR decode_h265_capabilities = {};
 		VideoCapability video_capability_h265 = {};
 
-		wi::vector<VkDynamicState> pso_dynamicStates;
+		Protean::vector<VkDynamicState> pso_dynamicStates;
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo = {};
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo_MeshShader = {};
 
@@ -224,7 +224,7 @@ namespace wi::graphics
 		VkSampler immutable_samplers[STATIC_SAMPLER_COUNT] = {};
 
 		mutable std::mutex layout_locker;
-		mutable wi::unordered_map<wi::graphics::vulkan_internal::PSOLayoutHash, PSOLayout> pso_layouts;
+		mutable Protean::unordered_map<Protean::Graphics::VulkanInternal::PSOLayoutHash, PSOLayout> pso_layouts;
 		VkPipelineLayout cache_pso_layout(PSOLayout& layout) const;
 
 		uint32_t dynamic_cbv_count = ROOT_CBV_COUNT;
@@ -233,17 +233,17 @@ namespace wi::graphics
 		{
 			VkQueue queue = VK_NULL_HANDLE;
 			VkSemaphore frame_semaphores[BUFFERCOUNT][QUEUE_COUNT] = {};
-			wi::vector<SwapChain> swapchain_updates;
-			wi::vector<VkSemaphoreSubmitInfo> submit_waitSemaphoreInfos;
-			wi::vector<VkSemaphoreSubmitInfo> submit_signalSemaphoreInfos;
-			wi::vector<VkCommandBufferSubmitInfo> submit_cmds;
+			Protean::vector<SwapChain> swapchain_updates;
+			Protean::vector<VkSemaphoreSubmitInfo> submit_waitSemaphoreInfos;
+			Protean::vector<VkSemaphoreSubmitInfo> submit_signalSemaphoreInfos;
+			Protean::vector<VkCommandBufferSubmitInfo> submit_cmds;
 
-			wi::vector<VkSemaphore> swapchainWaitSemaphores;
-			wi::vector<VkSwapchainKHR> swapchains;
-			wi::vector<uint32_t> swapchainImageIndices;
+			Protean::vector<VkSemaphore> swapchainWaitSemaphores;
+			Protean::vector<VkSwapchainKHR> swapchains;
+			Protean::vector<uint32_t> swapchainImageIndices;
 
 			bool sparse_binding_supported = false;
-			wi::allocator::shared_ptr<std::mutex> locker;
+			Protean::Allocator::shared_ptr<std::mutex> locker;
 
 			void clear();
 			void signal(VkSemaphore semaphore);
@@ -266,12 +266,12 @@ namespace wi::graphics
 				VkCommandBuffer transferCommandBuffer = VK_NULL_HANDLE;
 				VkFence fence = VK_NULL_HANDLE;
 				GPUBuffer uploadbuffer;
-				wi::vector<VkSemaphore> semaphores;
+				Protean::vector<VkSemaphore> semaphores;
 				constexpr bool IsValid() const { return transferCommandBuffer != VK_NULL_HANDLE; }
 			};
-			wi::vector<CopyCMD> freelist;
+			Protean::vector<CopyCMD> freelist;
 			std::deque<CopyCMD> async_worklist;
-			wi::vector<VkSemaphore> async_semaphore_recycle[BUFFERCOUNT];
+			Protean::vector<VkSemaphore> async_semaphore_recycle[BUFFERCOUNT];
 
 			void init(GraphicsDevice_Vulkan* device);
 			void destroy();
@@ -282,7 +282,7 @@ namespace wi::graphics
 
 		// Resource init transition helper:
 		mutable std::mutex transitionLocker;
-		mutable wi::vector<VkImageMemoryBarrier2> init_transitions;
+		mutable Protean::vector<VkImageMemoryBarrier2> init_transitions;
 		struct TransitionHandler
 		{
 			VkCommandPool commandPool = VK_NULL_HANDLE;
@@ -328,9 +328,9 @@ namespace wi::graphics
 			static constexpr uint32_t set_count = 256;
 			static constexpr uint32_t set_batch = 32;
 			GraphicsDevice_Vulkan* device = nullptr;
-			wi::vector<VkDescriptorPool> pools;
-			wi::vector<wi::vector<VkDescriptorSet>> free_sets;
-			wi::vector<wi::vector<VkDescriptorSet>> work_sets;
+			Protean::vector<VkDescriptorPool> pools;
+			Protean::vector<Protean::vector<VkDescriptorSet>> free_sets;
+			Protean::vector<Protean::vector<VkDescriptorSet>> work_sets;
 
 			void init(GraphicsDevice_Vulkan* device)
 			{
@@ -370,7 +370,7 @@ namespace wi::graphics
 				{
 					free_sets.resize(layout.id + 1);
 				}
-				wi::vector<VkDescriptorSet>& available = free_sets[layout.id];
+				Protean::vector<VkDescriptorSet>& available = free_sets[layout.id];
 				if (available.empty())
 				{
 					VkDescriptorSetLayout descriptor_set_layouts[set_batch] = {};
@@ -433,7 +433,7 @@ namespace wi::graphics
 			}
 		};
 
-		wi::vector<VkSemaphore> semaphore_pool;
+		Protean::vector<VkSemaphore> semaphore_pool;
 		std::mutex semaphore_pool_locker;
 		VkSemaphore new_semaphore()
 		{
@@ -464,31 +464,31 @@ namespace wi::graphics
 
 			QUEUE_TYPE queue = {};
 			uint32_t id = 0;
-			wi::vector<VkSemaphore> waits;
-			wi::vector<VkSemaphore> signals;
+			Protean::vector<VkSemaphore> waits;
+			Protean::vector<VkSemaphore> signals;
 
 			DescriptorBinder binder;
 			DescriptorBinderPool binder_pools[BUFFERCOUNT];
 			GPULinearAllocator frame_allocators[BUFFERCOUNT];
 
 			PSOLayout layout;
-			wi::vector<std::pair<PipelineHash, PipelineState>> pipelines_worker;
+			Protean::vector<std::pair<PipelineHash, PipelineState>> pipelines_worker;
 			PipelineHash prev_pipeline_hash = {};
 			const PipelineState* active_pso = {};
 			const Shader* active_cs = {};
 			const RaytracingPipelineState* active_rt = {};
 			ShadingRate prev_shadingrate = {};
 			uint32_t prev_stencilref = 0;
-			wi::vector<SwapChain> prev_swapchains;
+			Protean::vector<SwapChain> prev_swapchains;
 			bool dirty_pso = {};
-			wi::vector<VkMemoryBarrier2> frame_memoryBarriers;
-			wi::vector<VkImageMemoryBarrier2> frame_imageBarriers;
-			wi::vector<VkBufferMemoryBarrier2> frame_bufferBarriers;
-			wi::vector<VkAccelerationStructureGeometryKHR> accelerationstructure_build_geometries;
-			wi::vector<VkAccelerationStructureBuildRangeInfoKHR> accelerationstructure_build_ranges;
+			Protean::vector<VkMemoryBarrier2> frame_memoryBarriers;
+			Protean::vector<VkImageMemoryBarrier2> frame_imageBarriers;
+			Protean::vector<VkBufferMemoryBarrier2> frame_bufferBarriers;
+			Protean::vector<VkAccelerationStructureGeometryKHR> accelerationstructure_build_geometries;
+			Protean::vector<VkAccelerationStructureBuildRangeInfoKHR> accelerationstructure_build_ranges;
 			RenderPassInfo renderpass_info;
-			wi::vector<VkImageMemoryBarrier2> renderpass_barriers_begin;
-			wi::vector<VkImageMemoryBarrier2> renderpass_barriers_end;
+			Protean::vector<VkImageMemoryBarrier2> renderpass_barriers_begin;
+			Protean::vector<VkImageMemoryBarrier2> renderpass_barriers_end;
 
 			void reset(uint32_t bufferindex)
 			{
@@ -521,10 +521,10 @@ namespace wi::graphics
 				return commandBuffers[buffer_index][queue];
 			}
 		};
-		wi::allocator::BlockAllocator<CommandList_Vulkan, 64> cmd_allocator;
-		wi::vector<CommandList_Vulkan*> commandlists;
+		Protean::Allocator::BlockAllocator<CommandList_Vulkan, 64> cmd_allocator;
+		Protean::vector<CommandList_Vulkan*> commandlists;
 		uint32_t cmd_count = 0;
-		wi::SpinLock cmd_locker;
+		Protean::SpinLock cmd_locker;
 
 		constexpr CommandList_Vulkan& GetCommandList(CommandList cmd) const
 		{
@@ -533,7 +533,7 @@ namespace wi::graphics
 		}
 
 		VkPipelineCache pipelineCache = VK_NULL_HANDLE;
-		wi::unordered_map<PipelineHash, PipelineState> pipelines_global;
+		Protean::unordered_map<PipelineHash, PipelineState> pipelines_global;
 
 		void pso_validate(CommandList cmd);
 
@@ -544,10 +544,10 @@ namespace wi::graphics
 		void set_semaphore_name(VkSemaphore semaphore, const char* name);
 
 	public:
-		GraphicsDevice_Vulkan(wi::platform::window_type window, ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
+		GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
 		~GraphicsDevice_Vulkan() override;
 
-		bool CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const override;
+		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader, const char* entrypoint = "main") const override;
@@ -726,7 +726,7 @@ namespace wi::graphics
 				VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 				VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 				VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-				wi::vector<int> freelist;
+				Protean::vector<int> freelist;
 				std::mutex locker;
 
 				void init(GraphicsDevice_Vulkan* device, VkDescriptorType type, uint32_t descriptorCount)
@@ -1028,7 +1028,7 @@ namespace wi::graphics
 				});
 			}
 		};
-		wi::allocator::shared_ptr<AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<AllocationHandler> allocationhandler;
 
 	};
 }

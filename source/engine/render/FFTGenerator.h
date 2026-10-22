@@ -2,13 +2,13 @@
 #include "core/CommonInclude.h"
 #include "render/GraphicsAPI/GraphicsDevice.h"
 
-namespace wi::fftgenerator
+namespace Protean::FFTGenerator
 {
 	void fft_512x512_c2c(
-		const wi::graphics::GPUResource& pUAV_Dst,
-		const wi::graphics::GPUResource& pSRV_Dst,
-		const wi::graphics::GPUResource& pSRV_Src,
-		wi::graphics::CommandList cmd);
+		const Protean::Graphics::GPUResource& pUAV_Dst,
+		const Protean::Graphics::GPUResource& pSRV_Dst,
+		const Protean::Graphics::GPUResource& pSRV_Src,
+		Protean::Graphics::CommandList cmd);
 
 	void LoadShaders();
 }

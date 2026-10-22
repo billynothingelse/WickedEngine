@@ -746,7 +746,7 @@ struct alignas(32) ShaderMeshInstance
 	inline void init()
 	{
 #ifdef __cplusplus
-		using namespace wi::math;
+		using namespace Protean::Math;
 #endif // __cplusplus
 		uid = 0;
 		flags = 0;
@@ -1259,7 +1259,7 @@ enum FRAME_OPTIONS
 
 struct alignas(16) FrameCB
 {
-	uint		options;					// wi::renderer bool options packed into bitmask (OPTION_BIT_ values)
+	uint		options;					// Protean::Renderer bool options packed into bitmask (OPTION_BIT_ values)
 	float		time;
 	float		time_previous;
 	float		delta_time;

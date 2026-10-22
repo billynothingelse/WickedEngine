@@ -5,12 +5,9 @@
 #include "render/TextureHelper.h"
 #include "debug/Profiler.h"
 
-using namespace wi::graphics;
-using namespace wi::enums;
-using namespace wi::scene;
-using namespace wi::ecs;
-
-namespace wi
+using namespace Protean::Graphics;
+using namespace Protean;
+namespace Protean
 {
 	static constexpr float foreground_depth_range = 0.01f;
 
@@ -98,7 +95,7 @@ namespace wi
 		first_frame = true;
 		DeleteGPUResources();
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		XMUINT2 internalResolution = GetInternalResolution();
 		camera->width = (float)internalResolution.x;
@@ -111,13 +108,13 @@ namespace wi
 		TextureDesc desc_rtPostprocess;
 		{
 			desc_rtPostprocess.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc_rtPostprocess.format = wi::renderer::format_rendertarget_main;
+			desc_rtPostprocess.format = Protean::Renderer::format_rendertarget_main;
 			desc_rtPostprocess.width = internalResolution.x;
 			desc_rtPostprocess.height = internalResolution.y;
 		}
 		TextureDesc desc_rtPrimitiveID;
 		{
-			desc_rtPrimitiveID.format = wi::renderer::format_idbuffer;
+			desc_rtPrimitiveID.format = Protean::Renderer::format_idbuffer;
 			desc_rtPrimitiveID.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
 			if (getMSAASampleCount() > 1)
 			{
@@ -131,7 +128,7 @@ namespace wi
 		TextureDesc desc_rtSceneCopy;
 		{
 			desc_rtSceneCopy.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS | BindFlag::RENDER_TARGET;
-			desc_rtSceneCopy.format = wi::renderer::format_rendertarget_main;
+			desc_rtSceneCopy.format = Protean::Renderer::format_rendertarget_main;
 			desc_rtSceneCopy.width = internalResolution.x / 4;
 			desc_rtSceneCopy.height = internalResolution.y / 4;
 			desc_rtSceneCopy.mip_levels = std::min(8u, (uint32_t)std::log2(std::max(desc_rtSceneCopy.width, desc_rtSceneCopy.height)));
@@ -219,7 +216,7 @@ namespace wi
 		// Regular texture creations:
 		{
 			TextureDesc desc;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
@@ -261,7 +258,7 @@ namespace wi
 			device->SetName(&rtGUIBlurredBackground[2], "renderpath3D.rtGUIBlurredBackground[2]");
 		}
 		if (device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2) &&
-			wi::renderer::GetVariableRateShadingClassification())
+			Protean::Renderer::GetVariableRateShadingClassification())
 		{
 			uint32_t tileSize = device->GetVariableRateShadingTileSize();
 
@@ -284,7 +281,7 @@ namespace wi
 
 			desc.sample_count = getMSAASampleCount();
 			desc.layout = ResourceState::DEPTHSTENCIL;
-			desc.format = wi::renderer::format_depthbuffer_main;
+			desc.format = Protean::Renderer::format_depthbuffer_main;
 			desc.bind_flags = BindFlag::DEPTH_STENCIL;
 			device->CreateTexture(&desc, nullptr, &depthBuffer_Main);
 			device->SetName(&depthBuffer_Main, "renderpath3D.depthBuffer_Main");
@@ -319,8 +316,8 @@ namespace wi
 			device->CreateTexture(&desc, nullptr, &debugUAV);
 			device->SetName(&debugUAV, "renderpath3D.debugUAV");
 		}
-		wi::renderer::CreateTiledLightResources(tiledLightResources, internalResolution);
-		wi::renderer::CreateScreenSpaceShadowResources(screenspaceshadowResources, internalResolution);
+		Protean::Renderer::CreateTiledLightResources(tiledLightResources, internalResolution);
+		Protean::Renderer::CreateScreenSpaceShadowResources(screenspaceshadowResources, internalResolution);
 
 		// These can trigger resource creations if needed:
 		setAO(ao);
@@ -348,18 +345,18 @@ namespace wi
 
 	void RenderPath3D::Update(float dt)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		RenderPath2D::Update(dt);
 
-		wi::renderer::SetShadowsEnabled(getShadowsEnabled());
+		Protean::Renderer::SetShadowsEnabled(getShadowsEnabled());
 
 		const bool hw_raytrace = device->CheckCapability(GraphicsDeviceCapability::RAYTRACING);
 		if (getSceneUpdateEnabled())
 		{
-			if (wi::renderer::GetSurfelGIEnabled() ||
-				wi::renderer::GetDDGIEnabled() ||
-				(hw_raytrace && wi::renderer::GetRaytracedShadowsEnabled()) ||
+			if (Protean::Renderer::GetSurfelGIEnabled() ||
+				Protean::Renderer::GetDDGIEnabled() ||
+				(hw_raytrace && Protean::Renderer::GetRaytracedShadowsEnabled()) ||
 				(hw_raytrace && getAO() == AO_RTAO) ||
 				(hw_raytrace && getRaytracedReflectionEnabled()) ||
 				(hw_raytrace && getRaytracedDiffuseEnabled())
@@ -368,13 +365,13 @@ namespace wi
 				scene->SetAccelerationStructureUpdateRequested(true);
 			}
 			scene->camera = *camera;
-			scene->Update(dt * wi::renderer::GetGameSpeed());
+			scene->Update(dt * Protean::Renderer::GetGameSpeed());
 		}
 	}
 
 	void RenderPath3D::PreRender()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (rtMain_render.desc.sample_count != msaaSampleCount)
 		{
@@ -385,12 +382,12 @@ namespace wi
 		visibility_main.layerMask = getLayerMask();
 		visibility_main.scene = scene;
 		visibility_main.camera = camera;
-		visibility_main.flags = wi::renderer::Visibility::ALLOW_EVERYTHING;
+		visibility_main.flags = Protean::Renderer::Visibility::ALLOW_EVERYTHING;
 		if (!getOcclusionCullingEnabled())
 		{
-			visibility_main.flags &= ~wi::renderer::Visibility::ALLOW_OCCLUSION_CULLING;
+			visibility_main.flags &= ~Protean::Renderer::Visibility::ALLOW_OCCLUSION_CULLING;
 		}
-		wi::renderer::UpdateVisibility(visibility_main);
+		Protean::Renderer::UpdateVisibility(visibility_main);
 
 		if (visibility_main.planar_reflection_visible)
 		{
@@ -402,17 +399,17 @@ namespace wi
 			visibility_reflection.scene = scene;
 			visibility_reflection.camera = &camera_reflection;
 			visibility_reflection.flags =
-				wi::renderer::Visibility::ALLOW_OBJECTS |
-				wi::renderer::Visibility::ALLOW_EMITTERS |
-				wi::renderer::Visibility::ALLOW_HAIRS |
-				wi::renderer::Visibility::ALLOW_LIGHTS
+				Protean::Renderer::Visibility::ALLOW_OBJECTS |
+				Protean::Renderer::Visibility::ALLOW_EMITTERS |
+				Protean::Renderer::Visibility::ALLOW_HAIRS |
+				Protean::Renderer::Visibility::ALLOW_LIGHTS
 				;
-			wi::renderer::UpdateVisibility(visibility_reflection);
+			Protean::Renderer::UpdateVisibility(visibility_reflection);
 		}
 
 		XMUINT2 internalResolution = GetInternalResolution();
 
-		wi::renderer::UpdatePerFrameData(
+		Protean::Renderer::UpdatePerFrameData(
 			*scene,
 			visibility_main,
 			frameCB,
@@ -423,14 +420,14 @@ namespace wi
 		{
 			camera->jitter = fsr2Resources.GetJitter();
 		}
-		else if (wi::renderer::GetTemporalAAEnabled() && wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_DISABLED)
+		else if (Protean::Renderer::GetTemporalAAEnabled() && Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_DISABLED)
 		{
-			const XMFLOAT4& halton = wi::math::GetHaltonSequence(wi::graphics::GetDevice()->GetFrameCount() % 256);
+			const XMFLOAT4& halton = Protean::Math::GetHaltonSequence(Protean::Graphics::GetDevice()->GetFrameCount() % 256);
 			camera->jitter.x = (halton.x * 2 - 1) / (float)internalResolution.x;
 			camera->jitter.y = (halton.y * 2 - 1) / (float)internalResolution.y;
 			if (!temporalAAResources.IsValid())
 			{
-				wi::renderer::CreateTemporalAAResources(temporalAAResources, internalResolution);
+				Protean::Renderer::CreateTemporalAAResources(temporalAAResources, internalResolution);
 			}
 		}
 		else
@@ -451,7 +448,7 @@ namespace wi
 		{
 			rtaoResources.frame = 0;
 		}
-		if (!wi::renderer::GetRaytracedShadowsEnabled())
+		if (!Protean::Renderer::GetRaytracedShadowsEnabled())
 		{
 			rtshadowResources.frame = 0;
 		}
@@ -472,11 +469,11 @@ namespace wi
 			rtAO = {};
 		}
 
-		if (wi::renderer::GetRaytracedShadowsEnabled() && device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
+		if (Protean::Renderer::GetRaytracedShadowsEnabled() && device->CheckCapability(GraphicsDeviceCapability::RAYTRACING))
 		{
 			if (!rtshadowResources.denoised.IsValid())
 			{
-				wi::renderer::CreateRTShadowResources(rtshadowResources, internalResolution);
+				Protean::Renderer::CreateRTShadowResources(rtshadowResources, internalResolution);
 			}
 		}
 		else
@@ -488,13 +485,13 @@ namespace wi
 		{
 			if (!aerialperspectiveResources.texture_output.IsValid())
 			{
-				wi::renderer::CreateAerialPerspectiveResources(aerialperspectiveResources, internalResolution);
+				Protean::Renderer::CreateAerialPerspectiveResources(aerialperspectiveResources, internalResolution);
 			}
 			if (getReflectionsEnabled() && depthBuffer_Reflection.IsValid())
 			{
 				if (!aerialperspectiveResources_reflection.texture_output.IsValid())
 				{
-					wi::renderer::CreateAerialPerspectiveResources(aerialperspectiveResources_reflection, XMUINT2(depthBuffer_Reflection.desc.width, depthBuffer_Reflection.desc.height));
+					Protean::Renderer::CreateAerialPerspectiveResources(aerialperspectiveResources_reflection, XMUINT2(depthBuffer_Reflection.desc.width, depthBuffer_Reflection.desc.height));
 				}
 			}
 			else
@@ -511,7 +508,7 @@ namespace wi
 		{
 			if (!volumetriccloudResources.texture_cloudRender.IsValid())
 			{
-				wi::renderer::CreateVolumetricCloudResources(volumetriccloudResources, internalResolution);
+				Protean::Renderer::CreateVolumetricCloudResources(volumetriccloudResources, internalResolution);
 			}
 			volumetriccloudResources.AdvanceFrame();
 		}
@@ -537,19 +534,19 @@ namespace wi
 		{
 			rtWaterRipple = {};
 		}
-		if (wi::renderer::GetSurfelGIEnabled())
+		if (Protean::Renderer::GetSurfelGIEnabled())
 		{
 			if (!surfelGIResources.result.IsValid())
 			{
-				wi::renderer::CreateSurfelGIResources(surfelGIResources, internalResolution);
+				Protean::Renderer::CreateSurfelGIResources(surfelGIResources, internalResolution);
 			}
 		}
 
-		if (wi::renderer::GetVXGIEnabled())
+		if (Protean::Renderer::GetVXGIEnabled())
 		{
 			if (!vxgiResources.IsValid())
 			{
-				wi::renderer::CreateVXGIResources(vxgiResources, internalResolution);
+				Protean::Renderer::CreateVXGIResources(vxgiResources, internalResolution);
 			}
 		}
 		else
@@ -558,7 +555,7 @@ namespace wi
 		}
 
 		// Check whether reprojected depth is required:
-		if (!first_frame && wi::renderer::IsMeshShaderAllowed() && wi::renderer::IsMeshletOcclusionCullingEnabled())
+		if (!first_frame && Protean::Renderer::IsMeshShaderAllowed() && Protean::Renderer::IsMeshletOcclusionCullingEnabled())
 		{
 			TextureDesc desc;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
@@ -587,14 +584,14 @@ namespace wi
 		// Check whether velocity buffer is required:
 		if (
 			getMotionBlurEnabled() ||
-			wi::renderer::GetTemporalAAEnabled() ||
+			Protean::Renderer::GetTemporalAAEnabled() ||
 			getSSREnabled() ||
 			getSSGIEnabled() ||
 			getRaytracedReflectionEnabled() ||
 			getRaytracedDiffuseEnabled() ||
-			wi::renderer::GetRaytracedShadowsEnabled() ||
+			Protean::Renderer::GetRaytracedShadowsEnabled() ||
 			getAO() == AO::AO_RTAO ||
-			wi::renderer::GetVariableRateShadingClassification() ||
+			Protean::Renderer::GetVariableRateShadingClassification() ||
 			getFSR2Enabled() ||
 			reprojectedDepth.IsValid()
 			)
@@ -617,7 +614,7 @@ namespace wi
 		}
 
 		// Check whether shadow mask is required:
-		if (wi::renderer::GetScreenSpaceShadowsEnabled() || wi::renderer::GetRaytracedShadowsEnabled())
+		if (Protean::Renderer::GetScreenSpaceShadowsEnabled() || Protean::Renderer::GetRaytracedShadowsEnabled())
 		{
 			if (!rtShadow.IsValid())
 			{
@@ -654,14 +651,14 @@ namespace wi
 			getSSGIEnabled() ||
 			getRaytracedReflectionEnabled() ||
 			getRaytracedDiffuseEnabled() ||
-			wi::renderer::GetScreenSpaceShadowsEnabled() ||
-			wi::renderer::GetRaytracedShadowsEnabled() ||
-			wi::renderer::GetVXGIEnabled()
+			Protean::Renderer::GetScreenSpaceShadowsEnabled() ||
+			Protean::Renderer::GetRaytracedShadowsEnabled() ||
+			Protean::Renderer::GetVXGIEnabled()
 			)
 		{
 			if (!visibilityResources.IsValid())
 			{
-				wi::renderer::CreateVisibilityResources(visibilityResources, internalResolution);
+				Protean::Renderer::CreateVisibilityResources(visibilityResources, internalResolution);
 			}
 		}
 		else
@@ -669,7 +666,7 @@ namespace wi
 			visibilityResources.DeleteOptionalResources();
 			if (!visibilityResources.IsValidSimple())
 			{
-				wi::renderer::CreateVisibilityResourcesSimple(visibilityResources, internalResolution);
+				Protean::Renderer::CreateVisibilityResourcesSimple(visibilityResources, internalResolution);
 			}
 		}
 
@@ -686,7 +683,7 @@ namespace wi
 				{
 					resolution = XMUINT2(GetPhysicalWidth(), GetPhysicalHeight());
 				}
-				wi::renderer::CreateDepthOfFieldResources(depthoffieldResources, resolution);
+				Protean::Renderer::CreateDepthOfFieldResources(depthoffieldResources, resolution);
 			}
 		}
 		else
@@ -704,7 +701,7 @@ namespace wi
 				{
 					resolution = XMUINT2(GetPhysicalWidth(), GetPhysicalHeight());
 				}
-				wi::renderer::CreateMotionBlurResources(motionblurResources, resolution);
+				Protean::Renderer::CreateMotionBlurResources(motionblurResources, resolution);
 			}
 		}
 		else
@@ -750,12 +747,12 @@ namespace wi
 		}
 		else
 		{
-			camera->texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
+			camera->texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
 		}
 		camera->texture_rtdiffuse_index = device->GetDescriptorIndex(&rtRaytracedDiffuse, SubresourceType::SRV);
 		camera->texture_surfelgi_index = device->GetDescriptorIndex(&surfelGIResources.result, SubresourceType::SRV);
 		camera->texture_vxgi_diffuse_index = device->GetDescriptorIndex(&vxgiResources.diffuse, SubresourceType::SRV);
-		if (wi::renderer::GetVXGIReflectionsEnabled())
+		if (Protean::Renderer::GetVXGIReflectionsEnabled())
 		{
 			camera->texture_vxgi_specular_index = device->GetDescriptorIndex(&vxgiResources.specular, SubresourceType::SRV);
 		}
@@ -786,7 +783,7 @@ namespace wi
 		camera_reflection.texture_ao_index = -1;
 		camera_reflection.texture_ssr_index = -1;
 		camera_reflection.texture_ssgi_index = -1;
-		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(wi::texturehelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
+		camera_reflection.texture_rtshadow_index = device->GetDescriptorIndex(Protean::TextureHelper::getWhite(), SubresourceType::SRV); // AMD descriptor branching fix
 		camera_reflection.texture_rtdiffuse_index = -1;
 		camera_reflection.texture_surfelgi_index = -1;
 		camera_reflection.texture_vxgi_diffuse_index = -1;
@@ -798,8 +795,8 @@ namespace wi
 		{
 			for (size_t i = 0; i < scene->videos.GetCount(); ++i)
 			{
-				const wi::scene::VideoComponent& video = scene->videos[i];
-				if (wi::video::IsDecodingRequired(&video.videoinstance))
+				const Protean::VideoComponent& video = scene->videos[i];
+				if (Protean::Video::IsDecodingRequired(&video.videoinstance))
 				{
 					video_cmd = device->BeginCommandList(QUEUE_VIDEO_DECODE);
 					break;
@@ -807,8 +804,8 @@ namespace wi
 			}
 			for (size_t i = 0; i < scene->videos.GetCount(); ++i)
 			{
-				wi::scene::VideoComponent& video = scene->videos[i];
-				wi::video::DecodeVideo(&video.videoinstance, video_cmd);
+				Protean::VideoComponent& video = scene->videos[i];
+				Protean::Video::DecodeVideo(&video.videoinstance, video_cmd);
 			}
 		}
 
@@ -816,7 +813,7 @@ namespace wi
 		{
 			if (!meshblendResources.IsValid())
 			{
-				wi::renderer::CreateMeshBlendResources(meshblendResources, internalResolution);
+				Protean::Renderer::CreateMeshBlendResources(meshblendResources, internalResolution);
 			}
 		}
 		else
@@ -841,14 +838,14 @@ namespace wi
 		}
 		prerender_happened = false;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
-		wi::jobsystem::context ctx;
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
+		Protean::JobSystem::context ctx;
 
 		CommandList cmd_copypages;
 		if (scene->terrains.GetCount() > 0)
 		{
 			cmd_copypages = device->BeginCommandList(QUEUE_COPY);
-			wi::jobsystem::Execute(ctx, [this, cmd_copypages](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd_copypages](Protean::JobSystem::JobArgs args) {
 				for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 				{
 					scene->terrains[i].CopyVirtualTexturePageStatusGPU(cmd_copypages);
@@ -858,18 +855,18 @@ namespace wi
 
 		// Preparing the frame:
 		CommandList cmd = device->BeginCommandList();
-		wi::renderer::ProcessDeferredTextureRequests(cmd); // Execute it first thing in the frame here, on main thread, to not allow other thread steal it and execute on different command list!
+		Protean::Renderer::ProcessDeferredTextureRequests(cmd); // Execute it first thing in the frame here, on main thread, to not allow other thread steal it and execute on different command list!
 		CommandList cmd_prepareframe = cmd;
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
-			GraphicsDevice* device = wi::graphics::GetDevice();
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
-			wi::renderer::UpdateRenderData(visibility_main, frameCB, cmd);
+			Protean::Renderer::UpdateRenderData(visibility_main, frameCB, cmd);
 
 			GPUBarrier barriers[] = {
 				GPUBarrier::Image(&debugUAV, debugUAV.desc.layout, ResourceState::UNORDERED_ACCESS),
@@ -887,38 +884,38 @@ namespace wi
 		{
 			device->WaitCommandList(cmd, cmd_copypages);
 		}
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
-			wi::renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
+			Protean::Renderer::UpdateRenderDataAsync(visibility_main, frameCB, cmd);
 
 			if (scene->IsWetmapProcessingRequired())
 			{
-				wi::renderer::RefreshWetmaps(visibility_main, cmd);
+				Protean::Renderer::RefreshWetmaps(visibility_main, cmd);
 			}
 
 			if (scene->IsAccelerationStructureUpdateRequested())
 			{
-				wi::renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
+				Protean::Renderer::UpdateRaytracingAccelerationStructures(*scene, cmd);
 			}
 
-			if (wi::renderer::GetSurfelGIEnabled())
+			if (Protean::Renderer::GetSurfelGIEnabled())
 			{
-				wi::renderer::SurfelGI(
+				Protean::Renderer::SurfelGI(
 					surfelGIResources,
 					*scene,
 					cmd
 				);
 			}
 
-			if (wi::renderer::GetDDGIEnabled() && getSceneUpdateEnabled())
+			if (Protean::Renderer::GetDDGIEnabled() && getSceneUpdateEnabled())
 			{
-				wi::renderer::DDGI(
+				Protean::Renderer::DDGI(
 					*scene,
 					cmd
 				);
@@ -927,33 +924,33 @@ namespace wi
 		});
 
 		static const uint32_t drawscene_flags =
-			wi::renderer::DRAWSCENE_OPAQUE |
-			wi::renderer::DRAWSCENE_IMPOSTOR |
-			wi::renderer::DRAWSCENE_HAIRPARTICLE |
-			wi::renderer::DRAWSCENE_TESSELLATION |
-			wi::renderer::DRAWSCENE_OCCLUSIONCULLING |
-			wi::renderer::DRAWSCENE_MAINCAMERA
+			Protean::Renderer::DRAWSCENE_OPAQUE |
+			Protean::Renderer::DRAWSCENE_IMPOSTOR |
+			Protean::Renderer::DRAWSCENE_HAIRPARTICLE |
+			Protean::Renderer::DRAWSCENE_TESSELLATION |
+			Protean::Renderer::DRAWSCENE_OCCLUSIONCULLING |
+			Protean::Renderer::DRAWSCENE_MAINCAMERA
 			;
 
 		// Main camera depth prepass:
 		cmd = device->BeginCommandList();
 		CommandList cmd_maincamera_prepass = cmd;
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
 
-			wi::renderer::RefreshImpostors(*scene, cmd);
+			Protean::Renderer::RefreshImpostors(*scene, cmd);
 
 			if (reprojectedDepth.IsValid())
 			{
-				wi::renderer::ComputeReprojectedDepthPyramid(
+				Protean::Renderer::ComputeReprojectedDepthPyramid(
 					depthBuffer_Copy,
 					rtVelocity,
 					reprojectedDepth,
@@ -981,9 +978,9 @@ namespace wi
 			device->RenderPassBegin(rp, arraysize(rp), cmd);
 
 			device->EventBegin("Opaque Z-prepass", cmd);
-			auto range = wi::profiler::BeginRangeGPU("Z-Prepass", cmd);
+			auto range = Protean::Profiler::BeginRangeGPU("Z-Prepass", cmd);
 
-			wi::graphics::Rect scissor = GetScissorInternalResolution();
+			Protean::Graphics::Rect scissor = GetScissorInternalResolution();
 			device->BindScissorRects(1, &scissor, cmd);
 
 			Viewport vp;
@@ -994,27 +991,27 @@ namespace wi
 			vp.min_depth = 1 - foreground_depth_range;
 			vp.max_depth = 1;
 			device->BindViewports(1, &vp, cmd);
-			wi::renderer::DrawScene(
+			Protean::Renderer::DrawScene(
 				visibility_main,
 				RENDERPASS_PREPASS,
 				cmd,
-				wi::renderer::DRAWSCENE_OPAQUE |
-				wi::renderer::DRAWSCENE_FOREGROUND_ONLY |
-				wi::renderer::DRAWSCENE_MAINCAMERA
+				Protean::Renderer::DRAWSCENE_OPAQUE |
+				Protean::Renderer::DRAWSCENE_FOREGROUND_ONLY |
+				Protean::Renderer::DRAWSCENE_MAINCAMERA
 			);
 
 			// Regular:
 			vp.min_depth = 0;
 			vp.max_depth = 1;
 			device->BindViewports(1, &vp, cmd);
-			wi::renderer::DrawScene(
+			Protean::Renderer::DrawScene(
 				visibility_main,
 				RENDERPASS_PREPASS,
 				cmd,
 				drawscene_flags
 			);
 
-			wi::profiler::EndRange(range);
+			Protean::Profiler::EndRange(range);
 			device->EventEnd(cmd);
 
 			device->RenderPassEnd(cmd);
@@ -1031,30 +1028,30 @@ namespace wi
 			device->WaitCommandList(cmd, video_cmd);
 		}
 		CommandList cmd_maincamera_compute_effects = cmd;
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			for (size_t i = 0; i < scene->videos.GetCount(); ++i)
 			{
-				wi::scene::VideoComponent& video = scene->videos[i];
-				wi::video::ResolveVideoToRGB(&video.videoinstance, cmd);
+				Protean::VideoComponent& video = scene->videos[i];
+				Protean::Video::ResolveVideoToRGB(&video.videoinstance, cmd);
 			}
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
 
-			wi::renderer::Visibility_Prepare(
+			Protean::Renderer::Visibility_Prepare(
 				visibilityResources,
 				rtPrimitiveID_render,
 				cmd
 			);
 
-			wi::renderer::ComputeTiledLightCulling(
+			Protean::Renderer::ComputeTiledLightCulling(
 				tiledLightResources,
 				visibility_main,
 				debugUAV,
@@ -1066,13 +1063,13 @@ namespace wi
 				getSSGIEnabled() ||
 				getRaytracedReflectionEnabled() ||
 				getRaytracedDiffuseEnabled() ||
-				wi::renderer::GetScreenSpaceShadowsEnabled() ||
-				wi::renderer::GetRaytracedShadowsEnabled() ||
-				wi::renderer::GetVXGIEnabled()
+				Protean::Renderer::GetScreenSpaceShadowsEnabled() ||
+				Protean::Renderer::GetRaytracedShadowsEnabled() ||
+				Protean::Renderer::GetVXGIEnabled()
 				)
 			{
 				// These post effects require surface normals and/or roughness
-				wi::renderer::Visibility_Surface(
+				Protean::Renderer::Visibility_Surface(
 					visibilityResources,
 					cmd
 				);
@@ -1080,16 +1077,16 @@ namespace wi
 
 			if (rtVelocity.IsValid())
 			{
-				wi::renderer::Visibility_Velocity(
+				Protean::Renderer::Visibility_Velocity(
 					visibilityResources,
 					rtVelocity,
 					cmd
 				);
 			}
 
-			if (wi::renderer::GetSurfelGIEnabled())
+			if (Protean::Renderer::GetSurfelGIEnabled())
 			{
-				wi::renderer::SurfelGI_Coverage(
+				Protean::Renderer::SurfelGI_Coverage(
 					surfelGIResources,
 					*scene,
 					depthBuffer_Copy,
@@ -1100,9 +1097,9 @@ namespace wi
 
 			RenderAO(cmd);
 
-			if (wi::renderer::GetVariableRateShadingClassification() && device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2))
+			if (Protean::Renderer::GetVariableRateShadingClassification() && device->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING_TIER2))
 			{
-				wi::renderer::ComputeShadingRateClassification(
+				Protean::Renderer::ComputeShadingRateClassification(
 					rtShadingRate,
 					debugUAV,
 					cmd
@@ -1113,20 +1110,20 @@ namespace wi
 
 			RenderSSGI(cmd);
 
-			if (wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_DISABLED)
+			if (Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_DISABLED)
 			{
-				if (wi::renderer::GetRaytracedShadowsEnabled())
+				if (Protean::Renderer::GetRaytracedShadowsEnabled())
 				{
-					wi::renderer::Postprocess_RTShadow(
+					Protean::Renderer::Postprocess_RTShadow(
 						rtshadowResources,
 						*scene,
 						rtShadow,
 						cmd
 					);
 				}
-				else if (wi::renderer::GetScreenSpaceShadowsEnabled()) // rtshadow or screenspace shadow, not both
+				else if (Protean::Renderer::GetScreenSpaceShadowsEnabled()) // rtshadow or screenspace shadow, not both
 				{
-					wi::renderer::Postprocess_ScreenSpaceShadow(
+					Protean::Renderer::Postprocess_ScreenSpaceShadow(
 						screenspaceshadowResources,
 						rtShadow,
 						cmd,
@@ -1138,7 +1135,7 @@ namespace wi
 
 			if (getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 			{
-				wi::renderer::PostProcess_MeshBlend_EdgeProcess(meshblendResources, cmd);
+				Protean::Renderer::PostProcess_MeshBlend_EdgeProcess(meshblendResources, cmd);
 			}
 
 		});
@@ -1149,28 +1146,28 @@ namespace wi
 		{
 			cmd = device->BeginCommandList();
 			cmd_occlusionculling = cmd;
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 				device->EventBegin("Occlusion Culling", cmd);
 				ScopedGPUProfiling("Occlusion Culling", cmd);
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
 
-				wi::renderer::OcclusionCulling_Reset(visibility_main, cmd); // must be outside renderpass!
+				Protean::Renderer::OcclusionCulling_Reset(visibility_main, cmd); // must be outside renderpass!
 
 				RenderPassImage rp[] = {
 					RenderPassImage::DepthStencil(&depthBuffer_Main),
 				};
 				device->RenderPassBegin(rp, arraysize(rp), &scene->queryHeap, cmd);
 
-				wi::graphics::Rect scissor = GetScissorInternalResolution();
+				Protean::Graphics::Rect scissor = GetScissorInternalResolution();
 				device->BindScissorRects(1, &scissor, cmd);
 
 				Viewport vp;
@@ -1178,11 +1175,11 @@ namespace wi
 				vp.height = (float)depthBuffer_Main.GetDesc().height;
 				device->BindViewports(1, &vp, cmd);
 
-				wi::renderer::OcclusionCulling_Render(*camera, visibility_main, cmd);
+				Protean::Renderer::OcclusionCulling_Render(*camera, visibility_main, cmd);
 
 				device->RenderPassEnd(cmd);
 
-				wi::renderer::OcclusionCulling_Resolve(visibility_main, cmd); // must be outside renderpass!
+				Protean::Renderer::OcclusionCulling_Resolve(visibility_main, cmd); // must be outside renderpass!
 
 				device->EventEnd(cmd);
 			});
@@ -1192,11 +1189,11 @@ namespace wi
 		if (getReflectionsEnabled() && visibility_main.IsRequestedPlanarReflections())
 		{
 			cmd = device->BeginCommandList();
-			wi::jobsystem::Execute(ctx, [cmd, this](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [cmd, this](Protean::JobSystem::JobArgs args) {
 
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					camera_reflection,
 					camera_reflection_previous,
 					camera_reflection,
@@ -1204,7 +1201,7 @@ namespace wi
 				);
 
 				device->EventBegin("Planar reflections Z-Prepass", cmd);
-				auto range = wi::profiler::BeginRangeGPU("Planar Reflections Z-Prepass", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("Planar Reflections Z-Prepass", cmd);
 
 				RenderPassImage rp[] = {
 					RenderPassImage::DepthStencil(
@@ -1225,32 +1222,32 @@ namespace wi
 				vp.max_depth = 1;
 				device->BindViewports(1, &vp, cmd);
 
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawScene(
 					visibility_reflection,
 					RENDERPASS_PREPASS_DEPTHONLY,
 					cmd,
-					wi::renderer::DRAWSCENE_OPAQUE |
-					wi::renderer::DRAWSCENE_IMPOSTOR |
-					wi::renderer::DRAWSCENE_HAIRPARTICLE |
-					wi::renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
+					Protean::Renderer::DRAWSCENE_OPAQUE |
+					Protean::Renderer::DRAWSCENE_IMPOSTOR |
+					Protean::Renderer::DRAWSCENE_HAIRPARTICLE |
+					Protean::Renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
 				);
 
 				device->RenderPassEnd(cmd);
 
 				if (depthBuffer_Reflection_render.desc.sample_count > 1)
 				{
-					wi::renderer::ResolveMSAADepthBuffer(depthBuffer_Reflection, depthBuffer_Reflection_render, cmd);
+					Protean::Renderer::ResolveMSAADepthBuffer(depthBuffer_Reflection, depthBuffer_Reflection_render, cmd);
 				}
 
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
-					wi::renderer::Postprocess_AerialPerspective(
+					Protean::Renderer::Postprocess_AerialPerspective(
 						aerialperspectiveResources_reflection,
 						cmd
 					);
 				}
 
-				wi::profiler::EndRange(range); // Planar Reflections
+				Protean::Profiler::EndRange(range); // Planar Reflections
 				device->EventEnd(cmd);
 
 			});
@@ -1266,12 +1263,12 @@ namespace wi
 				// Ocean occlusion culling must be waited
 				device->WaitCommandList(cmd_ocean, cmd_occlusionculling);
 			}
-			wi::renderer::UpdateOcean(visibility_main, cmd_ocean);
+			Protean::Renderer::UpdateOcean(visibility_main, cmd_ocean);
 
 			// Copying to readback is done on copy queue to use DMA instead of compute warps:
 			CommandList cmd_oceancopy = device->BeginCommandList(QUEUE_COPY);
 			device->WaitCommandList(cmd_oceancopy, cmd_ocean);
-			wi::renderer::ReadbackOcean(visibility_main, cmd_oceancopy);
+			Protean::Renderer::ReadbackOcean(visibility_main, cmd_oceancopy);
 		}
 
 		// Shadow maps:
@@ -1281,16 +1278,16 @@ namespace wi
 			cmd_shadowmap = device->BeginCommandList();
 			cmd = cmd_shadowmap;
 			device->WaitCommandList(cmd, cmd_prepareframe_async); // shadow map waits for UpdateRenderDataAsync (particle-shadowmap interaction)
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
-				wi::renderer::DrawShadowmaps(visibility_main, cmd);
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
+				Protean::Renderer::DrawShadowmaps(visibility_main, cmd);
 			});
 		}
 
-		if (wi::renderer::GetVXGIEnabled() && getSceneUpdateEnabled())
+		if (Protean::Renderer::GetVXGIEnabled() && getSceneUpdateEnabled())
 		{
 			cmd = device->BeginCommandList();
-			wi::jobsystem::Execute(ctx, [cmd, this](wi::jobsystem::JobArgs args) {
-				wi::renderer::VXGI_Voxelize(visibility_main, cmd);
+			Protean::JobSystem::Execute(ctx, [cmd, this](Protean::JobSystem::JobArgs args) {
+				Protean::Renderer::VXGI_Voxelize(visibility_main, cmd);
 			});
 		}
 
@@ -1305,17 +1302,17 @@ namespace wi
 			{
 				device->WaitCommandList(cmd, cmd_ocean);
 			}
-			wi::jobsystem::Execute(ctx, [cmd, this](wi::jobsystem::JobArgs args) {
-				wi::renderer::BindCommonResources(cmd);
-				wi::renderer::BindCameraCB(
+			Protean::JobSystem::Execute(ctx, [cmd, this](Protean::JobSystem::JobArgs args) {
+				Protean::Renderer::BindCommonResources(cmd);
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::RefreshLightmaps(*scene, cmd);
-				wi::renderer::RefreshEnvProbes(visibility_main, cmd);
-				wi::renderer::PaintDecals(*scene, cmd);
+				Protean::Renderer::RefreshLightmaps(*scene, cmd);
+				Protean::Renderer::RefreshEnvProbes(visibility_main, cmd);
+				Protean::Renderer::PaintDecals(*scene, cmd);
 			});
 		}
 
@@ -1323,18 +1320,18 @@ namespace wi
 		if (getReflectionsEnabled() && visibility_main.IsRequestedPlanarReflections())
 		{
 			cmd = device->BeginCommandList();
-			wi::jobsystem::Execute(ctx, [cmd, this](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [cmd, this](Protean::JobSystem::JobArgs args) {
 
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					camera_reflection,
 					camera_reflection_previous,
 					camera_reflection,
 					cmd
 				);
 
-				wi::renderer::ComputeTiledLightCulling(
+				Protean::Renderer::ComputeTiledLightCulling(
 					tiledLightResources_planarReflection,
 					visibility_reflection,
 					Texture(),
@@ -1342,7 +1339,7 @@ namespace wi
 				);
 
 				device->EventBegin("Planar reflections", cmd);
-				auto range = wi::profiler::BeginRangeGPU("Planar Reflections", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("Planar Reflections", cmd);
 
 				if (depthBuffer_Reflection_render.desc.sample_count > 1)
 				{
@@ -1395,41 +1392,41 @@ namespace wi
 				vp.max_depth = 1;
 				device->BindViewports(1, &vp, cmd);
 
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawScene(
 					visibility_reflection,
 					RENDERPASS_MAIN,
 					cmd,
-					wi::renderer::DRAWSCENE_OPAQUE |
-					wi::renderer::DRAWSCENE_IMPOSTOR |
-					wi::renderer::DRAWSCENE_HAIRPARTICLE |
-					wi::renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
+					Protean::Renderer::DRAWSCENE_OPAQUE |
+					Protean::Renderer::DRAWSCENE_IMPOSTOR |
+					Protean::Renderer::DRAWSCENE_HAIRPARTICLE |
+					Protean::Renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
 				);
-				wi::renderer::DrawSky(*scene, cmd);
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawSky(*scene, cmd);
+				Protean::Renderer::DrawScene(
 					visibility_reflection,
 					RENDERPASS_MAIN,
 					cmd,
-					wi::renderer::DRAWSCENE_TRANSPARENT |
-					wi::renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
+					Protean::Renderer::DRAWSCENE_TRANSPARENT |
+					Protean::Renderer::DRAWSCENE_SKIP_PLANAR_REFLECTION_OBJECTS
 				); // separate renderscene, to be drawn after opaque and transparent sort order
 
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
 					// Blend Aerial Perspective on top:
 					device->EventBegin("Aerial Perspective Reflection Blend", cmd);
-					wi::image::Params fx;
+					Protean::Image::Params fx;
 					fx.enableFullScreen();
 					fx.blendFlag = BLENDMODE_PREMULTIPLIED;
-					wi::image::Draw(&aerialperspectiveResources_reflection.texture_output, fx, cmd);
+					Protean::Image::Draw(&aerialperspectiveResources_reflection.texture_output, fx, cmd);
 					device->EventEnd(cmd);
 				}
 
-				wi::renderer::DrawSoftParticles(visibility_reflection, false, cmd);
-				wi::renderer::DrawSpritesAndFonts(*scene, camera_reflection, false, cmd);
+				Protean::Renderer::DrawSoftParticles(visibility_reflection, false, cmd);
+				Protean::Renderer::DrawSpritesAndFonts(*scene, camera_reflection, false, cmd);
 
 				device->RenderPassEnd(cmd);
 
-				wi::profiler::EndRange(range); // Planar Reflections
+				Protean::Profiler::EndRange(range); // Planar Reflections
 				device->EventEnd(cmd);
 			});
 		}
@@ -1437,12 +1434,12 @@ namespace wi
 		// Main camera opaque color pass:
 		cmd = device->BeginCommandList();
 		device->WaitCommandList(cmd, cmd_maincamera_compute_effects);
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			device->EventBegin("Opaque Scene", cmd);
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
@@ -1451,7 +1448,7 @@ namespace wi
 
 			if (getRaytracedReflectionEnabled())
 			{
-				wi::renderer::Postprocess_RTReflection(
+				Protean::Renderer::Postprocess_RTReflection(
 					rtreflectionResources,
 					*scene,
 					rtSSR,
@@ -1462,7 +1459,7 @@ namespace wi
 			}
 			if (getRaytracedDiffuseEnabled())
 			{
-				wi::renderer::Postprocess_RTDiffuse(
+				Protean::Renderer::Postprocess_RTDiffuse(
 					rtdiffuseResources,
 					*scene,
 					rtRaytracedDiffuse,
@@ -1470,9 +1467,9 @@ namespace wi
 					getRaytracedDiffuseRange()
 				);
 			}
-			if (wi::renderer::GetVXGIEnabled())
+			if (Protean::Renderer::GetVXGIEnabled())
 			{
-				wi::renderer::VXGI_Resolve(
+				Protean::Renderer::VXGI_Resolve(
 					vxgiResources,
 					*scene,
 					depthBuffer_Copy,
@@ -1482,7 +1479,7 @@ namespace wi
 
 			if (visibility_shading_in_compute)
 			{
-				wi::renderer::Visibility_Shade(
+				Protean::Renderer::Visibility_Shade(
 					visibilityResources,
 					rtMain,
 					cmd
@@ -1494,7 +1491,7 @@ namespace wi
 			vp.height = (float)depthBuffer_Main.GetDesc().height;
 			device->BindViewports(1, &vp, cmd);
 
-			wi::graphics::Rect scissor = GetScissorInternalResolution();
+			Protean::Graphics::Rect scissor = GetScissorInternalResolution();
 			device->BindScissorRects(1, &scissor, cmd);
 
 			if (getOutlineEnabled())
@@ -1519,14 +1516,14 @@ namespace wi
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
 				}
-				wi::image::Params params;
+				Protean::Image::Params params;
 				params.enableFullScreen();
-				params.stencilRefMode = wi::image::STENCILREFMODE_ENGINE;
-				params.stencilComp = wi::image::STENCILMODE_EQUAL;
-				params.stencilRef = wi::enums::STENCILREF_OUTLINE;
-				wi::image::Draw(&depthBuffer_Copy, params, cmd);
-				params.stencilRef = wi::enums::STENCILREF_CUSTOMSHADER_OUTLINE;
-				wi::image::Draw(&depthBuffer_Copy, params, cmd);
+				params.stencilRefMode = Protean::Image::STENCILREFMODE_ENGINE;
+				params.stencilComp = Protean::Image::STENCILMODE_EQUAL;
+				params.stencilRef = Protean::STENCILREF_OUTLINE;
+				Protean::Image::Draw(&depthBuffer_Copy, params, cmd);
+				params.stencilRef = Protean::STENCILREF_CUSTOMSHADER_OUTLINE;
+				Protean::Image::Draw(&depthBuffer_Copy, params, cmd);
 				device->RenderPassEnd(cmd);
 				device->EventEnd(cmd);
 			}
@@ -1554,44 +1551,44 @@ namespace wi
 			if (visibility_shading_in_compute)
 			{
 				// In visibility compute shading, the impostors must still be drawn using rasterization:
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawScene(
 					visibility_main,
 					RENDERPASS_MAIN,
 					cmd,
-					wi::renderer::DRAWSCENE_IMPOSTOR
+					Protean::Renderer::DRAWSCENE_IMPOSTOR
 				);
 			}
 			else
 			{
-				auto range = wi::profiler::BeginRangeGPU("Opaque Scene", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("Opaque Scene", cmd);
 
 				// Foreground:
 				vp.min_depth = 1 - foreground_depth_range;
 				vp.max_depth = 1;
 				device->BindViewports(1, &vp, cmd);
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawScene(
 					visibility_main,
 					RENDERPASS_MAIN,
 					cmd,
-					wi::renderer::DRAWSCENE_OPAQUE |
-					wi::renderer::DRAWSCENE_FOREGROUND_ONLY |
-					wi::renderer::DRAWSCENE_MAINCAMERA
+					Protean::Renderer::DRAWSCENE_OPAQUE |
+					Protean::Renderer::DRAWSCENE_FOREGROUND_ONLY |
+					Protean::Renderer::DRAWSCENE_MAINCAMERA
 				);
 
 				// Regular:
 				vp.min_depth = 0;
 				vp.max_depth = 1;
 				device->BindViewports(1, &vp, cmd);
-				wi::renderer::DrawScene(
+				Protean::Renderer::DrawScene(
 					visibility_main,
 					RENDERPASS_MAIN,
 					cmd,
 					drawscene_flags
 				);
-				wi::profiler::EndRange(range); // Opaque Scene
+				Protean::Profiler::EndRange(range); // Opaque Scene
 			}
 
-			wi::renderer::DrawSky(*scene, cmd, false); // Note: volumetric cloud sampling disabled in sky shader, instead the postprocess will be used for a high quality effect
+			Protean::Renderer::DrawSky(*scene, cmd, false); // Note: volumetric cloud sampling disabled in sky shader, instead the postprocess will be used for a high quality effect
 
 			RenderOutline(cmd);
 
@@ -1600,7 +1597,7 @@ namespace wi
 			if (getMeshBlendEnabled() && visibility_main.IsMeshBlendVisible())
 			{
 				rp[0].loadop = RenderPassImage::LoadOp::LOAD;
-				wi::renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, rp_count, cmd);
+				Protean::Renderer::PostProcess_MeshBlend_Resolve(meshblendResources, rtMain, rp, rp_count, cmd);
 			}
 
 			if (rtAO.IsValid())
@@ -1627,9 +1624,9 @@ namespace wi
 				// wait for shadow maps is required for shadow receiver volumetric clouds or aerial perspective
 				device->WaitCommandList(cmd_weathereffect, cmd_shadowmap);
 			}
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
@@ -1638,20 +1635,20 @@ namespace wi
 
 				if (scene->weather.IsVolumetricClouds())
 				{
-					wi::renderer::Postprocess_VolumetricClouds(
+					Protean::Renderer::Postprocess_VolumetricClouds(
 						volumetriccloudResources,
 						cmd,
 						*camera,
 						camera_previous,
 						camera_reflection,
-						(wi::renderer::GetTemporalAAEnabled() && wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_DISABLED) || getFSR2Enabled(),
+						(Protean::Renderer::GetTemporalAAEnabled() && Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_DISABLED) || getFSR2Enabled(),
 						scene->weather.volumetricCloudsWeatherMapFirst.IsValid() ? &scene->weather.volumetricCloudsWeatherMapFirst.GetTexture() : nullptr,
 						scene->weather.volumetricCloudsWeatherMapSecond.IsValid() ? &scene->weather.volumetricCloudsWeatherMapSecond.GetTexture() : nullptr
 					);
 				}
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
-					wi::renderer::Postprocess_AerialPerspective(
+					Protean::Renderer::Postprocess_AerialPerspective(
 						aerialperspectiveResources,
 						cmd
 					);
@@ -1667,11 +1664,11 @@ namespace wi
 			{
 				device->WaitCommandList(cmd, cmd_weathereffect);
 			}
-			wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
-				GraphicsDevice* device = wi::graphics::GetDevice();
+			Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 				device->EventBegin("Opaque Scene (weather blend / MSAA resolve)", cmd);
 
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
@@ -1696,17 +1693,17 @@ namespace wi
 				if (scene->weather.IsRealisticSky() && scene->weather.IsRealisticSkyAerialPerspective())
 				{
 					device->EventBegin("Aerial Perspective Blend", cmd);
-					wi::image::Params fx;
+					Protean::Image::Params fx;
 					fx.enableFullScreen();
 					fx.blendFlag = BLENDMODE_PREMULTIPLIED;
-					wi::image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
+					Protean::Image::Draw(&aerialperspectiveResources.texture_output, fx, cmd);
 					device->EventEnd(cmd);
 				}
 
 				// Blend the volumetric clouds on top:
 				if (scene->weather.IsVolumetricClouds())
 				{
-					wi::renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
+					Protean::Renderer::Postprocess_VolumetricClouds_Upsample(volumetriccloudResources, cmd);
 				}
 
 				device->RenderPassEnd(cmd);
@@ -1719,7 +1716,7 @@ namespace wi
 		{
 			CommandList cmd_allocation_tilerequest = device->BeginCommandList(QUEUE_COMPUTE);
 			device->WaitCommandList(cmd_allocation_tilerequest, cmd); // wait for opaque scene
-			wi::jobsystem::Execute(ctx, [this, cmd_allocation_tilerequest](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd_allocation_tilerequest](Protean::JobSystem::JobArgs args) {
 				for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 				{
 					scene->terrains[i].AllocateVirtualTextureTileRequestsGPU(cmd_allocation_tilerequest);
@@ -1728,7 +1725,7 @@ namespace wi
 
 			CommandList cmd_writeback_tilerequest = device->BeginCommandList(QUEUE_COPY);
 			device->WaitCommandList(cmd_writeback_tilerequest, cmd_allocation_tilerequest);
-			wi::jobsystem::Execute(ctx, [this, cmd_writeback_tilerequest](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd_writeback_tilerequest](Protean::JobSystem::JobArgs args) {
 				for (size_t i = 0; i < scene->terrains.GetCount(); ++i)
 				{
 					scene->terrains[i].WritebackTileRequestsGPU(cmd_writeback_tilerequest);
@@ -1742,17 +1739,17 @@ namespace wi
 		{
 			device->WaitCommandList(cmd, cmd_ocean);
 		}
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-			wi::renderer::BindCameraCB(
+			Protean::Renderer::BindCameraCB(
 				*camera,
 				camera_previous,
 				camera_reflection,
 				cmd
 			);
-			wi::renderer::BindCommonResources(cmd);
+			Protean::Renderer::BindCommonResources(cmd);
 
 			RenderLightShafts(cmd);
 
@@ -1765,47 +1762,47 @@ namespace wi
 
 		CommandList cmd_postprocess = device->BeginCommandList();
 		cmd = cmd_postprocess;
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
 			RenderPostprocessChain(cmd);
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			device->Barrier(GPUBarrier::Image(&debugUAV, ResourceState::UNORDERED_ACCESS, debugUAV.desc.layout), cmd);
 		});
 
 		cmd = device->BeginCommandList(QUEUE_COPY);
 		device->WaitCommandList(cmd, cmd_postprocess);
-		wi::jobsystem::Execute(ctx, [this, cmd](wi::jobsystem::JobArgs args) {
-			wi::renderer::TextureStreamingReadbackCopy(*scene, cmd);
+		Protean::JobSystem::Execute(ctx, [this, cmd](Protean::JobSystem::JobArgs args) {
+			Protean::Renderer::TextureStreamingReadbackCopy(*scene, cmd);
 		});
 
 		RenderPath2D::Render();
 
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 
 		first_frame = false;
 	}
 
 	void RenderPath3D::Compose(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("RenderPath3D::Compose", cmd);
 
-		wi::image::Params fx;
+		Protean::Image::Params fx;
 		fx.blendFlag = BLENDMODE_OPAQUE;
-		fx.quality = wi::image::QUALITY_LINEAR;
+		fx.quality = Protean::Image::QUALITY_LINEAR;
 		fx.enableFullScreen();
 
-		wi::image::Draw(&GetRenderResult3D(), fx, cmd);
+		Protean::Image::Draw(&GetRenderResult3D(), fx, cmd);
 
 		if (
-			wi::renderer::GetDebugLightCulling() ||
-			wi::renderer::GetVariableRateShadingClassificationDebug() ||
-			wi::renderer::GetSurfelGIDebugEnabled()
+			Protean::Renderer::GetDebugLightCulling() ||
+			Protean::Renderer::GetVariableRateShadingClassificationDebug() ||
+			Protean::Renderer::GetSurfelGIDebugEnabled()
 			)
 		{
 			fx.enableFullScreen();
 			fx.blendFlag = BLENDMODE_PREMULTIPLIED;
-			wi::image::Draw(&debugUAV, fx, cmd);
+			Protean::Image::Draw(&debugUAV, fx, cmd);
 		}
 
 		device->EventEnd(cmd);
@@ -1835,7 +1832,7 @@ namespace wi
 			switch (getAO())
 			{
 			case AO_SSAO:
-				wi::renderer::Postprocess_SSAO(
+				Protean::Renderer::Postprocess_SSAO(
 					ssaoResources,
 					rtAO,
 					cmd,
@@ -1845,7 +1842,7 @@ namespace wi
 				);
 				break;
 			case AO_HBAO:
-				wi::renderer::Postprocess_HBAO(
+				Protean::Renderer::Postprocess_HBAO(
 					ssaoResources,
 					*camera,
 					rtAO,
@@ -1854,7 +1851,7 @@ namespace wi
 				);
 				break;
 			case AO_MSAO:
-				wi::renderer::Postprocess_MSAO(
+				Protean::Renderer::Postprocess_MSAO(
 					msaoResources,
 					*camera,
 					rtAO,
@@ -1863,7 +1860,7 @@ namespace wi
 				);
 				break;
 			case AO_RTAO:
-				wi::renderer::Postprocess_RTAO(
+				Protean::Renderer::Postprocess_RTAO(
 					rtaoResources,
 					*scene,
 					depthBuffer_Copy,
@@ -1882,7 +1879,7 @@ namespace wi
 	{
 		if (getSSREnabled() && !getRaytracedReflectionEnabled())
 		{
-			wi::renderer::Postprocess_SSR(
+			Protean::Renderer::Postprocess_SSR(
 				ssrResources,
 				rtSceneCopy,
 				rtSSR,
@@ -1895,7 +1892,7 @@ namespace wi
 	{
 		if (getSSGIEnabled())
 		{
-			wi::renderer::Postprocess_SSGI(
+			Protean::Renderer::Postprocess_SSGI(
 				ssgiResources,
 				rtSceneCopy,
 				depthBuffer_Copy,
@@ -1910,7 +1907,7 @@ namespace wi
 	{
 		if (getOutlineEnabled())
 		{
-			wi::renderer::Postprocess_Outline(
+			Protean::Renderer::Postprocess_Outline(
 				rtOutlineSource,
 				cmd,
 				getOutlineThreshold(),
@@ -1939,17 +1936,17 @@ namespace wi
 			if (targetFadeFactor < lightShaftsFadeFactor)
 			{
 				// Adaptive fade-out: accelerate as we approach the cutoff threshold
-				const float normalizedDistance = wi::math::saturate(sunDotCamera / fadeThreshold);
+				const float normalizedDistance = Protean::Math::saturate(sunDotCamera / fadeThreshold);
 				constexpr float fadeOutMultiplier = 13.0f; // Multiplier for fast fade-out
 
 				// When normalizedDistance is 1.0 (at threshold): slow fade (fadeSpeed)
 				// When normalizedDistance is 0.0 (cutoff): very fast fade (fadeOutSpeedMax)
-				fadeSpeed = wi::math::Lerp(fadeSpeed * fadeOutMultiplier, fadeSpeed, normalizedDistance);
+				fadeSpeed = Protean::Math::Lerp(fadeSpeed * fadeOutMultiplier, fadeSpeed, normalizedDistance);
 			}
 
-			lightShaftsFadeFactor = wi::math::Lerp(lightShaftsFadeFactor, targetFadeFactor, 1.0f - exp(-fadeSpeed * scene->dt));
+			lightShaftsFadeFactor = Protean::Math::Lerp(lightShaftsFadeFactor, targetFadeFactor, 1.0f - exp(-fadeSpeed * scene->dt));
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			device->EventBegin("Light Shafts", cmd);
 
@@ -1996,10 +1993,10 @@ namespace wi
 				vp.height = (float)depthBuffer_Main.GetDesc().height;
 				device->BindViewports(1, &vp, cmd);
 
-				wi::graphics::Rect scissor = GetScissorInternalResolution();
+				Protean::Graphics::Rect scissor = GetScissorInternalResolution();
 				device->BindScissorRects(1, &scissor, cmd);
 
-				wi::renderer::DrawSun(cmd);
+				Protean::Renderer::DrawSun(cmd);
 
 				device->RenderPassEnd(cmd);
 			}
@@ -2011,11 +2008,11 @@ namespace wi
 					camera->GetProjection(), camera->GetView(), XMMatrixIdentity());
 				{
 					// Downsample to low res first:
-					wi::renderer::Postprocess_Downsample4x(*texture_fullres, rtSun[2], cmd);
+					Protean::Renderer::Postprocess_Downsample4x(*texture_fullres, rtSun[2], cmd);
 
 					XMFLOAT2 sun;
 					XMStoreFloat2(&sun, sunPos);
-					wi::renderer::Postprocess_LightShafts(
+					Protean::Renderer::Postprocess_LightShafts(
 						rtSun[2],
 						rtSun[1],
 						cmd,
@@ -2031,9 +2028,9 @@ namespace wi
 	{
 		if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 		{
-			auto range = wi::profiler::BeginRangeGPU("Volumetric Lights", cmd);
+			auto range = Protean::Profiler::BeginRangeGPU("Volumetric Lights", cmd);
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			RenderPassImage rp[] = {
 				RenderPassImage::RenderTarget(&rtVolumetricLights, RenderPassImage::LoadOp::CLEAR),
@@ -2045,18 +2042,18 @@ namespace wi
 			vp.height = (float)rtVolumetricLights.GetDesc().height;
 			device->BindViewports(1, &vp, cmd);
 
-			wi::renderer::DrawVolumeLights(visibility_main, cmd);
+			Protean::Renderer::DrawVolumeLights(visibility_main, cmd);
 
 			device->RenderPassEnd(cmd);
 
-			wi::profiler::EndRange(range);
+			Protean::Profiler::EndRange(range);
 		}
 	}
 	void RenderPath3D::RenderSceneMIPChain(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		auto range = wi::profiler::BeginRangeGPU("Scene MIP Chain", cmd);
+		auto range = Protean::Profiler::BeginRangeGPU("Scene MIP Chain", cmd);
 		device->EventBegin("RenderSceneMIPChain", cmd);
 
 		{
@@ -2068,22 +2065,22 @@ namespace wi
 			device->ClearUAV(&rtSceneCopy_tmp, 0, cmd);
 		}
 
-		wi::renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
+		Protean::Renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
 
 		device->Barrier(GPUBarrier::Image(&rtSceneCopy_tmp, ResourceState::UNORDERED_ACCESS, rtSceneCopy_tmp.desc.layout), cmd);
 
-		wi::renderer::MIPGEN_OPTIONS mipopt;
+		Protean::Renderer::MIPGEN_OPTIONS mipopt;
 		mipopt.gaussian_temp = &rtSceneCopy_tmp;
-		wi::renderer::GenerateMipChain(rtSceneCopy, wi::renderer::MIPGENFILTER_GAUSSIAN, cmd, mipopt);
+		Protean::Renderer::GenerateMipChain(rtSceneCopy, Protean::Renderer::MIPGENFILTER_GAUSSIAN, cmd, mipopt);
 
 		device->Barrier(GPUBarrier::Aliasing(&rtSceneCopy_tmp, &rtPrimitiveID), cmd);
 
 		device->EventEnd(cmd);
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
 	void RenderPath3D::RenderTransparents(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// Water ripple rendering:
 		if (!scene->waterRipples.empty())
@@ -2099,7 +2096,7 @@ namespace wi
 			vp.height = (float)rtWaterRipple.GetDesc().height;
 			device->BindViewports(1, &vp, cmd);
 
-			wi::renderer::DrawWaterRipples(visibility_main, cmd);
+			Protean::Renderer::DrawWaterRipples(visibility_main, cmd);
 			device->RenderPassEnd(cmd);
 		}
 
@@ -2124,9 +2121,9 @@ namespace wi
 			device->Barrier(barriers, arraysize(barriers), cmd);
 		}
 
-		wi::renderer::UpdateGaussianSplatsForCamera(*scene, *camera, cmd);
+		Protean::Renderer::UpdateGaussianSplatsForCamera(*scene, *camera, cmd);
 
-		wi::graphics::Rect scissor = GetScissorInternalResolution();
+		Protean::Graphics::Rect scissor = GetScissorInternalResolution();
 		device->BindScissorRects(1, &scissor, cmd);
 
 		Viewport vp;
@@ -2166,19 +2163,19 @@ namespace wi
 		}
 
 		// Draw only the ocean first, fog and lightshafts will be blended on top:
-		if (scene->weather.IsOceanEnabled() && scene->ocean.IsValid() && (!scene->ocean.IsOccluded() || !wi::renderer::GetOcclusionCullingEnabled()))
+		if (scene->weather.IsOceanEnabled() && scene->ocean.IsValid() && (!scene->ocean.IsOccluded() || !Protean::Renderer::GetOcclusionCullingEnabled()))
 		{
 			device->EventBegin("Copy scene tex only mip0 for ocean", cmd);
-			wi::renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
+			Protean::Renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
 			device->EventEnd(cmd);
 
 			device->RenderPassBegin(rp, rp_count, cmd);
 
-			wi::renderer::DrawScene(
+			Protean::Renderer::DrawScene(
 				visibility_main,
 				RENDERPASS_MAIN,
 				cmd,
-				wi::renderer::DRAWSCENE_OCEAN
+				Protean::Renderer::DRAWSCENE_OCEAN
 			);
 
 			device->RenderPassEnd(cmd);
@@ -2194,34 +2191,34 @@ namespace wi
 		// Transparent scene
 		if (visibility_main.IsTransparentsVisible())
 		{
-			auto range = wi::profiler::BeginRangeGPU("Transparent Scene", cmd);
+			auto range = Protean::Profiler::BeginRangeGPU("Transparent Scene", cmd);
 			device->EventBegin("Transparent Scene", cmd);
 
 			// Regular:
 			vp.min_depth = 0;
 			vp.max_depth = 1;
 			device->BindViewports(1, &vp, cmd);
-			wi::renderer::DrawScene(
+			Protean::Renderer::DrawScene(
 				visibility_main,
 				RENDERPASS_MAIN,
 				cmd,
-				wi::renderer::DRAWSCENE_TRANSPARENT |
-				wi::renderer::DRAWSCENE_TESSELLATION |
-				wi::renderer::DRAWSCENE_OCCLUSIONCULLING |
-				wi::renderer::DRAWSCENE_MAINCAMERA
+				Protean::Renderer::DRAWSCENE_TRANSPARENT |
+				Protean::Renderer::DRAWSCENE_TESSELLATION |
+				Protean::Renderer::DRAWSCENE_OCCLUSIONCULLING |
+				Protean::Renderer::DRAWSCENE_MAINCAMERA
 			);
 
 			// Foreground:
 			vp.min_depth = 1 - foreground_depth_range;
 			vp.max_depth = 1;
 			device->BindViewports(1, &vp, cmd);
-			wi::renderer::DrawScene(
+			Protean::Renderer::DrawScene(
 				visibility_main,
 				RENDERPASS_MAIN,
 				cmd,
-				wi::renderer::DRAWSCENE_TRANSPARENT |
-				wi::renderer::DRAWSCENE_FOREGROUND_ONLY |
-				wi::renderer::DRAWSCENE_MAINCAMERA
+				Protean::Renderer::DRAWSCENE_TRANSPARENT |
+				Protean::Renderer::DRAWSCENE_FOREGROUND_ONLY |
+				Protean::Renderer::DRAWSCENE_MAINCAMERA
 			);
 
 			// Reset normal viewport:
@@ -2230,23 +2227,23 @@ namespace wi
 			device->BindViewports(1, &vp, cmd);
 
 			device->EventEnd(cmd);
-			wi::profiler::EndRange(range); // Transparent Scene
+			Protean::Profiler::EndRange(range); // Transparent Scene
 		}
 
-		wi::renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
+		Protean::Renderer::DrawDebugWorld(*scene, *camera, *this, cmd);
 
-		wi::renderer::DrawWireframeOverlay(visibility_main, wi::enums::RENDERPASS_MAIN, cmd);
+		Protean::Renderer::DrawWireframeOverlay(visibility_main, Protean::RENDERPASS_MAIN, cmd);
 
-		wi::renderer::DrawLightVisualizers(visibility_main, cmd);
+		Protean::Renderer::DrawLightVisualizers(visibility_main, cmd);
 
-		wi::renderer::DrawSoftParticles(visibility_main, false, cmd);
-		wi::renderer::DrawGaussianSplats(*scene, *camera, cmd);
-		wi::renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
+		Protean::Renderer::DrawSoftParticles(visibility_main, false, cmd);
+		Protean::Renderer::DrawGaussianSplats(*scene, *camera, cmd);
+		Protean::Renderer::DrawSpritesAndFonts(*scene, *camera, false, cmd);
 
 		if (getVolumeLightsEnabled() && visibility_main.IsRequestedVolumetricLights())
 		{
 			device->EventBegin("Contribute Volumetric Lights", cmd);
-			wi::renderer::Postprocess_Upsample_Bilateral(
+			Protean::Renderer::Postprocess_Upsample_Bilateral(
 				rtVolumetricLights,
 				depthBuffer_Copy,
 				rtMain,
@@ -2261,17 +2258,17 @@ namespace wi
 		if (getLightShaftsEnabled() && XMVectorGetX(XMVector3Dot(sunDirection, camera->GetAt())) > 0)
 		{
 			device->EventBegin("Contribute LightShafts", cmd);
-			wi::image::Params fx;
+			Protean::Image::Params fx;
 			fx.enableFullScreen();
 			fx.blendFlag = BLENDMODE_ADDITIVE;
 			fx.opacity = lightShaftsFadeFactor;
-			wi::image::Draw(&rtSun[1], fx, cmd);
+			Protean::Image::Draw(&rtSun[1], fx, cmd);
 			device->EventEnd(cmd);
 		}
 
 		if (getLensFlareEnabled())
 		{
-			wi::renderer::DrawLensFlares(
+			Protean::Renderer::DrawLensFlares(
 				visibility_main,
 				cmd
 			);
@@ -2323,20 +2320,20 @@ namespace wi
 			vp.height = (float)rtParticleDistortion.GetDesc().height;
 			device->BindViewports(1, &vp, cmd);
 
-			wi::renderer::DrawSoftParticles(visibility_main, true, cmd);
-			wi::renderer::DrawSpritesAndFonts(*scene, *camera, true, cmd);
+			Protean::Renderer::DrawSoftParticles(visibility_main, true, cmd);
+			Protean::Renderer::DrawSpritesAndFonts(*scene, *camera, true, cmd);
 
 			device->RenderPassEnd(cmd);
 		}
 
-		wi::renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
+		Protean::Renderer::Postprocess_Downsample4x(rtMain, rtSceneCopy, cmd);
 	}
 	void RenderPath3D::RenderPostprocessChain(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
-		wi::renderer::BindCommonResources(cmd);
-		wi::renderer::BindCameraCB(*camera, camera_previous, camera_reflection, cmd);
+		Protean::Renderer::BindCommonResources(cmd);
+		Protean::Renderer::BindCameraCB(*camera, camera_previous, camera_reflection, cmd);
 
 		const Texture* rt_first = nullptr; // not ping-ponged with read / write
 		const Texture* rt_read = &rtMain;
@@ -2349,7 +2346,7 @@ namespace wi
 		{
 			if (getFSR2Enabled() && fsr2Resources.IsValid())
 			{
-				wi::renderer::Postprocess_FSR2(
+				Protean::Renderer::Postprocess_FSR2(
 					fsr2Resources,
 					*camera,
 					rtFSR[1],
@@ -2363,20 +2360,20 @@ namespace wi
 				);
 
 				// rebind these, because FSR2 binds other things to those constant buffers:
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCameraCB(
 					*camera,
 					camera_previous,
 					camera_reflection,
 					cmd
 				);
-				wi::renderer::BindCommonResources(cmd);
+				Protean::Renderer::BindCommonResources(cmd);
 
 				rt_read = &rtFSR[0];
 				rt_write = &rtFSR[1];
 			}
-			else if (wi::renderer::GetTemporalAAEnabled() && !wi::renderer::GetTemporalAADebugEnabled() && temporalAAResources.IsValid() && wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_DISABLED)
+			else if (Protean::Renderer::GetTemporalAAEnabled() && !Protean::Renderer::GetTemporalAADebugEnabled() && temporalAAResources.IsValid() && Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_DISABLED)
 			{
-				wi::renderer::Postprocess_TemporalAA(
+				Protean::Renderer::Postprocess_TemporalAA(
 					temporalAAResources,
 					*rt_read,
 					cmd
@@ -2385,7 +2382,7 @@ namespace wi
 			}
 			if (scene->weather.IsOceanEnabled())
 			{
-				wi::renderer::Postprocess_Underwater(
+				Protean::Renderer::Postprocess_Underwater(
 					rt_first == nullptr ? *rt_read : *rt_first,
 					*rt_write,
 					cmd
@@ -2399,7 +2396,7 @@ namespace wi
 			{
 				if (x.stage == CustomPostprocess::Stage::BeforeTonemap)
 				{
-					wi::renderer::Postprocess_Custom(
+					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
 						rt_first == nullptr ? *rt_read : *rt_first,
 						*rt_write,
@@ -2416,7 +2413,7 @@ namespace wi
 
 			if (getDepthOfFieldEnabled() && camera->aperture_size > 0.001f && getDepthOfFieldStrength() > 0.001f && depthoffieldResources.IsValid())
 			{
-				wi::renderer::Postprocess_DepthOfField(
+				Protean::Renderer::Postprocess_DepthOfField(
 					depthoffieldResources,
 					rt_first == nullptr ? *rt_read : *rt_first,
 					*rt_write,
@@ -2430,7 +2427,7 @@ namespace wi
 
 			if (getMotionBlurEnabled() && getMotionBlurStrength() > 0 && motionblurResources.IsValid())
 			{
-				wi::renderer::Postprocess_MotionBlur(
+				Protean::Renderer::Postprocess_MotionBlur(
 					scene->dt,
 					motionblurResources,
 					rt_first == nullptr ? *rt_read : *rt_first,
@@ -2450,7 +2447,7 @@ namespace wi
 			//	because they will be applied to the screen in tonemap
 			if (getEyeAdaptionEnabled())
 			{
-				wi::renderer::ComputeLuminance(
+				Protean::Renderer::ComputeLuminance(
 					luminanceResources,
 					rt_first == nullptr ? *rt_read : *rt_first,
 					cmd,
@@ -2460,7 +2457,7 @@ namespace wi
 			}
 			if (getBloomEnabled())
 			{
-				wi::renderer::ComputeBloom(
+				Protean::Renderer::ComputeBloom(
 					bloomResources,
 					rt_first == nullptr ? *rt_read : *rt_first,
 					cmd,
@@ -2470,7 +2467,7 @@ namespace wi
 				);
 			}
 
-			wi::renderer::Postprocess_Tonemap(
+			Protean::Renderer::Postprocess_Tonemap(
 				rt_first == nullptr ? *rt_read : *rt_first,
 				*rt_write,
 				cmd,
@@ -2499,7 +2496,7 @@ namespace wi
 			{
 				if (x.stage == CustomPostprocess::Stage::AfterTonemap)
 				{
-					wi::renderer::Postprocess_Custom(
+					Protean::Renderer::Postprocess_Custom(
 						x.computeshader,
 						*rt_read,
 						*rt_write,
@@ -2515,28 +2512,28 @@ namespace wi
 
 			if (getSharpenFilterEnabled())
 			{
-				wi::renderer::Postprocess_Sharpen(*rt_read, *rt_write, cmd, getSharpenFilterAmount());
+				Protean::Renderer::Postprocess_Sharpen(*rt_read, *rt_write, cmd, getSharpenFilterAmount());
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getFXAAEnabled())
 			{
-				wi::renderer::Postprocess_FXAA(*rt_read, *rt_write, cmd);
+				Protean::Renderer::Postprocess_FXAA(*rt_read, *rt_write, cmd);
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getChromaticAberrationEnabled())
 			{
-				wi::renderer::Postprocess_Chromatic_Aberration(*rt_read, *rt_write, cmd, getChromaticAberrationAmount());
+				Protean::Renderer::Postprocess_Chromatic_Aberration(*rt_read, *rt_write, cmd, getChromaticAberrationAmount());
 
 				std::swap(rt_read, rt_write);
 			}
 
 			if (getCRTFilterEnabled())
 			{
-				wi::renderer::Postprocess_CRT(*rt_read, *rt_write, cmd, 0, 0, true);
+				Protean::Renderer::Postprocess_CRT(*rt_read, *rt_write, cmd, 0, 0, true);
 
 				std::swap(rt_read, rt_write);
 			}
@@ -2545,30 +2542,30 @@ namespace wi
 
 			// GUI Background blurring:
 			{
-				auto range = wi::profiler::BeginRangeGPU("GUI Background Blur", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("GUI Background Blur", cmd);
 				device->EventBegin("GUI Background Blur", cmd);
 				bool hdrToSRGB = colorspace != ColorSpace::SRGB;
-				wi::renderer::Postprocess_Downsample4x(*rt_read, rtGUIBlurredBackground[0], cmd, hdrToSRGB);
-				wi::renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
-				wi::renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
+				Protean::Renderer::Postprocess_Downsample4x(*rt_read, rtGUIBlurredBackground[0], cmd, hdrToSRGB);
+				Protean::Renderer::Postprocess_Downsample4x(rtGUIBlurredBackground[0], rtGUIBlurredBackground[2], cmd);
+				Protean::Renderer::Postprocess_Blur_Gaussian(rtGUIBlurredBackground[2], rtGUIBlurredBackground[1], rtGUIBlurredBackground[2], cmd, -1, -1, true);
 				device->EventEnd(cmd);
-				wi::profiler::EndRange(range);
+				Protean::Profiler::EndRange(range);
 			}
 
 			if (rtFSR[0].IsValid() && getFSREnabled())
 			{
-				wi::renderer::Postprocess_FSR(*rt_read, rtFSR[1], rtFSR[0], cmd, getFSRSharpness());
+				Protean::Renderer::Postprocess_FSR(*rt_read, rtFSR[1], rtFSR[0], cmd, getFSRSharpness());
 				lastPostprocessRT = &rtFSR[0];
 			}
 		}
 	}
 
-	void RenderPath3D::RenderCameraComponents(wi::jobsystem::context& ctx) const
+	void RenderPath3D::RenderCameraComponents(Protean::JobSystem::context& ctx) const
 	{
 		// Render-to-texture camera components:
 		for (uint32_t i = 0; i < scene->cameras.GetCount() && getSceneUpdateEnabled(); ++i)
 		{
-			wi::scene::CameraComponent& camera = scene->cameras[i];
+			Protean::CameraComponent& camera = scene->cameras[i];
 			if (camera.render_to_texture.resolution.x == 0 || camera.render_to_texture.resolution.y == 0)
 			{
 				camera.render_to_texture = {};
@@ -2596,7 +2593,7 @@ namespace wi
 				TextureDesc desc;
 				desc.width = camera.render_to_texture.resolution.x;
 				desc.height = camera.render_to_texture.resolution.y;
-				desc.format = wi::renderer::format_rendertarget_main;
+				desc.format = Protean::Renderer::format_rendertarget_main;
 				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
 				desc.mip_levels = GetMipCount(desc.width, desc.height);
 				bool success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.rendertarget_render);
@@ -2636,7 +2633,7 @@ namespace wi
 					camera.render_to_texture.rendertarget_MSAA = {};
 				}
 
-				desc.format = wi::renderer::format_depthbuffer_main;
+				desc.format = Protean::Renderer::format_depthbuffer_main;
 				desc.bind_flags = BindFlag::DEPTH_STENCIL | BindFlag::SHADER_RESOURCE;
 				desc.layout = ResourceState::SHADER_RESOURCE;
 				success = device->CreateTexture(&desc, nullptr, &camera.render_to_texture.depthstencil);
@@ -2658,12 +2655,12 @@ namespace wi
 					camera.render_to_texture.depthstencil_resolved = {};
 				}
 
-				wi::renderer::TiledLightResources tiledres;
-				wi::renderer::CreateTiledLightResources(tiledres, camera.render_to_texture.resolution);
+				Protean::Renderer::TiledLightResources tiledres;
+				Protean::Renderer::CreateTiledLightResources(tiledres, camera.render_to_texture.resolution);
 				camera.render_to_texture.tileCount = tiledres.tileCount;
 				camera.render_to_texture.entityTiles = tiledres.entityTiles;
 
-				camera.render_to_texture.visibility = wi::allocator::make_shared<wi::renderer::Visibility>();
+				camera.render_to_texture.visibility = Protean::Allocator::make_shared<Protean::Renderer::Visibility>();
 			}
 			if (getSceneUpdateEnabled())
 			{
@@ -2685,30 +2682,30 @@ namespace wi
 			camera.buffer_entitytiles_index = device->GetDescriptorIndex(&camera.render_to_texture.entityTiles, SubresourceType::SRV);
 
 
-			wi::jobsystem::Execute(ctx, [this, cmd, i](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::Execute(ctx, [this, cmd, i](Protean::JobSystem::JobArgs args) {
 				GraphicsDevice* device = GetDevice();
-				wi::scene::CameraComponent& camera = scene->cameras[i]; // reload, not captured in lambda (alloc)
-				wi::renderer::Visibility& visibility = *(wi::renderer::Visibility*)camera.render_to_texture.visibility.get();
+				Protean::CameraComponent& camera = scene->cameras[i]; // reload, not captured in lambda (alloc)
+				Protean::Renderer::Visibility& visibility = *(Protean::Renderer::Visibility*)camera.render_to_texture.visibility.get();
 				visibility.layerMask = getLayerMask();
 				visibility.scene = scene;
 				visibility.camera = &camera;
-				visibility.flags = wi::renderer::Visibility::ALLOW_OBJECTS;
-				visibility.flags |= wi::renderer::Visibility::ALLOW_HAIRS;
-				visibility.flags |= wi::renderer::Visibility::ALLOW_LIGHTS;
-				visibility.flags |= wi::renderer::Visibility::ALLOW_DECALS;
-				visibility.flags |= wi::renderer::Visibility::ALLOW_ENVPROBES;
-				wi::renderer::UpdateVisibility(visibility);
+				visibility.flags = Protean::Renderer::Visibility::ALLOW_OBJECTS;
+				visibility.flags |= Protean::Renderer::Visibility::ALLOW_HAIRS;
+				visibility.flags |= Protean::Renderer::Visibility::ALLOW_LIGHTS;
+				visibility.flags |= Protean::Renderer::Visibility::ALLOW_DECALS;
+				visibility.flags |= Protean::Renderer::Visibility::ALLOW_ENVPROBES;
+				Protean::Renderer::UpdateVisibility(visibility);
 
 				ScopedGPUProfiling("Camera Entity", cmd);
 				device->EventBegin("Camera Entity", cmd);
-				wi::renderer::BindCommonResources(cmd);
-				wi::renderer::BindCameraCB(
+				Protean::Renderer::BindCommonResources(cmd);
+				Protean::Renderer::BindCameraCB(
 					camera,
 					camera,
 					camera,
 					cmd
 				);
-				wi::graphics::Rect scissor;
+				Protean::Graphics::Rect scissor;
 				scissor.right = (int32_t)camera.render_to_texture.depthstencil.desc.width;
 				scissor.bottom = (int32_t)camera.render_to_texture.depthstencil.desc.height;
 				device->BindScissorRects(1, &scissor, cmd);
@@ -2722,24 +2719,24 @@ namespace wi
 						RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp::CLEAR, RenderPassImage::StoreOp::STORE, camera.render_to_texture.depthstencil.desc.layout, ResourceState::DEPTHSTENCIL, ResourceState::SHADER_RESOURCE),
 					};
 					device->RenderPassBegin(rp, arraysize(rp), cmd);
-					wi::renderer::DrawScene(
+					Protean::Renderer::DrawScene(
 						visibility,
 						RENDERPASS_PREPASS_DEPTHONLY,
 						cmd,
-						wi::renderer::DRAWSCENE_OPAQUE |
-						wi::renderer::DRAWSCENE_IMPOSTOR |
-						wi::renderer::DRAWSCENE_HAIRPARTICLE
+						Protean::Renderer::DRAWSCENE_OPAQUE |
+						Protean::Renderer::DRAWSCENE_IMPOSTOR |
+						Protean::Renderer::DRAWSCENE_HAIRPARTICLE
 					);
 					device->RenderPassEnd(cmd);
 				}
 				if (camera.render_to_texture.depthstencil_resolved.IsValid())
 				{
-					wi::renderer::ResolveMSAADepthBuffer(camera.render_to_texture.depthstencil_resolved, camera.render_to_texture.depthstencil, cmd);
+					Protean::Renderer::ResolveMSAADepthBuffer(camera.render_to_texture.depthstencil_resolved, camera.render_to_texture.depthstencil, cmd);
 				}
-				wi::renderer::TiledLightResources tiledres;
+				Protean::Renderer::TiledLightResources tiledres;
 				tiledres.tileCount = camera.render_to_texture.tileCount;
 				tiledres.entityTiles = camera.render_to_texture.entityTiles;
-				wi::renderer::ComputeTiledLightCulling(tiledres, visibility, {}, cmd);
+				Protean::Renderer::ComputeTiledLightCulling(tiledres, visibility, {}, cmd);
 				// color pass:
 				{
 					RenderPassImage rp[3];
@@ -2755,32 +2752,32 @@ namespace wi
 					}
 					rp[rp_count++] = RenderPassImage::DepthStencil(&camera.render_to_texture.depthstencil, RenderPassImage::LoadOp::LOAD, RenderPassImage::StoreOp::DONTCARE, ResourceState::SHADER_RESOURCE, ResourceState::DEPTHSTENCIL, camera.render_to_texture.depthstencil.desc.layout);
 					device->RenderPassBegin(rp, rp_count, cmd);
-					wi::renderer::DrawScene(
+					Protean::Renderer::DrawScene(
 						visibility,
 						RENDERPASS_MAIN,
 						cmd,
-						wi::renderer::DRAWSCENE_OPAQUE |
-						wi::renderer::DRAWSCENE_IMPOSTOR |
-						wi::renderer::DRAWSCENE_HAIRPARTICLE
+						Protean::Renderer::DRAWSCENE_OPAQUE |
+						Protean::Renderer::DRAWSCENE_IMPOSTOR |
+						Protean::Renderer::DRAWSCENE_HAIRPARTICLE
 					);
-					wi::renderer::DrawScene(
+					Protean::Renderer::DrawScene(
 						visibility,
 						RENDERPASS_MAIN,
 						cmd,
-						wi::renderer::DRAWSCENE_TRANSPARENT
+						Protean::Renderer::DRAWSCENE_TRANSPARENT
 					);
-					wi::renderer::DrawSky(*scene, cmd);
-					wi::renderer::DrawLightVisualizers(visibility, cmd);
+					Protean::Renderer::DrawSky(*scene, cmd);
+					Protean::Renderer::DrawLightVisualizers(visibility, cmd);
 					device->RenderPassEnd(cmd);
 
 					if (camera.IsCRT() && getSceneUpdateEnabled())
 					{
-						wi::renderer::Postprocess_CRT(camera.render_to_texture.rendertarget_render, camera.render_to_texture.rendertarget_display, cmd, 0, 0, false);
+						Protean::Renderer::Postprocess_CRT(camera.render_to_texture.rendertarget_render, camera.render_to_texture.rendertarget_display, cmd, 0, 0, false);
 						// Swap so rendertarget_render now contains the CRT-processed result for mipchain and display
 						std::swap(camera.render_to_texture.rendertarget_render, camera.render_to_texture.rendertarget_display);
 					}
 
-					wi::renderer::GenerateMipChain(camera.render_to_texture.rendertarget_render, wi::renderer::MIPGENFILTER_LINEAR, cmd);
+					Protean::Renderer::GenerateMipChain(camera.render_to_texture.rendertarget_render, Protean::Renderer::MIPGENFILTER_LINEAR, cmd);
 				}
 				device->EventEnd(cmd);
 			});
@@ -2845,19 +2842,19 @@ namespace wi
 		{
 		case RenderPath3D::AO_SSAO:
 		case RenderPath3D::AO_HBAO:
-			wi::renderer::CreateSSAOResources(ssaoResources, internalResolution);
+			Protean::Renderer::CreateSSAOResources(ssaoResources, internalResolution);
 			break;
 		case RenderPath3D::AO_MSAO:
-			wi::renderer::CreateMSAOResources(msaoResources, internalResolution);
+			Protean::Renderer::CreateMSAOResources(msaoResources, internalResolution);
 			break;
 		case RenderPath3D::AO_RTAO:
-			wi::renderer::CreateRTAOResources(rtaoResources, internalResolution);
+			Protean::Renderer::CreateRTAOResources(rtaoResources, internalResolution);
 			break;
 		default:
 			break;
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->CreateTexture(&desc, nullptr, &rtAO, &aliasingAllocation, offset_rtAO); // aliasing!
 		device->SetName(&rtAO, "renderpath3D.rtAO");
 	}
@@ -2867,7 +2864,7 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -2881,7 +2878,7 @@ namespace wi
 			device->CreateTexture(&desc, nullptr, &rtSSR);
 			device->SetName(&rtSSR, "renderpath3D.rtSSR");
 
-			wi::renderer::CreateSSRResources(ssrResources, internalResolution, ssrQuality);
+			Protean::Renderer::CreateSSRResources(ssrResources, internalResolution, ssrQuality);
 		}
 		else
 		{
@@ -2894,7 +2891,7 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -2908,7 +2905,7 @@ namespace wi
 			device->CreateTexture(&desc, nullptr, &rtSSGI);
 			device->SetName(&rtSSGI, "renderpath3D.rtSSGI");
 
-			wi::renderer::CreateSSGIResources(ssgiResources, internalResolution);
+			Protean::Renderer::CreateSSGIResources(ssgiResources, internalResolution);
 		}
 		else
 		{
@@ -2921,7 +2918,7 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -2934,7 +2931,7 @@ namespace wi
 			device->CreateTexture(&desc, nullptr, &rtSSR);
 			device->SetName(&rtSSR, "renderpath3D.rtSSR");
 
-			wi::renderer::CreateRTReflectionResources(rtreflectionResources, internalResolution, raytracedReflectionsQuality);
+			Protean::Renderer::CreateRTReflectionResources(rtreflectionResources, internalResolution, raytracedReflectionsQuality);
 		}
 		else
 		{
@@ -2947,7 +2944,7 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -2960,7 +2957,7 @@ namespace wi
 			device->CreateTexture(&desc, nullptr, &rtRaytracedDiffuse);
 			device->SetName(&rtRaytracedDiffuse, "renderpath3D.rtRaytracedDiffuse");
 
-			wi::renderer::CreateRTDiffuseResources(rtdiffuseResources, internalResolution, raytracedDiffuseQuality);
+			Protean::Renderer::CreateRTDiffuseResources(rtdiffuseResources, internalResolution, raytracedDiffuseQuality);
 		}
 		else
 		{
@@ -2974,13 +2971,13 @@ namespace wi
 
 		if (resolutionScale < 1.0f && fsrEnabled)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			if (GetPhysicalWidth() == 0 || GetPhysicalHeight() == 0)
 				return;
 
 			TextureDesc desc;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = GetPhysicalWidth();
 			desc.height = GetPhysicalHeight();
 			device->CreateTexture(&desc, nullptr, &rtFSR[0]);
@@ -3004,7 +3001,7 @@ namespace wi
 
 		if (fsr2Enabled)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			if (GetPhysicalWidth() == 0 || GetPhysicalHeight() == 0)
 				return;
 
@@ -3013,11 +3010,11 @@ namespace wi
 				std::max(GetPhysicalHeight(), GetInternalResolution().y)
 			);
 
-			wi::renderer::CreateFSR2Resources(fsr2Resources, GetInternalResolution(), displayResolution);
+			Protean::Renderer::CreateFSR2Resources(fsr2Resources, GetInternalResolution(), displayResolution);
 
 			TextureDesc desc;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE | BindFlag::UNORDERED_ACCESS;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = displayResolution.x;
 			desc.height = displayResolution.y;
 			device->CreateTexture(&desc, nullptr, &rtFSR[0]);
@@ -3042,7 +3039,7 @@ namespace wi
 	}
 	void RenderPath3D::setFSR2Preset(FSR2_Preset preset)
 	{
-		wi::graphics::SamplerDesc desc = wi::renderer::GetSampler(wi::enums::SAMPLER_OBJECTSHADER)->GetDesc();
+		Protean::Graphics::SamplerDesc desc = Protean::Renderer::GetSampler(Protean::SAMPLER_OBJECTSHADER)->GetDesc();
 		switch (preset)
 		{
 		default:
@@ -3063,7 +3060,7 @@ namespace wi
 			desc.mip_lod_bias = -2.58f;
 			break;
 		}
-		wi::renderer::ModifyObjectSampler(desc);
+		Protean::Renderer::ModifyObjectSampler(desc);
 	}
 	void RenderPath3D::setMotionBlurEnabled(bool value)
 	{
@@ -3079,7 +3076,7 @@ namespace wi
 
 		if (value)
 		{
-			wi::renderer::CreateLuminanceResources(luminanceResources, GetInternalResolution());
+			Protean::Renderer::CreateLuminanceResources(luminanceResources, GetInternalResolution());
 		}
 		else
 		{
@@ -3092,13 +3089,13 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
 
 			TextureDesc desc;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = uint32_t((float)internalResolution.x * planarReflectionResolutionScale);
 			desc.height = uint32_t((float)internalResolution.y * planarReflectionResolutionScale);
 			desc.sample_count = planarReflectionMSAASampleCount;
@@ -3117,7 +3114,7 @@ namespace wi
 
 			desc.misc_flags = ResourceMiscFlag::NONE;
 			desc.bind_flags = BindFlag::DEPTH_STENCIL | BindFlag::SHADER_RESOURCE;
-			desc.format = wi::renderer::format_depthbuffer_main;
+			desc.format = Protean::Renderer::format_depthbuffer_main;
 			desc.layout = ResourceState::SHADER_RESOURCE;
 			device->CreateTexture(&desc, nullptr, &depthBuffer_Reflection_render);
 			device->SetName(&depthBuffer_Reflection_render, "renderpath3D.depthBuffer_Reflection_render");
@@ -3125,7 +3122,7 @@ namespace wi
 			if (desc.sample_count > 1)
 			{
 				desc.sample_count = 1;
-				desc.format = wi::renderer::format_rendertarget_main;
+				desc.format = Protean::Renderer::format_rendertarget_main;
 				desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
 				device->CreateTexture(&desc, nullptr, &rtReflection);
 				device->SetName(&rtReflection, "renderpath3D.rtReflection");
@@ -3141,7 +3138,7 @@ namespace wi
 				depthBuffer_Reflection = depthBuffer_Reflection_render;
 			}
 
-			wi::renderer::CreateTiledLightResources(tiledLightResources_planarReflection, XMUINT2(depthBuffer_Reflection.desc.width, depthBuffer_Reflection.desc.height));
+			Protean::Renderer::CreateTiledLightResources(tiledLightResources_planarReflection, XMUINT2(depthBuffer_Reflection.desc.width, depthBuffer_Reflection.desc.height));
 		}
 		else
 		{
@@ -3167,7 +3164,7 @@ namespace wi
 			const XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
-			wi::renderer::CreateBloomResources(bloomResources, internalResolution);
+			Protean::Renderer::CreateBloomResources(bloomResources, internalResolution);
 		}
 		else
 		{
@@ -3180,7 +3177,7 @@ namespace wi
 
 		if (value)
 		{
-			const GraphicsDevice* device = wi::graphics::GetDevice();
+			const GraphicsDevice* device = Protean::Graphics::GetDevice();
 			const XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -3204,14 +3201,14 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
 
 			TextureDesc desc;
 			desc.bind_flags = BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE;
-			desc.format = wi::renderer::format_rendertarget_main;
+			desc.format = Protean::Renderer::format_rendertarget_main;
 			desc.width = internalResolution.x;
 			desc.height = internalResolution.y;
 			desc.sample_count = getMSAASampleCount();
@@ -3251,7 +3248,7 @@ namespace wi
 
 		if (value)
 		{
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			XMUINT2 internalResolution = GetInternalResolution();
 			if (internalResolution.x == 0 || internalResolution.y == 0)
 				return;
@@ -3281,7 +3278,7 @@ namespace wi
 		}
 	}
 
-	Texture RenderPath3D::CreateScreenshotWithAlphaBackground(uint8_t stencilref, wi::image::STENCILMODE stencilmode, wi::image::STENCILREFMODE stencilrefmode)
+	Texture RenderPath3D::CreateScreenshotWithAlphaBackground(uint8_t stencilref, Protean::Image::STENCILMODE stencilmode, Protean::Image::STENCILREFMODE stencilrefmode)
 	{
 		TextureDesc desc = rtMain_render.GetDesc();
 		desc.format = Format::R8G8B8A8_UNORM;
@@ -3310,12 +3307,12 @@ namespace wi
 		vp.width = (float)desc.width;
 		vp.height = (float)desc.height;
 		device->BindViewports(1, &vp, cmd);
-		wi::image::Params fx;
+		Protean::Image::Params fx;
 		fx.stencilComp = stencilmode;
 		fx.stencilRef = stencilref;
 		fx.stencilRefMode = stencilrefmode;
 		fx.enableFullScreen();
-		wi::image::Draw(GetLastPostprocessRT(), fx, cmd);
+		Protean::Image::Draw(GetLastPostprocessRT(), fx, cmd);
 		device->RenderPassEnd(cmd);
 
 		if (tex_resolved.IsValid())

@@ -5,7 +5,7 @@
 #include "script/bindings/RenderPathBindLua.h"
 
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	class RenderPath2D_BindLua : public RenderPath_BindLua

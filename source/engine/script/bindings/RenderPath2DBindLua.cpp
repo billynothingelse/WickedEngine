@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<RenderPath2D_BindLua>::FunctionType RenderPath2D_BindLua::methods[] = {
@@ -40,34 +40,34 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "AddSprite() component is empty!");
+			Protean::Lua::SError(L, "AddSprite() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::Sprite_BindLua* sprite = Luna<wi::lua::Sprite_BindLua>::lightcheck(L, 1);
+			Protean::Lua::Sprite_BindLua* sprite = Luna<Protean::Lua::Sprite_BindLua>::lightcheck(L, 1);
 			if (sprite != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 				if (ccomp != nullptr)
 				{
 					if (argc > 1)
-						ccomp->AddSprite(&sprite->sprite, wi::lua::SGetString(L, 2));
+						ccomp->AddSprite(&sprite->sprite, Protean::Lua::SGetString(L, 2));
 					else
 						ccomp->AddSprite(&sprite->sprite);
 				}
 				else
 				{
-					wi::lua::SError(L, "AddSprite(Sprite sprite, opt string layer) not a RenderPath2D!");
+					Protean::Lua::SError(L, "AddSprite(Sprite sprite, opt string layer) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "AddSprite(Sprite sprite, opt string layer) argument is not a Sprite!");
+				Protean::Lua::SError(L, "AddSprite(Sprite sprite, opt string layer) argument is not a Sprite!");
 		}
 		else
 		{
-			wi::lua::SError(L, "AddSprite(Sprite sprite, opt string layer) not enough arguments!");
+			Protean::Lua::SError(L, "AddSprite(Sprite sprite, opt string layer) not enough arguments!");
 		}
 		return 0;
 	}
@@ -75,22 +75,22 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "AddVideoSprite() component is empty!");
+			Protean::Lua::SError(L, "AddVideoSprite() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			wi::lua::VideoInstance_BindLua* videoinstance = Luna<wi::lua::VideoInstance_BindLua>::lightcheck(L, 1);
+			Protean::Lua::VideoInstance_BindLua* videoinstance = Luna<Protean::Lua::VideoInstance_BindLua>::lightcheck(L, 1);
 			if (videoinstance == nullptr)
 			{
-				wi::lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) first argument is not a VideoInstance!");
+				Protean::Lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) first argument is not a VideoInstance!");
 				return 0;
 			}
-			wi::lua::Sprite_BindLua* sprite = Luna<wi::lua::Sprite_BindLua>::lightcheck(L, 2);
+			Protean::Lua::Sprite_BindLua* sprite = Luna<Protean::Lua::Sprite_BindLua>::lightcheck(L, 2);
 			if (sprite == nullptr)
 			{
-				wi::lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) second argument is not a Sprite!");
+				Protean::Lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) second argument is not a Sprite!");
 				return 0;
 			}
 
@@ -98,18 +98,18 @@ namespace wi::lua
 			if (ccomp != nullptr)
 			{
 				if (argc > 1)
-					ccomp->AddVideoSprite(&videoinstance->videoinstance, &sprite->sprite, wi::lua::SGetString(L, 3));
+					ccomp->AddVideoSprite(&videoinstance->videoinstance, &sprite->sprite, Protean::Lua::SGetString(L, 3));
 				else
 					ccomp->AddVideoSprite(&videoinstance->videoinstance, &sprite->sprite);
 			}
 			else
 			{
-				wi::lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) not a RenderPath2D!");
+				Protean::Lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) not enough arguments!");
+			Protean::Lua::SError(L, "AddVideoSprite(VideoInstance videoinstance, Sprite sprite, opt string layer) not enough arguments!");
 		}
 		return 0;
 	}
@@ -117,34 +117,34 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "AddFont() component is empty!");
+			Protean::Lua::SError(L, "AddFont() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::SpriteFont_BindLua* font = Luna<wi::lua::SpriteFont_BindLua>::lightcheck(L, 1);
+			Protean::Lua::SpriteFont_BindLua* font = Luna<Protean::Lua::SpriteFont_BindLua>::lightcheck(L, 1);
 			if (font != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 				if (ccomp != nullptr)
 				{
 					if (argc > 1)
-						ccomp->AddFont(&font->font, wi::lua::SGetString(L, 2));
+						ccomp->AddFont(&font->font, Protean::Lua::SGetString(L, 2));
 					else
 						ccomp->AddFont(&font->font);
 				}
 				else
 				{
-					wi::lua::SError(L, "AddFont(Font font, opt string layer) not a RenderPath2D!");
+					Protean::Lua::SError(L, "AddFont(Font font, opt string layer) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "AddFont(Font font, opt string layer) argument is not a Font!");
+				Protean::Lua::SError(L, "AddFont(Font font, opt string layer) argument is not a Font!");
 		}
 		else
 		{
-			wi::lua::SError(L, "AddFont(Font font, opt string layer) not enough arguments!");
+			Protean::Lua::SError(L, "AddFont(Font font, opt string layer) not enough arguments!");
 		}
 		return 0;
 	}
@@ -152,13 +152,13 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "RemoveSprite() component is empty!");
+			Protean::Lua::SError(L, "RemoveSprite() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::Sprite_BindLua* sprite = Luna<wi::lua::Sprite_BindLua>::lightcheck(L, 1);
+			Protean::Lua::Sprite_BindLua* sprite = Luna<Protean::Lua::Sprite_BindLua>::lightcheck(L, 1);
 			if (sprite != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
@@ -168,15 +168,15 @@ namespace wi::lua
 				}
 				else
 				{
-					wi::lua::SError(L, "RemoveSprite(Sprite sprite) not a RenderPath2D!");
+					Protean::Lua::SError(L, "RemoveSprite(Sprite sprite) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "RemoveSprite(Sprite sprite) argument is not a Sprite!");
+				Protean::Lua::SError(L, "RemoveSprite(Sprite sprite) argument is not a Sprite!");
 		}
 		else
 		{
-			wi::lua::SError(L, "RemoveSprite(Sprite sprite) not enough arguments!");
+			Protean::Lua::SError(L, "RemoveSprite(Sprite sprite) not enough arguments!");
 		}
 		return 0;
 	}
@@ -184,13 +184,13 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "RemoveFont() component is empty!");
+			Protean::Lua::SError(L, "RemoveFont() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::SpriteFont_BindLua* font = Luna<wi::lua::SpriteFont_BindLua>::lightcheck(L, 1);
+			Protean::Lua::SpriteFont_BindLua* font = Luna<Protean::Lua::SpriteFont_BindLua>::lightcheck(L, 1);
 			if (font != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
@@ -200,15 +200,15 @@ namespace wi::lua
 				}
 				else
 				{
-					wi::lua::SError(L, "RemoveFont(Font font) not a RenderPath2D!");
+					Protean::Lua::SError(L, "RemoveFont(Font font) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "RemoveFont(Font font) argument is not a Font!");
+				Protean::Lua::SError(L, "RemoveFont(Font font) argument is not a Font!");
 		}
 		else
 		{
-			wi::lua::SError(L, "RemoveFont(Font font) not enough arguments!");
+			Protean::Lua::SError(L, "RemoveFont(Font font) not enough arguments!");
 		}
 		return 0;
 	}
@@ -216,7 +216,7 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "ClearSprites() component is empty!");
+			Protean::Lua::SError(L, "ClearSprites() component is empty!");
 			return 0;
 		}
 		RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
@@ -226,7 +226,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "ClearSprites() not a RenderPath2D!");
+			Protean::Lua::SError(L, "ClearSprites() not a RenderPath2D!");
 		}
 		return 0;
 	}
@@ -234,7 +234,7 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "ClearFonts() component is empty!");
+			Protean::Lua::SError(L, "ClearFonts() component is empty!");
 			return 0;
 		}
 		RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
@@ -244,7 +244,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "ClearFonts() not a RenderPath2D!");
+			Protean::Lua::SError(L, "ClearFonts() not a RenderPath2D!");
 		}
 		return 0;
 	}
@@ -252,32 +252,32 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "GetSpriteOrder() component is empty!");
+			Protean::Lua::SError(L, "GetSpriteOrder() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::Sprite_BindLua* sprite = Luna<wi::lua::Sprite_BindLua>::lightcheck(L, 1);
+			Protean::Lua::Sprite_BindLua* sprite = Luna<Protean::Lua::Sprite_BindLua>::lightcheck(L, 1);
 			if (sprite != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 				if (ccomp != nullptr)
 				{
-					wi::lua::SSetInt(L, ccomp->GetSpriteOrder(&sprite->sprite));
+					Protean::Lua::SSetInt(L, ccomp->GetSpriteOrder(&sprite->sprite));
 					return 1;
 				}
 				else
 				{
-					wi::lua::SError(L, "GetSpriteOrder(Sprite sprite) not a RenderPath2D!");
+					Protean::Lua::SError(L, "GetSpriteOrder(Sprite sprite) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "GetSpriteOrder(Sprite sprite) argument is not a Sprite!");
+				Protean::Lua::SError(L, "GetSpriteOrder(Sprite sprite) argument is not a Sprite!");
 		}
 		else
 		{
-			wi::lua::SError(L, "GetSpriteOrder(Sprite sprite) not enough arguments!");
+			Protean::Lua::SError(L, "GetSpriteOrder(Sprite sprite) not enough arguments!");
 		}
 		return 0;
 	}
@@ -285,32 +285,32 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "GetFontOrder() component is empty!");
+			Protean::Lua::SError(L, "GetFontOrder() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::SpriteFont_BindLua* font = Luna<wi::lua::SpriteFont_BindLua>::lightcheck(L, 1);
+			Protean::Lua::SpriteFont_BindLua* font = Luna<Protean::Lua::SpriteFont_BindLua>::lightcheck(L, 1);
 			if (font != nullptr)
 			{
 				RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 				if (ccomp != nullptr)
 				{
-					wi::lua::SSetInt(L, ccomp->GetFontOrder(&font->font));
+					Protean::Lua::SSetInt(L, ccomp->GetFontOrder(&font->font));
 					return 1;
 				}
 				else
 				{
-					wi::lua::SError(L, "GetFontOrder(Font font) not a RenderPath2D!");
+					Protean::Lua::SError(L, "GetFontOrder(Font font) not a RenderPath2D!");
 				}
 			}
 			else
-				wi::lua::SError(L, "GetFontOrder(Font font) argument is not a Sprite!");
+				Protean::Lua::SError(L, "GetFontOrder(Font font) argument is not a Sprite!");
 		}
 		else
 		{
-			wi::lua::SError(L, "GetFontOrder(Font font) not enough arguments!");
+			Protean::Lua::SError(L, "GetFontOrder(Font font) not enough arguments!");
 		}
 		return 0;
 	}
@@ -319,25 +319,25 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "AddLayer() component is empty!");
+			Protean::Lua::SError(L, "AddLayer() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 			if (ccomp != nullptr)
 			{
-				ccomp->AddLayer(wi::lua::SGetString(L, 1));
+				ccomp->AddLayer(Protean::Lua::SGetString(L, 1));
 			}
 			else
 			{
-				wi::lua::SError(L, "AddLayer(string name) not a RenderPath2D!");
+				Protean::Lua::SError(L, "AddLayer(string name) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "AddLayer(string name) not enough arguments!");
+			Protean::Lua::SError(L, "AddLayer(string name) not enough arguments!");
 		}
 		return 0;
 	}
@@ -345,7 +345,7 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "GetLayers() component is empty!");
+			Protean::Lua::SError(L, "GetLayers() component is empty!");
 			return 0;
 		}
 
@@ -357,12 +357,12 @@ namespace wi::lua
 			{
 				ss += x.name + "\n";
 			}
-			wi::lua::SSetString(L, ss);
+			Protean::Lua::SSetString(L, ss);
 			return 1;
 		}
 		else
 		{
-			wi::lua::SError(L, "GetLayers() not a RenderPath2D!");
+			Protean::Lua::SError(L, "GetLayers() not a RenderPath2D!");
 		}
 
 		return 0;
@@ -371,25 +371,25 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "SetLayerOrder() component is empty!");
+			Protean::Lua::SError(L, "SetLayerOrder() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 			if (ccomp != nullptr)
 			{
-				ccomp->SetLayerOrder(wi::lua::SGetString(L, 1), wi::lua::SGetInt(L, 2));
+				ccomp->SetLayerOrder(Protean::Lua::SGetString(L, 1), Protean::Lua::SGetInt(L, 2));
 			}
 			else
 			{
-				wi::lua::SError(L, "SetLayerOrder(string name, int order) not a RenderPath2D!");
+				Protean::Lua::SError(L, "SetLayerOrder(string name, int order) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetLayerOrder(string name, int order) not enough arguments!");
+			Protean::Lua::SError(L, "SetLayerOrder(string name, int order) not enough arguments!");
 		}
 		return 0;
 	}
@@ -397,33 +397,33 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "SetSpriteOrder() component is empty!");
+			Protean::Lua::SError(L, "SetSpriteOrder() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 			if (ccomp != nullptr)
 			{
-				wi::lua::Sprite_BindLua* sprite = Luna<wi::lua::Sprite_BindLua>::lightcheck(L, 1);
+				Protean::Lua::Sprite_BindLua* sprite = Luna<Protean::Lua::Sprite_BindLua>::lightcheck(L, 1);
 				if (sprite != nullptr)
 				{
-					ccomp->SetSpriteOrder(&sprite->sprite, wi::lua::SGetInt(L, 2));
+					ccomp->SetSpriteOrder(&sprite->sprite, Protean::Lua::SGetInt(L, 2));
 				}
 				else
 				{
-					wi::lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) argument is not a Sprite!");
+					Protean::Lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) argument is not a Sprite!");
 				}
 			}
 			else
 			{
-				wi::lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) not a RenderPath2D!");
+				Protean::Lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) not enough arguments!");
+			Protean::Lua::SError(L, "SetSpriteOrder(Sprite sprite, int order) not enough arguments!");
 		}
 		return 0;
 	}
@@ -431,33 +431,33 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "SetFontOrder() component is empty!");
+			Protean::Lua::SError(L, "SetFontOrder() component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 			if (ccomp != nullptr)
 			{
-				wi::lua::SpriteFont_BindLua* font = Luna<wi::lua::SpriteFont_BindLua>::lightcheck(L, 1);
+				Protean::Lua::SpriteFont_BindLua* font = Luna<Protean::Lua::SpriteFont_BindLua>::lightcheck(L, 1);
 				if (font != nullptr)
 				{
-					ccomp->SetFontOrder(&font->font, wi::lua::SGetInt(L, 2));
+					ccomp->SetFontOrder(&font->font, Protean::Lua::SGetInt(L, 2));
 				}
 				else
 				{
-					wi::lua::SError(L, "SetFontOrder(Font font, int order) argument is not a Font!");
+					Protean::Lua::SError(L, "SetFontOrder(Font font, int order) argument is not a Font!");
 				}
 			}
 			else
 			{
-				wi::lua::SError(L, "SetFontOrder(Font font, int order) not a RenderPath2D!");
+				Protean::Lua::SError(L, "SetFontOrder(Font font, int order) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetFontOrder(Font font, int order) not enough arguments!");
+			Protean::Lua::SError(L, "SetFontOrder(Font font, int order) not enough arguments!");
 		}
 		return 0;
 	}
@@ -466,18 +466,18 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "GetHDRScaling() component is empty!");
+			Protean::Lua::SError(L, "GetHDRScaling() component is empty!");
 			return 0;
 		}
 		RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 		if (ccomp != nullptr)
 		{
-			wi::lua::SSetFloat(L, ccomp->GetHDRScaling());
+			Protean::Lua::SSetFloat(L, ccomp->GetHDRScaling());
 			return 1;
 		}
 		else
 		{
-			wi::lua::SError(L, "SetHDRScaling(float value) not a RenderPath2D!");
+			Protean::Lua::SError(L, "SetHDRScaling(float value) not a RenderPath2D!");
 		}
 		return 0;
 	}
@@ -485,25 +485,25 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "SetHDRScaling(float value) component is empty!");
+			Protean::Lua::SError(L, "SetHDRScaling(float value) component is empty!");
 			return 0;
 		}
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			RenderPath2D* ccomp = static_cast<RenderPath2D*>(component);
 			if (ccomp != nullptr)
 			{
-				ccomp->SetHDRScaling(wi::lua::SGetFloat(L, 1));
+				ccomp->SetHDRScaling(Protean::Lua::SGetFloat(L, 1));
 			}
 			else
 			{
-				wi::lua::SError(L, "SetHDRScaling(float value) not a RenderPath2D!");
+				Protean::Lua::SError(L, "SetHDRScaling(float value) not a RenderPath2D!");
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetHDRScaling(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetHDRScaling(float value) not enough arguments!");
 		}
 		return 0;
 	}
@@ -512,10 +512,10 @@ namespace wi::lua
 	{
 		if (component == nullptr)
 		{
-			wi::lua::SError(L, "CopyFrom(RenderPath other) component is null!");
+			Protean::Lua::SError(L, "CopyFrom(RenderPath other) component is null!");
 			return 0;
 		}
-		if (wi::lua::SGetArgCount(L) > 0)
+		if (Protean::Lua::SGetArgCount(L) > 0)
 		{
 			RenderPath3D_BindLua* other3D = Luna<RenderPath3D_BindLua>::lightcheck(L, 1);
 			if (other3D != nullptr)
@@ -536,10 +536,10 @@ namespace wi::lua
 				return 0;
 			}
 
-			wi::lua::SError(L, "CopyFrom(RenderPath other) parameter is not a RenderPath3D!");
+			Protean::Lua::SError(L, "CopyFrom(RenderPath other) parameter is not a RenderPath3D!");
 		}
 		else
-			wi::lua::SError(L, "CopyFrom(RenderPath other) not enough arguments!");
+			Protean::Lua::SError(L, "CopyFrom(RenderPath other) not enough arguments!");
 		return 0;
 	}
 
@@ -549,7 +549,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<RenderPath2D_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<RenderPath2D_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 

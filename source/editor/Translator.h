@@ -12,23 +12,23 @@ private:
 	float angle = 0;
 	float angle_start = 0;
 	bool has_selected_transform = false;
-	wi::vector<uint64_t> temp_filters;
-	wi::vector<wi::ecs::Entity> selectedWithHierarchy; // all the selected entities and their descendants
+	Protean::vector<uint64_t> temp_filters;
+	Protean::vector<Protean::Entity> selectedWithHierarchy; // all the selected entities and their descendants
 public:
 
-	void Update(const wi::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, const wi::Canvas& canvas);
-	void Draw(const wi::scene::CameraComponent& camera, const XMFLOAT4& currentMouse, wi::graphics::CommandList cmd) const;
+	void Update(const Protean::CameraComponent& camera, const XMFLOAT4& currentMouse, const Protean::Canvas& canvas);
+	void Draw(const Protean::CameraComponent& camera, const XMFLOAT4& currentMouse, Protean::Graphics::CommandList cmd) const;
 
 	// Attach selection to translator temporarily
 	void PreTranslate();
 	// Apply translator to selection
 	void PostTranslate() const;
 
-	wi::scene::Scene* scene = nullptr;
-	wi::scene::TransformComponent transform;
-	wi::vector<wi::scene::PickResult> selected; // all the selected picks
-	wi::unordered_set<wi::ecs::Entity> selectedEntitiesLookup; // fast lookup for selected entities
-	wi::vector<wi::ecs::Entity> selectedEntitiesNonRecursive; // selected entities that don't contain entities that would be included in recursive iterations
+	Protean::Scene* scene = nullptr;
+	Protean::TransformComponent transform;
+	Protean::vector<Protean::PickResult> selected; // all the selected picks
+	Protean::unordered_set<Protean::Entity> selectedEntitiesLookup; // fast lookup for selected entities
+	Protean::vector<Protean::Entity> selectedEntitiesNonRecursive; // selected entities that don't contain entities that would be included in recursive iterations
 
 	float scale_snap = 1;
 	float rotate_snap = XM_PIDIV4;
@@ -50,8 +50,8 @@ public:
 		TRANSLATOR_XYZ,
 	} state = TRANSLATOR_IDLE;
 
-	XMMATRIX GetMirrorMatrix(TRANSLATOR_STATE state, const wi::scene::CameraComponent& camera) const;
-	void WriteAxisText(TRANSLATOR_STATE axis, const wi::scene::CameraComponent& camera, char* text) const;
+	XMMATRIX GetMirrorMatrix(TRANSLATOR_STATE state, const Protean::CameraComponent& camera) const;
+	void WriteAxisText(TRANSLATOR_STATE axis, const Protean::CameraComponent& camera, char* text) const;
 
 	float dist = 1;
 
@@ -84,8 +84,8 @@ public:
 
 	bool IsInteracting() const { return state != TRANSLATOR_IDLE; }
 
-	wi::scene::TransformComponent transform_start;
-	wi::vector<XMFLOAT4X4> matrices_start;
-	wi::vector<XMFLOAT4X4> matrices_current;
+	Protean::TransformComponent transform_start;
+	Protean::vector<XMFLOAT4X4> matrices_start;
+	Protean::vector<XMFLOAT4X4> matrices_current;
 };
 

@@ -4,7 +4,7 @@
 
 #include "pugixml.hpp"
 
-namespace wi
+namespace Protean
 {
 	Localization& Localization::GetSection(const char* name)
 	{
@@ -126,8 +126,8 @@ namespace wi
 
 	bool Localization::Import(const std::string& filename)
 	{
-		wi::vector<uint8_t> filedata;
-		bool success = wi::helper::FileRead(filename, filedata);
+		Protean::vector<uint8_t> filedata;
+		bool success = Protean::Helper::FileRead(filename, filedata);
 		if (!success)
 			return false;
 
@@ -135,7 +135,7 @@ namespace wi
 		pugi::xml_parse_result result = doc.load_buffer_inplace(filedata.data(), filedata.size());
 		if (result.status != pugi::xml_parse_status::status_ok)
 		{
-			wi::backlog::post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), wi::backlog::LogLevel::Warning);
+			Protean::Backlog::post("XML error in " + filename + " at offset = " + std::to_string(result.offset) + ": " + result.description(), Protean::Backlog::LogLevel::Warning);
 			return false;
 		}
 
@@ -150,7 +150,7 @@ namespace wi
 	{
 		pugi::xml_document doc;
 		doc.append_child(pugi::node_comment).set_value("This file was created by Wicked Engine for language localization.");
-		doc.append_child(pugi::node_comment).set_value("You can import this file with the wi::Localization::Import() function.");
+		doc.append_child(pugi::node_comment).set_value("You can import this file with the Protean::Localization::Import() function.");
 
 		recursive_export(*this, doc);
 

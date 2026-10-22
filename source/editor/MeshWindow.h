@@ -1,53 +1,53 @@
 #pragma once
 class EditorComponent;
 
-class MeshWindow : public wi::gui::Window
+class MeshWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
+	Protean::Entity entity;
 	int subset = -1;
-	void SetEntity(wi::ecs::Entity entity, int subset);
+	void SetEntity(Protean::Entity entity, int subset);
 	void UpdateRecenterInputs(XMFLOAT3 center);
 
-	wi::gui::Label meshInfoLabel;
-	wi::gui::Button subsetRemoveButton;
-	wi::gui::Button subsetLastButton;
-	wi::gui::ComboBox subsetComboBox;
-	wi::gui::ComboBox subsetMaterialComboBox;
-	wi::gui::CheckBox doubleSidedCheckBox;
-	wi::gui::CheckBox doubleSidedShadowCheckBox;
-	wi::gui::CheckBox bvhCheckBox;
-	wi::gui::CheckBox quantizeCheckBox;
-	wi::gui::Button impostorCreateButton;
-	wi::gui::Slider impostorDistanceSlider;
-	wi::gui::Slider tessellationFactorSlider;
-	wi::gui::Button instanceSelectButton;
-	wi::gui::Button flipCullingButton;
-	wi::gui::Button flipNormalsButton;
-	wi::gui::Button computeNormalsSmoothButton;
-	wi::gui::Button computeNormalsHardButton;
-	wi::gui::Button recenterButton;
-	wi::gui::Button recenterToTopButton;
-	wi::gui::Button recenterToBottomButton;
-	wi::gui::TextInputField recenterToXInput;
-	wi::gui::TextInputField recenterToYInput;
-	wi::gui::TextInputField recenterToZInput;
-	wi::gui::Button mergeButton;
-	wi::gui::Button optimizeButton;
-	wi::gui::Button exportHeaderButton;
+	Protean::Gui::Label meshInfoLabel;
+	Protean::Gui::Button subsetRemoveButton;
+	Protean::Gui::Button subsetLastButton;
+	Protean::Gui::ComboBox subsetComboBox;
+	Protean::Gui::ComboBox subsetMaterialComboBox;
+	Protean::Gui::CheckBox doubleSidedCheckBox;
+	Protean::Gui::CheckBox doubleSidedShadowCheckBox;
+	Protean::Gui::CheckBox bvhCheckBox;
+	Protean::Gui::CheckBox quantizeCheckBox;
+	Protean::Gui::Button impostorCreateButton;
+	Protean::Gui::Slider impostorDistanceSlider;
+	Protean::Gui::Slider tessellationFactorSlider;
+	Protean::Gui::Button instanceSelectButton;
+	Protean::Gui::Button flipCullingButton;
+	Protean::Gui::Button flipNormalsButton;
+	Protean::Gui::Button computeNormalsSmoothButton;
+	Protean::Gui::Button computeNormalsHardButton;
+	Protean::Gui::Button recenterButton;
+	Protean::Gui::Button recenterToTopButton;
+	Protean::Gui::Button recenterToBottomButton;
+	Protean::Gui::TextInputField recenterToXInput;
+	Protean::Gui::TextInputField recenterToYInput;
+	Protean::Gui::TextInputField recenterToZInput;
+	Protean::Gui::Button mergeButton;
+	Protean::Gui::Button optimizeButton;
+	Protean::Gui::Button exportHeaderButton;
 
-	wi::gui::ComboBox morphTargetCombo;
-	wi::gui::Slider morphTargetSlider;
+	Protean::Gui::ComboBox morphTargetCombo;
+	Protean::Gui::Slider morphTargetSlider;
 
-	wi::gui::Button lodgenButton;
-	wi::gui::Button lodDeleteButton;
-	wi::gui::Slider lodCountSlider;
-	wi::gui::Slider lodQualitySlider;
-	wi::gui::Slider lodErrorSlider;
-	wi::gui::CheckBox lodSloppyCheckBox;
+	Protean::Gui::Button lodgenButton;
+	Protean::Gui::Button lodDeleteButton;
+	Protean::Gui::Slider lodCountSlider;
+	Protean::Gui::Slider lodQualitySlider;
+	Protean::Gui::Slider lodErrorSlider;
+	Protean::Gui::CheckBox lodSloppyCheckBox;
 
 	void ResizeLayout() override;
 };

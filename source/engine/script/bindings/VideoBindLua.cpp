@@ -1,7 +1,7 @@
 #include "script/bindings/VideoBindLua.h"
 #include "render/Video.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<Video_BindLua>::FunctionType Video_BindLua::methods[] = {
@@ -15,22 +15,22 @@ namespace wi::lua
 
 	Video_BindLua::Video_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			videoResource = wi::resourcemanager::Load(wi::lua::SGetString(L, 1));
+			videoResource = Protean::ResourceManager::Load(Protean::Lua::SGetString(L, 1));
 		}
 	}
 
 	int Video_BindLua::IsValid(lua_State* L)
 	{
-		wi::lua::SSetBool(L, videoResource.IsValid() && videoResource.GetVideo().IsValid());
+		Protean::Lua::SSetBool(L, videoResource.IsValid() && videoResource.GetVideo().IsValid());
 		return 1;
 	}
 
 	int Video_BindLua::GetDurationSeconds(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, videoResource.IsValid() ? videoResource.GetVideo().duration_seconds : 0.0f);
+		Protean::Lua::SSetFloat(L, videoResource.IsValid() ? videoResource.GetVideo().duration_seconds : 0.0f);
 		return 1;
 	}
 
@@ -40,7 +40,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Video_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Video_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 
@@ -65,117 +65,117 @@ namespace wi::lua
 
 	VideoInstance_BindLua::VideoInstance_BindLua(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Video_BindLua* s = Luna<Video_BindLua>::lightcheck(L, 1);
 			if (s == nullptr)
 			{
-				wi::lua::SError(L, "VideoInstance(Video Video) : first argument is not a Video!");
+				Protean::Lua::SError(L, "VideoInstance(Video Video) : first argument is not a Video!");
 				return;
 			}
 			if (!s->videoResource.IsValid())
 			{
-				wi::lua::SError(L, "VideoInstance(Video Video, opt float begin,end) : Video is not valid!");
+				Protean::Lua::SError(L, "VideoInstance(Video Video, opt float begin,end) : Video is not valid!");
 				return;
 			}
-			const wi::video::Video& Video = s->videoResource.GetVideo();
+			const Protean::Video::Video& Video = s->videoResource.GetVideo();
 			if (!Video.IsValid())
 			{
-				wi::lua::SError(L, "VideoInstance(Video Video, opt float begin,end) : Video is not valid!");
+				Protean::Lua::SError(L, "VideoInstance(Video Video, opt float begin,end) : Video is not valid!");
 				return;
 			}
-			wi::video::CreateVideoInstance(&Video, &videoinstance);
+			Protean::Video::CreateVideoInstance(&Video, &videoinstance);
 		}
 	}
 
 	int VideoInstance_BindLua::IsValid(lua_State* L)
 	{
-		wi::lua::SSetBool(L, videoinstance.IsValid());
+		Protean::Lua::SSetBool(L, videoinstance.IsValid());
 		return 1;
 	}
 
 	int VideoInstance_BindLua::Play(lua_State* L)
 	{
-		videoinstance.flags |= wi::video::VideoInstance::Flags::Playing;
+		videoinstance.flags |= Protean::Video::VideoInstance::Flags::Playing;
 		return 0;
 	}
 	int VideoInstance_BindLua::Pause(lua_State* L)
 	{
-		videoinstance.flags &= ~wi::video::VideoInstance::Flags::Playing;
+		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
 		return 0;
 	}
 	int VideoInstance_BindLua::Stop(lua_State* L)
 	{
-		videoinstance.flags &= ~wi::video::VideoInstance::Flags::Playing;
-		wi::video::Seek(&videoinstance, 0);
+		videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Playing;
+		Protean::Video::Seek(&videoinstance, 0);
 		return 0;
 	}
 	int VideoInstance_BindLua::SetLooped(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 
 		bool looped = true;
 		if (argc > 0)
 		{
-			looped = wi::lua::SGetBool(L, 1);
+			looped = Protean::Lua::SGetBool(L, 1);
 		}
 
 		if (looped)
 		{
-			videoinstance.flags |= wi::video::VideoInstance::Flags::Looped;
+			videoinstance.flags |= Protean::Video::VideoInstance::Flags::Looped;
 		}
 		else
 		{
-			videoinstance.flags &= ~wi::video::VideoInstance::Flags::Looped;
+			videoinstance.flags &= ~Protean::Video::VideoInstance::Flags::Looped;
 		}
 		return 0;
 	}
 	int VideoInstance_BindLua::Seek(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::video::Seek(&videoinstance, wi::lua::SGetFloat(L, 1));
+			Protean::Video::Seek(&videoinstance, Protean::Lua::SGetFloat(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "Seek(float timerSeconds) not enough arguments!");
+			Protean::Lua::SError(L, "Seek(float timerSeconds) not enough arguments!");
 		}
 		return 0;
 	}
 	int VideoInstance_BindLua::GetCurrentTimer(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, videoinstance.current_time);
+		Protean::Lua::SSetFloat(L, videoinstance.current_time);
 		return 1;
 	}
 	int VideoInstance_BindLua::IsEnded(lua_State* L)
 	{
 		if (videoinstance.video == nullptr)
 		{
-			wi::lua::SSetBool(L, true);
+			Protean::Lua::SSetBool(L, true);
 			return 1;
 		}
-		wi::lua::SSetBool(L, videoinstance.current_time >= videoinstance.video->duration_seconds);
+		Protean::Lua::SSetBool(L, videoinstance.current_time >= videoinstance.video->duration_seconds);
 		return 1;
 	}
 
 	int VideoInstance_BindLua::SetVolume(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::audio::SetVolume(wi::lua::SGetFloat(L, 1), &videoinstance.audio);
+			Protean::Audio::SetVolume(Protean::Lua::SGetFloat(L, 1), &videoinstance.audio);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVolume(float volume) not enough arguments!");
+			Protean::Lua::SError(L, "SetVolume(float volume) not enough arguments!");
 		}
 		return 0;
 	}
 	int VideoInstance_BindLua::GetVolume(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, wi::audio::GetVolume(&videoinstance.audio));
+		Protean::Lua::SSetFloat(L, Protean::Audio::GetVolume(&videoinstance.audio));
 		return 1;
 	}
 
@@ -185,7 +185,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<VideoInstance_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<VideoInstance_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 

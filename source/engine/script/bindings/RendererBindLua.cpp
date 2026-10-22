@@ -13,364 +13,364 @@
 #include "script/bindings/PathQueryBindLua.h"
 #include "script/bindings/TrailRendererBindLua.h"
 
-using namespace wi::ecs;
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::lua::scene;
-using namespace wi::lua::primitive;
+using namespace Protean;
+using namespace Protean::Graphics;
+using namespace Protean;
+using namespace Protean::Lua::SceneBindings;
+using namespace Protean::Lua::PrimitiveBindings;
 
-namespace wi::lua::renderer
+namespace Protean::Lua::RendererBindings
 {
 	int SetGamma(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::SSetString(L, "SetGamma() no longer supported!");
+			Protean::Lua::SSetString(L, "SetGamma() no longer supported!");
 		}
 		else
 		{
-			wi::lua::SError(L, "SetGamma(float) not enough arguments!");
+			Protean::Lua::SError(L, "SetGamma(float) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetGameSpeed(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetGameSpeed(wi::lua::SGetFloat(L, 1));
+			Protean::Renderer::SetGameSpeed(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L,"SetGameSpeed(float) not enough arguments!");
+			Protean::Lua::SError(L,"SetGameSpeed(float) not enough arguments!");
 		}
 		return 0;
 	}
 	int GetGameSpeed(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, wi::renderer::GetGameSpeed());
+		Protean::Lua::SSetFloat(L, Protean::Renderer::GetGameSpeed());
 		return 1;
 	}
 	int IsRaytracingSupported(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
+		Protean::Lua::SSetBool(L, Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::RAYTRACING));
 		return 1;
 	}
 
 	int SetShadowProps2D(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetShadowProps2D(wi::lua::SGetInt(L, 1));
+			Protean::Renderer::SetShadowProps2D(Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetShadowProps2D(int max_resolution) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowProps2D(int max_resolution) not enough arguments!");
 		return 0;
 	}
 	int SetShadowPropsCube(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetShadowPropsCube(wi::lua::SGetInt(L, 1));
+			Protean::Renderer::SetShadowPropsCube(Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetShadowPropsCube(int max_resolution) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowPropsCube(int max_resolution) not enough arguments!");
 		return 0;
 	}
 	int SetDebugPartitionTreeEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugPartitionTree(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugPartitionTree(Protean::Lua::SGetBool(L, 1));
 		}
 		return 0;
 	}
 	int SetDebugBoxesEnabled(lua_State* L)
 	{
-		wi::lua::SError(L, "SetDebugBoxesEnabled is obsolete! Use SetDebugPartitionTreeEnabled(bool value) instead to draw a partition tree!");
+		Protean::Lua::SError(L, "SetDebugBoxesEnabled is obsolete! Use SetDebugPartitionTreeEnabled(bool value) instead to draw a partition tree!");
 		return 0;
 	}
 	int SetDebugBonesEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugBoneLines(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugBoneLines(Protean::Lua::SGetBool(L, 1));
 		}
 		return 0;
 	}
 	int SetDebugEmittersEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugEmitters(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugEmitters(Protean::Lua::SGetBool(L, 1));
 		}
 		return 0;
 	}
 	int SetDebugEnvProbesEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugEnvProbes(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugEnvProbes(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugEnvProbesEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugEnvProbesEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDebugForceFieldsEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugForceFields(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugForceFields(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugForceFieldsEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugForceFieldsEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDebugCamerasEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugCameras(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugCameras(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugCamerasEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugCamerasEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDebugCollidersEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawDebugColliders(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawDebugColliders(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugCollidersEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugCollidersEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetGridHelperEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetToDrawGridHelper(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetToDrawGridHelper(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetGridHelperEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetGridHelperEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDDGIDebugEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetDDGIDebugEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetDDGIDebugEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDDGIDebugEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDDGIDebugEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDDGIEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetDDGIEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetDDGIEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDDGIEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDDGIEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetVSyncEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::eventhandler::SetVSync(wi::lua::SGetBool(L, 1));
+			Protean::EventHandler::SetVSync(Protean::Lua::SGetBool(L, 1));
 		}
 		return 0;
 	}
 	int SetResolution(lua_State* L)
 	{
-		wi::lua::SError(L, "SetResolution() is deprecated, now it's handled by window events!");
+		Protean::Lua::SError(L, "SetResolution() is deprecated, now it's handled by window events!");
 		return 0;
 	}
 	int SetDebugLightCulling(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetDebugLightCulling(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetDebugLightCulling(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugLightCulling(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugLightCulling(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetOcclusionCullingEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetOcclusionCullingEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetOcclusionCullingEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetOcclusionCullingEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetOcclusionCullingEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetTemporalAAEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetTemporalAAEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetTemporalAAEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetTemporalAAEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetTemporalAAEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetRaytracedShadowsEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetRaytracedShadowsEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetRaytracedShadowsEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetRaytracedShadowsEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetRaytracedShadowsEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetMeshShaderAllowed(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetMeshShaderAllowed(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetMeshShaderAllowed(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetMeshShaderAllowed(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetMeshShaderAllowed(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetMeshletOcclusionCullingEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetMeshletOcclusionCullingEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetMeshletOcclusionCullingEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetMeshletOcclusionCullingEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetMeshletOcclusionCullingEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetCapsuleShadowEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetCapsuleShadowEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetCapsuleShadowEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetCapsuleShadowEnabled(bool enabled) not enough arguments!");
+			Protean::Lua::SError(L, "SetCapsuleShadowEnabled(bool enabled) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetCapsuleShadowFade(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetCapsuleShadowFade(wi::lua::SGetFloat(L, 1));
+			Protean::Renderer::SetCapsuleShadowFade(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetCapsuleShadowFade(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetCapsuleShadowFade(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetCapsuleShadowAngle(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetCapsuleShadowAngle(wi::lua::SGetFloat(L, 1));
+			Protean::Renderer::SetCapsuleShadowAngle(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetCapsuleShadowAngle(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetCapsuleShadowAngle(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetShadowLODOverrideEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetShadowLODOverrideEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetShadowLODOverrideEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetShadowLODOverrideEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetShadowLODOverrideEnabled(bool value) not enough arguments!");
 		}
 		return 0;
 	}
 	int SetDebugDrawEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::renderer::SetDebugDrawEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Renderer::SetDebugDrawEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
 		{
-			wi::lua::SError(L, "SetDebugDrawEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugDrawEnabled(bool value) not enough arguments!");
 		}
 		return 0;
 	}
 
 	int DrawLine(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
 			Vector_BindLua* a = Luna<Vector_BindLua>::lightcheck(L, 1);
 			Vector_BindLua* b = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (a && b)
 			{
-				wi::renderer::RenderableLine line;
+				Protean::Renderer::RenderableLine line;
 				XMStoreFloat3(&line.start, XMLoadFloat4(&a->data));
 				XMStoreFloat3(&line.end, XMLoadFloat4(&b->data));
 				bool depth = false;
@@ -383,37 +383,37 @@ namespace wi::lua::renderer
 						XMStoreFloat4(&line.color_end, XMLoadFloat4(&c->data));
 					}
 					else
-						wi::lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) one or more arguments are not vectors!");
+						Protean::Lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) one or more arguments are not vectors!");
 
 					if (argc > 3)
 					{
-						depth = wi::lua::SGetBool(L, 4);
+						depth = Protean::Lua::SGetBool(L, 4);
 					}
 				}
-				wi::renderer::DrawLine(line, depth);
+				Protean::Renderer::DrawLine(line, depth);
 			}
 			else
-				wi::lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) one or more arguments are not vectors!");
+				Protean::Lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) one or more arguments are not vectors!");
 		}
 		else
-			wi::lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) not enough arguments!");
+			Protean::Lua::SError(L, "DrawLine(Vector origin,end, opt Vector color, opt bool depth = false) not enough arguments!");
 
 		return 0;
 	}
 	int DrawPoint(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* a = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (a)
 			{
-				wi::renderer::RenderablePoint point;
+				Protean::Renderer::RenderablePoint point;
 				XMStoreFloat3(&point.position, XMLoadFloat4(&a->data));
 				bool depth = false;
 				if (argc > 1)
 				{
-					point.size = wi::lua::SGetFloat(L, 2);
+					point.size = Protean::Lua::SGetFloat(L, 2);
 
 					if (argc > 2)
 					{
@@ -425,23 +425,23 @@ namespace wi::lua::renderer
 
 						if (argc > 3)
 						{
-							depth = wi::lua::SGetBool(L, 4);
+							depth = Protean::Lua::SGetBool(L, 4);
 						}
 					}
 				}
-				wi::renderer::DrawPoint(point, depth);
+				Protean::Renderer::DrawPoint(point, depth);
 			}
 			else
-				wi::lua::SError(L, "DrawPoint(Vector origin, opt float size, opt Vector color, opt bool depth = false) first argument must be a Vector type!");
+				Protean::Lua::SError(L, "DrawPoint(Vector origin, opt float size, opt Vector color, opt bool depth = false) first argument must be a Vector type!");
 		}
 		else
-			wi::lua::SError(L, "DrawPoint(Vector origin, opt float size, opt Vector color, opt bool depth = false) not enough arguments!");
+			Protean::Lua::SError(L, "DrawPoint(Vector origin, opt float size, opt Vector color, opt bool depth = false) not enough arguments!");
 
 		return 0;
 	}
 	int DrawBox(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Matrix_BindLua* m = Luna<Matrix_BindLua>::lightcheck(L, 1);
@@ -455,26 +455,26 @@ namespace wi::lua::renderer
 						bool depth = true;
 						if (argc > 2)
 						{
-							depth = wi::lua::SGetBool(L, 3);
+							depth = Protean::Lua::SGetBool(L, 3);
 						}
-						wi::renderer::DrawBox(m->data, color->data, depth);
+						Protean::Renderer::DrawBox(m->data, color->data, depth);
 						return 0;
 					}
 				}
 
-				wi::renderer::DrawBox(m->data);
+				Protean::Renderer::DrawBox(m->data);
 			}
 			else
-				wi::lua::SError(L, "DrawBox(Matrix boxMatrix, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
+				Protean::Lua::SError(L, "DrawBox(Matrix boxMatrix, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
 		}
 		else
-			wi::lua::SError(L, "DrawBox(Matrix boxMatrix, opt Vector color, opt bool depth = true) not enough arguments!");
+			Protean::Lua::SError(L, "DrawBox(Matrix boxMatrix, opt Vector color, opt bool depth = true) not enough arguments!");
 
 		return 0;
 	}
 	int DrawSphere(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Sphere_BindLua* sphere = Luna<Sphere_BindLua>::lightcheck(L, 1);
@@ -488,26 +488,26 @@ namespace wi::lua::renderer
 						bool depth = true;
 						if (argc > 2)
 						{
-							depth = wi::lua::SGetBool(L, 3);
+							depth = Protean::Lua::SGetBool(L, 3);
 						}
-						wi::renderer::DrawSphere(sphere->sphere, color->data, depth);
+						Protean::Renderer::DrawSphere(sphere->sphere, color->data, depth);
 						return 0;
 					}
 				}
 
-				wi::renderer::DrawSphere(sphere->sphere);
+				Protean::Renderer::DrawSphere(sphere->sphere);
 			}
 			else
-				wi::lua::SError(L, "DrawSphere(Sphere sphere, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
+				Protean::Lua::SError(L, "DrawSphere(Sphere sphere, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
 		}
 		else
-			wi::lua::SError(L, "DrawSphere(Sphere sphere, opt Vector color, opt bool depth = true) not enough arguments!");
+			Protean::Lua::SError(L, "DrawSphere(Sphere sphere, opt Vector color, opt bool depth = true) not enough arguments!");
 
 		return 0;
 	}
 	int DrawCapsule(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Capsule_BindLua* capsule = Luna<Capsule_BindLua>::lightcheck(L, 1);
@@ -521,30 +521,30 @@ namespace wi::lua::renderer
 						bool depth = true;
 						if (argc > 2)
 						{
-							depth = wi::lua::SGetBool(L, 3);
+							depth = Protean::Lua::SGetBool(L, 3);
 						}
-						wi::renderer::DrawCapsule(capsule->capsule, color->data, depth);
+						Protean::Renderer::DrawCapsule(capsule->capsule, color->data, depth);
 						return 0;
 					}
 				}
 
-				wi::renderer::DrawCapsule(capsule->capsule);
+				Protean::Renderer::DrawCapsule(capsule->capsule);
 			}
 			else
-				wi::lua::SError(L, "DrawCapsule(Capsule capsule, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
+				Protean::Lua::SError(L, "DrawCapsule(Capsule capsule, opt Vector color, opt bool depth = true) first argument must be a Matrix type!");
 		}
 		else
-			wi::lua::SError(L, "DrawCapsule(Capsule capsule, opt Vector color, opt bool depth = true) not enough arguments!");
+			Protean::Lua::SError(L, "DrawCapsule(Capsule capsule, opt Vector color, opt bool depth = true) not enough arguments!");
 
 		return 0;
 	}
 	int DrawDebugText(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			std::string text = wi::lua::SGetString(L, 1);
-			wi::renderer::DebugTextParams params;
+			std::string text = Protean::Lua::SGetString(L, 1);
+			Protean::Renderer::DebugTextParams params;
 			if (argc > 1)
 			{
 				Vector_BindLua* position = Luna<Vector_BindLua>::lightcheck(L, 2);
@@ -563,80 +563,80 @@ namespace wi::lua::renderer
 
 							if (argc > 3)
 							{
-								params.scaling = wi::lua::SGetFloat(L, 4);
+								params.scaling = Protean::Lua::SGetFloat(L, 4);
 
 								if (argc > 4)
 								{
-									params.flags = wi::lua::SGetInt(L, 5);
+									params.flags = Protean::Lua::SGetInt(L, 5);
 								}
 							}
 						}
 						else
-							wi::lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) third argument was not a Vector!");
+							Protean::Lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) third argument was not a Vector!");
 					}
 				}
 				else
-					wi::lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) second argument was not a Vector!");
+					Protean::Lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) second argument was not a Vector!");
 
 			}
-			wi::renderer::DrawDebugText(text.c_str(), params);
+			Protean::Renderer::DrawDebugText(text.c_str(), params);
 		}
 		else
-			wi::lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) not enough arguments!");
+			Protean::Lua::SError(L, "DrawDebugText(string text, opt Vector position, opt Vector color, opt float scaling, opt int flags) not enough arguments!");
 
 		return 0;
 	}
 	int DrawVoxelGrid(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			VoxelGrid_BindLua* a = Luna<VoxelGrid_BindLua>::lightcheck(L, 1);
 			if (a)
 			{
-				wi::renderer::DrawVoxelGrid(a->voxelgrid);
+				Protean::Renderer::DrawVoxelGrid(a->voxelgrid);
 			}
 			else
-				wi::lua::SError(L, "DrawVoxelGrid(VoxelGrid voxelgrid) first argument must be a VoxelGrid type!");
+				Protean::Lua::SError(L, "DrawVoxelGrid(VoxelGrid voxelgrid) first argument must be a VoxelGrid type!");
 		}
 		else
-			wi::lua::SError(L, "DrawVoxelGrid(VoxelGrid voxelgrid) not enough arguments!");
+			Protean::Lua::SError(L, "DrawVoxelGrid(VoxelGrid voxelgrid) not enough arguments!");
 
 		return 0;
 	}
 	int DrawPathQuery(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			PathQuery_BindLua* a = Luna<PathQuery_BindLua>::lightcheck(L, 1);
 			if (a)
 			{
-				wi::renderer::DrawPathQuery(a->pathquery);
+				Protean::Renderer::DrawPathQuery(a->pathquery);
 			}
 			else
-				wi::lua::SError(L, "DrawPathQuery(PathQuery pathquery) first argument must be a PathQuery type!");
+				Protean::Lua::SError(L, "DrawPathQuery(PathQuery pathquery) first argument must be a PathQuery type!");
 		}
 		else
-			wi::lua::SError(L, "DrawPathQuery(PathQuery pathquery) not enough arguments!");
+			Protean::Lua::SError(L, "DrawPathQuery(PathQuery pathquery) not enough arguments!");
 
 		return 0;
 	}
 	int DrawTrail(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			TrailRenderer_BindLua* a = Luna<TrailRenderer_BindLua>::lightcheck(L, 1);
 			if (a)
 			{
-				wi::renderer::DrawTrail(&a->trail);
+				Protean::Renderer::DrawTrail(&a->trail);
 			}
 			else
-				wi::lua::SError(L, "DrawTrail(TrailRenderer trail) first argument must be a TrailRenderer type!");
+				Protean::Lua::SError(L, "DrawTrail(TrailRenderer trail) first argument must be a TrailRenderer type!");
 		}
 		else
-			wi::lua::SError(L, "DrawTrail(TrailRenderer trail) not enough arguments!");
+			Protean::Lua::SError(L, "DrawTrail(TrailRenderer trail) not enough arguments!");
 
 		return 0;
 	}
@@ -644,23 +644,23 @@ namespace wi::lua::renderer
 	class PaintTextureParams_BindLua
 	{
 	public:
-		wi::renderer::PaintTextureParams params;
+		Protean::Renderer::PaintTextureParams params;
 
-		PaintTextureParams_BindLua(const wi::renderer::PaintTextureParams& params) : params(params) {}
+		PaintTextureParams_BindLua(const Protean::Renderer::PaintTextureParams& params) : params(params) {}
 		PaintTextureParams_BindLua(lua_State* L) {}
 
 		int SetEditTexture(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetEditTexture(Texture tex): not enough arguments!");
+				Protean::Lua::SError(L, "SetEditTexture(Texture tex): not enough arguments!");
 				return 0;
 			}
 			Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 			if (tex == nullptr)
 			{
-				wi::lua::SError(L, "SetEditTexture(Texture tex): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetEditTexture(Texture tex): argument is not a Texture!");
 				return 0;
 			}
 			if (tex->resource.IsValid())
@@ -671,16 +671,16 @@ namespace wi::lua::renderer
 		}
 		int SetBrushTexture(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushTexture(Texture tex): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushTexture(Texture tex): not enough arguments!");
 				return 0;
 			}
 			Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 			if (tex == nullptr)
 			{
-				wi::lua::SError(L, "SetBrushTexture(Texture tex): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetBrushTexture(Texture tex): argument is not a Texture!");
 				return 0;
 			}
 			if (tex->resource.IsValid())
@@ -691,16 +691,16 @@ namespace wi::lua::renderer
 		}
 		int SetRevealTexture(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetRevealTexture(Texture tex): not enough arguments!");
+				Protean::Lua::SError(L, "SetRevealTexture(Texture tex): not enough arguments!");
 				return 0;
 			}
 			Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 			if (tex == nullptr)
 			{
-				wi::lua::SError(L, "SetRevealTexture(Texture tex): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetRevealTexture(Texture tex): argument is not a Texture!");
 				return 0;
 			}
 			if (tex->resource.IsValid())
@@ -711,16 +711,16 @@ namespace wi::lua::renderer
 		}
 		int SetCenterPixel(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetCenterPixel(Vector value): not enough arguments!");
+				Protean::Lua::SError(L, "SetCenterPixel(Vector value): not enough arguments!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetCenterPixel(Vector value): argument is not a Vector!");
+				Protean::Lua::SError(L, "SetCenterPixel(Vector value): argument is not a Vector!");
 				return 0;
 			}
 			params.push.xPaintBrushCenter.x = uint32_t(vec->data.x);
@@ -729,74 +729,74 @@ namespace wi::lua::renderer
 		}
 		int SetBrushColor(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushColor(Vector value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushColor(Vector value): not enough arguments!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetBrushColor(Vector value): argument is not a Vector!");
+				Protean::Lua::SError(L, "SetBrushColor(Vector value): argument is not a Vector!");
 				return 0;
 			}
-			params.push.xPaintBrushColor = wi::Color::fromFloat4(vec->data);
+			params.push.xPaintBrushColor = Protean::Color::fromFloat4(vec->data);
 			return 0;
 		}
 		int SetBrushRadius(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushRadius(int value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushRadius(int value): not enough arguments!");
 				return 0;
 			}
-			params.push.xPaintBrushRadius = wi::lua::SGetInt(L, 1);
+			params.push.xPaintBrushRadius = Protean::Lua::SGetInt(L, 1);
 			return 0;
 		}
 		int SetBrushAmount(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushAmount(float value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushAmount(float value): not enough arguments!");
 				return 0;
 			}
-			params.push.xPaintBrushAmount = wi::lua::SGetFloat(L, 1);
+			params.push.xPaintBrushAmount = Protean::Lua::SGetFloat(L, 1);
 			return 0;
 		}
 		int SetBrushSmoothness(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushSmoothness(float value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushSmoothness(float value): not enough arguments!");
 				return 0;
 			}
-			params.push.xPaintBrushSmoothness = wi::lua::SGetFloat(L, 1);
+			params.push.xPaintBrushSmoothness = Protean::Lua::SGetFloat(L, 1);
 			return 0;
 		}
 		int SetBrushRotation(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushRotation(float value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushRotation(float value): not enough arguments!");
 				return 0;
 			}
-			params.push.xPaintBrushRotation = wi::lua::SGetFloat(L, 1);
+			params.push.xPaintBrushRotation = Protean::Lua::SGetFloat(L, 1);
 			return 0;
 		}
 		int SetBrushShape(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetBrushShape(float value): not enough arguments!");
+				Protean::Lua::SError(L, "SetBrushShape(float value): not enough arguments!");
 				return 0;
 			}
-			params.push.xPaintBrushShape = wi::lua::SGetInt(L, 1);
+			params.push.xPaintBrushShape = Protean::Lua::SGetInt(L, 1);
 			return 0;
 		}
 
@@ -821,46 +821,46 @@ namespace wi::lua::renderer
 
 	int PaintIntoTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "PaintIntoTexture(PaintTextureParams params): not enough arguments!");
+			Protean::Lua::SError(L, "PaintIntoTexture(PaintTextureParams params): not enough arguments!");
 			return 0;
 		}
 		PaintTextureParams_BindLua* params = Luna<PaintTextureParams_BindLua>::lightcheck(L, 1);
 		if (params == nullptr)
 		{
-			wi::lua::SError(L, "PaintIntoTexture(PaintTextureParams params): argument is not a PaintTextureParams!");
+			Protean::Lua::SError(L, "PaintIntoTexture(PaintTextureParams params): argument is not a PaintTextureParams!");
 			return 0;
 		}
-		wi::renderer::PaintIntoTexture(params->params);
+		Protean::Renderer::PaintIntoTexture(params->params);
 		return 0;
 	}
 	int CreatePaintableTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 2)
 		{
-			wi::lua::SError(L, "CreatePaintableTexture(int width,height, opt int mips = 0, opt Vector initialColor = Vector()): not enough arguments!");
+			Protean::Lua::SError(L, "CreatePaintableTexture(int width,height, opt int mips = 0, opt Vector initialColor = Vector()): not enough arguments!");
 			return 0;
 		}
-		uint32_t width = (uint32_t)wi::lua::SGetInt(L, 1);
-		uint32_t height = (uint32_t)wi::lua::SGetInt(L, 2);
+		uint32_t width = (uint32_t)Protean::Lua::SGetInt(L, 1);
+		uint32_t height = (uint32_t)Protean::Lua::SGetInt(L, 2);
 		uint32_t mips = 0;
-		wi::Color color = wi::Color::Transparent();
+		Protean::Color color = Protean::Color::Transparent();
 		if (argc > 2)
 		{
-			mips = (uint32_t)wi::lua::SGetInt(L, 3);
+			mips = (uint32_t)Protean::Lua::SGetInt(L, 3);
 			if (argc > 3)
 			{
 				Vector_BindLua* v = Luna<Vector_BindLua>::lightcheck(L, 4);
 				if (v != nullptr)
 				{
-					color = wi::Color::fromFloat4(v->data);
+					color = Protean::Color::fromFloat4(v->data);
 				}
 			}
 		}
-		Luna<Texture_BindLua>::push(L, wi::renderer::CreatePaintableTexture(width, height, mips, color));
+		Luna<Texture_BindLua>::push(L, Protean::Renderer::CreatePaintableTexture(width, height, mips, color));
 		return 1;
 	}
 
@@ -868,23 +868,23 @@ namespace wi::lua::renderer
 	class PaintDecalParams_BindLua
 	{
 	public:
-		wi::renderer::PaintDecalParams params;
+		Protean::Renderer::PaintDecalParams params;
 
-		PaintDecalParams_BindLua(const wi::renderer::PaintDecalParams& params) : params(params) {}
+		PaintDecalParams_BindLua(const Protean::Renderer::PaintDecalParams& params) : params(params) {}
 		PaintDecalParams_BindLua(lua_State* L) {}
 
 		int SetInTexture(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetInTexture(Texture tex): not enough arguments!");
+				Protean::Lua::SError(L, "SetInTexture(Texture tex): not enough arguments!");
 				return 0;
 			}
 			Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 			if (tex == nullptr)
 			{
-				wi::lua::SError(L, "SetInTexture(Texture tex): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetInTexture(Texture tex): argument is not a Texture!");
 				return 0;
 			}
 			if (tex->resource.IsValid())
@@ -895,16 +895,16 @@ namespace wi::lua::renderer
 		}
 		int SetOutTexture(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetOutTexture(Texture tex): not enough arguments!");
+				Protean::Lua::SError(L, "SetOutTexture(Texture tex): not enough arguments!");
 				return 0;
 			}
 			Texture_BindLua* tex = Luna<Texture_BindLua>::lightcheck(L, 1);
 			if (tex == nullptr)
 			{
-				wi::lua::SError(L, "SetOutTexture(Texture tex): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetOutTexture(Texture tex): argument is not a Texture!");
 				return 0;
 			}
 			if (tex->resource.IsValid())
@@ -915,16 +915,16 @@ namespace wi::lua::renderer
 		}
 		int SetMatrix(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetMatrix(Matrix mat): not enough arguments!");
+				Protean::Lua::SError(L, "SetMatrix(Matrix mat): not enough arguments!");
 				return 0;
 			}
 			Matrix_BindLua* mat = Luna<Matrix_BindLua>::lightcheck(L, 1);
 			if (mat == nullptr)
 			{
-				wi::lua::SError(L, "SetMatrix(Texture mat): argument is not a Texture!");
+				Protean::Lua::SError(L, "SetMatrix(Texture mat): argument is not a Texture!");
 				return 0;
 			}
 			params.decalMatrix = mat->data;
@@ -932,24 +932,24 @@ namespace wi::lua::renderer
 		}
 		int SetObject(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetObject(Entity entity): not enough arguments!");
+				Protean::Lua::SError(L, "SetObject(Entity entity): not enough arguments!");
 				return 0;
 			}
-			params.objectEntity = (wi::ecs::Entity)wi::lua::SGetLongLong(L, 1);
+			params.objectEntity = (Protean::Entity)Protean::Lua::SGetLongLong(L, 1);
 			return 0;
 		}
 		int SetSlopeBlendPower(lua_State* L)
 		{
-			int argc = wi::lua::SGetArgCount(L);
+			int argc = Protean::Lua::SGetArgCount(L);
 			if (argc < 1)
 			{
-				wi::lua::SError(L, "SetSlopeBlendPower(float power): not enough arguments!");
+				Protean::Lua::SError(L, "SetSlopeBlendPower(float power): not enough arguments!");
 				return 0;
 			}
-			params.slopeBlendPower = wi::lua::SGetFloat(L, 1);
+			params.slopeBlendPower = Protean::Lua::SGetFloat(L, 1);
 			return 0;
 		}
 
@@ -968,35 +968,35 @@ namespace wi::lua::renderer
 	};
 	int PaintDecalIntoObjectSpaceTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "PaintDecalIntoObjectSpaceTexture(PaintDecalParams params): not enough arguments!");
+			Protean::Lua::SError(L, "PaintDecalIntoObjectSpaceTexture(PaintDecalParams params): not enough arguments!");
 			return 0;
 		}
 		PaintDecalParams_BindLua* params = Luna<PaintDecalParams_BindLua>::lightcheck(L, 1);
 		if (params == nullptr)
 		{
-			wi::lua::SError(L, "PaintDecalIntoObjectSpaceTexture(PaintDecalParams params): argument is not a PaintDecalParams!");
+			Protean::Lua::SError(L, "PaintDecalIntoObjectSpaceTexture(PaintDecalParams params): argument is not a PaintDecalParams!");
 			return 0;
 		}
-		wi::renderer::PaintDecalIntoObjectSpaceTexture(params->params);
+		Protean::Renderer::PaintDecalIntoObjectSpaceTexture(params->params);
 		return 0;
 	}
 
 	int PutWaterRipple(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			std::string name = wi::lua::SGetString(L, 1);
+			std::string name = Protean::Lua::SGetString(L, 1);
 			Vector_BindLua* v = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (v)
 			{
 				GetGlobalScene()->PutWaterRipple(name, v->GetFloat3());
 			}
 			else
-				wi::lua::SError(L, "PutWaterRipple(string imagename, Vector position) argument is not a Vector!");
+				Protean::Lua::SError(L, "PutWaterRipple(string imagename, Vector position) argument is not a Vector!");
 		}
 		else if (argc > 0)
 		{
@@ -1006,12 +1006,12 @@ namespace wi::lua::renderer
 				GetGlobalScene()->PutWaterRipple(v->GetFloat3());
 			}
 			else
-				wi::lua::SError(L, "PutWaterRipple(Vector position) argument is not a Vector!");
+				Protean::Lua::SError(L, "PutWaterRipple(Vector position) argument is not a Vector!");
 		}
 		else
 		{
-			wi::lua::SError(L, "PutWaterRipple(Vector position) not enough arguments!");
-			wi::lua::SError(L, "PutWaterRipple(string imagename, Vector position) not enough arguments!");
+			Protean::Lua::SError(L, "PutWaterRipple(Vector position) not enough arguments!");
+			Protean::Lua::SError(L, "PutWaterRipple(string imagename, Vector position) not enough arguments!");
 		}
 		return 0;
 	}
@@ -1021,17 +1021,17 @@ namespace wi::lua::renderer
 		Scene_BindLua* scene = Luna<Scene_BindLua>::lightcheck(L, 1);
 		if (scene == nullptr)
 		{
-			wi::renderer::ClearWorld(*GetGlobalScene());
+			Protean::Renderer::ClearWorld(*GetGlobalScene());
 		}
 		else
 		{
-			wi::renderer::ClearWorld(*scene->scene);
+			Protean::Renderer::ClearWorld(*scene->scene);
 		}
 		return 0;
 	}
 	int ReloadShaders(lua_State* L)
 	{
-		wi::renderer::ReloadShaders();
+		Protean::Renderer::ReloadShaders();
 		return 0;
 	}
 
@@ -1042,61 +1042,61 @@ namespace wi::lua::renderer
 		{
 			initialized = true;
 
-			Luna<PaintTextureParams_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<PaintDecalParams_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<PaintTextureParams_BindLua>::Register(Protean::Lua::GetLuaState());
+			Luna<PaintDecalParams_BindLua>::Register(Protean::Lua::GetLuaState());
 
-			wi::lua::RegisterFunc("SetGamma", SetGamma);
-			wi::lua::RegisterFunc("SetGameSpeed", SetGameSpeed);
-			wi::lua::RegisterFunc("GetGameSpeed", GetGameSpeed);
-			wi::lua::RegisterFunc("IsRaytracingSupported", IsRaytracingSupported);
+			Protean::Lua::RegisterFunc("SetGamma", SetGamma);
+			Protean::Lua::RegisterFunc("SetGameSpeed", SetGameSpeed);
+			Protean::Lua::RegisterFunc("GetGameSpeed", GetGameSpeed);
+			Protean::Lua::RegisterFunc("IsRaytracingSupported", IsRaytracingSupported);
 
-			wi::lua::RegisterFunc("SetShadowProps2D", SetShadowProps2D);
-			wi::lua::RegisterFunc("SetShadowPropsCube", SetShadowPropsCube);
-			wi::lua::RegisterFunc("SetDebugBoxesEnabled", SetDebugBoxesEnabled);
-			wi::lua::RegisterFunc("SetDebugPartitionTreeEnabled", SetDebugPartitionTreeEnabled);
-			wi::lua::RegisterFunc("SetDebugBonesEnabled", SetDebugBonesEnabled);
-			wi::lua::RegisterFunc("SetDebugEmittersEnabled", SetDebugEmittersEnabled);
-			wi::lua::RegisterFunc("SetDebugEnvProbesEnabled", SetDebugEnvProbesEnabled);
-			wi::lua::RegisterFunc("SetDebugForceFieldsEnabled", SetDebugForceFieldsEnabled);
-			wi::lua::RegisterFunc("SetDebugCamerasEnabled", SetDebugCamerasEnabled);
-			wi::lua::RegisterFunc("SetDebugCollidersEnabled", SetDebugCollidersEnabled);
-			wi::lua::RegisterFunc("SetGridHelperEnabled", SetGridHelperEnabled);
-			wi::lua::RegisterFunc("SetDDGIDebugEnabled", SetDDGIDebugEnabled);
-			wi::lua::RegisterFunc("SetDDGIEnabled", SetDDGIEnabled);
-			wi::lua::RegisterFunc("SetVSyncEnabled", SetVSyncEnabled);
-			wi::lua::RegisterFunc("SetResolution", SetResolution);
-			wi::lua::RegisterFunc("SetDebugLightCulling", SetDebugLightCulling);
-			wi::lua::RegisterFunc("SetOcclusionCullingEnabled", SetOcclusionCullingEnabled);
-			wi::lua::RegisterFunc("SetTemporalAAEnabled", SetTemporalAAEnabled);
-			wi::lua::RegisterFunc("SetRaytracedShadowsEnabled", SetRaytracedShadowsEnabled);
-			wi::lua::RegisterFunc("SetMeshShaderAllowed", SetMeshShaderAllowed);
-			wi::lua::RegisterFunc("SetMeshletOcclusionCullingEnabled", SetMeshletOcclusionCullingEnabled);
-			wi::lua::RegisterFunc("SetCapsuleShadowEnabled", SetCapsuleShadowEnabled);
-			wi::lua::RegisterFunc("SetCapsuleShadowFade", SetCapsuleShadowFade);
-			wi::lua::RegisterFunc("SetCapsuleShadowAngle", SetCapsuleShadowAngle);
-			wi::lua::RegisterFunc("SetShadowLODOverrideEnabled", SetShadowLODOverrideEnabled);
-			wi::lua::RegisterFunc("SetDebugDrawEnabled", SetDebugDrawEnabled);
+			Protean::Lua::RegisterFunc("SetShadowProps2D", SetShadowProps2D);
+			Protean::Lua::RegisterFunc("SetShadowPropsCube", SetShadowPropsCube);
+			Protean::Lua::RegisterFunc("SetDebugBoxesEnabled", SetDebugBoxesEnabled);
+			Protean::Lua::RegisterFunc("SetDebugPartitionTreeEnabled", SetDebugPartitionTreeEnabled);
+			Protean::Lua::RegisterFunc("SetDebugBonesEnabled", SetDebugBonesEnabled);
+			Protean::Lua::RegisterFunc("SetDebugEmittersEnabled", SetDebugEmittersEnabled);
+			Protean::Lua::RegisterFunc("SetDebugEnvProbesEnabled", SetDebugEnvProbesEnabled);
+			Protean::Lua::RegisterFunc("SetDebugForceFieldsEnabled", SetDebugForceFieldsEnabled);
+			Protean::Lua::RegisterFunc("SetDebugCamerasEnabled", SetDebugCamerasEnabled);
+			Protean::Lua::RegisterFunc("SetDebugCollidersEnabled", SetDebugCollidersEnabled);
+			Protean::Lua::RegisterFunc("SetGridHelperEnabled", SetGridHelperEnabled);
+			Protean::Lua::RegisterFunc("SetDDGIDebugEnabled", SetDDGIDebugEnabled);
+			Protean::Lua::RegisterFunc("SetDDGIEnabled", SetDDGIEnabled);
+			Protean::Lua::RegisterFunc("SetVSyncEnabled", SetVSyncEnabled);
+			Protean::Lua::RegisterFunc("SetResolution", SetResolution);
+			Protean::Lua::RegisterFunc("SetDebugLightCulling", SetDebugLightCulling);
+			Protean::Lua::RegisterFunc("SetOcclusionCullingEnabled", SetOcclusionCullingEnabled);
+			Protean::Lua::RegisterFunc("SetTemporalAAEnabled", SetTemporalAAEnabled);
+			Protean::Lua::RegisterFunc("SetRaytracedShadowsEnabled", SetRaytracedShadowsEnabled);
+			Protean::Lua::RegisterFunc("SetMeshShaderAllowed", SetMeshShaderAllowed);
+			Protean::Lua::RegisterFunc("SetMeshletOcclusionCullingEnabled", SetMeshletOcclusionCullingEnabled);
+			Protean::Lua::RegisterFunc("SetCapsuleShadowEnabled", SetCapsuleShadowEnabled);
+			Protean::Lua::RegisterFunc("SetCapsuleShadowFade", SetCapsuleShadowFade);
+			Protean::Lua::RegisterFunc("SetCapsuleShadowAngle", SetCapsuleShadowAngle);
+			Protean::Lua::RegisterFunc("SetShadowLODOverrideEnabled", SetShadowLODOverrideEnabled);
+			Protean::Lua::RegisterFunc("SetDebugDrawEnabled", SetDebugDrawEnabled);
 
-			wi::lua::RegisterFunc("DrawLine", DrawLine);
-			wi::lua::RegisterFunc("DrawPoint", DrawPoint);
-			wi::lua::RegisterFunc("DrawBox", DrawBox);
-			wi::lua::RegisterFunc("DrawSphere", DrawSphere);
-			wi::lua::RegisterFunc("DrawCapsule", DrawCapsule);
-			wi::lua::RegisterFunc("DrawDebugText", DrawDebugText);
-			wi::lua::RegisterFunc("DrawVoxelGrid", DrawVoxelGrid);
-			wi::lua::RegisterFunc("DrawPathQuery", DrawPathQuery);
-			wi::lua::RegisterFunc("DrawTrail", DrawTrail);
+			Protean::Lua::RegisterFunc("DrawLine", DrawLine);
+			Protean::Lua::RegisterFunc("DrawPoint", DrawPoint);
+			Protean::Lua::RegisterFunc("DrawBox", DrawBox);
+			Protean::Lua::RegisterFunc("DrawSphere", DrawSphere);
+			Protean::Lua::RegisterFunc("DrawCapsule", DrawCapsule);
+			Protean::Lua::RegisterFunc("DrawDebugText", DrawDebugText);
+			Protean::Lua::RegisterFunc("DrawVoxelGrid", DrawVoxelGrid);
+			Protean::Lua::RegisterFunc("DrawPathQuery", DrawPathQuery);
+			Protean::Lua::RegisterFunc("DrawTrail", DrawTrail);
 
-			wi::lua::RegisterFunc("PaintIntoTexture", PaintIntoTexture);
-			wi::lua::RegisterFunc("CreatePaintableTexture", CreatePaintableTexture);
-			wi::lua::RegisterFunc("PaintDecalIntoObjectSpaceTexture", PaintDecalIntoObjectSpaceTexture);
+			Protean::Lua::RegisterFunc("PaintIntoTexture", PaintIntoTexture);
+			Protean::Lua::RegisterFunc("CreatePaintableTexture", CreatePaintableTexture);
+			Protean::Lua::RegisterFunc("PaintDecalIntoObjectSpaceTexture", PaintDecalIntoObjectSpaceTexture);
 
-			wi::lua::RegisterFunc("PutWaterRipple", PutWaterRipple);
+			Protean::Lua::RegisterFunc("PutWaterRipple", PutWaterRipple);
 
-			wi::lua::RegisterFunc("ClearWorld", ClearWorld);
-			wi::lua::RegisterFunc("ReloadShaders", ReloadShaders);
+			Protean::Lua::RegisterFunc("ClearWorld", ClearWorld);
+			Protean::Lua::RegisterFunc("ReloadShaders", ReloadShaders);
 
-			wi::lua::RunText(R"(
+			Protean::Lua::RunText(R"(
 GetScreenWidth = function() return main.GetCanvas().GetLogicalWidth() end
 GetScreenHeight = function() return main.GetCanvas().GetLogicalHeight() end
 

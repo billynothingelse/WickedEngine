@@ -18,7 +18,7 @@
 // There are crashes with this in graphics debugger, so this can be disabled:
 #define USE_TEXTURE_VIEW_POOL
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 	class GraphicsDevice_Metal final : public GraphicsDevice
 	{
@@ -71,7 +71,7 @@ namespace wi::graphics
 		struct CommandQueue
 		{
 			NS::SharedPtr<MTL4::CommandQueue> queue;
-			wi::vector<MTL4::CommandBuffer*> submit_cmds;
+			Protean::vector<MTL4::CommandBuffer*> submit_cmds;
 			
 			void signal(const Semaphore& sema)
 			{
@@ -120,7 +120,7 @@ namespace wi::graphics
 				
 				bool IsValid() const { return commandbuffer.get() != nullptr; }
 			};
-			wi::vector<CopyCMD> freelist;
+			Protean::vector<CopyCMD> freelist;
 			std::deque<CopyCMD> async_worklist;
 			
 			void init(GraphicsDevice_Metal* dev)
@@ -208,7 +208,7 @@ namespace wi::graphics
 		};
 		mutable CopyAllocator copyAllocator;
 		
-		wi::vector<Semaphore> semaphore_pool;
+		Protean::vector<Semaphore> semaphore_pool;
 		std::mutex semaphore_pool_locker;
 		Semaphore new_semaphore()
 		{
@@ -248,14 +248,14 @@ namespace wi::graphics
 			bool dirty_pso = false;
 			bool dirty_cs = false;
 			const Shader* active_cs = nullptr;
-			wi::vector<NS::SharedPtr<CA::MetalDrawable>> presents;
+			Protean::vector<NS::SharedPtr<CA::MetalDrawable>> presents;
 			NS::SharedPtr<MTL4::RenderCommandEncoder> render_encoder;
 			NS::SharedPtr<MTL4::ComputeCommandEncoder> compute_encoder;
 			MTL::PrimitiveType primitive_type = MTL::PrimitiveTypeTriangle;
 			IRRuntimePrimitiveType ir_primitive_type = IRRuntimePrimitiveTypeTriangle;
 			MTL4::BufferRange index_buffer = {};
 			MTL::IndexType index_type = MTL::IndexTypeUInt32;
-			wi::vector<std::pair<PipelineHash, JustInTimePSO>> pipelines_worker;
+			Protean::vector<std::pair<PipelineHash, JustInTimePSO>> pipelines_worker;
 			PipelineHash pipeline_hash;
 			DescriptorBindingTable binding_table;
 			bool dirty_root = false;
@@ -270,14 +270,14 @@ namespace wi::graphics
 			bool dirty_viewport = false;
 			uint32_t viewport_count = 0;
 			MTL::Viewport viewports[16] = {};
-			wi::vector<Semaphore> waits;
-			wi::vector<Semaphore> signals;
+			Protean::vector<Semaphore> waits;
+			Protean::vector<Semaphore> signals;
 			bool drawargs_required = false;
 			bool dirty_drawargs = false;
 			MTL::Size numthreads_as = {};
 			MTL::Size numthreads_ms = {};
 			IRGeometryEmulationPipelineDescriptor gs_desc = {};
-			wi::vector<std::pair<NS::SharedPtr<MTL::Texture>, uint32_t>> texture_clears;
+			Protean::vector<std::pair<NS::SharedPtr<MTL::Texture>, uint32_t>> texture_clears;
 			
 			struct TextureClearBatchItem
 			{
@@ -292,7 +292,7 @@ namespace wi::graphics
 					return resolutionPacked > other.resolutionPacked;
 				}
 			};
-			wi::vector<TextureClearBatchItem> texture_clear_batching;
+			Protean::vector<TextureClearBatchItem> texture_clear_batching;
 			
 			struct VertexBufferBinding
 			{
@@ -302,7 +302,7 @@ namespace wi::graphics
 			VertexBufferBinding vertex_buffers[16];
 			bool dirty_vb = false;
 			
-			wi::vector<GPUBarrier> barriers;
+			Protean::vector<GPUBarrier> barriers;
 
 			void reset(uint32_t bufferindex)
 			{
@@ -356,12 +356,12 @@ namespace wi::graphics
 				numthreads_ms = {};
 			}
 		};
-		wi::allocator::BlockAllocator<CommandList_Metal, 64> cmd_allocator;
-		wi::vector<CommandList_Metal*> commandlists;
+		Protean::Allocator::BlockAllocator<CommandList_Metal, 64> cmd_allocator;
+		Protean::vector<CommandList_Metal*> commandlists;
 		uint32_t cmd_count = 0;
-		wi::SpinLock cmd_locker;
+		Protean::SpinLock cmd_locker;
 		
-		wi::unordered_map<PipelineHash, JustInTimePSO> pipelines_global;
+		Protean::unordered_map<PipelineHash, JustInTimePSO> pipelines_global;
 		
 		NS::SharedPtr<MTL::Buffer> descriptor_heap_res;
 		NS::SharedPtr<MTL::Buffer> descriptor_heap_sam;
@@ -391,7 +391,7 @@ namespace wi::graphics
 		GraphicsDevice_Metal(ValidationMode validationMode = ValidationMode::Disabled, GPUPreference preference = GPUPreference::Discrete);
 		~GraphicsDevice_Metal() override;
 
-		bool CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const override;
+		bool CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const override;
 		bool CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias = nullptr, uint64_t alias_offset = 0ull) const override;
 		bool CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader, const char* entrypoint = "main") const override;
@@ -541,8 +541,8 @@ namespace wi::graphics
 			std::deque<std::pair<NS::SharedPtr<CA::MetalDrawable>, uint64_t>> destroyer_drawables;
 			std::deque<std::pair<int, uint64_t>> destroyer_bindless_res;
 			std::deque<std::pair<int, uint64_t>> destroyer_bindless_sam;
-			wi::vector<int> free_bindless_res;
-			wi::vector<int> free_bindless_sam;
+			Protean::vector<int> free_bindless_res;
+			Protean::vector<int> free_bindless_sam;
 
 			void Update(uint64_t FRAMECOUNT, uint32_t BUFFERCOUNT)
 			{
@@ -640,7 +640,7 @@ namespace wi::graphics
 				residency_set->removeAllocation(allocation);
 			}
 		};
-		wi::allocator::shared_ptr<AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<AllocationHandler> allocationhandler;
 	};
 }
 #endif // __APPLE__

@@ -16,7 +16,7 @@ extern "C"
 
 typedef int(*lua_CFunction) (lua_State* L);
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	void Initialize();
 
@@ -195,14 +195,14 @@ namespace wi::lua
 	void SError(lua_State* L, const std::string& error = "");
 	
 	// Compiles text file containing LUA source code to binary LUA code
-	bool CompileFile(const char* filename, wi::vector<uint8_t>& dst);
-	inline bool CompileFile(const std::string& filename, wi::vector<uint8_t>& dst) { return CompileFile(filename.c_str(), dst); }
+	bool CompileFile(const char* filename, Protean::vector<uint8_t>& dst);
+	inline bool CompileFile(const std::string& filename, Protean::vector<uint8_t>& dst) { return CompileFile(filename.c_str(), dst); }
 	// Compiles LUA source code text into binary LUA code
-	bool CompileText(const char* script, wi::vector<uint8_t>& dst);
-	inline bool CompileText(const std::string& script, wi::vector<uint8_t>& dst) { return CompileText(script.c_str(), dst); }
+	bool CompileText(const char* script, Protean::vector<uint8_t>& dst);
+	inline bool CompileText(const std::string& script, Protean::vector<uint8_t>& dst) { return CompileText(script.c_str(), dst); }
 
 	// With this you can enable the IsThisEditor() and ReturnToEditor() functionality in lua scripts
 	//	This allows easier script testing with editor functionality instead of managing previous render paths yourself in scripts
-	void EnableEditorFunctionality(wi::Application* application, wi::RenderPath* renderpath);
+	void EnableEditorFunctionality(Protean::Application* application, Protean::RenderPath* renderpath);
 };
 

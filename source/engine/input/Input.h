@@ -5,7 +5,7 @@
 #include "core/Vector.h"
 #include "render/Canvas.h"
 
-namespace wi::input
+namespace Protean::Input
 {
 	// Do not alter order as it is bound to lua manually!
 	enum BUTTON
@@ -180,14 +180,14 @@ namespace wi::input
 	{
 		float vibration_left = 0;	// left vibration motor (0: no vibration, 1: maximum vibration)
 		float vibration_right = 0;	// right vibration motor (0: no vibration, 1: maximum vibration)
-		wi::Color led_color;			// led color
+		Protean::Color led_color;			// led color
 	};
 
 	// call once at app start
 	void Initialize();
 
 	// call once per frame
-	void Update(wi::platform::window_type window, const wi::Canvas& canvas);
+	void Update(Protean::Platform::window_type window, const Protean::Canvas& canvas);
 
 	// Some things need to be cleared for next frame, like touches and delta states
 	//	These things can occasionally be updated outside engine's loop, depending on operating system messages
@@ -245,7 +245,7 @@ namespace wi::input
 			TOUCHSTATE_COUNT,
 		} state = TOUCHSTATE_PRESSED;
 	};
-	const wi::vector<Touch>& GetTouches();
+	const Protean::vector<Touch>& GetTouches();
 	void AddTouchEvent(const Touch& touch);
 
 	enum CURSOR

@@ -9,7 +9,7 @@
 #include <SDL3/SDL.h>
 #endif
 
-namespace wi::input::sdlinput
+namespace Protean::Input::SDL
 {
 	// Call this once to register raw input devices
 	void Initialize();
@@ -18,20 +18,20 @@ namespace wi::input::sdlinput
 	void Update();
 
 	// Writes the keyboard state into state parameter
-	void GetKeyboardState(wi::input::KeyboardState* state);
+	void GetKeyboardState(Protean::Input::KeyboardState* state);
 
 	// Writes the mouse state into state parameter
-	void GetMouseState(wi::input::MouseState* state);
+	void GetMouseState(Protean::Input::MouseState* state);
 
 	// Returns how many controller devices have received input ever. This doesn't correlate with which ones are currently available
 	int GetMaxControllerCount();
 
 	// Returns whether the controller identified by index parameter is available or not
 	//	Id state parameter is not nullptr, and the controller is available, the state will be written into it
-	bool GetControllerState(wi::input::ControllerState* state, int index);
+	bool GetControllerState(Protean::Input::ControllerState* state, int index);
 
 	// Sends feedback data for the controller identified by index parameter to output
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index);
+	void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index);
 
 	// External events can be used for events that is needed outside the engine library, like main_SDL2.cpp for example
 #if defined(SDL2) || defined(SDL3)

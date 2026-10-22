@@ -3,15 +3,13 @@
 
 #include "win32ico.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void ProjectCreatorWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 	control_size = 30;
 
-	wi::gui::Window::Create("Project Creator");
+	Protean::Gui::Window::Create("Project Creator");
 
 	infoLabel.Create("projectCreatorInfo");
 	infoLabel.SetFitTextEnabled(true);
@@ -27,7 +25,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	reloadButton.Create(ICON_FA_ROTATE);
 	reloadButton.SetTooltip("Reload last project");
 	reloadButton.SetSize(XMFLOAT2(reloadButton.GetSize().y, reloadButton.GetSize().y));
-	reloadButton.OnClick([this](wi::gui::EventArgs args) {
+	reloadButton.OnClick([this](Protean::Gui::EventArgs args) {
 		projectNameInput.SetText(editor->main->config.GetSection("project").GetText("name"));
 		iconFilename = editor->main->config.GetSection("project").GetText("icon");
 		thumbnailFilename = editor->main->config.GetSection("project").GetText("thumbnail");
@@ -45,7 +43,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::Resource res = wi::resourcemanager::Load(iconFilename);
+			Protean::Resource res = Protean::ResourceManager::Load(iconFilename);
 			if (!res.IsValid())
 				return;
 			iconResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 128, 128, true));
@@ -59,7 +57,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::Resource res = wi::resourcemanager::Load(thumbnailFilename);
+			Protean::Resource res = Protean::ResourceManager::Load(thumbnailFilename);
 			if (!res.IsValid())
 				return;
 			thumbnailResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 480, 270, true));
@@ -73,7 +71,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::Resource res = wi::resourcemanager::Load(splashScreenFilename);
+			Protean::Resource res = Protean::ResourceManager::Load(splashScreenFilename);
 			if (!res.IsValid())
 				return;
 			splashScreenResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 1280, 720, true));
@@ -87,7 +85,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::Resource res = wi::resourcemanager::Load(cursorFilename);
+			Protean::Resource res = Protean::ResourceManager::Load(cursorFilename);
 			if (!res.IsValid())
 				return;
 			cursorResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 64, 64, true));
@@ -100,10 +98,10 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	iconButton.SetText("");
 	iconButton.SetDescription("Icon: ");
 	iconButton.SetSize(XMFLOAT2(128 * 0.5f, 128 * 0.5f));
-	iconButton.font_description.params.v_align = wi::font::WIFALIGN_BOTTOM;
-	iconButton.font_description.params.h_align = wi::font::WIFALIGN_CENTER;
+	iconButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
+	iconButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	iconButton.SetTooltip("The icon will be used for the executable icon.");
-	iconButton.OnClick([this](wi::gui::EventArgs args) {
+	iconButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (iconResource.IsValid())
 		{
 			iconResource = {};
@@ -112,13 +110,13 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::Resource res = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Protean::Resource res = Protean::ResourceManager::Load(fileName);
 					if (!res.IsValid())
 						return;
 					iconResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 128, 128, true));
@@ -133,11 +131,11 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	thumbnailButton.Create("projectThumbnail");
 	thumbnailButton.SetText("");
 	thumbnailButton.SetDescription("Thumbnail: ");
-	thumbnailButton.font_description.params.v_align = wi::font::WIFALIGN_BOTTOM;
-	thumbnailButton.font_description.params.h_align = wi::font::WIFALIGN_CENTER;
+	thumbnailButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
+	thumbnailButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	thumbnailButton.SetSize(XMFLOAT2(480 * 0.4f, 270 * 0.4f));
 	thumbnailButton.SetTooltip("The thumbnail will be used for displaying the project in the editor.");
-	thumbnailButton.OnClick([this](wi::gui::EventArgs args) {
+	thumbnailButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (thumbnailResource.IsValid())
 		{
 			thumbnailResource = {};
@@ -146,13 +144,13 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::Resource res = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Protean::Resource res = Protean::ResourceManager::Load(fileName);
 					if (!res.IsValid())
 						return;
 					thumbnailResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 480, 270));
@@ -167,11 +165,11 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	splashScreenButton.Create("projectSplashScreen");
 	splashScreenButton.SetText("");
 	splashScreenButton.SetDescription("Splash screen: ");
-	splashScreenButton.font_description.params.v_align = wi::font::WIFALIGN_BOTTOM;
-	splashScreenButton.font_description.params.h_align = wi::font::WIFALIGN_CENTER;
+	splashScreenButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
+	splashScreenButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	splashScreenButton.SetSize(XMFLOAT2(480 * 0.5f, 270 * 0.5f));
 	splashScreenButton.SetTooltip("The splash screen will be shown while the engine is initalizing.\nIf there is a splash screen, then it will replace the intialization log display.");
-	splashScreenButton.OnClick([this](wi::gui::EventArgs args) {
+	splashScreenButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (splashScreenResource.IsValid())
 		{
 			splashScreenResource = {};
@@ -181,13 +179,13 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::Resource res = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Protean::Resource res = Protean::ResourceManager::Load(fileName);
 					if (!res.IsValid())
 						return;
 					splashScreenResource = res;
@@ -207,11 +205,11 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	cursorButton.Create("projectCursorButton");
 	cursorButton.SetText("");
 	cursorButton.SetDescription("Cursor: ");
-	cursorButton.font_description.params.v_align = wi::font::WIFALIGN_BOTTOM;
-	cursorButton.font_description.params.h_align = wi::font::WIFALIGN_CENTER;
+	cursorButton.font_description.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
+	cursorButton.font_description.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	cursorButton.SetSize(XMFLOAT2(64, 64));
 	cursorButton.SetTooltip("The cursor can be used as a custom cursor for your app. Here you can load an image to create it.");
-	cursorButton.OnClick([this](wi::gui::EventArgs args) {
+	cursorButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (cursorResource.IsValid())
 		{
 			cursorResource = {};
@@ -220,13 +218,13 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					wi::Resource res = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					Protean::Resource res = Protean::ResourceManager::Load(fileName);
 					if (!res.IsValid())
 						return;
 					cursorResource.SetTexture(editor->CreateThumbnail(res.GetTexture(), 64, 64, true));
@@ -236,8 +234,8 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 			});
 		}
 	});
-	cursorButton.OnDrag([this](wi::gui::EventArgs args) {
-		if (wi::math::Length(args.deltaPos) > 0.1f)
+	cursorButton.OnDrag([this](Protean::Gui::EventArgs args) {
+		if (Protean::Math::Length(args.deltaPos) > 0.1f)
 		{
 			hotspotX = saturate(inverse_lerp(cursorButton.GetPos().x, cursorButton.GetPos().x + cursorButton.GetSize().x, args.clickPos.x));
 			hotspotY = saturate(inverse_lerp(cursorButton.GetPos().y, cursorButton.GetPos().y + cursorButton.GetSize().y, args.clickPos.y));
@@ -246,12 +244,12 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	});
 	AddWidget(&cursorButton);
 
-	fontColorPicker.Create("font color", wi::gui::Window::WindowControls::NONE);
+	fontColorPicker.Create("font color", Protean::Gui::Window::WindowControls::NONE);
 	fontColorPicker.SetSize(XMFLOAT2(256, 256));
 	fontColorPicker.SetPickColor(exe_customization.font_color);
 	AddWidget(&fontColorPicker);
 
-	backgroundColorPicker.Create("background color", wi::gui::Window::WindowControls::NONE);
+	backgroundColorPicker.Create("background color", Protean::Gui::Window::WindowControls::NONE);
 	backgroundColorPicker.SetSize(XMFLOAT2(256, 256));
 	backgroundColorPicker.SetPickColor(exe_customization.background_color);
 	AddWidget(&backgroundColorPicker);
@@ -259,7 +257,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	colorPreviewButton.Create("colorPreviewButton");
 	colorPreviewButton.SetText("Preview: these colors will be used by the application when showing the initialization screen and backlog text. [Click here to reset colors]");
 	colorPreviewButton.SetSize(XMFLOAT2(256, 64));
-	colorPreviewButton.OnClick([this](wi::gui::EventArgs args) {
+	colorPreviewButton.OnClick([this](Protean::Gui::EventArgs args) {
 		fontColorPicker.SetPickColor(exe_customization.font_color);
 		backgroundColorPicker.SetPickColor(exe_customization.background_color);
 	});
@@ -270,13 +268,13 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 	createButton.SetAngularHighlightWidth(6);
 	createButton.SetSize(XMFLOAT2(64, 64));
 	createButton.font.params.scaling = 1.5f;
-	createButton.OnClick([this](wi::gui::EventArgs args) {
+	createButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (projectNameInput.GetText().empty())
 		{
-			wi::helper::messageBox("Application name must be provided first!");
+			Protean::Helper::messageBox("Application name must be provided first!");
 			return;
 		}
-		std::string folder = wi::helper::FolderDialog("Select location where project folder will be created.");
+		std::string folder = Protean::Helper::FolderDialog("Select location where project folder will be created.");
 		if (folder.empty())
 			return;
 		std::string name = projectNameInput.GetText();
@@ -287,7 +285,7 @@ void ProjectCreatorWindow::Create(EditorComponent* _editor)
 			name.pop_back();
 		}
 		std::string directory = folder + "/" + name + "/";
-		wi::helper::DirectoryCreate(directory);
+		Protean::Helper::DirectoryCreate(directory);
 		wilog("Project creator: created directory %s", directory.c_str());
 
 		static const std::string script_header = R"(
@@ -420,14 +418,14 @@ end)
 
 		std::string scriptfilename = name + ".lua";
 		std::string scriptfilepath = directory + scriptfilename;
-		if (!wi::helper::FileExists(scriptfilepath))
+		if (!Protean::Helper::FileExists(scriptfilepath))
 		{
-			wi::helper::FileWrite(scriptfilepath, (const uint8_t*)script.data(), script.size());
+			Protean::Helper::FileWrite(scriptfilepath, (const uint8_t*)script.data(), script.size());
 
 			// Create a sample cube model for the project:
-			wi::scene::Scene samplescene;
+			Protean::Scene samplescene;
 			samplescene.Entity_CreateCube("cube");
-			wi::Archive samplescene_archive;
+			Protean::Archive samplescene_archive;
 			samplescene.Serialize(samplescene_archive);
 			samplescene_archive.SaveFile(directory + "cube.wiscene");
 			wilog("Project creator: sample script data was created as it didn't exist yet.");
@@ -438,59 +436,59 @@ end)
 		}
 		if (iconResource.IsValid())
 		{
-			wi::helper::saveTextureToFile(iconResource.GetTexture(), directory + "icon.png");
-			wi::helper::saveTextureToFile(iconResource.GetTexture(), directory + "icon.ico");
+			Protean::Helper::saveTextureToFile(iconResource.GetTexture(), directory + "icon.png");
+			Protean::Helper::saveTextureToFile(iconResource.GetTexture(), directory + "icon.ico");
 		}
 		if (thumbnailResource.IsValid())
 		{
-			wi::helper::saveTextureToFile(thumbnailResource.GetTexture(), directory + "thumbnail.png");
+			Protean::Helper::saveTextureToFile(thumbnailResource.GetTexture(), directory + "thumbnail.png");
 		}
 		if (splashScreenResource.IsValid())
 		{
-			wi::helper::saveTextureToFile(splashScreenResource.GetTexture(), directory + "splash_screen.png");
+			Protean::Helper::saveTextureToFile(splashScreenResource.GetTexture(), directory + "splash_screen.png");
 		}
 		if (cursorResource.IsValid())
 		{
-			wi::graphics::Texture cursorTexture = cursorResource.GetTexture();
-			wi::vector<uint8_t> cursordata;
-			wi::helper::CreateCursorFromTexture(cursorTexture, int((float)cursorTexture.desc.width * hotspotX), int((float)cursorTexture.desc.height * hotspotY), cursordata);
-			wi::helper::FileWrite(directory + "cursor.cur", cursordata.data(), cursordata.size());
+			Protean::Graphics::Texture cursorTexture = cursorResource.GetTexture();
+			Protean::vector<uint8_t> cursordata;
+			Protean::Helper::CreateCursorFromTexture(cursorTexture, int((float)cursorTexture.desc.width * hotspotX), int((float)cursorTexture.desc.height * hotspotY), cursordata);
+			Protean::Helper::FileWrite(directory + "cursor.cur", cursordata.data(), cursordata.size());
 		}
 
-		if (wi::renderer::GetShaderDumpCount() == 0)
+		if (Protean::Renderer::GetShaderDumpCount() == 0)
 		{
 			// If not using shader dump, try to copy shader compiler dlls into the project:
-			std::string dxcompiler_dll_path = wi::helper::GetDirectoryFromPath(wi::helper::GetExecutablePath()) + "dxcompiler.dll";
-			std::string dxcompiler_so_path = wi::helper::GetDirectoryFromPath(wi::helper::GetExecutablePath()) + "libdxcompiler.so";
-			std::string dxcompiler_dylib_path = wi::helper::GetDirectoryFromPath(wi::helper::GetExecutablePath()) + "libdxcompiler.dylib";
-			std::string metalconverter_dylib_path = wi::helper::GetDirectoryFromPath(wi::helper::GetExecutablePath()) + "libmetalirconverter.dylib";
-			if (wi::helper::FileExists(dxcompiler_dll_path))
+			std::string dxcompiler_dll_path = Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetExecutablePath()) + "dxcompiler.dll";
+			std::string dxcompiler_so_path = Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetExecutablePath()) + "libdxcompiler.so";
+			std::string dxcompiler_dylib_path = Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetExecutablePath()) + "libdxcompiler.dylib";
+			std::string metalconverter_dylib_path = Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetExecutablePath()) + "libmetalirconverter.dylib";
+			if (Protean::Helper::FileExists(dxcompiler_dll_path))
 			{
-				wi::helper::FileCopy(dxcompiler_dll_path, directory + "dxcompiler.dll");
+				Protean::Helper::FileCopy(dxcompiler_dll_path, directory + "dxcompiler.dll");
 			}
-			if (wi::helper::FileExists(dxcompiler_so_path))
+			if (Protean::Helper::FileExists(dxcompiler_so_path))
 			{
-				wi::helper::FileCopy(dxcompiler_so_path, directory + "libdxcompiler.so");
+				Protean::Helper::FileCopy(dxcompiler_so_path, directory + "libdxcompiler.so");
 			}
-			if (wi::helper::FileExists(dxcompiler_dylib_path))
+			if (Protean::Helper::FileExists(dxcompiler_dylib_path))
 			{
-				wi::helper::FileCopy(dxcompiler_dylib_path, directory + "libdxcompiler.dylib");
+				Protean::Helper::FileCopy(dxcompiler_dylib_path, directory + "libdxcompiler.dylib");
 			}
-			if (wi::helper::FileExists(metalconverter_dylib_path))
+			if (Protean::Helper::FileExists(metalconverter_dylib_path))
 			{
-				wi::helper::FileCopy(metalconverter_dylib_path, directory + "libmetalirconverter.dylib");
+				Protean::Helper::FileCopy(metalconverter_dylib_path, directory + "libmetalirconverter.dylib");
 			}
 		}
 
-		wi::unordered_set<std::string> exes;
-		exes.insert(wi::helper::BackslashToForwardSlash(wi::helper::GetExecutablePath()));
-		exes.insert(wi::helper::BackslashToForwardSlash(wi::helper::GetCurrentPath() + "/ProteanEditor.exe"));
-		exes.insert(wi::helper::BackslashToForwardSlash(wi::helper::GetCurrentPath() + "/ProteanEditor"));
-		exes.insert(wi::helper::BackslashToForwardSlash(wi::helper::GetCurrentPath() + "/ProteanEditor_MacOS"));
+		Protean::unordered_set<std::string> exes;
+		exes.insert(Protean::Helper::BackslashToForwardSlash(Protean::Helper::GetExecutablePath()));
+		exes.insert(Protean::Helper::BackslashToForwardSlash(Protean::Helper::GetCurrentPath() + "/ProteanEditor.exe"));
+		exes.insert(Protean::Helper::BackslashToForwardSlash(Protean::Helper::GetCurrentPath() + "/ProteanEditor"));
+		exes.insert(Protean::Helper::BackslashToForwardSlash(Protean::Helper::GetCurrentPath() + "/ProteanEditor_MacOS"));
 
 		for (auto& exepath_src : exes)
 		{
-			if (!wi::helper::FileExists(exepath_src))
+			if (!Protean::Helper::FileExists(exepath_src))
 				continue;
 			std::string exepath_dst = directory + name;
 			size_t typeext_idx = exepath_src.rfind('_');
@@ -498,21 +496,21 @@ end)
 			{
 				exepath_dst += exepath_src.substr(typeext_idx);
 			}
-			if (wi::helper::FileCopy(exepath_src, exepath_dst))
+			if (Protean::Helper::FileCopy(exepath_src, exepath_dst))
 			{
 				wilog("Project creator: preparing executable %s -> %s", exepath_src.c_str(), exepath_dst.c_str());
-				wi::vector<uint8_t> exedata;
-				if (wi::helper::FileRead(exepath_dst, exedata))
+				Protean::vector<uint8_t> exedata;
+				if (Protean::Helper::FileRead(exepath_dst, exedata))
 				{
 					// ApplicationExeCustomization replacement in the executable:
 					{
-						wi::vector<uint8_t> match_padded(arraysize(exe_customization.name_padded));
+						Protean::vector<uint8_t> match_padded(arraysize(exe_customization.name_padded));
 						std::memcpy(match_padded.data(), exe_customization.name_padded, sizeof(exe_customization.name_padded));
 
 						auto it = std::search(exedata.begin(), exedata.end(), match_padded.begin(), match_padded.end());
 						if (it != exedata.end())
 						{
-							wi::vector<uint8_t> replacement(sizeof(ApplicationExeCustomization));
+							Protean::vector<uint8_t> replacement(sizeof(ApplicationExeCustomization));
 							ApplicationExeCustomization& customization = *(ApplicationExeCustomization*)replacement.data();
 							std::memcpy(customization.name_padded, name.c_str(), name.length());
 							customization.font_color = fontColorPicker.GetPickColor();
@@ -527,7 +525,7 @@ end)
 						auto it = std::search(exedata.begin(), exedata.end(), editor->main->rewriteable_startup_script_text.begin(), editor->main->rewriteable_startup_script_text.end());
 						if (it != exedata.end())
 						{
-							wi::vector<uint8_t> replacement(scriptfilename.length() + 1);
+							Protean::vector<uint8_t> replacement(scriptfilename.length() + 1);
 							std::copy(scriptfilename.begin(), scriptfilename.end(), replacement.begin());
 							std::copy(replacement.begin(), replacement.end(), it);
 							wilog("\tOverwritten startup script name: %s", scriptfilename.c_str());
@@ -537,7 +535,7 @@ end)
 					// Win32 icon replacement:
 					if (iconResource.IsValid())
 					{
-						wi::graphics::Texture tex = iconResource.GetTexture();
+						Protean::Graphics::Texture tex = iconResource.GetTexture();
 
 						const int resolutions[] = {128,64,32};
 
@@ -562,7 +560,7 @@ end)
 								0  // Important colors
 							};
 
-							wi::vector<uint8_t> bmpvec(sizeof(bmpHeader));
+							Protean::vector<uint8_t> bmpvec(sizeof(bmpHeader));
 							std::memcpy(bmpvec.data(), &bmpHeader, sizeof(bmpHeader));
 
 							// searches for exact BMP header match:
@@ -570,8 +568,8 @@ end)
 							auto it = std::search(exedata.begin(), exedata.end(), bmpvec.begin(), bmpvec.end());
 							if (it != exedata.end())
 							{
-								wi::vector<uint8_t> iconfiledata;
-								if (wi::helper::saveTextureToMemoryFile(editor->CreateThumbnail(tex, res, res, false), "ico", iconfiledata)) // note: individual mip thumbnails at this point!
+								Protean::vector<uint8_t> iconfiledata;
+								if (Protean::Helper::saveTextureToMemoryFile(editor->CreateThumbnail(tex, res, res, false), "ico", iconfiledata)) // note: individual mip thumbnails at this point!
 								{
 									// replace the BMP header and data part:
 									std::copy(iconfiledata.begin() + sizeof(ico::ICONDIR) + sizeof(ico::ICONDIRENTRY), iconfiledata.end(), it);
@@ -584,18 +582,18 @@ end)
 					// SDL icon replacement:
 					if (iconResource.IsValid())
 					{
-						wi::graphics::Texture tex = iconResource.GetTexture();
+						Protean::Graphics::Texture tex = iconResource.GetTexture();
 
 						std::string match = "Wicked Editor Embedded Icon Data SDL";
-						wi::vector<uint8_t> match_padded256(256);
+						Protean::vector<uint8_t> match_padded256(256);
 						std::memcpy(match_padded256.data(), match.c_str(), match.length());
 
 						// searches for match string:
 						auto it = std::search(exedata.begin(), exedata.end(), match_padded256.begin(), match_padded256.end());
 						if (it != exedata.end())
 						{
-							wi::vector<uint8_t> iconfiledata;
-							if (wi::helper::saveTextureToMemoryFile(tex, "raw", iconfiledata))
+							Protean::vector<uint8_t> iconfiledata;
+							if (Protean::Helper::saveTextureToMemoryFile(tex, "raw", iconfiledata))
 							{
 								// replace the pixel data part:
 								std::copy(iconfiledata.begin(), iconfiledata.end(), it + 256);
@@ -604,7 +602,7 @@ end)
 						}
 					}
 
-					if (wi::helper::FileWrite(exepath_dst, exedata.data(), exedata.size()))
+					if (Protean::Helper::FileWrite(exepath_dst, exedata.data(), exedata.size()))
 					{
 						wilog("\tSuccessfully prepared executable %s", exepath_dst.c_str());
 					}
@@ -628,36 +626,36 @@ end)
 		editor->main->config.Commit();
 
 		editor->RegisterRecentlyUsed(directory + scriptfilename);
-		wi::helper::OpenUrl(directory);
+		Protean::Helper::OpenUrl(directory);
 	});
 	AddWidget(&createButton);
 
 	SetVisible(false);
 }
 
-void ProjectCreatorWindow::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+void ProjectCreatorWindow::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
-	wi::gui::Window::Render(canvas, cmd);
+	Protean::Gui::Window::Render(canvas, cmd);
 
 	if (!IsVisible())
 		return;
-	wi::gui::Window::ApplyScissor(canvas, scissorRect, cmd);
-	wi::image::Params fx;
+	Protean::Gui::Window::ApplyScissor(canvas, scissorRect, cmd);
+	Protean::Image::Params fx;
 	fx.pos.x = cursorButton.GetPos().x + cursorButton.GetSize().x * hotspotX;
 	fx.pos.y = cursorButton.GetPos().y + cursorButton.GetSize().y * hotspotY;
 	fx.pivot = XMFLOAT2(0.5f, 0.5f);
-	fx.color = wi::Color::White();
+	fx.color = Protean::Color::White();
 	fx.siz.x = 2;
 	fx.siz.y = 16;
-	fx.blendFlag = wi::enums::BLENDMODE_INVERSE;
-	wi::image::Draw(nullptr, fx, cmd);
+	fx.blendFlag = Protean::BLENDMODE_INVERSE;
+	Protean::Image::Draw(nullptr, fx, cmd);
 	fx.rotation = XM_PI * 0.5f;
-	wi::image::Draw(nullptr, fx, cmd);
+	Protean::Image::Draw(nullptr, fx, cmd);
 }
 
 void ProjectCreatorWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	layout.margin_left = 60;
 
@@ -691,7 +689,7 @@ void ProjectCreatorWindow::ResizeLayout()
 
 	colorPreviewButton.SetColor(backgroundColorPicker.GetPickColor());
 	colorPreviewButton.font.params.color = fontColorPicker.GetPickColor();
-	colorPreviewButton.font.params.v_align = wi::font::WIFALIGN_TOP;
-	colorPreviewButton.font.params.h_align = wi::font::WIFALIGN_LEFT;
+	colorPreviewButton.font.params.v_align = Protean::Font::WIFALIGN_TOP;
+	colorPreviewButton.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
 	colorPreviewButton.font.params.h_wrap = colorPreviewButton.GetSize().x;
 }

@@ -1,18 +1,16 @@
 #include "stdafx.h"
 #include "AnimationWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void AnimationWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_ANIMATION " Animation", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_ANIMATION " Animation", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(520, 540));
 
 	closeButton.SetTooltip("Delete AnimationComponent");
-	OnClose([=](wi::gui::EventArgs args) {
-		wi::Archive& archive = editor->AdvanceHistory();
+	OnClose([=](Protean::Gui::EventArgs args) {
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -43,7 +41,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	modeComboBox.AddItem("Step", AnimationComponent::AnimationSampler::Mode::STEP);
 	modeComboBox.AddItem("Linear", AnimationComponent::AnimationSampler::Mode::LINEAR);
 	modeComboBox.AddItem("Cubic spline", AnimationComponent::AnimationSampler::Mode::CUBICSPLINE);
-	modeComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	modeComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -77,7 +75,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	loopTypeButton.SetDescription("Loop type: ");
 	loopTypeButton.SetSize(XMFLOAT2(hei, hei));
 	loopTypeButton.SetPos(XMFLOAT2(x, y += step));
-	loopTypeButton.OnClick([this](wi::gui::EventArgs args) {
+	loopTypeButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -103,7 +101,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	backwardsButton.SetTooltip("Play the animation backwards from the current position.");
 	backwardsButton.SetSize(XMFLOAT2(30, hei));
 	backwardsButton.SetPos(XMFLOAT2(loopTypeButton.GetPos().x + loopTypeButton.GetSize().x + padding, y));
-	backwardsButton.OnClick([this](wi::gui::EventArgs args) {
+	backwardsButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -121,7 +119,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	backwardsFromEndButton.SetTooltip("Play the animation backwards starting from the end.");
 	backwardsFromEndButton.SetSize(backwardsButton.GetSize());
 	backwardsFromEndButton.SetPos(XMFLOAT2(backwardsButton.GetPos().x + backwardsButton.GetSize().x + padding, y));
-	backwardsFromEndButton.OnClick([this](wi::gui::EventArgs args) {
+	backwardsFromEndButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -137,7 +135,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	stopButton.SetTooltip("Stop.");
 	stopButton.SetSize(backwardsButton.GetSize());
 	stopButton.SetPos(XMFLOAT2(backwardsButton.GetPos().x + backwardsButton.GetSize().x * 2 + padding * 2, y));
-	stopButton.OnClick([this](wi::gui::EventArgs args) {
+	stopButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -158,7 +156,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	playFromStartButton.SetTooltip("Play the animation from the beginning.");
 	playFromStartButton.SetSize(backwardsButton.GetSize());
 	playFromStartButton.SetPos(XMFLOAT2(backwardsButton.GetPos().x + backwardsButton.GetSize().x * 3 + padding * 3, y));
-	playFromStartButton.OnClick([this](wi::gui::EventArgs args) {
+	playFromStartButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -175,7 +173,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	playButton.SetTooltip("Play the animation from the current position.");
 	playButton.SetSize(backwardsButton.GetSize());
 	playButton.SetPos(XMFLOAT2(backwardsButton.GetPos().x + backwardsButton.GetSize().x * 4 + padding * 4, y));
-	playButton.OnClick([this](wi::gui::EventArgs args) {
+	playButton.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -191,7 +189,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	timerSlider.Create(0, 1, 0, 100000, "Timer: ");
 	timerSlider.SetSize(XMFLOAT2(wid, hei));
 	timerSlider.SetPos(XMFLOAT2(x, y += step));
-	timerSlider.OnSlide([this](wi::gui::EventArgs args) {
+	timerSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -205,7 +203,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	amountSlider.Create(0, 1, 1, 100000, "Amount: ");
 	amountSlider.SetSize(XMFLOAT2(wid, hei));
 	amountSlider.SetPos(XMFLOAT2(x, y += step));
-	amountSlider.OnSlide([this](wi::gui::EventArgs args) {
+	amountSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -219,7 +217,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	speedSlider.Create(0, 4, 1, 100000, "Speed: ");
 	speedSlider.SetSize(XMFLOAT2(wid, hei));
 	speedSlider.SetPos(XMFLOAT2(x, y += step));
-	speedSlider.OnSlide([this](wi::gui::EventArgs args) {
+	speedSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -236,7 +234,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	startInput.SetDescription("Start time: ");
 	startInput.SetSize(XMFLOAT2(wid, hei));
 	startInput.SetPos(XMFLOAT2(x, y += step));
-	startInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	startInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -250,7 +248,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	endInput.SetDescription("End time: ");
 	endInput.SetSize(XMFLOAT2(wid, hei));
 	endInput.SetPos(XMFLOAT2(x, y += step));
-	endInput.OnInputAccepted([this](wi::gui::EventArgs args) {
+	endInput.OnInputAccepted([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -295,8 +293,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	recordCombo.AddItem("Material [reflectance] " ICON_MATERIAL);
 	recordCombo.AddItem("Material [texmuladd] " ICON_MATERIAL);
 	recordCombo.AddItem("Close loop " ICON_LOOP, ~0ull);
-	recordCombo.OnSelect([this](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	recordCombo.OnSelect([this](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 
 		AnimationComponent* animation = scene.animations.GetComponent(entity);
 		if (animation != nullptr)
@@ -387,7 +385,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 			else
 			{
 				// Add keyframe type:
-				wi::vector<AnimationComponent::AnimationChannel::Path> paths; // stack allocation would be better here..
+				Protean::vector<AnimationComponent::AnimationChannel::Path> paths; // stack allocation would be better here..
 
 				switch (args.iValue)
 				{
@@ -511,7 +509,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 
 							switch (channel.path)
 							{
-							case wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+							case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -527,7 +525,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION:
+							case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -544,7 +542,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SCALE:
+							case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
 							{
 								const TransformComponent* transform = scene.transforms.GetComponent(channel.target);
 								if (transform != nullptr)
@@ -560,7 +558,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+							case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
 							{
 								const MeshComponent* mesh = scene.meshes.GetComponent(channel.target);
 								if (mesh == nullptr && scene.objects.Contains(selected.entity))
@@ -584,7 +582,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -600,7 +598,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -614,7 +612,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -628,7 +626,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -642,7 +640,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+							case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
 							{
 								const LightComponent* light = scene.lights.GetComponent(channel.target);
 								if (light != nullptr)
@@ -656,8 +654,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
 							{
 								const SoundComponent* sound = scene.sounds.GetComponent(channel.target);
 								if (sound != nullptr)
@@ -671,7 +669,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+							case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
 							{
 								const SoundComponent* sound = scene.sounds.GetComponent(channel.target);
 								if (sound != nullptr)
@@ -685,9 +683,9 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+							case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
 							{
-								const wi::EmittedParticleSystem* emitter = scene.emitters.GetComponent(channel.target);
+								const Protean::EmittedParticleSystem* emitter = scene.emitters.GetComponent(channel.target);
 								if (emitter != nullptr)
 								{
 									animation_data->keyframe_data.push_back(emitter->count);
@@ -699,7 +697,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -713,7 +711,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -727,7 +725,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -741,7 +739,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+							case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
 							{
 								const CameraComponent* camera = scene.cameras.GetComponent(channel.target);
 								if (camera != nullptr)
@@ -756,8 +754,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
-							case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+							case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+							case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
 							{
 								const ScriptComponent* script = scene.scripts.GetComponent(channel.target);
 								if (script != nullptr)
@@ -771,7 +769,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -788,7 +786,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -805,7 +803,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -819,7 +817,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -833,7 +831,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -847,7 +845,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 								}
 							}
 							break;
-							case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+							case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
 							{
 								const MaterialComponent* material = scene.materials.GetComponent(channel.target);
 								if (material != nullptr)
@@ -882,8 +880,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	keyframesList.Create("Keyframes");
 	keyframesList.SetSize(XMFLOAT2(wid, 200));
 	keyframesList.SetPos(XMFLOAT2(4, y += step));
-	keyframesList.OnSelect([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	keyframesList.OnSelect([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		AnimationComponent* animation = scene.animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -902,8 +900,8 @@ void AnimationWindow::Create(EditorComponent* _editor)
 			}
 		}
 	});
-	keyframesList.OnDelete([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	keyframesList.OnDelete([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		AnimationComponent* animation = scene.animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -980,9 +978,9 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	retargetCombo.selected_font.anim.typewriter.character_start = 1;
 	retargetCombo.SetTooltip("Make a copy of this animation and retarget it for a humanoid.\nThis will only work for bones in this animation that are part of a humanoid.");
 	retargetCombo.SetInvalidSelectionText("...");
-	retargetCombo.OnSelect([=](wi::gui::EventArgs args) {
+	retargetCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		retargetCombo.SetSelectedWithoutCallback(-1);
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		Protean::Scene& scene = editor->GetCurrentScene();
 
 		Entity dst_entity = (Entity)args.userdata;
 		scene.ResetPose(dst_entity); // reset pose to be able to retarget anim to character while it's already in an animated pose
@@ -1007,7 +1005,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	rootMotionCheckBox.SetTooltip("Toggle root bone animation.");
 	rootMotionCheckBox.SetSize(XMFLOAT2(hei, hei));
 	//rootMotionCheckBox.SetPos(XMFLOAT2(x, y += step));
-	rootMotionCheckBox.OnClick([this](wi::gui::EventArgs args) {
+	rootMotionCheckBox.OnClick([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
@@ -1026,18 +1024,18 @@ void AnimationWindow::Create(EditorComponent* _editor)
 	rootBoneComboBox.SetSize(XMFLOAT2(wid, hei));
 	rootBoneComboBox.SetPos(XMFLOAT2(x, y));
 	rootBoneComboBox.SetEnabled(false);
-	rootBoneComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	rootBoneComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		AnimationComponent* animation = editor->GetCurrentScene().animations.GetComponent(entity);
 		if (animation != nullptr)
 		{
 			Entity ent = (Entity)args.userdata;
-			if (ent != wi::ecs::INVALID_ENTITY)
+			if (ent != Protean::INVALID_ENTITY)
 			{
 				animation->rootMotionBone = ent;
 			}
 			else
 			{
-				animation->rootMotionBone = wi::ecs::INVALID_ENTITY;
+				animation->rootMotionBone = Protean::INVALID_ENTITY;
 			}
 		}
 		});
@@ -1049,7 +1047,7 @@ void AnimationWindow::Create(EditorComponent* _editor)
 
 }
 // Example function to check if an entity already exists in the list
-static bool EntityExistsInList(Entity entity, const wi::vector<Entity>& entityList)
+static bool EntityExistsInList(Entity entity, const Protean::vector<Entity>& entityList)
 {
 	// Iterate through the list of entities
 	for (Entity e : entityList)
@@ -1068,7 +1066,7 @@ void AnimationWindow::SetEntity(Entity entity)
 {
 	if (this->entity != entity)
 	{
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		Protean::Scene& scene = editor->GetCurrentScene();
 
 		AnimationComponent* animation = scene.animations.GetComponent(entity);
 		if (animation != nullptr || (IsCollapsed() && !scene.Entity_IsDescendant(entity, this->entity)))
@@ -1077,11 +1075,11 @@ void AnimationWindow::SetEntity(Entity entity)
 			RefreshKeyframesList();
 
 			rootBoneComboBox.ClearItems();
-			rootBoneComboBox.AddItem("NO ROOT BONE " ICON_DISABLED, wi::ecs::INVALID_ENTITY);
+			rootBoneComboBox.AddItem("NO ROOT BONE " ICON_DISABLED, Protean::INVALID_ENTITY);
 			if (animation != nullptr)
 			{
 				// Define a list of entities
-				wi::vector<Entity> bone_list;
+				Protean::vector<Entity> bone_list;
 				// Add items to root bone name combo box.
 				for (const AnimationComponent::AnimationChannel& channel : animation->channels)
 				{
@@ -1184,82 +1182,82 @@ void AnimationWindow::RefreshKeyframesList()
 	uint32_t channelIndex = 0;
 	for (const AnimationComponent::AnimationChannel& channel : animation.channels)
 	{
-		wi::gui::TreeList::Item item;
+		Protean::Gui::TreeList::Item item;
 		switch (channel.path)
 		{
-		case wi::scene::AnimationComponent::AnimationChannel::Path::TRANSLATION:
+		case Protean::AnimationComponent::AnimationChannel::Path::TRANSLATION:
 			item.name += ICON_TRANSLATE " ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::ROTATION:
+		case Protean::AnimationComponent::AnimationChannel::Path::ROTATION:
 			item.name += ICON_ROTATE " ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCALE:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCALE:
 			item.name += ICON_SCALE " ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::WEIGHTS:
+		case Protean::AnimationComponent::AnimationChannel::Path::WEIGHTS:
 			item.name += ICON_MESH " ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_COLOR:
 			item.name += ICON_POINTLIGHT " [color] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INTENSITY:
 			item.name += ICON_POINTLIGHT " [intensity] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_RANGE:
 			item.name += ICON_POINTLIGHT " [range] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_INNERCONE:
 			item.name += ICON_POINTLIGHT " [inner cone] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
+		case Protean::AnimationComponent::AnimationChannel::Path::LIGHT_OUTERCONE:
 			item.name += ICON_POINTLIGHT " [outer cone] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_PLAY:
 			item.name += ICON_SOUND " [play] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_STOP:
 			item.name += ICON_SOUND " [stop] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
+		case Protean::AnimationComponent::AnimationChannel::Path::SOUND_VOLUME:
 			item.name += ICON_SOUND " [volume] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
+		case Protean::AnimationComponent::AnimationChannel::Path::EMITTER_EMITCOUNT:
 			item.name += ICON_EMITTER " [emit count] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOV:
 			item.name += ICON_CAMERA " [fov] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_FOCAL_LENGTH:
 			item.name += ICON_CAMERA " [focal length] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SIZE:
 			item.name += ICON_CAMERA " [aperture size] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
+		case Protean::AnimationComponent::AnimationChannel::Path::CAMERA_APERTURE_SHAPE:
 			item.name += ICON_CAMERA " [aperture shape] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_PLAY:
 			item.name += ICON_SCRIPT " [play] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
+		case Protean::AnimationComponent::AnimationChannel::Path::SCRIPT_STOP:
 			item.name += ICON_SCRIPT " [stop] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_COLOR:
 			item.name += ICON_MATERIAL " [color] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_EMISSIVE:
 			item.name += ICON_MATERIAL " [emissive] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_ROUGHNESS:
 			item.name += ICON_MATERIAL " [roughness] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_METALNESS:
 			item.name += ICON_MATERIAL " [metalness] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_REFLECTANCE:
 			item.name += ICON_MATERIAL " [reflectance] ";
 			break;
-		case wi::scene::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
+		case Protean::AnimationComponent::AnimationChannel::Path::MATERIAL_TEXMULADD:
 			item.name += ICON_MATERIAL " [texmuladd] ";
 			break;
 		default:
@@ -1291,7 +1289,7 @@ void AnimationWindow::RefreshKeyframesList()
 			uint32_t timeIndex = 0;
 			for (float time : animation_data->keyframe_times)
 			{
-				wi::gui::TreeList::Item item2;
+				Protean::Gui::TreeList::Item item2;
 				item2.name = std::to_string(time) + " sec";
 				item2.level = 1;
 				item2.userdata = 0ull;
@@ -1329,7 +1327,7 @@ void AnimationWindow::RefreshKeyframesList()
 
 void AnimationWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(infoLabel);

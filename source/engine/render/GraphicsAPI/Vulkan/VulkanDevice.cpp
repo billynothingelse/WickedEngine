@@ -33,10 +33,10 @@
 #include <iostream>
 #include <algorithm>
 
-namespace wi::graphics
+namespace Protean::Graphics
 {
 
-namespace vulkan_internal
+namespace VulkanInternal
 {
 	static constexpr uint64_t timeout_value = 3'000'000'000ull; // 3 seconds
 	static constexpr uint64_t dynamic_cbv_maxsize = 64 * 1024;
@@ -306,21 +306,21 @@ namespace vulkan_internal
 	{
 		switch (value)
 		{
-		case wi::graphics::StencilOp::KEEP:
+		case Protean::Graphics::StencilOp::KEEP:
 			return VK_STENCIL_OP_KEEP;
-		case wi::graphics::StencilOp::ZERO:
+		case Protean::Graphics::StencilOp::ZERO:
 			return VK_STENCIL_OP_ZERO;
-		case wi::graphics::StencilOp::REPLACE:
+		case Protean::Graphics::StencilOp::REPLACE:
 			return VK_STENCIL_OP_REPLACE;
-		case wi::graphics::StencilOp::INCR_SAT:
+		case Protean::Graphics::StencilOp::INCR_SAT:
 			return VK_STENCIL_OP_INCREMENT_AND_CLAMP;
-		case wi::graphics::StencilOp::DECR_SAT:
+		case Protean::Graphics::StencilOp::DECR_SAT:
 			return VK_STENCIL_OP_DECREMENT_AND_CLAMP;
-		case wi::graphics::StencilOp::INVERT:
+		case Protean::Graphics::StencilOp::INVERT:
 			return VK_STENCIL_OP_INVERT;
-		case wi::graphics::StencilOp::INCR:
+		case Protean::Graphics::StencilOp::INCR:
 			return VK_STENCIL_OP_INCREMENT_AND_WRAP;
-		case wi::graphics::StencilOp::DECR:
+		case Protean::Graphics::StencilOp::DECR:
 			return VK_STENCIL_OP_DECREMENT_AND_WRAP;
 		default:
 			return VK_STENCIL_OP_KEEP;
@@ -394,15 +394,15 @@ namespace vulkan_internal
 		switch (value)
 		{
 		default:
-		case wi::graphics::ImageAspect::COLOR:
+		case Protean::Graphics::ImageAspect::COLOR:
 			return VK_IMAGE_ASPECT_COLOR_BIT;
-		case wi::graphics::ImageAspect::DEPTH:
+		case Protean::Graphics::ImageAspect::DEPTH:
 			return VK_IMAGE_ASPECT_DEPTH_BIT;
-		case wi::graphics::ImageAspect::STENCIL:
+		case Protean::Graphics::ImageAspect::STENCIL:
 			return VK_IMAGE_ASPECT_STENCIL_BIT;
-		case wi::graphics::ImageAspect::LUMINANCE:
+		case Protean::Graphics::ImageAspect::LUMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_0_BIT;
-		case wi::graphics::ImageAspect::CHROMINANCE:
+		case Protean::Graphics::ImageAspect::CHROMINANCE:
 			return VK_IMAGE_ASPECT_PLANE_1_BIT;
 		}
 	}
@@ -548,17 +548,17 @@ namespace vulkan_internal
 		{
 		default:
 			return VK_COMPONENT_SWIZZLE_IDENTITY;
-		case wi::graphics::ComponentSwizzle::R:
+		case Protean::Graphics::ComponentSwizzle::R:
 			return VK_COMPONENT_SWIZZLE_R;
-		case wi::graphics::ComponentSwizzle::G:
+		case Protean::Graphics::ComponentSwizzle::G:
 			return VK_COMPONENT_SWIZZLE_G;
-		case wi::graphics::ComponentSwizzle::B:
+		case Protean::Graphics::ComponentSwizzle::B:
 			return VK_COMPONENT_SWIZZLE_B;
-		case wi::graphics::ComponentSwizzle::A:
+		case Protean::Graphics::ComponentSwizzle::A:
 			return VK_COMPONENT_SWIZZLE_A;
-		case wi::graphics::ComponentSwizzle::ZERO:
+		case Protean::Graphics::ComponentSwizzle::ZERO:
 			return VK_COMPONENT_SWIZZLE_ZERO;
-		case wi::graphics::ComponentSwizzle::ONE:
+		case Protean::Graphics::ComponentSwizzle::ONE:
 			return VK_COMPONENT_SWIZZLE_ONE;
 		}
 	}
@@ -701,7 +701,7 @@ namespace vulkan_internal
 	}
 
 
-	bool checkExtensionSupport(const char* checkExtension, const wi::vector<VkExtensionProperties>& available_extensions)
+	bool checkExtensionSupport(const char* checkExtension, const Protean::vector<VkExtensionProperties>& available_extensions)
 	{
 		for (const auto& x : available_extensions)
 		{
@@ -713,8 +713,8 @@ namespace vulkan_internal
 		return false;
 	}
 
-	bool ValidateLayers(const wi::vector<const char*>& required,
-		const wi::vector<VkLayerProperties>& available)
+	bool ValidateLayers(const Protean::vector<const char*>& required,
+		const Protean::vector<VkLayerProperties>& available)
 	{
 		for (auto layer : required)
 		{
@@ -751,14 +751,14 @@ namespace vulkan_internal
 			ss += "[Vulkan Warning]: ";
 			ss += callback_data->pMessage;
 			ss += "\n";
-			wi::helper::DebugOut(ss, wi::helper::DebugLevel::Warning);
+			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel::Warning);
 		}
 		else if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 		{
 			ss += "[Vulkan Error]: ";
 			ss += callback_data->pMessage;
 			ss += "\n";
-			wi::helper::DebugOut(ss, wi::helper::DebugLevel::Error);
+			Protean::Helper::DebugOut(ss, Protean::Helper::DebugLevel::Error);
 		}
 
 		return VK_FALSE;
@@ -766,7 +766,7 @@ namespace vulkan_internal
 
 	inline std::string get_shader_cache_path()
 	{
-		return wi::helper::GetCurrentPath() + "/pso_cache_vulkan";
+		return Protean::Helper::GetCurrentPath() + "/pso_cache_vulkan";
 	}
 
 	struct BindingUsage
@@ -776,7 +776,7 @@ namespace vulkan_internal
 	};
 	struct Buffer_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VmaAllocation allocation = nullptr;
 		VkBuffer resource = VK_NULL_HANDLE;
 		struct BufferSubresource
@@ -792,8 +792,8 @@ namespace vulkan_internal
 		};
 		BufferSubresource srv;
 		BufferSubresource uav;
-		wi::vector<BufferSubresource> subresources_srv;
-		wi::vector<BufferSubresource> subresources_uav;
+		Protean::vector<BufferSubresource> subresources_srv;
+		Protean::vector<BufferSubresource> subresources_uav;
 		VkDeviceAddress address = 0;
 
 		void destroy_subresources()
@@ -873,7 +873,7 @@ namespace vulkan_internal
 	};
 	struct Texture_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VmaAllocation allocation = nullptr;
 		VkImage resource = VK_NULL_HANDLE;
 		VkImageLayout defaultLayout = VK_IMAGE_LAYOUT_GENERAL;
@@ -897,12 +897,12 @@ namespace vulkan_internal
 		TextureSubresource rtv;
 		TextureSubresource dsv;
 		uint32_t framebuffer_layercount = 0;
-		wi::vector<TextureSubresource> subresources_srv;
-		wi::vector<TextureSubresource> subresources_uav;
-		wi::vector<TextureSubresource> subresources_rtv;
-		wi::vector<TextureSubresource> subresources_dsv;
+		Protean::vector<TextureSubresource> subresources_srv;
+		Protean::vector<TextureSubresource> subresources_uav;
+		Protean::vector<TextureSubresource> subresources_rtv;
+		Protean::vector<TextureSubresource> subresources_dsv;
 
-		wi::vector<SubresourceData> mapped_subresources;
+		Protean::vector<SubresourceData> mapped_subresources;
 		SparseTextureProperties sparse_texture_properties;
 
 		VkImageView video_decode_view = VK_NULL_HANDLE;
@@ -984,7 +984,7 @@ namespace vulkan_internal
 	};
 	struct Sampler_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkSampler resource = VK_NULL_HANDLE;
 		int index = -1;
 
@@ -1001,7 +1001,7 @@ namespace vulkan_internal
 	};
 	struct QueryHeap_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkQueryPool pool = VK_NULL_HANDLE;
 
 		~QueryHeap_Vulkan()
@@ -1016,7 +1016,7 @@ namespace vulkan_internal
 	};
 	struct Shader_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkShaderModule shaderModule = VK_NULL_HANDLE;
 		VkPipeline pipeline_cs = VK_NULL_HANDLE;
 		VkPipelineShaderStageCreateInfo stageInfo = {};
@@ -1036,7 +1036,7 @@ namespace vulkan_internal
 	};
 	struct PipelineState_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkPipeline pipeline = VK_NULL_HANDLE;
 		GraphicsDevice_Vulkan::PSOLayout layout;
 
@@ -1052,7 +1052,7 @@ namespace vulkan_internal
 	};
 	struct BVH_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VmaAllocation allocation = nullptr;
 		VkBuffer buffer = VK_NULL_HANDLE;
 		VkAccelerationStructureKHR resource = VK_NULL_HANDLE;
@@ -1061,8 +1061,8 @@ namespace vulkan_internal
 		VkAccelerationStructureBuildGeometryInfoKHR buildInfo = {};
 		VkAccelerationStructureBuildSizesInfoKHR sizeInfo = {};
 		VkAccelerationStructureCreateInfoKHR createInfo = {};
-		wi::vector<VkAccelerationStructureGeometryKHR> geometries;
-		wi::vector<uint32_t> primitiveCounts;
+		Protean::vector<VkAccelerationStructureGeometryKHR> geometries;
+		Protean::vector<uint32_t> primitiveCounts;
 		VkDeviceAddress scratch_address = 0;
 		VkDeviceAddress as_address = 0;
 
@@ -1080,7 +1080,7 @@ namespace vulkan_internal
 	};
 	struct RTPipelineState_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkPipeline pipeline = VK_NULL_HANDLE;
 
 		~RTPipelineState_Vulkan()
@@ -1095,11 +1095,11 @@ namespace vulkan_internal
 	};
 	struct SwapChain_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 		VkFormat swapChainImageFormat;
 		VkExtent2D swapChainExtent;
-		wi::vector<wi::allocator::shared_ptr<Texture_Vulkan>> textures; // shared_ptr is used because they can be given out by GetBackBuffer()
+		Protean::vector<Protean::Allocator::shared_ptr<Texture_Vulkan>> textures; // shared_ptr is used because they can be given out by GetBackBuffer()
 
 		Texture dummyTexture;
 
@@ -1107,8 +1107,8 @@ namespace vulkan_internal
 
 		uint32_t swapChainImageIndex = 0;
 		uint32_t swapChainAcquireSemaphoreIndex = 0;
-		wi::vector<VkSemaphore> swapchainAcquireSemaphores;
-		wi::vector<VkSemaphore> swapchainReleaseSemaphores;
+		Protean::vector<VkSemaphore> swapchainAcquireSemaphores;
+		Protean::vector<VkSemaphore> swapchainReleaseSemaphores;
 
 		ColorSpace colorSpace = ColorSpace::SRGB;
 		SwapChainDesc desc;
@@ -1143,10 +1143,10 @@ namespace vulkan_internal
 	};
 	struct VideoDecoder_Vulkan
 	{
-		wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
+		Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler> allocationhandler;
 		VkVideoSessionKHR video_session = VK_NULL_HANDLE;
 		VkVideoSessionParametersKHR session_parameters = VK_NULL_HANDLE;
-		wi::vector<VmaAllocation> allocations;
+		Protean::vector<VmaAllocation> allocations;
 
 		~VideoDecoder_Vulkan()
 		{
@@ -1193,7 +1193,7 @@ namespace vulkan_internal
 		SwapChain_Vulkan* internal_state,
 		VkPhysicalDevice physicalDevice,
 		VkDevice device,
-		const wi::allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler>& allocationhandler
+		const Protean::Allocator::shared_ptr<GraphicsDevice_Vulkan::AllocationHandler>& allocationhandler
 	)
 	{
 		// In vulkan, the swapchain recreate can happen whenever it gets outdated, it's not in application's control
@@ -1206,13 +1206,13 @@ namespace vulkan_internal
 		uint32_t formatCount;
 		vulkan_check(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, nullptr));
 
-		wi::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
+		Protean::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
 		vulkan_check(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, swapchain_formats.data()));
 
 		uint32_t presentModeCount;
 		vulkan_check(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, internal_state->surface, &presentModeCount, nullptr));
 
-		wi::vector<VkPresentModeKHR> swapchain_presentModes(presentModeCount);
+		Protean::vector<VkPresentModeKHR> swapchain_presentModes(presentModeCount);
 		swapchain_presentModes.resize(presentModeCount);
 		vulkan_check(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, internal_state->surface, &presentModeCount, swapchain_presentModes.data()));
 
@@ -1359,7 +1359,7 @@ namespace vulkan_internal
 			}
 			else
 			{
-				internal_state->textures[i] = wi::allocator::make_shared<Texture_Vulkan>();
+				internal_state->textures[i] = Protean::Allocator::make_shared<Texture_Vulkan>();
 			}
 			internal_state->textures[i]->resource = swapChainImages[i];
 			internal_state->textures[i]->defaultLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -1406,7 +1406,7 @@ namespace vulkan_internal
 		return true;
 	}
 }
-using namespace vulkan_internal;
+using namespace VulkanInternal;
 
 	void GraphicsDevice_Vulkan::set_fence_name(VkFence fence, const char* name)
 	{
@@ -1696,7 +1696,7 @@ using namespace vulkan_internal;
 			if (staging_size > 0)
 			{
 				GPUBufferDesc uploaddesc;
-				uploaddesc.size = wi::math::GetNextPowerOfTwo(staging_size);
+				uploaddesc.size = Protean::Math::GetNextPowerOfTwo(staging_size);
 				uploaddesc.size = std::max(uploaddesc.size, uint64_t(65536));
 				uploaddesc.usage = Usage::UPLOAD;
 				bool upload_success = device->CreateBuffer(&uploaddesc, nullptr, &cmd.uploadbuffer);
@@ -2170,16 +2170,16 @@ using namespace vulkan_internal;
 	}
 
 	// Engine functions
-	GraphicsDevice_Vulkan::GraphicsDevice_Vulkan(wi::platform::window_type window, ValidationMode validationMode_, GPUPreference preference)
+	GraphicsDevice_Vulkan::GraphicsDevice_Vulkan(Protean::Platform::window_type window, ValidationMode validationMode_, GPUPreference preference)
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 		capabilities |= GraphicsDeviceCapability::ALIASING_GENERIC;
 
 		// This functionalty is missing from Vulkan but might be added in the future:
 		//	Issue: https://github.com/KhronosGroup/Vulkan-Docs/issues/2079
 		capabilities |= GraphicsDeviceCapability::COPY_BETWEEN_DIFFERENT_IMAGE_ASPECTS_NOT_SUPPORTED;
 
-		wi::unordered_map<uint32_t, wi::allocator::shared_ptr<std::mutex>> queue_lockers;
+		Protean::unordered_map<uint32_t, Protean::Allocator::shared_ptr<std::mutex>> queue_lockers;
 
 		TOPLEVEL_ACCELERATION_STRUCTURE_INSTANCE_SIZE = sizeof(VkAccelerationStructureInstanceKHR);
 
@@ -2190,8 +2190,8 @@ using namespace vulkan_internal;
 		res = vulkan_check(volkInitialize());
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("volkInitialize failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
-			wi::platform::Exit();
+			Protean::Helper::messageBox("volkInitialize failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
+			Protean::Platform::Exit();
 		}
 
 		// Fill out application info:
@@ -2200,22 +2200,22 @@ using namespace vulkan_internal;
 		appInfo.pApplicationName = "Wicked Engine Application";
 		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.pEngineName = "Wicked Engine";
-		appInfo.engineVersion = VK_MAKE_VERSION(wi::version::GetMajor(), wi::version::GetMinor(), wi::version::GetRevision());
+		appInfo.engineVersion = VK_MAKE_VERSION(Protean::Version::GetMajor(), Protean::Version::GetMinor(), Protean::Version::GetRevision());
 		appInfo.apiVersion = VK_API_VERSION_1_3;
 
 		// Enumerate available layers and extensions:
 		uint32_t instanceLayerCount;
 		vulkan_check(vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr));
-		wi::vector<VkLayerProperties> availableInstanceLayers(instanceLayerCount);
+		Protean::vector<VkLayerProperties> availableInstanceLayers(instanceLayerCount);
 		vulkan_check(vkEnumerateInstanceLayerProperties(&instanceLayerCount, availableInstanceLayers.data()));
 
 		uint32_t extensionCount = 0;
 		vulkan_check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr));
-		wi::vector<VkExtensionProperties> availableInstanceExtensions(extensionCount);
+		Protean::vector<VkExtensionProperties> availableInstanceExtensions(extensionCount);
 		vulkan_check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableInstanceExtensions.data()));
 
-		wi::vector<const char*> instanceLayers;
-		wi::vector<const char*> instanceExtensions;
+		Protean::vector<const char*> instanceLayers;
+		Protean::vector<const char*> instanceExtensions;
 
 		for (auto& availableExtension : availableInstanceExtensions)
 		{
@@ -2242,7 +2242,7 @@ using namespace vulkan_internal;
 		if (window != nullptr) {
 			uint32_t extensionCount;
 			SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, nullptr);
-			wi::vector<const char *> extensionNames_sdl(extensionCount);
+			Protean::vector<const char *> extensionNames_sdl(extensionCount);
 			SDL_Vulkan_GetInstanceExtensions(window, &extensionCount, extensionNames_sdl.data());
 			instanceExtensions.reserve(instanceExtensions.size() + extensionNames_sdl.size());
 			for (auto& x : extensionNames_sdl)
@@ -2268,7 +2268,7 @@ using namespace vulkan_internal;
 		if (validationMode != ValidationMode::Disabled)
 		{
 			// Determine the optimal validation layers to enable that are necessary for useful debugging
-			static const wi::vector<const char*> validationLayerPriorityList[] =
+			static const Protean::vector<const char*> validationLayerPriorityList[] =
 			{
 				// The preferred validation layer is "VK_LAYER_KHRONOS_validation"
 				{"VK_LAYER_KHRONOS_validation"},
@@ -2332,8 +2332,8 @@ using namespace vulkan_internal;
 			res = vulkan_check(vkCreateInstance(&createInfo, nullptr, &instance));
 			if (res != VK_SUCCESS)
 			{
-				wi::helper::messageBox("vkCreateInstance failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
-				wi::platform::Exit();
+				Protean::Helper::messageBox("vkCreateInstance failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
+				Protean::Platform::Exit();
 			}
 
 			volkLoadInstanceOnly(instance);
@@ -2351,16 +2351,16 @@ using namespace vulkan_internal;
 			if (deviceCount == 0)
 			{
 				wilog_messagebox("Failed to find GPU with Vulkan 1.3 support!");
-				wi::platform::Exit();
+				Protean::Platform::Exit();
 			}
 
-			wi::vector<VkPhysicalDevice> devices(deviceCount);
+			Protean::vector<VkPhysicalDevice> devices(deviceCount);
 			vulkan_check(vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data()));
 
-			const wi::vector<const char*> required_deviceExtensions = {
+			const Protean::vector<const char*> required_deviceExtensions = {
 				VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 			};
-			wi::vector<const char*> enabled_deviceExtensions;
+			Protean::vector<const char*> enabled_deviceExtensions;
 
 			bool h264_decode_extension = false;
 			bool h265_decode_extension = false;
@@ -2370,7 +2370,7 @@ using namespace vulkan_internal;
 			auto checkPhysicalDeviceAndFillPropertiesFeatures = [&](VkPhysicalDevice dev) {
 				uint32_t extensionCount;
 				vulkan_check(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionCount, nullptr));
-				wi::vector<VkExtensionProperties> available_deviceExtensions(extensionCount);
+				Protean::vector<VkExtensionProperties> available_deviceExtensions(extensionCount);
 				vulkan_check(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionCount, available_deviceExtensions.data()));
 
 				for (auto& x : required_deviceExtensions)
@@ -2564,15 +2564,15 @@ using namespace vulkan_internal;
 				}
 				else if (preference == GPUPreference::AMD)
 				{
-					priority = wi::helper::toUpper(std::string(properties2.properties.deviceName)).find("AMD") != std::string::npos;
+					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("AMD") != std::string::npos;
 				}
 				else if (preference == GPUPreference::Nvidia)
 				{
-					priority = wi::helper::toUpper(std::string(properties2.properties.deviceName)).find("NVIDIA") != std::string::npos;
+					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("NVIDIA") != std::string::npos;
 				}
 				else if (preference == GPUPreference::Intel)
 				{
-					priority = wi::helper::toUpper(std::string(properties2.properties.deviceName)).find("INTEL") != std::string::npos;
+					priority = Protean::Helper::toUpper(std::string(properties2.properties.deviceName)).find("INTEL") != std::string::npos;
 				}
 				if (priority || physicalDevice == VK_NULL_HANDLE)
 				{
@@ -2585,7 +2585,7 @@ using namespace vulkan_internal;
 			if (physicalDevice == VK_NULL_HANDLE)
 			{
 				wilog_messagebox("Failed to find a suitable GPU!");
-				wi::platform::Exit();
+				Protean::Platform::Exit();
 			}
 
 			// This fills the properties and features again of the finally selected graphics card:
@@ -2922,8 +2922,8 @@ using namespace vulkan_internal;
 				}
 			}
 
-			wi::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-			wi::unordered_set<uint32_t> uniqueQueueFamilies = { graphicsFamily,copyFamily,computeFamily,initFamily };
+			Protean::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+			Protean::unordered_set<uint32_t> uniqueQueueFamilies = { graphicsFamily,copyFamily,computeFamily,initFamily };
 			if (videoFamily != VK_QUEUE_FAMILY_IGNORED)
 			{
 				uniqueQueueFamilies.insert(videoFamily);
@@ -2936,7 +2936,7 @@ using namespace vulkan_internal;
 			float queuePriority = 1.0f;
 			for (uint32_t queueFamily : uniqueQueueFamilies)
 			{
-				queue_lockers.emplace(queueFamily, wi::allocator::make_shared_single<std::mutex>());
+				queue_lockers.emplace(queueFamily, Protean::Allocator::make_shared_single<std::mutex>());
 				VkDeviceQueueCreateInfo queueCreateInfo = {};
 				queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 				queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -2958,8 +2958,8 @@ using namespace vulkan_internal;
 			res = vulkan_check(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device));
 			if (res != VK_SUCCESS)
 			{
-				wi::helper::messageBox("vkCreateDevice failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
-				wi::platform::Exit();
+				Protean::Helper::messageBox("vkCreateDevice failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
+				Protean::Platform::Exit();
 			}
 
 			volkLoadDevice(device);
@@ -3014,7 +3014,7 @@ using namespace vulkan_internal;
 			capabilities |= GraphicsDeviceCapability::CACHE_COHERENT_UMA;
 		}
 
-		allocationhandler = wi::allocator::make_shared_single<AllocationHandler>();
+		allocationhandler = Protean::Allocator::make_shared_single<AllocationHandler>();
 		allocationhandler->device = device;
 		allocationhandler->instance = instance;
 
@@ -3043,8 +3043,8 @@ using namespace vulkan_internal;
 		res = vulkan_check(vmaCreateAllocator(&allocatorInfo, &allocationhandler->allocator));
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("vmaCreateAllocator failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
-			wi::platform::Exit();
+			Protean::Helper::messageBox("vmaCreateAllocator failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
+			Protean::Platform::Exit();
 		}
 
 		std::vector<VkExternalMemoryHandleTypeFlags> externalMemoryHandleTypes;
@@ -3059,8 +3059,8 @@ using namespace vulkan_internal;
 		res = vulkan_check(vmaCreateAllocator(&allocatorInfo, &allocationhandler->externalAllocator));
 		if (res != VK_SUCCESS)
 		{
-			wi::helper::messageBox("Failed to create Vulkan external memory allocator, ERROR: " + std::string(string_VkResult(res)), "Error!");
-			wi::platform::Exit();
+			Protean::Helper::messageBox("Failed to create Vulkan external memory allocator, ERROR: " + std::string(string_VkResult(res)), "Error!");
+			Protean::Platform::Exit();
 		}
 
 		copyAllocator.init(this);
@@ -3079,8 +3079,8 @@ using namespace vulkan_internal;
 				res = vulkan_check(vkCreateFence(device, &fenceInfo, nullptr, &frame_fence[fr][queue]));
 				if (res != VK_SUCCESS)
 				{
-					wi::helper::messageBox("vkCreateFence[FRAME] failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
-					wi::platform::Exit();
+					Protean::Helper::messageBox("vkCreateFence[FRAME] failed! ERROR: " + std::string(string_VkResult(res)), "Error!");
+					Protean::Platform::Exit();
 				}
 				switch (queue)
 				{
@@ -3487,8 +3487,8 @@ using namespace vulkan_internal;
 		// Pipeline Cache
 		{
 			// Try to read pipeline cache file if exists.
-			wi::vector<uint8_t> pipelineData;
-			if (!wi::helper::FileRead(get_shader_cache_path(), pipelineData))
+			Protean::vector<uint8_t> pipelineData;
+			if (!Protean::Helper::FileRead(get_shader_cache_path(), pipelineData))
 			{
 				pipelineData.clear();
 			}
@@ -3621,11 +3621,11 @@ using namespace vulkan_internal;
 			vulkan_check(vkGetPipelineCacheData(device, pipelineCache, &size, nullptr));
 
 			// Get data of pipeline cache
-			wi::vector<uint8_t> data(size);
+			Protean::vector<uint8_t> data(size);
 			vulkan_check(vkGetPipelineCacheData(device, pipelineCache, &size, data.data()));
 
 			// Write pipeline cache data to a file in binary format
-			wi::helper::FileWrite(get_shader_cache_path(), data.data(), size);
+			Protean::Helper::FileWrite(get_shader_cache_path(), data.data(), size);
 
 			// Destroy Vulkan pipeline cache
 			vkDestroyPipelineCache(device, pipelineCache, nullptr);
@@ -3638,9 +3638,9 @@ using namespace vulkan_internal;
 		}
 	}
 
-	bool GraphicsDevice_Vulkan::CreateSwapChain(const SwapChainDesc* desc, wi::platform::window_type window, SwapChain* swapchain) const
+	bool GraphicsDevice_Vulkan::CreateSwapChain(const SwapChainDesc* desc, Protean::Platform::window_type window, SwapChain* swapchain) const
 	{
-		auto internal_state = swapchain->IsValid() ? wi::allocator::shared_ptr<SwapChain_Vulkan>(swapchain->internal_state) : wi::allocator::make_shared<SwapChain_Vulkan>();
+		auto internal_state = swapchain->IsValid() ? Protean::Allocator::shared_ptr<SwapChain_Vulkan>(swapchain->internal_state) : Protean::Allocator::make_shared<SwapChain_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		internal_state->desc = *desc;
 		swapchain->internal_state = internal_state;
@@ -3660,13 +3660,13 @@ using namespace vulkan_internal;
 			if (!SDL_Vulkan_CreateSurface(window, instance, &internal_state->surface))
 			{
 				wilog_messagebox("Error creating a vulkan surface with SDL_Vulkan_CreateSurface!");
-				wi::platform::Exit();
+				Protean::Platform::Exit();
 			}
 #elif defined(SDL3)
 			if (!SDL_Vulkan_CreateSurface(window, instance, nullptr, &internal_state->surface))
 			{
 				wilog_messagebox("Error creating a vulkan surface with SDL_Vulkan_CreateSurface!");
-				wi::platform::Exit();
+				Protean::Platform::Exit();
 			}
 #elif defined(__APPLE__)
 			wilog("Vulkan surface on Apple platform is not yet implemented");
@@ -3707,7 +3707,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateBuffer2(const GPUBufferDesc* desc, const std::function<void(void*)>& init_callback, GPUBuffer* buffer, const GPUResource* alias, uint64_t alias_offset) const
 	{
-		auto internal_state = wi::allocator::make_shared<Buffer_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<Buffer_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		buffer->internal_state = internal_state;
 		buffer->type = GPUResource::Type::BUFFER;
@@ -4047,7 +4047,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateTexture(const TextureDesc* desc, const SubresourceData* initial_data, Texture* texture, const GPUResource* alias, uint64_t alias_offset) const
 	{
-		auto internal_state = wi::allocator::make_shared<Texture_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<Texture_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		internal_state->defaultLayout = _ConvertImageLayout(desc->layout);
 		texture->internal_state = internal_state;
@@ -4093,7 +4093,7 @@ using namespace vulkan_internal;
 				nullptr
 			);
 
-			wi::vector<VkSparseImageMemoryRequirements> sparse_requirements(sparse_requirement_count);
+			Protean::vector<VkSparseImageMemoryRequirements> sparse_requirements(sparse_requirement_count);
 			texture->sparse_properties = &internal_state->sparse_texture_properties;
 
 			vkGetImageSparseMemoryRequirements(
@@ -4281,7 +4281,7 @@ using namespace vulkan_internal;
 				mapped_data = cmd.uploadbuffer.mapped_data;
 			}
 
-			wi::vector<VkBufferImageCopy> copyRegions;
+			Protean::vector<VkBufferImageCopy> copyRegions;
 
 			const uint32_t data_stride = GetFormatStride(desc->format);
 			const uint32_t block_size = GetFormatBlockSize(desc->format);
@@ -4485,7 +4485,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateShader(ShaderStage stage, const void* shadercode, size_t shadercode_size, Shader* shader, const char* entrypoint) const
 	{
-		auto internal_state = wi::allocator::make_shared<Shader_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<Shader_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		internal_state->entrypoint = entrypoint;
 		shader->internal_state = internal_state;
@@ -4662,7 +4662,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateSampler(const SamplerDesc* desc, Sampler* sampler) const
 	{
-		auto internal_state = wi::allocator::make_shared<Sampler_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<Sampler_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		sampler->internal_state = internal_state;
 		sampler->desc = *desc;
@@ -4900,7 +4900,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateQueryHeap(const GPUQueryHeapDesc* desc, GPUQueryHeap* queryheap) const
 	{
-		auto internal_state = wi::allocator::make_shared<QueryHeap_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<QueryHeap_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		queryheap->internal_state = internal_state;
 		queryheap->desc = *desc;
@@ -4926,7 +4926,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreatePipelineState(const PipelineStateDesc* desc, PipelineState* pso, const RenderPassInfo* renderpass_info) const
 	{
-		auto internal_state = wi::allocator::make_shared<PipelineState_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<PipelineState_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		pso->internal_state = internal_state;
 		pso->desc = *desc;
@@ -5360,7 +5360,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateRaytracingAccelerationStructure(const RaytracingAccelerationStructureDesc* desc, RaytracingAccelerationStructure* bvh) const
 	{
-		auto internal_state = wi::allocator::make_shared<BVH_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<BVH_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		bvh->internal_state = internal_state;
 		bvh->type = GPUResource::Type::RAYTRACING_ACCELERATION_STRUCTURE;
@@ -5538,7 +5538,7 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateRaytracingPipelineState(const RaytracingPipelineStateDesc* desc, RaytracingPipelineState* rtpso) const
 	{
-		auto internal_state = wi::allocator::make_shared<RTPipelineState_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<RTPipelineState_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		rtpso->internal_state = internal_state;
 		rtpso->desc = *desc;
@@ -5547,7 +5547,7 @@ using namespace vulkan_internal;
 		info.sType = VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR;
 		info.flags = 0;
 
-		wi::vector<VkPipelineShaderStageCreateInfo> stages;
+		Protean::vector<VkPipelineShaderStageCreateInfo> stages;
 		for (auto& x : desc->shader_libraries)
 		{
 			auto shader_internal = to_internal(x.shader);
@@ -5581,7 +5581,7 @@ using namespace vulkan_internal;
 		info.stageCount = (uint32_t)stages.size();
 		info.pStages = stages.data();
 
-		wi::vector<VkRayTracingShaderGroupCreateInfoKHR> groups;
+		Protean::vector<VkRayTracingShaderGroupCreateInfoKHR> groups;
 		groups.reserve(desc->hit_groups.size());
 		for (auto& x : desc->hit_groups)
 		{
@@ -5635,15 +5635,15 @@ using namespace vulkan_internal;
 	}
 	bool GraphicsDevice_Vulkan::CreateVideoDecoder(const VideoDesc* desc, VideoDecoder* video_decoder) const
 	{
-		auto internal_state = wi::allocator::make_shared<VideoDecoder_Vulkan>();
+		auto internal_state = Protean::Allocator::make_shared<VideoDecoder_Vulkan>();
 		internal_state->allocationhandler = allocationhandler;
 		video_decoder->internal_state = internal_state;
 		video_decoder->desc = *desc;
 
 		if (video_decoder->desc.profile == VideoProfile::H264)
 		{
-			wi::vector<StdVideoH264PictureParameterSet> pps_array_h264(desc->pps_count);
-			wi::vector<StdVideoH264ScalingLists> scalinglist_array_h264(desc->pps_count);
+			Protean::vector<StdVideoH264PictureParameterSet> pps_array_h264(desc->pps_count);
+			Protean::vector<StdVideoH264ScalingLists> scalinglist_array_h264(desc->pps_count);
 			for (uint32_t i = 0; i < desc->pps_count; ++i)
 			{
 				const h264::PPS* pps = (const h264::PPS*)desc->pps_datas + i;
@@ -5695,9 +5695,9 @@ using namespace vulkan_internal;
 			}
 
 			uint32_t num_reference_frames = 0;
-			wi::vector<StdVideoH264SequenceParameterSet> sps_array_h264(desc->sps_count);
-			wi::vector<StdVideoH264SequenceParameterSetVui> vui_array_h264(desc->sps_count);
-			wi::vector<StdVideoH264HrdParameters> hrd_array_h264(desc->sps_count);
+			Protean::vector<StdVideoH264SequenceParameterSet> sps_array_h264(desc->sps_count);
+			Protean::vector<StdVideoH264SequenceParameterSetVui> vui_array_h264(desc->sps_count);
+			Protean::vector<StdVideoH264HrdParameters> hrd_array_h264(desc->sps_count);
 			for (uint32_t i = 0; i < desc->sps_count; ++i)
 			{
 				const h264::SPS* sps = (const h264::SPS*)desc->sps_datas + i;
@@ -5882,7 +5882,7 @@ using namespace vulkan_internal;
 			uint32_t requirement_count = 0;
 			vulkan_check(vkGetVideoSessionMemoryRequirementsKHR(device, internal_state->video_session, &requirement_count, nullptr));
 
-			wi::vector<VkVideoSessionMemoryRequirementsKHR> requirements(requirement_count);
+			Protean::vector<VkVideoSessionMemoryRequirementsKHR> requirements(requirement_count);
 			for (auto& x : requirements)
 			{
 				x.sType = VK_STRUCTURE_TYPE_VIDEO_SESSION_MEMORY_REQUIREMENTS_KHR;
@@ -5890,7 +5890,7 @@ using namespace vulkan_internal;
 			vulkan_check(vkGetVideoSessionMemoryRequirementsKHR(device, internal_state->video_session, &requirement_count, requirements.data()));
 
 			internal_state->allocations.resize(requirement_count);
-			wi::vector<VkBindVideoSessionMemoryInfoKHR> bind_session_memory_infos(requirement_count);
+			Protean::vector<VkBindVideoSessionMemoryInfoKHR> bind_session_memory_infos(requirement_count);
 			for (uint32_t i = 0; i < requirement_count; ++i)
 			{
 				const VkVideoSessionMemoryRequirementsKHR& video_req = requirements[i];
@@ -6590,16 +6590,16 @@ using namespace vulkan_internal;
 				poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 				switch (queue)
 				{
-				case wi::graphics::QUEUE_GRAPHICS:
+				case Protean::Graphics::QUEUE_GRAPHICS:
 					poolInfo.queueFamilyIndex = graphicsFamily;
 					break;
-				case wi::graphics::QUEUE_COMPUTE:
+				case Protean::Graphics::QUEUE_COMPUTE:
 					poolInfo.queueFamilyIndex = computeFamily;
 					break;
-				case wi::graphics::QUEUE_COPY:
+				case Protean::Graphics::QUEUE_COPY:
 					poolInfo.queueFamilyIndex = copyFamily;
 					break;
-				case wi::graphics::QUEUE_VIDEO_DECODE:
+				case Protean::Graphics::QUEUE_VIDEO_DECODE:
 					poolInfo.queueFamilyIndex = videoFamily;
 					break;
 				default:
@@ -6978,7 +6978,7 @@ using namespace vulkan_internal;
 		VkResult res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, nullptr);
 		if (res == VK_SUCCESS)
 		{
-			wi::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
+			Protean::vector<VkSurfaceFormatKHR> swapchain_formats(formatCount);
 			res = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, internal_state->surface, &formatCount, swapchain_formats.data());
 			if (res == VK_SUCCESS)
 			{
@@ -6996,16 +6996,16 @@ using namespace vulkan_internal;
 
 	void GraphicsDevice_Vulkan::SparseUpdate(QUEUE_TYPE queue, const SparseUpdateCommand* commands, uint32_t command_count)
 	{
-		thread_local wi::vector<VkBindSparseInfo> sparse_infos;
+		thread_local Protean::vector<VkBindSparseInfo> sparse_infos;
 		struct DataPerBind
 		{
 			VkSparseBufferMemoryBindInfo buffer_bind_info;
 			VkSparseImageOpaqueMemoryBindInfo image_opaque_bind_info;
 			VkSparseImageMemoryBindInfo image_bind_info;
-			wi::vector<VkSparseMemoryBind> memory_binds;
-			wi::vector<VkSparseImageMemoryBind> image_memory_binds;
+			Protean::vector<VkSparseMemoryBind> memory_binds;
+			Protean::vector<VkSparseImageMemoryBind> image_memory_binds;
 		};
-		thread_local wi::vector<DataPerBind> sparse_binds;
+		thread_local Protean::vector<DataPerBind> sparse_binds;
 
 		sparse_infos.resize(command_count);
 		sparse_binds.resize(command_count);

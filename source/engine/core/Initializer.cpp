@@ -9,11 +9,11 @@
 #include "cpuinfo.hpp"
 #endif // defined(PLATFORM_WINDOWS_DESKTOP) || defined(PLATFORM_LINUX)
 
-namespace wi::initializer
+namespace Protean::Initializer
 {
 	static std::atomic_bool initializationStarted{ false };
-	static wi::jobsystem::context ctx;
-	static wi::Timer timer;
+	static Protean::JobSystem::context ctx;
+	static Protean::Timer timer;
 	static std::atomic_bool systems[INITIALIZED_SYSTEM_COUNT]{};
 
 	void InitializeComponentsImmediate()
@@ -60,7 +60,7 @@ namespace wi::initializer
 		static constexpr const char* compiler_string = "UNKNOWN";
 #endif
 
-		wilog("\n[wi::initializer] Initializing Wicked Engine, please wait...\nVersion: %s\nPlatform: %s\nCompiler: %s", wi::version::GetVersionString(), platform_string, compiler_string);
+		wilog("\n[Protean::Initializer] Initializing Wicked Engine, please wait...\nVersion: %s\nPlatform: %s\nCompiler: %s", Protean::Version::GetVersionString(), platform_string, compiler_string);
 
 		StackString<1024> cpustring;
 #ifdef CPUINFO_AVAILABLE
@@ -139,54 +139,54 @@ namespace wi::initializer
 		cpustring.push_back("NEON; ");
 #endif // _XM_ARM_NEON_INTRINSICS_
 
-		wi::backlog::post(cpustring.c_str());
+		Protean::Backlog::post(cpustring.c_str());
 
 		if (!XMVerifyCPUSupport())
 		{
 			wilog_messagebox("XMVerifyCPUSupport() failed! This means that your CPU doesn't support a required feature! %s", cpustring.c_str());
 		}
 
-		wilog("\nRAM: %s", wi::helper::GetMemorySizeText(wi::helper::GetMemoryUsage().total_physical).c_str());
+		wilog("\nRAM: %s", Protean::Helper::GetMemorySizeText(Protean::Helper::GetMemoryUsage().total_physical).c_str());
 
-		size_t shaderdump_count = wi::renderer::GetShaderDumpCount();
+		size_t shaderdump_count = Protean::Renderer::GetShaderDumpCount();
 		if (shaderdump_count > 0)
 		{
 			wilog("\nEmbedded shaders found: %d", (int)shaderdump_count);
 		}
 		else
 		{
-			wilog("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: %s\n\tShader binary path: %s", wi::renderer::GetShaderSourcePath().c_str(), wi::renderer::GetShaderPath().c_str());
+			wilog("\nNo embedded shaders found, shaders will be compiled at runtime if needed.\n\tShader source path: %s\n\tShader binary path: %s", Protean::Renderer::GetShaderSourcePath().c_str(), Protean::Renderer::GetShaderPath().c_str());
 		}
 
 #ifdef _DEBUG
-		wilog("\nNumber of shared allocators (there is one per object type): %d", (int)wi::allocator::get_shared_allocator_count());
+		wilog("\nNumber of shared allocators (there is one per object type): %d", (int)Protean::Allocator::get_shared_allocator_count());
 #endif // _DEBUG
 
-		wi::backlog::post("");
-		wi::jobsystem::Initialize();
+		Protean::Backlog::post("");
+		Protean::JobSystem::Initialize();
 
-		wi::backlog::post("");
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::input::Initialize(); systems[INITIALIZED_SYSTEM_INPUT].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::renderer::Initialize(); systems[INITIALIZED_SYSTEM_RENDERER].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::texturehelper::Initialize(); systems[INITIALIZED_SYSTEM_TEXTUREHELPER].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::HairParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_HAIRPARTICLESYSTEM].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::EmittedParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_EMITTEDPARTICLESYSTEM].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::Ocean::Initialize(); systems[INITIALIZED_SYSTEM_OCEAN].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::gpusortlib::Initialize(); systems[INITIALIZED_SYSTEM_GPUSORTLIB].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::GPUBVH::Initialize(); systems[INITIALIZED_SYSTEM_GPUBVH].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::physics::Initialize(); systems[INITIALIZED_SYSTEM_PHYSICS].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::TrailRenderer::Initialize(); systems[INITIALIZED_SYSTEM_TRAILRENDERER].store(true); });
-		wi::jobsystem::Execute(ctx, [](wi::jobsystem::JobArgs args) { wi::GaussianSplatModel::Initialize(); systems[INITIALIZED_SYSTEM_GAUSSIAN_SPLAT].store(true); });
+		Protean::Backlog::post("");
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::Input::Initialize(); systems[INITIALIZED_SYSTEM_INPUT].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::Renderer::Initialize(); systems[INITIALIZED_SYSTEM_RENDERER].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::TextureHelper::Initialize(); systems[INITIALIZED_SYSTEM_TEXTUREHELPER].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::HairParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_HAIRPARTICLESYSTEM].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::EmittedParticleSystem::Initialize(); systems[INITIALIZED_SYSTEM_EMITTEDPARTICLESYSTEM].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::Ocean::Initialize(); systems[INITIALIZED_SYSTEM_OCEAN].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::GPUSortLib::Initialize(); systems[INITIALIZED_SYSTEM_GPUSORTLIB].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::GPUBVH::Initialize(); systems[INITIALIZED_SYSTEM_GPUBVH].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::Physics::Initialize(); systems[INITIALIZED_SYSTEM_PHYSICS].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::TrailRenderer::Initialize(); systems[INITIALIZED_SYSTEM_TRAILRENDERER].store(true); });
+		Protean::JobSystem::Execute(ctx, [](Protean::JobSystem::JobArgs args) { Protean::GaussianSplatModel::Initialize(); systems[INITIALIZED_SYSTEM_GAUSSIAN_SPLAT].store(true); });
 
 		// Initialize these immediately:
-		wi::lua::Initialize(); systems[INITIALIZED_SYSTEM_LUA].store(true);
-		wi::audio::Initialize(); systems[INITIALIZED_SYSTEM_AUDIO].store(true);
-		wi::image::Initialize(); systems[INITIALIZED_SYSTEM_IMAGE].store(true);
-		wi::font::Initialize(); systems[INITIALIZED_SYSTEM_FONT].store(true);
+		Protean::Lua::Initialize(); systems[INITIALIZED_SYSTEM_LUA].store(true);
+		Protean::Audio::Initialize(); systems[INITIALIZED_SYSTEM_AUDIO].store(true);
+		Protean::Image::Initialize(); systems[INITIALIZED_SYSTEM_IMAGE].store(true);
+		Protean::Font::Initialize(); systems[INITIALIZED_SYSTEM_FONT].store(true);
 
 		std::thread([] {
-			wi::jobsystem::Wait(ctx);
-			wilog("\n[wi::initializer] Wicked Engine Initialized (%d ms)", (int)std::round(timer.elapsed()));
+			Protean::JobSystem::Wait(ctx);
+			wilog("\n[Protean::Initializer] Wicked Engine Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		}).detach();
 
 	}
@@ -195,7 +195,7 @@ namespace wi::initializer
 	{
 		if (system == INITIALIZED_SYSTEM_COUNT)
 		{
-			return initializationStarted.load() && !wi::jobsystem::IsBusy(ctx);
+			return initializationStarted.load() && !Protean::JobSystem::IsBusy(ctx);
 		}
 		else
 		{
@@ -205,6 +205,6 @@ namespace wi::initializer
 
 	void WaitForInitializationsToFinish()
 	{
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 	}
 }

@@ -14,23 +14,23 @@
 #include "IconDefinitions.h"
 
 class Editor;
-class EditorComponent : public wi::RenderPath2D
+class EditorComponent : public Protean::RenderPath2D
 {
 public:
 	Editor* main = nullptr;
 
-	wi::gui::Button newSceneButton;
+	Protean::Gui::Button newSceneButton;
 
-	wi::gui::ComboBox newEntityCombo;
+	Protean::Gui::ComboBox newEntityCombo;
 
-	wi::gui::Button translateButton;
-	wi::gui::Button rotateButton;
-	wi::gui::Button scaleButton;
-	wi::gui::Button localGlobalButton;
+	Protean::Gui::Button translateButton;
+	Protean::Gui::Button rotateButton;
+	Protean::Gui::Button scaleButton;
+	Protean::Gui::Button localGlobalButton;
 
-	wi::gui::Button physicsButton;
+	Protean::Gui::Button physicsButton;
 
-	wi::gui::Button dummyButton;
+	Protean::Gui::Button dummyButton;
 	bool dummy_enabled = false;
 	bool dummy_male = false;
 	XMFLOAT3 dummy_pos = XMFLOAT3(0, 0, 0);
@@ -41,46 +41,46 @@ public:
 	float drive_orbit_horizontal = 0;
 	float drive_steering_smoothed = 0;
 
-	wi::gui::Button navtestButton;
+	Protean::Gui::Button navtestButton;
 	bool navtest_enabled = false;
-	wi::scene::PickResult navtest_start_pick;
-	wi::scene::PickResult navtest_goal_pick;
-	wi::PathQuery navtest_pathquery;
+	Protean::PickResult navtest_start_pick;
+	Protean::PickResult navtest_goal_pick;
+	Protean::PathQuery navtest_pathquery;
 
-	wi::gui::Button playButton;
-	wi::gui::Button stopButton;
-	wi::gui::Button projectCreatorButton;
+	Protean::Gui::Button playButton;
+	Protean::Gui::Button stopButton;
+	Protean::Gui::Button projectCreatorButton;
 
-	wi::gui::Button saveButton;
-	wi::gui::Button openButton;
-	wi::gui::Button contentBrowserButton;
-	wi::gui::Button logButton;
-	wi::gui::Button profilerButton;
-	wi::gui::Button cinemaButton;
-	wi::gui::Button fullscreenButton;
-	wi::gui::Button bugButton;
-	wi::gui::Button aboutButton;
-	wi::gui::Button exitButton;
-	wi::gui::Window aboutWindow;
-	wi::gui::Label aboutLabel;
+	Protean::Gui::Button saveButton;
+	Protean::Gui::Button openButton;
+	Protean::Gui::Button contentBrowserButton;
+	Protean::Gui::Button logButton;
+	Protean::Gui::Button profilerButton;
+	Protean::Gui::Button cinemaButton;
+	Protean::Gui::Button fullscreenButton;
+	Protean::Gui::Button bugButton;
+	Protean::Gui::Button aboutButton;
+	Protean::Gui::Button exitButton;
+	Protean::Gui::Window aboutWindow;
+	Protean::Gui::Label aboutLabel;
 
 	ComponentsWindow componentsWnd;
 	ProfilerWindow profilerWnd;
 	ContentBrowserWindow contentBrowserWnd;
 	ProjectCreatorWindow projectCreatorWnd;
 	ThemeEditorWindow themeEditorWnd;
-	wi::gui::Window topmenuWnd;
+	Protean::Gui::Window topmenuWnd;
 
-	wi::gui::Button generalButton;
-	wi::gui::Button graphicsButton;
-	wi::gui::Button cameraButton;
-	wi::gui::Button materialsButton;
-	wi::gui::Button paintToolButton;
+	Protean::Gui::Button generalButton;
+	Protean::Gui::Button graphicsButton;
+	Protean::Gui::Button cameraButton;
+	Protean::Gui::Button materialsButton;
+	Protean::Gui::Button paintToolButton;
 
-	wi::gui::ComboBox guiScalingCombo;
+	Protean::Gui::ComboBox guiScalingCombo;
 
 	bool is_2D_mode = false;
-	wi::gui::Button is2DModeButton;
+	Protean::Gui::Button is2DModeButton;
 
 	GeneralWindow generalWnd;
 	GraphicsWindow graphicsWnd;
@@ -88,13 +88,13 @@ public:
 	MaterialPickerWindow materialPickerWnd;
 	PaintToolWindow paintToolWnd;
 
-	wi::primitive::Ray pickRay;
-	wi::physics::PickDragOperation physicsDragOp;
+	Protean::Ray pickRay;
+	Protean::Physics::PickDragOperation physicsDragOp;
 
-	std::unique_ptr<wi::RenderPath3D> renderPath;
-	wi::RenderPath3D_PathTracing* pathtracer = nullptr; // This is not lifetime managing pointer, it will view renderPath if it's path tracing
-	wi::graphics::Texture gui_background_effect;
-	const wi::graphics::Texture* GetGUIBlurredBackground() const override { return renderPath->GetGUIBlurredBackground(); }
+	std::unique_ptr<Protean::RenderPath3D> renderPath;
+	Protean::RenderPath3D_PathTracing* pathtracer = nullptr; // This is not lifetime managing pointer, it will view renderPath if it's path tracing
+	Protean::Graphics::Texture gui_background_effect;
+	const Protean::Graphics::Texture* GetGUIBlurredBackground() const override { return renderPath->GetGUIBlurredBackground(); }
 
 	void ResizeBuffers() override;
 	void ResizeLayout() override;
@@ -106,10 +106,10 @@ public:
 	void PostUpdate() override;
 	void PreRender() override;
 	void Render() const override;
-	void Compose(wi::graphics::CommandList cmd) const override;
+	void Compose(Protean::Graphics::CommandList cmd) const override;
 
-	wi::graphics::Viewport viewport3D;
-	wi::primitive::Hitbox2D viewport3D_hitbox;
+	Protean::Graphics::Viewport viewport3D;
+	Protean::Hitbox2D viewport3D_hitbox;
 	void ResizeViewport3D();
 
 	bool camControlStart = true;
@@ -133,46 +133,46 @@ public:
 		EDITORSTENCILREF_HIGHLIGHT_MATERIAL = 0x02,
 		EDITORSTENCILREF_LAST = 0x0F,
 	};
-	wi::graphics::Texture rt_selectionOutline_MSAA;
-	wi::graphics::Texture rt_selectionOutline[2];
-	wi::graphics::Texture rt_dummyOutline;
+	Protean::Graphics::Texture rt_selectionOutline_MSAA;
+	Protean::Graphics::Texture rt_selectionOutline[2];
+	Protean::Graphics::Texture rt_dummyOutline;
 	float outlineTimer = 0;
 	const XMFLOAT4 selectionColor = XMFLOAT4(1, 0.6f, 0, 1);
 	const XMFLOAT4 selectionColor2 = XMFLOAT4(0, 1, 0.6f, 0.35f);
-	wi::Color inactiveEntityColor = wi::Color::fromFloat4(XMFLOAT4(1, 1, 1, 0.5f));
-	wi::Color hoveredEntityColor = wi::Color::fromFloat4(XMFLOAT4(1, 1, 1, 1));
-	wi::Color backgroundEntityColor = wi::Color::Black();
-	wi::Color dummyColor = wi::Color::White();
+	Protean::Color inactiveEntityColor = Protean::Color::fromFloat4(XMFLOAT4(1, 1, 1, 0.5f));
+	Protean::Color hoveredEntityColor = Protean::Color::fromFloat4(XMFLOAT4(1, 1, 1, 1));
+	Protean::Color backgroundEntityColor = Protean::Color::Black();
+	Protean::Color dummyColor = Protean::Color::White();
 
-	wi::graphics::Texture rt_metadataDummies_MSAA;
-	wi::graphics::Texture rt_metadataDummies;
+	Protean::Graphics::Texture rt_metadataDummies_MSAA;
+	Protean::Graphics::Texture rt_metadataDummies;
 
-	const wi::Color springDebugColor = wi::Color(255, 70, 165, 255);
-	const wi::Color ikDebugColor = wi::Color(49, 190, 103, 255);
+	const Protean::Color springDebugColor = Protean::Color(255, 70, 165, 255);
+	const Protean::Color ikDebugColor = Protean::Color(49, 190, 103, 255);
 
-	wi::graphics::Texture editor_depthbuffer;
-	wi::graphics::Texture editor_rendertarget;
+	Protean::Graphics::Texture editor_depthbuffer;
+	Protean::Graphics::Texture editor_rendertarget;
 
 	Translator translator;
-	wi::scene::PickResult hovered;
+	Protean::PickResult hovered;
 	bool inspector_mode = false;
-	wi::ecs::Entity grass_interaction_entity = wi::ecs::INVALID_ENTITY;
+	Protean::Entity grass_interaction_entity = Protean::INVALID_ENTITY;
 
 	void ClearSelected();
-	void AddSelected(wi::ecs::Entity entity, bool allow_refocus = true);
-	void AddSelected(const wi::scene::PickResult& picked, bool allow_refocus = true);
-	bool IsSelected(wi::ecs::Entity entity) const;
+	void AddSelected(Protean::Entity entity, bool allow_refocus = true);
+	void AddSelected(const Protean::PickResult& picked, bool allow_refocus = true);
+	bool IsSelected(Protean::Entity entity) const;
 	bool selectAll = false;
-	wi::unordered_set<wi::ecs::Entity> selectAllStorage;
+	Protean::unordered_set<Protean::Entity> selectAllStorage;
 
 	bool bone_picking = false;
 	void CheckBonePickingEnabled();
-	wi::unordered_map<wi::ecs::Entity, wi::primitive::Capsule> bone_picking_items;
+	Protean::unordered_map<Protean::Entity, Protean::Capsule> bone_picking_items;
 
 	void UpdateDynamicWidgets();
 	void UpdateLocalGlobalButton();
 
-	wi::Archive clipboard;
+	Protean::Archive clipboard;
 
 	enum HistoryOperationType
 	{
@@ -186,17 +186,17 @@ public:
 		HISTORYOP_NONE
 	};
 
-	void RecordSelection(wi::Archive& archive) const;
-	void RecordEntity(wi::Archive& archive, wi::ecs::Entity entity);
-	void RecordEntity(wi::Archive& archive, const wi::vector<wi::ecs::Entity>& entities);
+	void RecordSelection(Protean::Archive& archive) const;
+	void RecordEntity(Protean::Archive& archive, Protean::Entity entity);
+	void RecordEntity(Protean::Archive& archive, const Protean::vector<Protean::Entity>& entities);
 
 	void ResetHistory();
-	wi::Archive& AdvanceHistory(bool scene_unchanged = false);
+	Protean::Archive& AdvanceHistory(bool scene_unchanged = false);
 	void ConsumeHistoryOperation(bool undo);
 
-	wi::vector<std::string> recentFilenames;
+	Protean::vector<std::string> recentFilenames;
 	size_t maxRecentFilenames = 10;
-	wi::vector<std::string> recentFolders;
+	Protean::vector<std::string> recentFolders;
 	size_t maxRecentFolders = 8;
 	void RegisterRecentlyUsed(std::string filename);
 
@@ -206,14 +206,14 @@ public:
 	bool deleting = false;
 	bool save_in_progress = false;
 
-	wi::graphics::Texture CreateThumbnail(wi::graphics::Texture texture, uint32_t target_width, uint32_t target_height, bool mipmaps = false) const;
-	bool SetupThumbnailCamera(wi::RenderPath3D& thumbnailRenderPath);
-	wi::scene::CameraComponent thumbnail_saved_camera;
+	Protean::Graphics::Texture CreateThumbnail(Protean::Graphics::Texture texture, uint32_t target_width, uint32_t target_height, bool mipmaps = false) const;
+	bool SetupThumbnailCamera(Protean::RenderPath3D& thumbnailRenderPath);
+	Protean::CameraComponent thumbnail_saved_camera;
 
 	std::string save_text_message = "";
 	std::string save_text_filename = "";
 	float save_text_alpha = 0; // seconds until save text disappears
-	wi::Color save_text_color = wi::Color::White();
+	Protean::Color save_text_color = Protean::Color::White();
 	void PostSaveText(const std::string& message, const std::string& filename = "", float time_seconds = 4);
 
 	bool screenshot = false;
@@ -227,25 +227,25 @@ public:
 	{
 		uint64_t id = 0; // unique ID for scene tabs
 		std::string path;
-		wi::scene::Scene scene;
+		Protean::Scene scene;
 		XMFLOAT3 cam_move = {};
-		wi::scene::CameraComponent camera;
-		wi::scene::TransformComponent camera_transform;
-		wi::scene::TransformComponent camera_target;
-		wi::vector<wi::Archive> history;
+		Protean::CameraComponent camera;
+		Protean::TransformComponent camera_transform;
+		Protean::TransformComponent camera_target;
+		Protean::vector<Protean::Archive> history;
 		int historyPos = -1;
 		bool has_unsaved_changes = false;
 		bool untitled_camera_reset_once = false;
-		wi::gui::Button tabSelectButton;
-		wi::gui::Button tabCloseButton;
+		Protean::Gui::Button tabSelectButton;
+		Protean::Gui::Button tabCloseButton;
 	};
-	wi::vector<std::unique_ptr<EditorScene>> scenes;
+	Protean::vector<std::unique_ptr<EditorScene>> scenes;
 	uint64_t next_scene_id = 1;
 	int current_scene = 0;
 	EditorScene& GetCurrentEditorScene() { return *scenes[current_scene].get(); }
 	const EditorScene& GetCurrentEditorScene() const { return *scenes[current_scene].get(); }
-	wi::scene::Scene& GetCurrentScene() { return scenes[current_scene].get()->scene; }
-	const wi::scene::Scene& GetCurrentScene() const { return scenes[current_scene].get()->scene; }
+	Protean::Scene& GetCurrentScene() { return scenes[current_scene].get()->scene; }
+	const Protean::Scene& GetCurrentScene() const { return scenes[current_scene].get()->scene; }
 	// Find EditorScene by ID, returns pointer or nullptr if not found (e.g., tab was closed)
 	EditorScene* FindEditorSceneByID(uint64_t id) const;
 	// Get or create an EditorScene for content loading: returns the scene with given ID, or creates a new one if not found
@@ -262,10 +262,10 @@ public:
 
 	XMFLOAT3 GetPositionInFrontOfCamera() const;
 
-	wi::Localization default_localization;
-	wi::Localization current_localization;
+	Protean::Localization default_localization;
+	Protean::Localization current_localization;
 	void SetDefaultLocalization();
-	void SetLocalization(wi::Localization& loc);
+	void SetLocalization(Protean::Localization& loc);
 	void ReloadLanguage();
 
 	void Set2DMode(bool value);
@@ -273,23 +273,23 @@ public:
 	struct FontData
 	{
 		std::string name;
-		wi::vector<uint8_t> filedata;
+		Protean::vector<uint8_t> filedata;
 	};
-	wi::vector<FontData> font_datas;
+	Protean::vector<FontData> font_datas;
 
-	wi::jobsystem::context loadmodel_workload;
-	wi::SpriteFont loadmodel_font;
-	wi::SpriteFont terrain_generation_font;
+	Protean::JobSystem::context loadmodel_workload;
+	Protean::SpriteFont loadmodel_font;
+	Protean::SpriteFont terrain_generation_font;
 	float terrain_generation_font_timeout = 0;
 
-	wi::TrailRenderer spline_renderer;
+	Protean::TrailRenderer spline_renderer;
 };
 
-class Editor : public wi::Application
+class Editor : public Protean::Application
 {
 public:
 	EditorComponent renderComponent;
-	wi::config::File config;
+	Protean::Config::File config;
 	bool exit_requested = false;
 
 	void Initialize() override;
@@ -350,7 +350,7 @@ static_assert(arraysize(EditorLocalizationStrings) == size_t(EditorLocalization:
 struct ApplicationExeCustomization
 {
 	char name_padded[120];
-	wi::Color font_color; // color of backlog font (startup text)
-	wi::Color background_color; // color of startup background behind startup text
+	Protean::Color font_color; // color of backlog font (startup text)
+	Protean::Color background_color; // color of startup background behind startup text
 };
 extern ApplicationExeCustomization exe_customization;

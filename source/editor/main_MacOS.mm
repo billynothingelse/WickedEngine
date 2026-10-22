@@ -17,14 +17,14 @@ int main( int argc, char* argv[] )
 		[NSApplication sharedApplication];
 		[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 		
-		wi::arguments::Parse(argc, argv);
+		Protean::Arguments::Parse(argc, argv);
 		
 		int width = 1280;
 		int height = 720;
 		bool fullscreen = false;
 		bool borderless = false;
 		
-		wi::Timer timer;
+		Protean::Timer timer;
 		if (editor.config.Open("config.ini"))
 		{
 			if (editor.config.Has("width"))
@@ -49,7 +49,7 @@ int main( int argc, char* argv[] )
 														 backing:NSBackingStoreBuffered
 														   defer:NO];
 		
-		[window setTitle:[NSString stringWithUTF8String:wi::helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str()]];
+		[window setTitle:[NSString stringWithUTF8String:Protean::Helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str()]];
 		[window center];
 		[window makeKeyAndOrderFront:nil];
 		
@@ -63,10 +63,10 @@ int main( int argc, char* argv[] )
 		
 		if (fullscreen)
 		{
-			wi::apple::SetWindowFullScreen((__bridge wi::platform::window_type)window, fullscreen);
+			Protean::Apple::SetWindowFullScreen((__bridge Protean::Platform::window_type)window, fullscreen);
 		}
 		
-		editor.SetWindow((__bridge wi::platform::window_type)window);
+		editor.SetWindow((__bridge Protean::Platform::window_type)window);
 		
 		while (!editor.exit_requested)
 		{
@@ -81,7 +81,7 @@ int main( int argc, char* argv[] )
 						case NSEventTypeKeyDown:
 							switch (event.keyCode) {
 								case kVK_Delete:
-									wi::gui::TextInputField::DeleteFromInput();
+									Protean::Gui::TextInputField::DeleteFromInput();
 									break;
 								case kVK_Return:
 									break;
@@ -92,7 +92,7 @@ int main( int argc, char* argv[] )
 									{
 										unichar c = [characters characterAtIndex:0];
 										wchar_t wchar = (wchar_t)c;
-										wi::gui::TextInputField::AddInput(wchar);
+										Protean::Gui::TextInputField::AddInput(wchar);
 									}
 								}
 								break;
@@ -107,14 +107,14 @@ int main( int argc, char* argv[] )
 							{
 								amount *= -0.05f; // reversed touchpad scrolling
 							}
-							wi::input::AddMouseScrollEvent(amount);
+							Protean::Input::AddMouseScrollEvent(amount);
 						}
 						break;
 						case NSEventTypeMouseMoved:
 						case NSEventTypeLeftMouseDragged:
 						case NSEventTypeRightMouseDragged:
 						case NSEventTypeOtherMouseDragged:
-							wi::input::AddMouseMoveDeltaEvent(XMFLOAT2(event.deltaX, event.deltaY));
+							Protean::Input::AddMouseMoveDeltaEvent(XMFLOAT2(event.deltaX, event.deltaY));
 							break;
 						default:
 							[NSApp sendEvent:event];
@@ -127,7 +127,7 @@ int main( int argc, char* argv[] )
 			}
 		}
 		
-		wi::jobsystem::ShutDown();
+		Protean::JobSystem::ShutDown();
 	}
 	
 	return 0;
@@ -140,7 +140,7 @@ int main( int argc, char* argv[] )
 }
 - (void)windowDidResize:(NSNotification *)notification {
 	NSWindow* nsWindow = (NSWindow*)notification.object;
-	editor.SetWindow((__bridge wi::platform::window_type)nsWindow);
+	editor.SetWindow((__bridge Protean::Platform::window_type)nsWindow);
 	editor.SaveWindowSize();
 }
 - (void)windowDidBecomeMain:(NSNotification *)notification {

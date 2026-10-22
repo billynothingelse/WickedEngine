@@ -12,9 +12,9 @@
 //#define DEBUG_DUMP_H264
 static const int dump_frame_count = 100;
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi::video
+namespace Protean::Video
 {
 	static int PicNum(int frame_num, int curr, int max_frame_num)
 	{
@@ -209,7 +209,7 @@ namespace wi::video
 			assert(0); // TODO
 		}
 
-		wi::vector<size_t> frame_display_order(video->frame_infos.size());
+		Protean::vector<size_t> frame_display_order(video->frame_infos.size());
 		for (size_t i = 0; i < video->frame_infos.size(); ++i)
 		{
 			frame_display_order[i] = i;
@@ -235,10 +235,10 @@ namespace wi::video
 
 	bool CreateVideo(const std::string& filename, Video* video)
 	{
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filename, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (!Protean::Helper::FileRead(filename, filedata))
 			return false;
-		std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(filename));
+		std::string ext = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(filename));
 		if (ext.find("MP4") != std::string::npos)
 		{
 			return CreateVideoMP4(filedata.data(), filedata.size(), video);
@@ -310,7 +310,7 @@ namespace wi::video
 				const MP4D_track_t& track = mp4.track[ntrack];
 
 #ifdef DEBUG_DUMP_H264
-				wi::vector<uint8_t> dump;
+				Protean::vector<uint8_t> dump;
 				size_t dump_offset = 0;
 				int dump_frame_counter = 0;
 #endif // DEBUG_DUMP_H264
@@ -487,10 +487,10 @@ namespace wi::video
 					}
 
 #ifdef DEBUG_DUMP_H264
-					wi::helper::FileWrite("dump.h264", dump.data(), dump.size());
+					Protean::Helper::FileWrite("dump.h264", dump.data(), dump.size());
 
 					// validate dump:
-					if (wi::helper::FileRead("dump.h264", dump))
+					if (Protean::Helper::FileRead("dump.h264", dump))
 					{
 						using namespace h264;
 						Bitstream bs;
@@ -583,7 +583,7 @@ namespace wi::video
 					bd.misc_flags = ResourceMiscFlag::VIDEO_DECODE | ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
 					success = device->CreateBuffer2(&bd, copy_video_track, &video->data_stream);
 					assert(success);
-					device->SetName(&video->data_stream, "wi::Video::data_stream");
+					device->SetName(&video->data_stream, "Protean::Video::data_stream");
 				}
 				else if (track.handler_type == MP4D_HANDLER_TYPE_SOUN)
 				{
@@ -615,7 +615,7 @@ namespace wi::video
 
 					// AAC is raw AAC compressed audio frame
 					//	It will be converted to ADTS which is AAC frames + ADTS headers separating frames, that can be fed into platform's audio API later
-					wi::vector<uint8_t> adts;
+					Protean::vector<uint8_t> adts;
 					adts.reserve(size_t(track.sample_count) * 256);
 					for (unsigned sample = 0; sample < track.sample_count; ++sample)
 					{
@@ -638,7 +638,7 @@ namespace wi::video
 						wilog_warning("Video: audio AAC -> ADTS conversion error!");
 						continue;
 					}
-					if (!wi::audio::CreateSound(adts.data(), adts.size(), &video->audio))
+					if (!Protean::Audio::CreateSound(adts.data(), adts.size(), &video->audio))
 					{
 						wilog_warning("Video: audio creation error!");
 					}
@@ -683,7 +683,7 @@ namespace wi::video
 				{
 					Video::FrameInfo& frame_info = video->frame_infos.emplace_back();
 					frame_info.offset = nal_offset;
-					frame_info.type = wi::graphics::VideoFrameType::Predictive;
+					frame_info.type = Protean::Graphics::VideoFrameType::Predictive;
 					frame_info.reference_priority = nal.idc;
 					h264::SliceHeader slice_header = {};
 					h264::read_slice_header(&slice_header, &nal, (const h264::PPS*)video->pps_datas.data(), (const h264::SPS*)video->sps_datas.data(), &bs);
@@ -696,7 +696,7 @@ namespace wi::video
 				{
 					Video::FrameInfo& frame_info = video->frame_infos.emplace_back();
 					frame_info.offset = nal_offset;
-					frame_info.type = wi::graphics::VideoFrameType::Intra;
+					frame_info.type = Protean::Graphics::VideoFrameType::Intra;
 					frame_info.reference_priority = nal.idc;
 					h264::SliceHeader slice_header = {};
 					h264::read_slice_header(&slice_header, &nal, (const h264::PPS*)video->pps_datas.data(), (const h264::SPS*)video->sps_datas.data(), &bs);
@@ -786,7 +786,7 @@ namespace wi::video
 		bd.misc_flags = ResourceMiscFlag::VIDEO_DECODE | ResourceMiscFlag::VIDEO_COMPATIBILITY_H264;
 		success = device->CreateBuffer2(&bd, copy_video_track, &video->data_stream);
 		assert(success);
-		device->SetName(&video->data_stream, "wi::Video::data_stream");
+		device->SetName(&video->data_stream, "Protean::Video::data_stream");
 		return success;
 	}
 	bool CreateVideoInstance(const Video* video, VideoInstance* instance)
@@ -878,7 +878,7 @@ namespace wi::video
 		if (video->audio.IsValid())
 		{
 			instance->audio.SetLooped(false);
-			if (!wi::audio::CreateSoundInstance(&video->audio, &instance->audio))
+			if (!Protean::Audio::CreateSoundInstance(&video->audio, &instance->audio))
 				instance->audio_unavailable = true;
 		}
 
@@ -889,10 +889,10 @@ namespace wi::video
 	{
 		if (instance->video == nullptr || !instance->video->audio.IsValid() || !instance->audio.IsValid())
 			return 0;
-		const wi::audio::SampleInfo info = wi::audio::GetSampleInfo(&instance->video->audio);
+		const Protean::Audio::SampleInfo info = Protean::Audio::GetSampleInfo(&instance->video->audio);
 		if (info.sample_rate <= 0)
 			return 0;
-		const float played = (float)wi::audio::GetTotalSamplesPlayed(&instance->audio) / (float)info.sample_rate;
+		const float played = (float)Protean::Audio::GetTotalSamplesPlayed(&instance->audio) / (float)info.sample_rate;
 		return instance->audio_time_origin + played;
 	}
 	static void SyncVideoAudio(VideoInstance* instance, bool force)
@@ -904,7 +904,7 @@ namespace wi::video
 		if (!has_flag(instance->flags, VideoInstance::Flags::Looped) && video_time > instance->video->duration_seconds)
 		{
 			if (instance->audio.IsValid())
-				wi::audio::Pause(&instance->audio);
+				Protean::Audio::Pause(&instance->audio);
 			return;
 		}
 		if (!instance->audio.IsValid())
@@ -921,7 +921,7 @@ namespace wi::video
 			instance->audio = {};
 			instance->audio.begin = video_time;
 			instance->audio.SetLooped(false);
-			if (!wi::audio::CreateSoundInstance(&instance->video->audio, &instance->audio))
+			if (!Protean::Audio::CreateSoundInstance(&instance->video->audio, &instance->audio))
 			{
 				instance->audio_unavailable = true;
 				return;
@@ -930,19 +930,19 @@ namespace wi::video
 			instance->audio_sync_time = video_time;
 			if (playing)
 			{
-				wi::audio::Play(&instance->audio);
+				Protean::Audio::Play(&instance->audio);
 			}
 			else
 			{
-				wi::audio::Pause(&instance->audio);
+				Protean::Audio::Pause(&instance->audio);
 			}
 			instance->audio.begin = 0;
 			return;
 		}
 		if (playing)
-			wi::audio::Play(&instance->audio);
+			Protean::Audio::Play(&instance->audio);
 		else
-			wi::audio::Pause(&instance->audio);
+			Protean::Audio::Pause(&instance->audio);
 	}
 
 	void UpdateDisplayOrderOutput(VideoInstance* instance)
@@ -1197,8 +1197,8 @@ namespace wi::video
 					// Ensure that current DPB slot is in DST state:
 					if (instance->dpb.resource_states[instance->dpb.current_slot] != ResourceState::VIDEO_DECODE_DPB)
 					{
-						wi::renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_luma));
-						wi::renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_chroma));
+						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_luma));
+						Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[instance->dpb.current_slot], ResourceState::VIDEO_DECODE_DPB, 0, instance->dpb.current_slot, &aspect_chroma));
 						instance->dpb.resource_states[instance->dpb.current_slot] = ResourceState::VIDEO_DECODE_DPB;
 					}
 					// Ensure that reference frame DPB slots are in SRC state:
@@ -1207,8 +1207,8 @@ namespace wi::video
 						uint8_t ref = instance->dpb.reference_usage[i];
 						if (instance->dpb.resource_states[ref] != ResourceState::VIDEO_DECODE_SRC)
 						{
-							wi::renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_luma));
-							wi::renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_chroma));
+							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_luma));
+							Protean::Renderer::PushBarrier(GPUBarrier::Image(&instance->dpb.texture, instance->dpb.resource_states[ref], ResourceState::VIDEO_DECODE_SRC, 0, ref, &aspect_chroma));
 							instance->dpb.resource_states[ref] = ResourceState::VIDEO_DECODE_SRC;
 						}
 					}
@@ -1217,10 +1217,10 @@ namespace wi::video
 				{
 					// if DPB_AND_OUTPUT_COINCIDE is NOT supported, then DPB is kept always in DPB state, and only the output tex is ever a shader resource:
 					decode_operation.output = &decode.src;
-					wi::renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_luma));
-					wi::renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_chroma));
+					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_luma));
+					Protean::Renderer::PushBarrier(GPUBarrier::Image(&decode.src, decode.src.desc.layout, ResourceState::VIDEO_DECODE_DST, -1, -1, &aspect_chroma));
 				}
-				wi::renderer::FlushBarriers(cmd);
+				Protean::Renderer::FlushBarriers(cmd);
 
 				device->VideoDecode(&instance->decoder, &decode_operation, cmd);
 
@@ -1273,7 +1273,7 @@ namespace wi::video
 
 		for (auto& resolve_request : instance->output_textures_resolve_request)
 		{
-			wi::renderer::YUV_to_RGB(
+			Protean::Renderer::YUV_to_RGB(
 				resolve_request.src,
 				resolve_request.src_subresource_luminance,
 				resolve_request.src_subresource_chrominance,
@@ -1282,7 +1282,7 @@ namespace wi::video
 			);
 			if (has_flag(instance->flags, VideoInstance::Flags::Mipmapped))
 			{
-				wi::renderer::GenerateMipChain(resolve_request.texture, wi::renderer::MIPGENFILTER_LINEAR, cmd);
+				Protean::Renderer::GenerateMipChain(resolve_request.texture, Protean::Renderer::MIPGENFILTER_LINEAR, cmd);
 			}
 		}
 		instance->output_textures_resolve_request.clear();
@@ -1301,7 +1301,7 @@ namespace wi::video
 		for (size_t i = 0; i < video->frame_infos.size(); ++i)
 		{
 			auto& frame_info = video->frame_infos[i];
-			if (frame_info.type == wi::graphics::VideoFrameType::Intra)
+			if (frame_info.type == Protean::Graphics::VideoFrameType::Intra)
 			{
 				max_iframe = (int)i;
 			}
@@ -1313,8 +1313,8 @@ namespace wi::video
 			instance->current_decode_frame = max_iframe;
 			instance->current_time = video->frame_infos[max_iframe].timestamp_seconds;
 			instance->target_display_order = video->frame_infos[max_iframe].display_order;
-			instance->flags |= wi::video::VideoInstance::Flags::DecoderReset;
-			instance->flags &= ~wi::video::VideoInstance::Flags::InitialFirstFrameDecoded;
+			instance->flags |= Protean::Video::VideoInstance::Flags::DecoderReset;
+			instance->flags &= ~Protean::Video::VideoInstance::Flags::InitialFirstFrameDecoded;
 			instance->output_textures_free.clear();
 			instance->output_textures_used.clear();
 			instance->output_textures_resolve_request.clear();

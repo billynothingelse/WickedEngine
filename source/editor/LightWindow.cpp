@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "LightWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::graphics;
-using namespace wi::scene;
+using namespace Protean;
+using namespace Protean::Graphics;
+using namespace Protean;
 
 void LightWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_POINTLIGHT " Light", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_POINTLIGHT " Light", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(650, 940));
 
 	closeButton.SetTooltip("Delete LightComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -36,7 +36,7 @@ void LightWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -45,7 +45,7 @@ void LightWindow::Create(EditorComponent* _editor)
 		};
 	};
 
-	colorPicker.Create("Light Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Light Color", Protean::Gui::Window::WindowControls::NONE);
 	colorPicker.SetPos(XMFLOAT2(mod_x, y));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(false);
@@ -161,10 +161,10 @@ void LightWindow::Create(EditorComponent* _editor)
 	AddWidget(&volumetricCloudsCheckBox);
 
 	typeSelectorComboBox.Create("Type: ");
-	typeSelectorComboBox.OnSelect([=](wi::gui::EventArgs args) {
+	typeSelectorComboBox.OnSelect([=](Protean::Gui::EventArgs args) {
 		if (args.iValue < 0)
 			return;
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			LightComponent* light = scene.lights.GetComponent(x.entity);
@@ -231,7 +231,7 @@ void LightWindow::Create(EditorComponent* _editor)
 		lensflare_Button[i].Create("LensFlareSlot");
 		lensflare_Button[i].SetText("");
 		lensflare_Button[i].SetTooltip("Load a lensflare texture to this slot");
-		lensflare_Button[i].OnClick([=](wi::gui::EventArgs args) {
+		lensflare_Button[i].OnClick([=](Protean::Gui::EventArgs args) {
 			LightComponent* light = editor->GetCurrentScene().lights.GetComponent(entity);
 			if (light == nullptr)
 				return;
@@ -250,15 +250,15 @@ void LightWindow::Create(EditorComponent* _editor)
 			}
 			else
 			{
-				wi::helper::FileDialogParams params;
-				params.type = wi::helper::FileDialogParams::OPEN;
+				Protean::Helper::FileDialogParams params;
+				params.type = Protean::Helper::FileDialogParams::OPEN;
 				params.description = "Texture";
-				params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-				wi::helper::FileDialog(params, [this, light, i](std::string fileName) {
-					wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					light->lensFlareRimTextures[i] = wi::resourcemanager::Load(fileName);
+				params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+				Protean::Helper::FileDialog(params, [this, light, i](std::string fileName) {
+					Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					light->lensFlareRimTextures[i] = Protean::ResourceManager::Load(fileName);
 					light->lensFlareNames[i] = fileName;
-						lensflare_Button[i].SetText(wi::helper::GetFileNameFromPath(fileName));
+						lensflare_Button[i].SetText(Protean::Helper::GetFileNameFromPath(fileName));
 					});
 				});
 			}
@@ -302,7 +302,7 @@ void LightWindow::SetEntity(Entity entity)
 		volumetricCloudsCheckBox.SetEnabled(true);
 		volumetricCloudsCheckBox.SetCheck(light->IsVolumetricCloudsEnabled());
 		colorPicker.SetEnabled(true);
-		colorPicker.SetPickColor(wi::Color::fromFloat3(light->color));
+		colorPicker.SetPickColor(Protean::Color::fromFloat3(light->color));
 		typeSelectorComboBox.SetSelectedWithoutCallback((int)light->GetType());
 		shadowResolutionComboBox.SetSelectedByUserdataWithoutCallback(uint64_t(light->forced_shadow_resolution));
 		shadowResolutionComboBox.SetEnabled(true);
@@ -315,7 +315,7 @@ void LightWindow::SetEntity(Entity entity)
 			{
 				if (light->lensFlareRimTextures.size() > i && light->lensFlareRimTextures[i].IsValid() && !light->lensFlareNames[i].empty())
 				{
-					lensflare_Button[i].SetText(wi::helper::GetFileNameFromPath(light->lensFlareNames[i]));
+					lensflare_Button[i].SetText(Protean::Helper::GetFileNameFromPath(light->lensFlareNames[i]));
 				}
 				else
 				{
@@ -367,7 +367,7 @@ void LightWindow::RefreshCascades()
 		cascade.distanceSlider.Create(1, 1000, 0, 1000, "");
 		cascade.distanceSlider.SetTooltip("Specify cascade's maximum reach distance from camera.\nNote: Increasing cascades indices should use increasing distances.");
 		cascade.distanceSlider.SetSize(XMFLOAT2(100, 18));
-		cascade.distanceSlider.OnSlide([=](wi::gui::EventArgs args) {
+		cascade.distanceSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 			light->cascade_distances[counter] = args.fValue;
 		});
 		cascade.distanceSlider.SetValue(light->cascade_distances[counter]);
@@ -378,7 +378,7 @@ void LightWindow::RefreshCascades()
 		cascade.removeButton.SetTooltip("Remove this shadow cascade");
 		cascade.removeButton.SetDescription("Cascade " + std::to_string(counter) + ": ");
 		cascade.removeButton.SetSize(XMFLOAT2(18, 18));
-		cascade.removeButton.OnClick([=](wi::gui::EventArgs args) {
+		cascade.removeButton.OnClick([=](Protean::Gui::EventArgs args) {
 			light->cascade_distances.erase(light->cascade_distances.begin() + counter);
 			RefreshCascades();
 		});
@@ -391,7 +391,7 @@ void LightWindow::RefreshCascades()
 	addCascadeButton.Create("Add shadow cascade");
 	addCascadeButton.SetTooltip("Add new shadow cascade. Note that for each shadow cascades, the scene will be rendered again, so adding more will affect performance!");
 	addCascadeButton.SetSize(XMFLOAT2(100, 20));
-	addCascadeButton.OnClick([=](wi::gui::EventArgs args) {
+	addCascadeButton.OnClick([=](Protean::Gui::EventArgs args) {
 		float prev_cascade = 1;
 		if (!light->cascade_distances.empty())
 		{
@@ -409,7 +409,7 @@ void LightWindow::RefreshCascades()
 
 void LightWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 140;
 
 	LightComponent* light = editor->GetCurrentScene().lights.GetComponent(entity);

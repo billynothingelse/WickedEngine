@@ -1,36 +1,36 @@
 #pragma once
 class EditorComponent;
 
-class WaveGraph : public wi::gui::Widget
+class WaveGraph : public Protean::Gui::Widget
 {
 public:
-	wi::scene::SoundComponent* sound = nullptr;
+	Protean::SoundComponent* sound = nullptr;
 
-	void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+	void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 };
 
-class SoundWindow : public wi::gui::Window
+class SoundWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Button openButton;
-	wi::gui::ComboBox reverbComboBox;
-	wi::gui::Label filenameLabel;
-	wi::gui::Button playstopButton;
-	wi::gui::CheckBox loopedCheckbox;
-	wi::gui::CheckBox reverbCheckbox;
-	wi::gui::CheckBox disable3dCheckbox;
-	wi::gui::Slider volumeSlider;
-	wi::gui::ComboBox submixComboBox;
-	wi::gui::TextInputField beginInput;
-	wi::gui::TextInputField lengthInput;
-	wi::gui::TextInputField loopBeginInput;
-	wi::gui::TextInputField loopLengthInput;
+	Protean::Gui::Button openButton;
+	Protean::Gui::ComboBox reverbComboBox;
+	Protean::Gui::Label filenameLabel;
+	Protean::Gui::Button playstopButton;
+	Protean::Gui::CheckBox loopedCheckbox;
+	Protean::Gui::CheckBox reverbCheckbox;
+	Protean::Gui::CheckBox disable3dCheckbox;
+	Protean::Gui::Slider volumeSlider;
+	Protean::Gui::ComboBox submixComboBox;
+	Protean::Gui::TextInputField beginInput;
+	Protean::Gui::TextInputField lengthInput;
+	Protean::Gui::TextInputField loopBeginInput;
+	Protean::Gui::TextInputField loopLengthInput;
 	WaveGraph waveGraph;
 
 	void ResizeLayout() override;

@@ -3,7 +3,7 @@
 #include "script/bindings/SpriteAnimBindLua.h"
 #include "script/bindings/TextureBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<Sprite_BindLua>::FunctionType Sprite_BindLua::methods[] = {
@@ -28,31 +28,31 @@ namespace wi::lua
 		{ NULL, NULL }
 	};
 
-	Sprite_BindLua::Sprite_BindLua(const wi::Sprite& sprite) :sprite(sprite)
+	Sprite_BindLua::Sprite_BindLua(const Protean::Sprite& sprite) :sprite(sprite)
 	{
 	}
 
 	Sprite_BindLua::Sprite_BindLua(lua_State* L)
 	{
 		std::string name = "", mask = "";
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			name = wi::lua::SGetString(L, 1);
+			name = Protean::Lua::SGetString(L, 1);
 			if (argc > 1)
 			{
-				mask = wi::lua::SGetString(L, 2);
+				mask = Protean::Lua::SGetString(L, 2);
 			}
 		}
-		sprite = wi::Sprite(name, mask);
+		sprite = Protean::Sprite(name, mask);
 	}
 
 	int Sprite_BindLua::SetParams(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::lua::ImageParams_BindLua* params = Luna<wi::lua::ImageParams_BindLua>::check(L, 1);
+			Protean::Lua::ImageParams_BindLua* params = Luna<Protean::Lua::ImageParams_BindLua>::check(L, 1);
 			if (params != nullptr)
 			{
 				sprite.params = params->params;
@@ -60,18 +60,18 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "SetParams(ImageEffects effects) not enough arguments!");
+			Protean::Lua::SError(L, "SetParams(ImageEffects effects) not enough arguments!");
 		}
 		return 0;
 	}
 	int Sprite_BindLua::GetParams(lua_State* L)
 	{
-		Luna<wi::lua::ImageParams_BindLua>::push(L, sprite.params);
+		Luna<Protean::Lua::ImageParams_BindLua>::push(L, sprite.params);
 		return 1;
 	}
 	int Sprite_BindLua::SetAnim(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			SpriteAnim_BindLua* anim = Luna<SpriteAnim_BindLua>::check(L, 1);
@@ -82,7 +82,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "SetAnim(SpriteAnim anim) not enough arguments!");
+			Protean::Lua::SError(L, "SetAnim(SpriteAnim anim) not enough arguments!");
 		}
 		return 0;
 	}
@@ -93,7 +93,7 @@ namespace wi::lua
 	}
 	int Sprite_BindLua::SetTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Texture_BindLua* tex = Luna<Texture_BindLua>::check(L, 1);
@@ -104,7 +104,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "SetTexture(Texture texture) not enough arguments!");
+			Protean::Lua::SError(L, "SetTexture(Texture texture) not enough arguments!");
 		}
 		return 0;
 	}
@@ -115,7 +115,7 @@ namespace wi::lua
 	}
 	int Sprite_BindLua::SetMaskTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Texture_BindLua* tex = Luna<Texture_BindLua>::check(L, 1);
@@ -127,7 +127,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "SetMaskTexture(Texture texture) not enough arguments!");
+			Protean::Lua::SError(L, "SetMaskTexture(Texture texture) not enough arguments!");
 		}
 		return 0;
 	}
@@ -138,7 +138,7 @@ namespace wi::lua
 	}
 	int Sprite_BindLua::SetBackgroundTexture(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Texture_BindLua* tex = Luna<Texture_BindLua>::check(L, 1);
@@ -150,7 +150,7 @@ namespace wi::lua
 		}
 		else
 		{
-			wi::lua::SError(L, "SetBackgroundTexture(Texture texture) not enough arguments!");
+			Protean::Lua::SError(L, "SetBackgroundTexture(Texture texture) not enough arguments!");
 		}
 		return 0;
 	}
@@ -161,18 +161,18 @@ namespace wi::lua
 	}
 	int Sprite_BindLua::SetHidden(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "SetHidden(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetHidden(bool value) not enough arguments!");
 			return 0;
 		}
-		sprite.SetHidden(wi::lua::SGetBool(L, 1));
+		sprite.SetHidden(Protean::Lua::SGetBool(L, 1));
 		return 0;
 	}
 	int Sprite_BindLua::IsHidden(lua_State* L)
 	{
-		wi::lua::SSetBool(L, sprite.IsHidden());
+		Protean::Lua::SSetBool(L, sprite.IsHidden());
 		return 1;
 	}
 
@@ -182,7 +182,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Sprite_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Sprite_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 

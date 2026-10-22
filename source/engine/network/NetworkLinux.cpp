@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-namespace wi::network
+namespace Protean::Network
 {
 	//For easy address conversion
 	struct in_addr_union {
@@ -40,14 +40,14 @@ namespace wi::network
 
 	bool CreateSocket(Socket* sock)
 	{
-		wi::allocator::shared_ptr<SocketInternal> socketinternal = wi::allocator::make_shared<SocketInternal>();
+		Protean::Allocator::shared_ptr<SocketInternal> socketinternal = Protean::Allocator::make_shared<SocketInternal>();
 		sock->internal_state = socketinternal;
 
 		socketinternal->handle = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
 		if(socketinternal->handle == -1)
 		{
-			wi::backlog::post("wi::network_Linux error in CreateSocket: Could not create socket");
+			Protean::Backlog::post("Protean::network_Linux error in CreateSocket: Could not create socket");
 			return false;
 		}
 
@@ -71,7 +71,7 @@ namespace wi::network
 			int result = sendto(socketinternal->handle, (const char*)data, (int)dataSize, 0, (const sockaddr*)&target, sizeof(target));
 			if (result < 0)
 			{
-				wi::backlog::post("wi::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				Protean::Backlog::post("Protean::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				return false;
 			}
 
@@ -93,7 +93,7 @@ namespace wi::network
 			int result = bind(socketinternal->handle, (struct sockaddr *)&target , sizeof(target));
 			if (result < 0)
 			{
-				wi::backlog::post("wi::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				Protean::Backlog::post("Protean::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				return false;
 			}
 
@@ -117,7 +117,7 @@ namespace wi::network
 			int result = select(0, &readfds, NULL, NULL, &timeout);
 			if (result < 0)
 			{
-				wi::backlog::post("wi::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				Protean::Backlog::post("Protean::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				assert(0);
 				return false;
 			}
@@ -137,7 +137,7 @@ namespace wi::network
 			int result = recvfrom(socketinternal->handle, (char*)data, (int)dataSize, 0, (sockaddr*)& sender, (socklen_t*)&targetsize);
 			if (result < 0)
 			{
-				wi::backlog::post("wi::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
+				Protean::Backlog::post("Protean::network_Linux error in Send: (Error Code: " + std::to_string(result) + ") " + std::string(strerror(result)));
 				assert(0);
 				return false;
 			}

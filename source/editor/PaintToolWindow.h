@@ -1,32 +1,32 @@
 #pragma once
 class EditorComponent;
 
-class PaintToolWindow : public wi::gui::Window
+class PaintToolWindow : public Protean::Gui::Window
 {
 	float rot = 0;
 	float stroke_dist = 0;
 	size_t history_textureIndex = 0;
 	struct TextureSlot
 	{
-		wi::graphics::Texture texture;
+		Protean::Graphics::Texture texture;
 		int srgb_subresource = -1;
 	};
-	wi::vector<TextureSlot> history_textures;
-	TextureSlot GetEditTextureSlot(const wi::scene::MaterialComponent& material, int* uvset = nullptr);
-	void ReplaceEditTextureSlot(wi::scene::MaterialComponent& material, const TextureSlot& textureslot);
+	Protean::vector<TextureSlot> history_textures;
+	TextureSlot GetEditTextureSlot(const Protean::MaterialComponent& material, int* uvset = nullptr);
+	void ReplaceEditTextureSlot(Protean::MaterialComponent& material, const TextureSlot& textureslot);
 
-	wi::unordered_map<wi::ecs::Entity, wi::Archive> historyStartDatas;
+	Protean::unordered_map<Protean::Entity, Protean::Archive> historyStartDatas;
 
 	struct SculptingIndex
 	{
 		size_t ind;
 		float affection;
 	};
-	wi::vector<SculptingIndex> sculpting_indices;
+	Protean::vector<SculptingIndex> sculpting_indices;
 	XMFLOAT3 sculpting_normal = XMFLOAT3(0, 0, 0);
 
-	wi::Resource brushTex;
-	wi::Resource revealTex;
+	Protean::Resource brushTex;
+	Protean::Resource revealTex;
 
 	struct Stroke
 	{
@@ -40,32 +40,32 @@ public:
 
 	EditorComponent* editor = nullptr;
 
-	wi::gui::ComboBox modeComboBox;
-	wi::gui::Label infoLabel;
-	wi::gui::Slider radiusSlider;
-	wi::gui::Slider amountSlider;
-	wi::gui::Slider smoothnessSlider;
-	wi::gui::Slider spacingSlider;
-	wi::gui::Slider rotationSlider;
-	wi::gui::Slider stabilizerSlider;
-	wi::gui::CheckBox backfaceCheckBox;
-	wi::gui::CheckBox wireCheckBox;
-	wi::gui::CheckBox pressureCheckBox;
-	wi::gui::CheckBox alphaCheckBox;
-	wi::gui::CheckBox terrainCheckBox;
-	wi::gui::ColorPicker colorPicker;
-	wi::gui::ComboBox textureSlotComboBox;
-	wi::gui::ComboBox brushShapeComboBox;
-	wi::gui::Button saveTextureButton;
-	wi::gui::Button brushTextureButton;
-	wi::gui::Button revealTextureButton;
-	wi::gui::ComboBox axisCombo;
+	Protean::Gui::ComboBox modeComboBox;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Slider radiusSlider;
+	Protean::Gui::Slider amountSlider;
+	Protean::Gui::Slider smoothnessSlider;
+	Protean::Gui::Slider spacingSlider;
+	Protean::Gui::Slider rotationSlider;
+	Protean::Gui::Slider stabilizerSlider;
+	Protean::Gui::CheckBox backfaceCheckBox;
+	Protean::Gui::CheckBox wireCheckBox;
+	Protean::Gui::CheckBox pressureCheckBox;
+	Protean::Gui::CheckBox alphaCheckBox;
+	Protean::Gui::CheckBox terrainCheckBox;
+	Protean::Gui::ColorPicker colorPicker;
+	Protean::Gui::ComboBox textureSlotComboBox;
+	Protean::Gui::ComboBox brushShapeComboBox;
+	Protean::Gui::Button saveTextureButton;
+	Protean::Gui::Button brushTextureButton;
+	Protean::Gui::Button revealTextureButton;
+	Protean::Gui::ComboBox axisCombo;
 
 	void UpdateData(float dt);
-	void DrawBrush(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+	void DrawBrush(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const;
 
 	XMFLOAT2 pos = XMFLOAT2(0, 0);
-	wi::scene::PickResult brushIntersect;
+	Protean::PickResult brushIntersect;
 
 	enum MODE
 	{
@@ -92,17 +92,17 @@ public:
 		Z
 	};
 
-	std::deque<wi::gui::Button> terrain_material_buttons;
+	std::deque<Protean::Gui::Button> terrain_material_buttons;
 	size_t terrain_material_layer = 0;
 
 	float texture_paint_radius = 50;
 	float vertex_paint_radius = 0.1f;
 	float terrain_paint_radius = 5;
 
-	wi::Archive* currentHistory = nullptr;
-	void WriteHistoryData(wi::ecs::Entity entity, wi::Archive& archive, wi::graphics::CommandList cmd = wi::graphics::CommandList());
-	void RecordHistory(wi::ecs::Entity entity, wi::graphics::CommandList cmd = wi::graphics::CommandList());
-	void ConsumeHistoryOperation(wi::Archive& archive, bool undo);
+	Protean::Archive* currentHistory = nullptr;
+	void WriteHistoryData(Protean::Entity entity, Protean::Archive& archive, Protean::Graphics::CommandList cmd = Protean::Graphics::CommandList());
+	void RecordHistory(Protean::Entity entity, Protean::Graphics::CommandList cmd = Protean::Graphics::CommandList());
+	void ConsumeHistoryOperation(Protean::Archive& archive, bool undo);
 
 	void ResizeLayout() override;
 

@@ -15,36 +15,36 @@
 #include <iomanip> // setprecision
 #include <utility>
 
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi::gui
+namespace Protean::Gui
 {
 	struct InternalState
 	{
-		wi::graphics::PipelineState PSO_colored;
+		Protean::Graphics::PipelineState PSO_colored;
 
 		InternalState()
 		{
-			wi::Timer timer;
+			Protean::Timer timer;
 
-			static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [this](uint64_t userdata) { LoadShaders(); });
+			static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [this](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 
-			wilog("wi::gui Initialized (%d ms)", (int)std::round(timer.elapsed()));
+			wilog("Protean::Gui Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		}
 
 		void LoadShaders()
 		{
 			PipelineStateDesc desc;
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
+			desc.vs = Protean::Renderer::GetShader(Protean::VSTYPE_VERTEXCOLOR);
+			desc.ps = Protean::Renderer::GetShader(Protean::PSTYPE_VERTEXCOLOR);
+			desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_VERTEXCOLOR);
+			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
+			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
+			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
 			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
-			wi::graphics::GetDevice()->CreatePipelineState(&desc, &PSO_colored);
+			Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &PSO_colored);
 		}
 	};
 	inline InternalState& gui_internal()
@@ -59,18 +59,18 @@ namespace wi::gui
 	static bool scroll_allowed = true;
 	static bool typing_active = false;
 
-	void GUI::Update(const wi::Canvas& canvas, float dt)
+	void GUI::Update(const Protean::Canvas& canvas, float dt)
 	{
-		if (!visible || wi::backlog::isActive())
+		if (!visible || Protean::Backlog::isActive())
 		{
 			return;
 		}
 
-		auto range = wi::profiler::BeginRangeCPU("GUI Update");
+		auto range = Protean::Profiler::BeginRangeCPU("GUI Update");
 
 		scroll_allowed = true;
 
-		XMFLOAT4 pointer = wi::input::GetPointer();
+		XMFLOAT4 pointer = Protean::Input::GetPointer();
 		Hitbox2D pointerHitbox = Hitbox2D(XMFLOAT2(pointer.x, pointer.y), XMFLOAT2(1, 1));
 
 		uint32_t priority = 0;
@@ -118,25 +118,25 @@ namespace wi::gui
 			});
 		}
 
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
-	void GUI::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void GUI::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		if (!visible || widgets.empty())
 		{
 			return;
 		}
 
-		auto range_cpu = wi::profiler::BeginRangeCPU("GUI Render");
-		auto range_gpu = wi::profiler::BeginRangeGPU("GUI Render", cmd);
+		auto range_cpu = Protean::Profiler::BeginRangeCPU("GUI Render");
+		auto range_gpu = Protean::Profiler::BeginRangeGPU("GUI Render", cmd);
 
-		wi::graphics::Rect scissorRect;
+		Protean::Graphics::Rect scissorRect;
 		scissorRect.bottom = (int32_t)(canvas.GetPhysicalHeight());
 		scissorRect.left = (int32_t)(0);
 		scissorRect.right = (int32_t)(canvas.GetPhysicalWidth());
 		scissorRect.top = (int32_t)(0);
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		device->EventBegin("GUI", cmd);
 		// Rendering is back to front:
@@ -155,8 +155,8 @@ namespace wi::gui
 
 		device->EventEnd(cmd);
 
-		wi::profiler::EndRange(range_cpu);
-		wi::profiler::EndRange(range_gpu);
+		Protean::Profiler::EndRange(range_cpu);
+		Protean::Profiler::EndRange(range_gpu);
 	}
 	void GUI::AddWidget(Widget* widget)
 	{
@@ -199,9 +199,9 @@ namespace wi::gui
 		{
 			// When typing is active but the user clicks outside all GUI widgets,
 			//	allow the click to pass through so it can deactivate typing and reach the viewport
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::Press(wi::input::MOUSE_BUTTON_RIGHT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::Press(Protean::Input::MOUSE_BUTTON_RIGHT))
 			{
-				const XMFLOAT4 pointer = wi::input::GetPointer();
+				const XMFLOAT4 pointer = Protean::Input::GetPointer();
 				const auto pointerHitbox = Hitbox2D(XMFLOAT2(pointer.x, pointer.y), XMFLOAT2(1, 1));
 				bool pointer_on_widget = false;
 				for (const auto* widget : widgets)
@@ -231,21 +231,21 @@ namespace wi::gui
 
 		return typing_active;
 	}
-	void GUI::SetColor(wi::Color color, int id)
+	void GUI::SetColor(Protean::Color color, int id)
 	{
 		for (auto& widget : widgets)
 		{
 			widget->SetColor(color, id);
 		}
 	}
-	void GUI::SetImage(const wi::Resource& resource, int id)
+	void GUI::SetImage(const Protean::Resource& resource, int id)
 	{
 		for (auto& widget : widgets)
 		{
 			widget->SetImage(resource, id);
 		}
 	}
-	void GUI::SetShadowColor(wi::Color color)
+	void GUI::SetShadowColor(Protean::Color color)
 	{
 		for (auto& widget : widgets)
 		{
@@ -259,17 +259,17 @@ namespace wi::gui
 			widget->SetTheme(theme, id);
 		}
 	}
-	void GUI::ExportLocalization(wi::Localization& localization) const
+	void GUI::ExportLocalization(Protean::Localization& localization) const
 	{
-		wi::Localization& section = localization.GetSection("gui");
+		Protean::Localization& section = localization.GetSection("gui");
 		for (auto& widget : widgets)
 		{
 			widget->ExportLocalization(section);
 		}
 	}
-	void GUI::ImportLocalization(const wi::Localization& localization)
+	void GUI::ImportLocalization(const Protean::Localization& localization)
 	{
-		const wi::Localization* section = localization.CheckSection("gui");
+		const Protean::Localization* section = localization.CheckSection("gui");
 		if (section == nullptr)
 			return;
 		for (auto& widget : widgets)
@@ -282,20 +282,20 @@ namespace wi::gui
 
 	Widget::Widget()
 	{
-		sprites[IDLE].params.color = wi::Color::Booger();
-		sprites[FOCUS].params.color = wi::Color::Gray();
-		sprites[ACTIVE].params.color = wi::Color::White();
-		sprites[DEACTIVATING].params.color = wi::Color::Gray();
-		font.params.shadowColor = wi::Color::Shadow();
+		sprites[IDLE].params.color = Protean::Color::Booger();
+		sprites[FOCUS].params.color = Protean::Color::Gray();
+		sprites[ACTIVE].params.color = Protean::Color::White();
+		sprites[DEACTIVATING].params.color = Protean::Color::Gray();
+		font.params.shadowColor = Protean::Color::Shadow();
 		font.params.shadow_bolden = 0.2f;
 		font.params.shadow_softness = 0.2f;
 
-		tooltipSprite.params.color = wi::Color(255, 234, 165);
-		tooltipFont.params.color = wi::Color(25, 25, 25, 255);
+		tooltipSprite.params.color = Protean::Color(255, 234, 165);
+		tooltipFont.params.color = Protean::Color(25, 25, 25, 255);
 
 		for (int i = IDLE; i < WIDGETSTATE_COUNT; ++i)
 		{
-			sprites[i].params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
+			sprites[i].params.blendFlag = Protean::BLENDMODE_OPAQUE;
 			sprites[i].params.enableBackground();
 		}
 
@@ -304,7 +304,7 @@ namespace wi::gui
 		active_area.siz.x = std::numeric_limits<float>::max();
 		active_area.siz.y = std::numeric_limits<float>::max();
 	}
-	void Widget::Update(const wi::Canvas& canvas, float dt)
+	void Widget::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -328,7 +328,7 @@ namespace wi::gui
 		XMStoreFloat3(&translation, T);
 		XMStoreFloat3(&scale, S);
 
-		scale = wi::math::Max(scale, XMFLOAT3(0.001f, 0.001f, 0.001f));
+		scale = Protean::Math::Max(scale, XMFLOAT3(0.001f, 0.001f, 0.001f));
 
 		scissorRect.bottom = (int32_t)std::ceil(translation.y + scale.y);
 		scissorRect.left = (int32_t)std::floor(translation.x);
@@ -371,7 +371,7 @@ namespace wi::gui
 		font.Update(dt);
 		angular_highlight_timer += dt;
 	}
-	void Widget::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+	void Widget::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 	{
 		if (!IsVisible())
 		{
@@ -380,7 +380,7 @@ namespace wi::gui
 
 		if (angular_highlight_width > 0)
 		{
-			wi::image::Params fx;
+			Protean::Image::Params fx;
 			fx.color = angular_highlight_color;
 			fx.pos.x = translation.x - angular_highlight_width;
 			fx.pos.y = translation.y - angular_highlight_width;
@@ -399,10 +399,10 @@ namespace wi::gui
 			XMStoreFloat2(&fx.angular_softness_direction, XMVector2Normalize(XMVectorSet(std::sin(angular_highlight_timer), std::cos(angular_highlight_timer), 0, 0)));
 			fx.enableAngularSoftnessDoubleSided();
 			fx.border_soften = 0.1f;
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 	}
-	void Widget::RenderTooltip(const wi::Canvas& canvas, CommandList cmd) const
+	void Widget::RenderTooltip(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		if (!IsVisible())
 		{
@@ -415,8 +415,8 @@ namespace wi::gui
 			float screenheight = canvas.GetLogicalHeight();
 
 			tooltipFont.params.position = {};
-			tooltipFont.params.h_align = wi::font::WIFALIGN_LEFT;
-			tooltipFont.params.v_align = wi::font::WIFALIGN_TOP;
+			tooltipFont.params.h_align = Protean::Font::WIFALIGN_LEFT;
+			tooltipFont.params.v_align = Protean::Font::WIFALIGN_TOP;
 
 			static const float _border = 2;
 			XMFLOAT2 textSize = tooltipFont.TextSize();
@@ -460,14 +460,14 @@ namespace wi::gui
 
 			if (tooltip_shadow > 0)
 			{
-				wi::image::Params fx(
+				Protean::Image::Params fx(
 					tooltipSprite.params.pos.x - tooltip_shadow,
 					tooltipSprite.params.pos.y - tooltip_shadow,
 					tooltipSprite.params.siz.x + tooltip_shadow * 2,
 					tooltipSprite.params.siz.y + tooltip_shadow * 2,
 					tooltip_shadow_color
 				);
-				wi::image::Draw(nullptr, fx, cmd);
+				Protean::Image::Draw(nullptr, fx, cmd);
 			}
 
 			tooltipSprite.Draw(cmd);
@@ -550,7 +550,7 @@ namespace wi::gui
 		SetDirty();
 		scale_local.x = value.x;
 		scale_local.y = value.y;
-		scale_local = wi::math::Max(scale_local, XMFLOAT3(0.001f, 0.001f, 0.001f));
+		scale_local = Protean::Math::Max(scale_local, XMFLOAT3(0.001f, 0.001f, 0.001f));
 		UpdateTransform();
 
 		scale = scale_local;
@@ -608,9 +608,9 @@ namespace wi::gui
 		state = DEACTIVATING;
 		tooltipTimer = 0;
 	}
-	wi::Color Widget::GetColor() const
+	Protean::Color Widget::GetColor() const
 	{
-		return wi::Color::fromFloat4(sprites[GetState()].params.color);
+		return Protean::Color::fromFloat4(sprites[GetState()].params.color);
 	}
 
 	enum LOCALIZATION_ID
@@ -618,7 +618,7 @@ namespace wi::gui
 		LOCALIZATION_ID_TEXT,
 		LOCALIZATION_ID_TOOLTIP,
 	};
-	void Widget::ExportLocalization(wi::Localization& localization) const
+	void Widget::ExportLocalization(Protean::Localization& localization) const
 	{
 		if (!IsLocalizationEnabled())
 			return;
@@ -626,7 +626,7 @@ namespace wi::gui
 		if (font.GetText().empty() && tooltipFont.GetText().empty())
 			return;
 
-		wi::Localization& section = localization.GetSection(GetName());
+		Protean::Localization& section = localization.GetSection(GetName());
 		section.SetSectionHint(GetWidgetTypeName());
 
 		if (has_flag(localization_enabled, LocalizationEnabled::Text) && !font.GetText().empty())
@@ -638,9 +638,9 @@ namespace wi::gui
 			section.Add(LOCALIZATION_ID_TOOLTIP, tooltipFont.GetTextA().c_str(), "tooltip");
 		}
 	}
-	void Widget::ImportLocalization(const wi::Localization& localization)
+	void Widget::ImportLocalization(const Protean::Localization& localization)
 	{
-		const wi::Localization* section = localization.CheckSection(GetName());
+		const Protean::Localization* section = localization.CheckSection(GetName());
 		if (section == nullptr)
 			return;
 
@@ -662,7 +662,7 @@ namespace wi::gui
 		}
 	}
 
-	void Widget::SetColor(wi::Color color, int id)
+	void Widget::SetColor(Protean::Color color, int id)
 	{
 		if (id < 0)
 		{
@@ -676,11 +676,11 @@ namespace wi::gui
 			sprites[id].params.color = color;
 		}
 	}
-	void Widget::SetShadowColor(wi::Color color)
+	void Widget::SetShadowColor(Protean::Color color)
 	{
 		shadow_color = color;
 	}
-	void Widget::SetImage(wi::Resource textureResource, int id)
+	void Widget::SetImage(Protean::Resource textureResource, int id)
 	{
 		if (id < 0)
 		{
@@ -760,9 +760,9 @@ namespace wi::gui
 			ApplyTransform();
 		}
 	}
-	void Widget::ApplyScissor(const wi::Canvas& canvas, const wi::graphics::Rect rect, CommandList cmd, bool constrain_to_parent) const
+	void Widget::ApplyScissor(const Protean::Canvas& canvas, const Protean::Graphics::Rect rect, CommandList cmd, bool constrain_to_parent) const
 	{
-		wi::graphics::Rect scissor = rect;
+		Protean::Graphics::Rect scissor = rect;
 
 		if (constrain_to_parent && parent != nullptr)
 		{
@@ -787,7 +787,7 @@ namespace wi::gui
 			scissor.top = scissor.bottom;
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		float scale = canvas.GetDPIScaling();
 		scissor.bottom = int32_t((float)scissor.bottom * scale);
 		scissor.top = int32_t((float)scissor.top * scale);
@@ -797,7 +797,7 @@ namespace wi::gui
 	}
 	Hitbox2D Widget::GetPointerHitbox(bool constrained) const
 	{
-		XMFLOAT4 pointer = wi::input::GetPointer();
+		XMFLOAT4 pointer = Protean::Input::GetPointer();
 		Hitbox2D hb = Hitbox2D(XMFLOAT2(pointer.x, pointer.y), XMFLOAT2(1, 1));
 		if (constrained)
 		{
@@ -805,7 +805,7 @@ namespace wi::gui
 		}
 		return hb;
 	}
-	void Widget::HitboxConstrain(wi::primitive::Hitbox2D& hb) const
+	void Widget::HitboxConstrain(Protean::Hitbox2D& hb) const
 	{
 		float left = hb.pos.x;
 		float right = hb.pos.x + hb.siz.x;
@@ -832,9 +832,9 @@ namespace wi::gui
 			parent->HitboxConstrain(hb);
 		}
 	}
-	XMFLOAT2 Widget::GetPointerHighlightPos(const wi::Canvas& canvas) const
+	XMFLOAT2 Widget::GetPointerHighlightPos(const Protean::Canvas& canvas) const
 	{
-		XMFLOAT4 pointer = wi::input::GetPointer();
+		XMFLOAT4 pointer = Protean::Input::GetPointer();
 		return XMFLOAT2(pointer.x / canvas.GetLogicalWidth(), pointer.y / canvas.GetLogicalHeight());
 	}
 
@@ -852,13 +852,13 @@ namespace wi::gui
 		OnDragEnd([](const EventArgs& args) {});
 		SetSize(XMFLOAT2(100, 20));
 
-		font.params.h_align = wi::font::WIFALIGN_CENTER;
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.h_align = Protean::Font::WIFALIGN_CENTER;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 
 		font_description.params = font.params;
-		font_description.params.h_align = wi::font::WIFALIGN_RIGHT;
+		font_description.params.h_align = Protean::Font::WIFALIGN_RIGHT;
 	}
-	void Button::Update(const wi::Canvas& canvas, float dt)
+	void Button::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -910,7 +910,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanStarting())
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanStarting())
 			{
 				if (state == FOCUS)
 				{
@@ -919,7 +919,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_RIGHT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_RIGHT))
 			{
 				if (state == FOCUS)
 				{
@@ -928,7 +928,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (state == DEACTIVATING)
 				{
@@ -970,26 +970,26 @@ namespace wi::gui
 
 		switch (font.params.h_align)
 		{
-		case wi::font::WIFALIGN_LEFT:
+		case Protean::Font::WIFALIGN_LEFT:
 			font.params.posX = translation.x + 2;
 			break;
-		case wi::font::WIFALIGN_RIGHT:
+		case Protean::Font::WIFALIGN_RIGHT:
 			font.params.posX = translation.x + scale.x - 2;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font.params.posX = translation.x + scale.x * 0.5f;
 			break;
 		}
 		switch (font.params.v_align)
 		{
-		case wi::font::WIFALIGN_TOP:
+		case Protean::Font::WIFALIGN_TOP:
 			font.params.posY = translation.y + 2;
 			break;
-		case wi::font::WIFALIGN_BOTTOM:
+		case Protean::Font::WIFALIGN_BOTTOM:
 			font.params.posY = translation.y + scale.y - 2;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font.params.posY = translation.y + scale.y * 0.5f;
 			break;
@@ -1002,28 +1002,28 @@ namespace wi::gui
 		font_description.params.posY = translation.y + scale.y * 0.5f;
 		switch (font_description.params.h_align)
 		{
-		case wi::font::WIFALIGN_LEFT:
+		case Protean::Font::WIFALIGN_LEFT:
 			font_description.params.posX = translation.x + scale.x + shadow;
 			right_text_width = font_description.TextWidth();
 			break;
-		case wi::font::WIFALIGN_RIGHT:
+		case Protean::Font::WIFALIGN_RIGHT:
 			font_description.params.posX = translation.x - shadow;
 			left_text_width = font_description.TextWidth();
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font_description.params.posX = translation.x + scale.x * 0.5f;
 			break;
 		}
 		switch (font_description.params.v_align)
 		{
-		case wi::font::WIFALIGN_TOP:
+		case Protean::Font::WIFALIGN_TOP:
 			font_description.params.posY = translation.y + scale.y + shadow;
 			break;
-		case wi::font::WIFALIGN_BOTTOM:
+		case Protean::Font::WIFALIGN_BOTTOM:
 			font_description.params.posY = translation.y - shadow;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font_description.params.posY = translation.y + scale.y * 0.5f;
 			break;
@@ -1034,7 +1034,7 @@ namespace wi::gui
 			disableClicking = false;
 		}
 	}
-	void Button::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void Button::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -1045,8 +1045,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1073,7 +1073,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		font_description.Draw(cmd);
@@ -1117,7 +1117,7 @@ namespace wi::gui
 		SetSize(XMFLOAT2(100, 100));
 		SetEnabled(false);
 	}
-	void Image::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void Image::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		if (!IsVisible())
 		{
@@ -1126,8 +1126,8 @@ namespace wi::gui
 
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[IDLE].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[IDLE].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1146,7 +1146,7 @@ namespace wi::gui
 				fx.highlight_color = shadow_highlight_color;
 				fx.highlight_spread = shadow_highlight_spread;
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		ApplyScissor(canvas, scissorRect, cmd);
@@ -1156,7 +1156,7 @@ namespace wi::gui
 
 
 
-	void ScrollBar::Update(const wi::Canvas& canvas, float dt)
+	void ScrollBar::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -1226,13 +1226,13 @@ namespace wi::gui
 			}
 
 			bool clicked = false;
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				clicked = true;
 			}
 
 			bool click_down = false;
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				click_down = true;
 				if (state == FOCUS || state == DEACTIVATING)
@@ -1253,8 +1253,8 @@ namespace wi::gui
 				{
 					scrollbar_state = SCROLLBAR_GRABBED;
 					grab_pos = pointerHitbox.pos;
-					grab_pos.x = wi::math::Clamp(grab_pos.x, scrollbar_begin + scrollbar_delta, scrollbar_begin + scrollbar_delta + scrollbar_length);
-					grab_pos.y = wi::math::Clamp(grab_pos.y, scrollbar_begin + scrollbar_delta, scrollbar_begin + scrollbar_delta + scrollbar_length);
+					grab_pos.x = Protean::Math::Clamp(grab_pos.x, scrollbar_begin + scrollbar_delta, scrollbar_begin + scrollbar_delta + scrollbar_length);
+					grab_pos.y = Protean::Math::Clamp(grab_pos.y, scrollbar_begin + scrollbar_delta, scrollbar_begin + scrollbar_delta + scrollbar_length);
 					grab_delta = scrollbar_delta;
 				}
 				else if (!click_down)
@@ -1278,10 +1278,10 @@ namespace wi::gui
 			}
 		}
 
-		scrollbar_delta = wi::math::Clamp(scrollbar_delta, 0, scrollbar_size - scrollbar_length);
+		scrollbar_delta = Protean::Math::Clamp(scrollbar_delta, 0, scrollbar_size - scrollbar_length);
 		if (scrollbar_begin < scrollbar_end - scrollbar_length)
 		{
-			scrollbar_value = wi::math::InverseLerp(scrollbar_begin, scrollbar_end - scrollbar_length, scrollbar_begin + scrollbar_delta);
+			scrollbar_value = Protean::Math::InverseLerp(scrollbar_begin, scrollbar_end - scrollbar_length, scrollbar_begin + scrollbar_delta);
 		}
 		else
 		{
@@ -1317,7 +1317,7 @@ namespace wi::gui
 			list_offset = 0;
 		}
 	}
-	void ScrollBar::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void ScrollBar::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -1328,18 +1328,18 @@ namespace wi::gui
 			return;
 
 		// scrollbar background
-		wi::image::Params fx = sprites[state].params;
+		Protean::Image::Params fx = sprites[state].params;
 		fx.pos = XMFLOAT3(translation.x, translation.y, 0);
 		fx.siz = XMFLOAT2(scale.x, scale.y);
 		fx.color = sprites[IDLE].params.color;
-		wi::image::Draw(nullptr, fx, cmd);
+		Protean::Image::Draw(nullptr, fx, cmd);
 
 
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites_knob[scrollbar_state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites_knob[scrollbar_state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1366,7 +1366,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		// scrollbar knob
@@ -1377,12 +1377,12 @@ namespace wi::gui
 		//scissorRect.left = (int32_t)(0);
 		//scissorRect.right = (int32_t)(canvas.GetPhysicalWidth());
 		//scissorRect.top = (int32_t)(0);
-		//GraphicsDevice* device = wi::graphics::GetDevice();
+		//GraphicsDevice* device = Protean::Graphics::GetDevice();
 		//device->BindScissorRects(1, &scissorRect, cmd);
-		//wi::image::Draw(nullptr, wi::image::Params(hitBox.pos.x, hitBox.pos.y, hitBox.siz.x, hitBox.siz.y, wi::Color(255,0,0,100)), cmd);
+		//Protean::Image::Draw(nullptr, Protean::Image::Params(hitBox.pos.x, hitBox.pos.y, hitBox.siz.x, hitBox.siz.y, Protean::Color(255,0,0,100)), cmd);
 
 	}
-	void ScrollBar::SetColor(wi::Color color, int id)
+	void ScrollBar::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 
@@ -1446,14 +1446,14 @@ namespace wi::gui
 		SetSize(XMFLOAT2(100, 20));
 		SetColor(GetColor()); // all states use same color by default
 
-		scrollbar.SetColor(wi::Color(80, 80, 80, 100), wi::gui::IDLE);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = wi::Color(140, 140, 140, 140);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = wi::Color(180, 180, 180, 180);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = wi::Color::White();
+		scrollbar.SetColor(Protean::Color(80, 80, 80, 100), Protean::Gui::IDLE);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = Protean::Color(140, 140, 140, 140);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = Protean::Color(180, 180, 180, 180);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = Protean::Color::White();
 		scrollbar.SetOverScroll(0.25f);
 		scrollbar.knob_inset_border = XMFLOAT2(4, 2);
 	}
-	void Label::Update(const wi::Canvas& canvas, float dt)
+	void Label::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -1472,26 +1472,26 @@ namespace wi::gui
 
 		switch (font.params.h_align)
 		{
-		case wi::font::WIFALIGN_LEFT:
+		case Protean::Font::WIFALIGN_LEFT:
 			font.params.posX = translation.x + 2 + margin_left;
 			break;
-		case wi::font::WIFALIGN_RIGHT:
+		case Protean::Font::WIFALIGN_RIGHT:
 			font.params.posX = translation.x + scale.x - 2 - margin_right;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font.params.posX = translation.x + scale.x * 0.5f;
 			break;
 		}
 		switch (font.params.v_align)
 		{
-		case wi::font::WIFALIGN_TOP:
+		case Protean::Font::WIFALIGN_TOP:
 			font.params.posY = translation.y + 2 + margin_top;
 			break;
-		case wi::font::WIFALIGN_BOTTOM:
+		case Protean::Font::WIFALIGN_BOTTOM:
 			font.params.posY = translation.y + scale.y - 2 - margin_bottom;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font.params.posY = translation.y + scale.y * 0.5f;
 			break;
@@ -1523,7 +1523,7 @@ namespace wi::gui
 			const Hitbox2D pointerHitbox = GetPointerHitbox();
 			if (scroll_allowed && scrollbar.IsEnabled() && scrollbar.IsScrollbarRequired() && pointerHitbox.intersects(hitBox))
 			{
-				const float wheel_delta = wi::input::GetPointer().z;
+				const float wheel_delta = Protean::Input::GetPointer().z;
 				const bool at_begin = (wheel_delta > 0 && scrollbar.IsScrolledToBegin());
 				if (wheel_delta != 0.0f && !at_begin)
 				{
@@ -1538,7 +1538,7 @@ namespace wi::gui
 				state = IDLE;
 			}
 
-			if (pointerHitbox.intersects(hitBox) && wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+			if (pointerHitbox.intersects(hitBox) && Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT))
 			{
 				Activate();
 			}
@@ -1553,7 +1553,7 @@ namespace wi::gui
 			font.params.posY += scrollbar.GetOffset();
 		}
 	}
-	void Label::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void Label::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -1564,8 +1564,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -1592,7 +1592,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		ApplyScissor(canvas, scissorRect, cmd);
@@ -1605,7 +1605,7 @@ namespace wi::gui
 			scrollbar.Render(canvas, cmd);
 		}
 	}
-	void Label::SetColor(wi::Color color, int id)
+	void Label::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 		scrollbar.SetColor(color, id);
@@ -1619,28 +1619,28 @@ namespace wi::gui
 
 
 
-	wi::SpriteFont TextInputField::font_input;
+	Protean::SpriteFont TextInputField::font_input;
 	int caret_pos = 0;
 	int caret_begin = 0;
 	int caret_delay = 0;
 	bool input_updated = false;
 	bool doubleclick_select = false;
-	wi::Timer caret_timer;
-	wi::Timer key_repeat_timer;
-	wi::input::BUTTON key_repeat_button = {};
+	Protean::Timer caret_timer;
+	Protean::Timer key_repeat_timer;
+	Protean::Input::BUTTON key_repeat_button = {};
 	bool key_repeat_active = false;
 	static constexpr float KEY_REPEAT_DELAY = 0.5f;
 	static constexpr float KEY_REPEAT_RATE = 0.035f;
-	bool KeyRepeat(wi::input::BUTTON button)
+	bool KeyRepeat(Protean::Input::BUTTON button)
 	{
-		if (wi::input::Press(button))
+		if (Protean::Input::Press(button))
 		{
 			key_repeat_button = button;
 			key_repeat_timer.record();
 			key_repeat_active = false;
 			return true;
 		}
-		if (wi::input::Down(button) && key_repeat_button == button)
+		if (Protean::Input::Down(button) && key_repeat_button == button)
 		{
 			const float elapsed = (float)key_repeat_timer.elapsed_seconds();
 			if (!key_repeat_active && elapsed > KEY_REPEAT_DELAY)
@@ -1735,12 +1735,12 @@ namespace wi::gui
 		OnInputAccepted([](const EventArgs& args) {});
 		SetSize(XMFLOAT2(100, 20));
 
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 
 		font_description.params = font.params;
-		font_description.params.h_align = wi::font::WIFALIGN_RIGHT;
+		font_description.params.h_align = Protean::Font::WIFALIGN_RIGHT;
 
-		SetLocalizationEnabled(wi::gui::LocalizationEnabled::Tooltip); // disable localization of text because that can come from user input and musn't be overwritten!
+		SetLocalizationEnabled(Protean::Gui::LocalizationEnabled::Tooltip); // disable localization of text because that can come from user input and musn't be overwritten!
 	}
 	void TextInputField::SetValue(const std::string& newValue)
 	{
@@ -1785,7 +1785,7 @@ namespace wi::gui
 		}
 		return GetValue();
 	}
-	void TextInputField::Update(const wi::Canvas& canvas, float dt)
+	void TextInputField::Update(const Protean::Canvas& canvas, float dt)
 	{
 		const bool was_active = (state == ACTIVE);
 
@@ -1840,23 +1840,23 @@ namespace wi::gui
 			}
 
 			bool leftButtonClicked = false;
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT))
 			{
 				leftButtonClicked = true;
 			}
 			bool rightButtonClicked = false;
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_RIGHT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_RIGHT))
 			{
 				rightButtonClicked = true;
 			}
 
 			if (state == ACTIVE)
 			{
-				if (!wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+				if (!Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT))
 				{
 					doubleclick_select = false;
 				}
-				if (wi::input::Press(wi::input::KEYBOARD_BUTTON_ENTER))
+				if (Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_ENTER))
 				{
 					// accept input, evaluating arithmetic expressions (e.g. "10 * 2" -> "20")
 					std::string inputStr = font_input.GetTextA();
@@ -1887,54 +1887,54 @@ namespace wi::gui
 					}
 					Deactivate();
 				}
-				//else if (wi::input::Press(wi::input::KEYBOARD_BUTTON_BACKSPACE))
+				//else if (Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_BACKSPACE))
 				//{
 				//	// delete input...
 				//	DeleteFromInput(-1);
 				//}
-				else if (KeyRepeat(wi::input::KEYBOARD_BUTTON_DELETE))
+				else if (KeyRepeat(Protean::Input::KEYBOARD_BUTTON_DELETE))
 				{
 					// delete input...
 					DeleteFromInput(1);
 				}
-				else if (KeyRepeat(wi::input::KEYBOARD_BUTTON_LEFT) && caret_pos > 0)
+				else if (KeyRepeat(Protean::Input::KEYBOARD_BUTTON_LEFT) && caret_pos > 0)
 				{
 					// caret repositioning left:
 					caret_pos--;
-					if (!wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_LSHIFT) && !wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
+					if (!Protean::Input::Down(Protean::Input::BUTTON::KEYBOARD_BUTTON_LSHIFT) && !Protean::Input::Down(Protean::Input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
 					{
 						caret_begin = caret_pos;
 					}
 					caret_timer.record();
 				}
-				else if (KeyRepeat(wi::input::KEYBOARD_BUTTON_RIGHT))
+				else if (KeyRepeat(Protean::Input::KEYBOARD_BUTTON_RIGHT))
 				{
 					// caret repositioning right:
 					if (caret_pos < font_input.GetText().size())
 					{
 						caret_pos++;
 					}
-					if (!wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_LSHIFT) && !wi::input::Down(wi::input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
+					if (!Protean::Input::Down(Protean::Input::BUTTON::KEYBOARD_BUTTON_LSHIFT) && !Protean::Input::Down(Protean::Input::BUTTON::KEYBOARD_BUTTON_RSHIFT))
 					{
 						caret_begin = caret_pos;
 					}
 					caret_timer.record();
 				}
-				else if ((leftButtonClicked && !intersectsPointer) || (rightButtonClicked && !intersectsPointer) || wi::input::Press(wi::input::KEYBOARD_BUTTON_ESCAPE))
+				else if ((leftButtonClicked && !intersectsPointer) || (rightButtonClicked && !intersectsPointer) || Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_ESCAPE))
 				{
 					// cancel input
 					font_input.text.clear();
 					typing_active = false;
 					state = IDLE;
 				}
-				else if (leftButtonClicked && intersectsPointer && wi::input::IsDoubleClicked())
+				else if (leftButtonClicked && intersectsPointer && Protean::Input::IsDoubleClicked())
 				{
 					caret_begin = 0;
 					caret_pos = (int)font_input.GetText().size();
 					caret_timer.record();
 					doubleclick_select = true;
 				}
-				else if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) && !doubleclick_select)
+				else if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) && !doubleclick_select)
 				{
 					// caret repositioning by mouse click:
 					caret_timer.record();
@@ -1943,7 +1943,7 @@ namespace wi::gui
 					float pos = font_input.params.position.x;
 					for (size_t i = 0; i < str.size(); ++i)
 					{
-						XMFLOAT2 size = wi::font::TextSize(str.c_str() + i, 1, font_input.params);
+						XMFLOAT2 size = Protean::Font::TextSize(str.c_str() + i, 1, font_input.params);
 						pos += size.x;
 						if (pos > pointerHitbox.pos.x)
 						{
@@ -1962,7 +1962,7 @@ namespace wi::gui
 					}
 				}
 
-				if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) && wi::input::Down((wi::input::BUTTON)'A'))
+				if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) && Protean::Input::Down((Protean::Input::BUTTON)'A'))
 				{
 					caret_begin = 0;
 					caret_pos = (int)font_input.GetText().size();
@@ -1973,7 +1973,7 @@ namespace wi::gui
 			if (leftButtonClicked && state == FOCUS)
 			{
 				// activate
-				const bool select_all = intersectsPointer && wi::input::IsDoubleClicked();
+				const bool select_all = intersectsPointer && Protean::Input::IsDoubleClicked();
 				SetAsActive(select_all);
 				doubleclick_select = select_all;
 			}
@@ -1988,28 +1988,28 @@ namespace wi::gui
 		font_description.params.posY = translation.y + scale.y * 0.5f;
 		switch (font_description.params.h_align)
 		{
-		case wi::font::WIFALIGN_LEFT:
+		case Protean::Font::WIFALIGN_LEFT:
 			font_description.params.posX = translation.x + scale.x + shadow;
 			right_text_width = font_description.TextWidth();
 			break;
-		case wi::font::WIFALIGN_RIGHT:
+		case Protean::Font::WIFALIGN_RIGHT:
 			font_description.params.posX = translation.x - shadow;
 			left_text_width = font_description.TextWidth();
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font_description.params.posX = translation.x + scale.x * 0.5f;
 			break;
 		}
 		switch (font_description.params.v_align)
 		{
-		case wi::font::WIFALIGN_TOP:
+		case Protean::Font::WIFALIGN_TOP:
 			font_description.params.posY = translation.y + scale.y + shadow;
 			break;
-		case wi::font::WIFALIGN_BOTTOM:
+		case Protean::Font::WIFALIGN_BOTTOM:
 			font_description.params.posY = translation.y - shadow;
 			break;
-		case wi::font::WIFALIGN_CENTER:
+		case Protean::Font::WIFALIGN_CENTER:
 		default:
 			font_description.params.posY = translation.y + scale.y * 0.5f;
 			break;
@@ -2026,7 +2026,7 @@ namespace wi::gui
 
 			if (input_updated && onInput)
 			{
-				wi::gui::EventArgs args;
+				Protean::Gui::EventArgs args;
 				args.sValue = GetCurrentInputValue();
 				onInput(args);
 			}
@@ -2034,7 +2034,7 @@ namespace wi::gui
 		}
 
 	}
-	void TextInputField::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void TextInputField::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -2045,8 +2045,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -2073,7 +2073,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		font_description.Draw(cmd);
@@ -2089,14 +2089,14 @@ namespace wi::gui
 			// caret:
 			if(std::fmod(caret_timer.elapsed_seconds(), 1) < 0.5f)
 			{
-				wi::font::Params params = font_input.params;
-				XMFLOAT2 size = wi::font::TextSize(font_input.GetText().c_str(), caret_pos, font_input.params);
+				Protean::Font::Params params = font_input.params;
+				XMFLOAT2 size = Protean::Font::TextSize(font_input.GetText().c_str(), caret_pos, font_input.params);
 				params.posX += size.x;
-				params.color = wi::Color::lerp(params.color, wi::Color::Transparent(), 0.1f);
+				params.color = Protean::Color::lerp(params.color, Protean::Color::Transparent(), 0.1f);
 				params.size += 4;
 				params.posY -= 2;
-				params.h_align = wi::font::WIFALIGN_CENTER;
-				wi::font::Draw(L"|", params, cmd);
+				params.h_align = Protean::Font::WIFALIGN_CENTER;
+				Protean::Font::Draw(L"|", params, cmd);
 			}
 
 			// selection:
@@ -2105,17 +2105,17 @@ namespace wi::gui
 				int start = std::min(caret_begin, caret_pos);
 				int end = std::max(caret_begin, caret_pos);
 				const std::wstring& str = font_input.GetText();
-				float pos_start = font_input.params.position.x + wi::font::TextSize(str.c_str(), start, font_input.params).x;
-				float pos_end = font_input.params.position.x + wi::font::TextSize(str.c_str(), end, font_input.params).x;
+				float pos_start = font_input.params.position.x + Protean::Font::TextSize(str.c_str(), start, font_input.params).x;
+				float pos_end = font_input.params.position.x + Protean::Font::TextSize(str.c_str(), end, font_input.params).x;
 				float width = pos_end - pos_start;
-				wi::image::Params params;
+				Protean::Image::Params params;
 				params.pos.x = pos_start;
 				params.pos.y = translation.y + 1;
 				params.siz.x = width;
 				params.siz.y = scale.y - 2;
-				params.blendFlag = wi::enums::BLENDMODE_ALPHA;
-				params.color = wi::Color::lerp(font_input.params.color, wi::Color::Transparent(), 0.5f);
-				wi::image::Draw(nullptr, params, cmd);
+				params.blendFlag = Protean::BLENDMODE_ALPHA;
+				params.color = Protean::Color::lerp(font_input.params.color, Protean::Color::Transparent(), 0.5f);
+				Protean::Image::Draw(nullptr, params, cmd);
 			}
 
 			//Rect scissorRect;
@@ -2123,9 +2123,9 @@ namespace wi::gui
 			//scissorRect.left = (int32_t)(0);
 			//scissorRect.right = (int32_t)(canvas.GetPhysicalWidth());
 			//scissorRect.top = (int32_t)(0);
-			//GraphicsDevice* device = wi::graphics::GetDevice();
+			//GraphicsDevice* device = Protean::Graphics::GetDevice();
 			//device->BindScissorRects(1, &scissorRect, cmd);
-			//wi::font::Draw("caret_begin = " + std::to_string(caret_begin) + "\ncaret_pos = " + std::to_string(caret_pos), wi::font::Params(0, 20), cmd);
+			//Protean::Font::Draw("caret_begin = " + std::to_string(caret_begin) + "\ncaret_pos = " + std::to_string(caret_pos), Protean::Font::Params(0, 20), cmd);
 		}
 		else
 		{
@@ -2165,19 +2165,19 @@ namespace wi::gui
 			}
 			int num = 0;
 #ifdef __APPLE__
-			if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCOMMAND) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCOMMAND))
+			if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCOMMAND) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCOMMAND))
 #else
-			if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL))
+			if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCONTROL))
 #endif // __APPLE__
 			{
-				if (wi::input::Down((wi::input::BUTTON)'V'))
+				if (Protean::Input::Down((Protean::Input::BUTTON)'V'))
 				{
 					// Paste:
-					std::wstring clipboard = wi::helper::GetClipboardText();
+					std::wstring clipboard = Protean::Helper::GetClipboardText();
 					value_new.insert(value_new.begin() + caret_pos, clipboard.begin(), clipboard.end());
 					num = (int)clipboard.length();
 				}
-				else if (wi::input::Down((wi::input::BUTTON)'C'))
+				else if (Protean::Input::Down((Protean::Input::BUTTON)'C'))
 				{
 					// Copy:
 					caret_pos = caret_pos_prev;
@@ -2185,10 +2185,10 @@ namespace wi::gui
 					int start = std::min(caret_begin, caret_pos);
 					int end = std::max(caret_begin, caret_pos);
 					std::wstring clipboard = std::wstring(text.c_str() + start, text.c_str() + end);
-					wi::helper::SetClipboardText(clipboard);
+					Protean::Helper::SetClipboardText(clipboard);
 					return;
 				}
-				else if (wi::input::Down((wi::input::BUTTON)'X'))
+				else if (Protean::Input::Down((Protean::Input::BUTTON)'X'))
 				{
 					// Cut:
 					caret_pos = caret_pos_prev;
@@ -2196,7 +2196,7 @@ namespace wi::gui
 					int start = std::min(caret_begin, caret_pos);
 					int end = std::max(caret_begin, caret_pos);
 					std::wstring clipboard = std::wstring(text.c_str() + start, text.c_str() + end);
-					wi::helper::SetClipboardText(clipboard);
+					Protean::Helper::SetClipboardText(clipboard);
 				}
 				else
 					return;
@@ -2247,7 +2247,7 @@ namespace wi::gui
 		caret_begin = caret_pos;
 		font_input.SetText(value_new);
 	}
-	void TextInputField::SetColor(wi::Color color, int id)
+	void TextInputField::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 
@@ -2352,13 +2352,13 @@ namespace wi::gui
 			sprites_knob[i].params = sprites[i].params;
 		}
 
-		sprites[IDLE].params.color = wi::Color(60, 60, 60, 200);
-		sprites[FOCUS].params.color = wi::Color(50, 50, 50, 200);
-		sprites[ACTIVE].params.color = wi::Color(50, 50, 50, 200);
-		sprites[DEACTIVATING].params.color = wi::Color(60, 60, 60, 200);
+		sprites[IDLE].params.color = Protean::Color(60, 60, 60, 200);
+		sprites[FOCUS].params.color = Protean::Color(50, 50, 50, 200);
+		sprites[ACTIVE].params.color = Protean::Color(50, 50, 50, 200);
+		sprites[DEACTIVATING].params.color = Protean::Color(60, 60, 60, 200);
 
-		font.params.h_align = wi::font::WIFALIGN_RIGHT;
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.h_align = Protean::Font::WIFALIGN_RIGHT;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 	}
 	void Slider::SetValue(float value)
 	{
@@ -2376,9 +2376,9 @@ namespace wi::gui
 	{
 		this->start = start;
 		this->end = end;
-		this->value = wi::math::Clamp(this->value, start, end);
+		this->value = Protean::Math::Clamp(this->value, start, end);
 	}
-	void Slider::Update(const wi::Canvas& canvas, float dt)
+	void Slider::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -2391,7 +2391,7 @@ namespace wi::gui
 		if (state != ACTIVE)
 		{
 			// only set input field size when slider is not dragged because now it will modify slider active size too, and slider size shouldn't be modified while dragging!
-			valueInputField.SetSize(XMFLOAT2(std::max(scale.y, wi::font::TextWidth(valueInputField.GetCurrentInputValue(), valueInputField.font.params) + 4), scale.y));
+			valueInputField.SetSize(XMFLOAT2(std::max(scale.y, Protean::Font::TextWidth(valueInputField.GetCurrentInputValue(), valueInputField.font.params) + 4), scale.y));
 			valueInputField.SetPos(XMFLOAT2(translation.x + scale.x - valueInputField.GetSize().x, translation.y));
 		}
 		valueInputField.AttachTo(this);
@@ -2425,7 +2425,7 @@ namespace wi::gui
 			}
 			if (state == ACTIVE)
 			{
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 				{
 					if (state == ACTIVE)
 					{
@@ -2450,7 +2450,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (state == FOCUS)
 				{
@@ -2464,12 +2464,12 @@ namespace wi::gui
 			{
 				EventArgs args;
 				args.clickPos = pointerHitbox.pos;
-				value = wi::math::InverseLerp(translation.x, translation.x + hitBox.siz.x, args.clickPos.x);
-				value = wi::math::Clamp(value, 0, 1);
+				value = Protean::Math::InverseLerp(translation.x, translation.x + hitBox.siz.x, args.clickPos.x);
+				value = Protean::Math::Clamp(value, 0, 1);
 				value *= step;
 				value = std::floor(value);
 				value /= step;
-				value = wi::math::Lerp(start, end, value);
+				value = Protean::Math::Lerp(start, end, value);
 				args.fValue = value;
 				args.iValue = (int)value;
 				onSlide(args);
@@ -2483,7 +2483,7 @@ namespace wi::gui
 
 		const float knobWidth = sprites_knob[state].params.siz.x;
 		const float knobWidthHalf = knobWidth * 0.5f;
-		sprites_knob[state].params.pos.x = wi::math::Lerp(translation.x + knobWidthHalf + 2, translation.x + hitBox.siz.x - knobWidthHalf - 2, wi::math::Clamp(wi::math::InverseLerp(start, end, value), 0, 1));
+		sprites_knob[state].params.pos.x = Protean::Math::Lerp(translation.x + knobWidthHalf + 2, translation.x + hitBox.siz.x - knobWidthHalf - 2, Protean::Math::Clamp(Protean::Math::InverseLerp(start, end, value), 0, 1));
 		sprites_knob[state].params.pos.y = translation.y + 2;
 		sprites_knob[state].params.siz.y = scale.y - 4;
 		sprites_knob[state].params.pivot = XMFLOAT2(0.5f, 0);
@@ -2493,7 +2493,7 @@ namespace wi::gui
 
 		left_text_width = font.TextWidth();
 	}
-	void Slider::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void Slider::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -2504,8 +2504,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x = scale.x;
@@ -2533,7 +2533,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		font.Draw(cmd);
@@ -2549,7 +2549,7 @@ namespace wi::gui
 		// input field
 		valueInputField.Render(canvas, cmd);
 	}
-	void Slider::RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+	void Slider::RenderTooltip(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 	{
 		Widget::RenderTooltip(canvas, cmd);
 		valueInputField.RenderTooltip(canvas, cmd);
@@ -2558,7 +2558,7 @@ namespace wi::gui
 	{
 		onSlide = std::move(func);
 	}
-	void Slider::SetColor(wi::Color color, int id)
+	void Slider::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 		valueInputField.SetColor(color, id);
@@ -2604,10 +2604,10 @@ namespace wi::gui
 		OnClick([](const EventArgs& args) {});
 		SetSize(XMFLOAT2(20, 20));
 
-		font.params.h_align = wi::font::WIFALIGN_RIGHT;
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.h_align = Protean::Font::WIFALIGN_RIGHT;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 	}
-	void CheckBox::Update(const wi::Canvas& canvas, float dt)
+	void CheckBox::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -2648,7 +2648,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT))
 			{
 				if (state == FOCUS)
 				{
@@ -2658,7 +2658,7 @@ namespace wi::gui
 
 			if (state == DEACTIVATING)
 			{
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT))
 				{
 					// Keep pressed until mouse is released
 					Activate();
@@ -2679,7 +2679,7 @@ namespace wi::gui
 
 		left_text_width = font.TextWidth();
 	}
-	void CheckBox::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void CheckBox::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -2690,8 +2690,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -2718,7 +2718,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		font.Draw(cmd);
@@ -2734,53 +2734,53 @@ namespace wi::gui
 			if (!check_text.empty())
 			{
 				// render text symbol:
-				wi::font::Params params;
+				Protean::Font::Params params;
 				params.posX = translation.x + scale.x * 0.5f;
 				params.posY = translation.y + scale.y * 0.5f;
-				params.h_align = wi::font::WIFALIGN_CENTER;
-				params.v_align = wi::font::WIFALIGN_CENTER;
+				params.h_align = Protean::Font::WIFALIGN_CENTER;
+				params.v_align = Protean::Font::WIFALIGN_CENTER;
 				params.size = int(scale.y);
 				params.scaling = 0.75f;
 				params.color = font.params.color;
-				wi::font::Draw(check_text, params, cmd);
+				Protean::Font::Draw(check_text, params, cmd);
 			}
 			else if (!check_text_global.empty())
 			{
 				// render text symbol:
-				wi::font::Params params;
+				Protean::Font::Params params;
 				params.posX = translation.x + scale.x * 0.5f;
 				params.posY = translation.y + scale.y * 0.5f;
-				params.h_align = wi::font::WIFALIGN_CENTER;
-				params.v_align = wi::font::WIFALIGN_CENTER;
+				params.h_align = Protean::Font::WIFALIGN_CENTER;
+				params.v_align = Protean::Font::WIFALIGN_CENTER;
 				params.size = int(scale.y);
 				params.scaling = 0.75f;
 				params.color = font.params.color;
-				wi::font::Draw(check_text_global, params, cmd);
+				Protean::Font::Draw(check_text_global, params, cmd);
 			}
 			else
 			{
 				// simple square:
-				wi::image::Params params(
+				Protean::Image::Params params(
 					translation.x + scale.x * 0.25f,
 					translation.y + scale.y * 0.25f,
 					scale.x * 0.5f,
 					scale.y * 0.5f
 				);
 				params.color = font.params.color;
-				wi::image::Draw(nullptr, params, cmd);
+				Protean::Image::Draw(nullptr, params, cmd);
 			}
 		}
 		else if (!uncheck_text.empty())
 		{
-			wi::font::Params params;
+			Protean::Font::Params params;
 			params.posX = translation.x + scale.x * 0.5f;
 			params.posY = translation.y + scale.y * 0.5f;
-			params.h_align = wi::font::WIFALIGN_CENTER;
-			params.v_align = wi::font::WIFALIGN_CENTER;
+			params.h_align = Protean::Font::WIFALIGN_CENTER;
+			params.v_align = Protean::Font::WIFALIGN_CENTER;
 			params.size = int(scale.y);
 			params.scaling = 0.75f;
 			params.color = font.params.color;
-			wi::font::Draw(uncheck_text, params, cmd);
+			Protean::Font::Draw(uncheck_text, params, cmd);
 		}
 
 	}
@@ -2799,15 +2799,15 @@ namespace wi::gui
 
 	void CheckBox::SetCheckTextGlobal(const std::string& text)
 	{
-		wi::helper::StringConvert(text, check_text_global);
+		Protean::Helper::StringConvert(text, check_text_global);
 	}
 	void CheckBox::SetCheckText(const std::string& text)
 	{
-		wi::helper::StringConvert(text, check_text);
+		Protean::Helper::StringConvert(text, check_text);
 	}
 	void CheckBox::SetUnCheckText(const std::string& text)
 	{
-		wi::helper::StringConvert(text, uncheck_text);
+		Protean::Helper::StringConvert(text, uncheck_text);
 	}
 
 
@@ -2822,17 +2822,17 @@ namespace wi::gui
 		OnSelect([](const EventArgs& args) {});
 		SetSize(XMFLOAT2(100, 20));
 
-		font.params.h_align = wi::font::WIFALIGN_RIGHT;
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.h_align = Protean::Font::WIFALIGN_RIGHT;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 
 		selected_font = font;
-		selected_font.params.h_align = wi::font::WIFALIGN_CENTER;
-		selected_font.params.v_align = wi::font::WIFALIGN_CENTER;
+		selected_font.params.h_align = Protean::Font::WIFALIGN_CENTER;
+		selected_font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 
 		filter.Create("");
 		filter.SetCancelInputEnabled(false);
 	}
-	float ComboBox::GetDropOffset(const wi::Canvas& canvas) const
+	float ComboBox::GetDropOffset(const Protean::Canvas& canvas) const
 	{
 		float screenheight = canvas.GetLogicalHeight();
 		int visible_items = std::min(maxVisibleItemCount, filteredItemCount - firstItemVisible);
@@ -2841,7 +2841,7 @@ namespace wi::gui
 			visible_items = 0;
 			for (int i = firstItemVisible; (i < (int)items.size()) && (visible_items < maxVisibleItemCount); ++i)
 			{
-				if (wi::helper::toUpper(items[i].name).find(filterText) != std::string::npos)
+				if (Protean::Helper::toUpper(items[i].name).find(filterText) != std::string::npos)
 				{
 					visible_items++;
 				}
@@ -2854,7 +2854,7 @@ namespace wi::gui
 		}
 		return combo_height(); // space for filter sub-widget above
 	}
-	float ComboBox::GetDropX(const wi::Canvas& canvas) const
+	float ComboBox::GetDropX(const Protean::Canvas& canvas) const
 	{
 		if (fixed_drop_width && translation.x > canvas.GetLogicalWidth() * 0.5f)
 		{
@@ -2869,14 +2869,14 @@ namespace wi::gui
 		}
 		return translation.x;
 	}
-	float ComboBox::GetItemOffset(const wi::Canvas& canvas, int index) const
+	float ComboBox::GetItemOffset(const Protean::Canvas& canvas, int index) const
 	{
 		if (!filterText.empty())
 		{
 			int invisible_items = 0;
 			for (int i = firstItemVisible; (i < (int)items.size()) && (i < index); ++i)
 			{
-				if (wi::helper::toUpper(items[i].name).find(filterText) == std::string::npos)
+				if (Protean::Helper::toUpper(items[i].name).find(filterText) == std::string::npos)
 				{
 					invisible_items++;
 				}
@@ -2890,7 +2890,7 @@ namespace wi::gui
 	{
 		return maxVisibleItemCount < filteredItemCount;
 	}
-	void ComboBox::Update(const wi::Canvas& canvas, float dt)
+	void ComboBox::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -2947,14 +2947,14 @@ namespace wi::gui
 					}
 				}
 
-				if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+				if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT))
 				{
 					// activate
 					clicked = true;
 				}
 
 				bool click_down = false;
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 				{
 					click_down = true;
 					if (state == DEACTIVATING)
@@ -2978,7 +2978,7 @@ namespace wi::gui
 						filteredItemCount = 0;
 						for (int i = 0; i < (int)items.size(); ++i)
 						{
-							if (wi::helper::toUpper(items[i].name).find(filterText) == std::string::npos)
+							if (Protean::Helper::toUpper(items[i].name).find(filterText) == std::string::npos)
 								continue;
 							filteredItemCount++;
 						}
@@ -2998,8 +2998,8 @@ namespace wi::gui
 								{
 									filter.SetAsActive();
 									combostate = COMBOSTATE_SCROLLBAR_GRABBED;
-									scrollbar_delta = wi::math::Clamp(pointerHitbox.pos.y, scrollbar_begin, scrollbar_end) - scrollbar_begin;
-									const float scrollbar_value = wi::math::InverseLerp(scrollbar_begin, scrollbar_end, scrollbar_begin + scrollbar_delta);
+									scrollbar_delta = Protean::Math::Clamp(pointerHitbox.pos.y, scrollbar_begin, scrollbar_end) - scrollbar_begin;
+									const float scrollbar_value = Protean::Math::InverseLerp(scrollbar_begin, scrollbar_end, scrollbar_begin + scrollbar_delta);
 									firstItemVisible = int(float(std::max(0, filteredItemCount - maxVisibleItemCount)) * scrollbar_value + 0.5f);
 									firstItemVisible = std::max(0, std::min(filteredItemCount - maxVisibleItemCount, firstItemVisible));
 								}
@@ -3020,7 +3020,7 @@ namespace wi::gui
 						combostate = COMBOSTATE_HOVER;
 						filter.SetAsActive();
 					}
-					else if (combostate == COMBOSTATE_SELECTING || wi::input::Press(wi::input::KEYBOARD_BUTTON_ESCAPE))
+					else if (combostate == COMBOSTATE_SELECTING || Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_ESCAPE))
 					{
 						Deactivate();
 						combostate = COMBOSTATE_INACTIVE;
@@ -3031,13 +3031,13 @@ namespace wi::gui
 
 						if (HasScrollbar())
 						{
-							int scroll = int(wi::input::GetPointer().z - wi::input::GetTouchPan().y * 0.1f);
+							int scroll = int(Protean::Input::GetPointer().z - Protean::Input::GetTouchPan().y * 0.1f);
 							firstItemVisible -= scroll;
 							firstItemVisible = std::max(0, std::min(filteredItemCount - maxVisibleItemCount, firstItemVisible));
 							if (scroll)
 							{
-								const float scrollbar_value = wi::math::InverseLerp(0, float(std::max(0, filteredItemCount - maxVisibleItemCount)), float(firstItemVisible));
-								scrollbar_delta = wi::math::Lerp(scrollbar_begin, scrollbar_end, scrollbar_value) - scrollbar_begin;
+								const float scrollbar_value = Protean::Math::InverseLerp(0, float(std::max(0, filteredItemCount - maxVisibleItemCount)), float(firstItemVisible));
+								scrollbar_delta = Protean::Math::Lerp(scrollbar_begin, scrollbar_end, scrollbar_value) - scrollbar_begin;
 							}
 						}
 
@@ -3045,7 +3045,7 @@ namespace wi::gui
 						int visible_items = 0;
 						for (int i = firstItemVisible; (i < (int)items.size()) && (visible_items < maxVisibleItemCount); ++i)
 						{
-							if (!filterText.empty() && wi::helper::toUpper(items[i].name).find(filterText) == std::string::npos)
+							if (!filterText.empty() && Protean::Helper::toUpper(items[i].name).find(filterText) == std::string::npos)
 								continue;
 							visible_items++;
 							Hitbox2D itembox;
@@ -3094,7 +3094,7 @@ namespace wi::gui
 					filter.translation_local.x = drop_x;
 					filter.translation_local.y = translation.y + scale.y + drop_offset - combo_height() + filter.GetShadowRadius();
 					filter.SetDirty();
-					std::string newFilterText = wi::helper::toUpper(filter.GetText());
+					std::string newFilterText = Protean::Helper::toUpper(filter.GetText());
 					if (newFilterText != filterText)
 					{
 						firstItemVisible = 0;
@@ -3149,14 +3149,14 @@ namespace wi::gui
 
 		left_text_width = font.TextWidth();
 	}
-	void ComboBox::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void ComboBox::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
 		{
 			return;
 		}
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		const float drop_width = fixed_drop_width > 0 ? fixed_drop_width : (scale.x - 1 - scale.y);
 		const float drop_x = GetDropX(canvas);
@@ -3164,8 +3164,8 @@ namespace wi::gui
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x = scale.x;
@@ -3193,13 +3193,13 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
-		wi::Color color = GetColor();
+		Protean::Color color = GetColor();
 		if (combostate != COMBOSTATE_INACTIVE)
 		{
-			color = wi::Color::fromFloat4(sprites[FOCUS].params.color);
+			color = Protean::Color::fromFloat4(sprites[FOCUS].params.color);
 		}
 
 		font.Draw(cmd);
@@ -3220,7 +3220,7 @@ namespace wi::gui
 				vertices[0].col = XMFLOAT4(1, 1, 1, 1);
 				vertices[1].col = XMFLOAT4(1, 1, 1, 1);
 				vertices[2].col = XMFLOAT4(1, 1, 1, 1);
-				wi::math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
+				Protean::Math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
 
 				GPUBufferDesc desc;
 				desc.bind_flags = BindFlag::VERTEX_BUFFER;
@@ -3230,11 +3230,11 @@ namespace wi::gui
 			const XMMATRIX Projection = canvas.GetProjection();
 
 			// control-arrow-background
-			wi::image::Params fx = sprites[state].params;
+			Protean::Image::Params fx = sprites[state].params;
 			fx.disableCornerRounding();
 			fx.pos = XMFLOAT3(translation.x + scale.x - scale.y, translation.y, 0);
 			fx.siz = XMFLOAT2(scale.y, scale.y);
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 
 			// control-arrow-triangle
 			{
@@ -3271,7 +3271,7 @@ namespace wi::gui
 		if (state == ACTIVE)
 		{
 			{
-				wi::graphics::Rect fullscissorRect;
+				Protean::Graphics::Rect fullscissorRect;
 				fullscissorRect.bottom = (int32_t)(canvas.GetPhysicalHeight());
 				fullscissorRect.left = (int32_t)(0);
 				fullscissorRect.right = (int32_t)(canvas.GetPhysicalWidth());
@@ -3282,7 +3282,7 @@ namespace wi::gui
 
 			if (HasScrollbar())
 			{
-				wi::graphics::Rect rect;
+				Protean::Graphics::Rect rect;
 				rect.left = int(drop_x + drop_width + 1);
 				rect.right = int(drop_x + drop_width + 1 + scale.y);
 				rect.top = int(translation.y + scale.y + drop_offset);
@@ -3291,28 +3291,28 @@ namespace wi::gui
 
 				// control-scrollbar-base
 				{
-					wi::image::Params fx = sprites[state].params;
+					Protean::Image::Params fx = sprites[state].params;
 					fx.disableCornerRounding();
 					fx.pos = XMFLOAT3(drop_x + drop_width + 1, translation.y + scale.y + drop_offset, 0);
 					fx.siz = XMFLOAT2(scale.y, combo_height() * maxVisibleItemCount);
 					fx.color = drop_color;
-					wi::image::Draw(nullptr, fx, cmd);
+					Protean::Image::Draw(nullptr, fx, cmd);
 				}
 
 				// control-scrollbar-grab
 				{
-					wi::Color col = wi::Color::fromFloat4(sprites[IDLE].params.color);
+					Protean::Color col = Protean::Color::fromFloat4(sprites[IDLE].params.color);
 					if (combostate == COMBOSTATE_SCROLLBAR_HOVER)
 					{
-						col = wi::Color::fromFloat4(sprites[FOCUS].params.color);
+						col = Protean::Color::fromFloat4(sprites[FOCUS].params.color);
 					}
 					else if (combostate == COMBOSTATE_SCROLLBAR_GRABBED)
 					{
-						col = wi::Color::fromFloat4(sprites[ACTIVE].params.color);
+						col = Protean::Color::fromFloat4(sprites[ACTIVE].params.color);
 					}
-					wi::image::Draw(
+					Protean::Image::Draw(
 						nullptr,
-						wi::image::Params(
+						Protean::Image::Params(
 							drop_x + drop_width + 1,
 							translation.y + scale.y + drop_offset + scrollbar_delta,
 							scale.y,
@@ -3324,7 +3324,7 @@ namespace wi::gui
 				}
 			}
 
-			wi::graphics::Rect rect;
+			Protean::Graphics::Rect rect;
 			rect.left = int(drop_x);
 			rect.right = rect.left + int(drop_width);
 			rect.top = int(translation.y + scale.y + drop_offset);
@@ -3335,10 +3335,10 @@ namespace wi::gui
 			int visible_items = 0;
 			for (int i = firstItemVisible; (i < (int)items.size()) && (visible_items < maxVisibleItemCount); ++i)
 			{
-				if (!filterText.empty() && wi::helper::toUpper(items[i].name).find(filterText) == std::string::npos)
+				if (!filterText.empty() && Protean::Helper::toUpper(items[i].name).find(filterText) == std::string::npos)
 					continue;
 				visible_items++;
-				wi::image::Params fx = sprites[state].params;
+				Protean::Image::Params fx = sprites[state].params;
 				fx.disableCornerRounding();
 				fx.pos = XMFLOAT3(drop_x, translation.y + GetItemOffset(canvas, i), 0);
 				fx.siz = XMFLOAT2(drop_width, combo_height());
@@ -3354,19 +3354,19 @@ namespace wi::gui
 						fx.color = sprites[ACTIVE].params.color;
 					}
 				}
-				wi::image::Draw(nullptr, fx, cmd);
+				Protean::Image::Draw(nullptr, fx, cmd);
 
-				wi::font::Params fp = wi::font::Params(
+				Protean::Font::Params fp = Protean::Font::Params(
 					drop_x + drop_width * 0.5f,
 					translation.y + combo_height() * 0.5f + GetItemOffset(canvas, i),
-					wi::font::WIFONTSIZE_DEFAULT,
-					wi::font::WIFALIGN_CENTER,
-					wi::font::WIFALIGN_CENTER,
+					Protean::Font::WIFONTSIZE_DEFAULT,
+					Protean::Font::WIFALIGN_CENTER,
+					Protean::Font::WIFALIGN_CENTER,
 					font.params.color,
 					font.params.shadowColor
 				);
 				fp.style = font.params.style;
-				wi::font::Draw(items[i].name, fp, cmd);
+				Protean::Font::Draw(items[i].name, fp, cmd);
 			}
 		}
 	}
@@ -3468,7 +3468,7 @@ namespace wi::gui
 	}
 	void ComboBox::SetInvalidSelectionText(const std::string& text)
 	{
-		wi::helper::StringConvert(text, invalid_selection_text);
+		Protean::Helper::StringConvert(text, invalid_selection_text);
 	}
 	std::string ComboBox::GetItemText(int index) const
 	{
@@ -3494,7 +3494,7 @@ namespace wi::gui
 	{
 		return GetItemUserData(GetSelected());
 	}
-	void ComboBox::SetColor(wi::Color color, int id)
+	void ComboBox::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 		filter.SetColor(color, id);
@@ -3511,28 +3511,28 @@ namespace wi::gui
 
 		if (id == WIDGET_ID_COMBO_DROPDOWN)
 		{
-			drop_color = wi::Color::fromFloat4(theme.image.color);
+			drop_color = Protean::Color::fromFloat4(theme.image.color);
 		}
 		theme.font.Apply(selected_font.params);
 	}
-	void ComboBox::ExportLocalization(wi::Localization& localization) const
+	void ComboBox::ExportLocalization(Protean::Localization& localization) const
 	{
 		Widget::ExportLocalization(localization);
 		if (has_flag(localization_enabled, LocalizationEnabled::Items))
 		{
-			wi::Localization& section = localization.GetSection(GetName()).GetSection("items");
+			Protean::Localization& section = localization.GetSection(GetName()).GetSection("items");
 			for (size_t i = 0; i < items.size(); ++i)
 			{
 				section.Add(i, items[i].name.c_str());
 			}
 		}
 	}
-	void ComboBox::ImportLocalization(const wi::Localization& localization)
+	void ComboBox::ImportLocalization(const Protean::Localization& localization)
 	{
 		Widget::ImportLocalization(localization);
 		if (has_flag(localization_enabled, LocalizationEnabled::Items))
 		{
-			const wi::Localization* section = localization.CheckSection(GetName());
+			const Protean::Localization* section = localization.CheckSection(GetName());
 			if (section == nullptr)
 				return;
 			section = section->CheckSection("items");
@@ -3556,7 +3556,7 @@ namespace wi::gui
 
 	void Window::Create(const std::string& name, WindowControls window_controls)
 	{
-		SetColor(wi::Color::Ghost());
+		SetColor(Protean::Color::Ghost());
 
 		SetName(name);
 		SetText(name);
@@ -3579,7 +3579,7 @@ namespace wi::gui
 				moveDragger.SetLocalizationEnabled(LocalizationEnabled::None);
 				moveDragger.SetShadowRadius(0);
 				moveDragger.SetText(name);
-				moveDragger.font.params.h_align = wi::font::WIFALIGN_LEFT;
+				moveDragger.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
 				moveDragger.OnDrag([this](const EventArgs& args) {
 					auto saved_parent = this->parent;
 					this->Detach();
@@ -3635,7 +3635,7 @@ namespace wi::gui
 				label.SetLocalizationEnabled(LocalizationEnabled::None);
 				label.SetShadowRadius(0);
 				label.SetText(name);
-				label.font.params.h_align = wi::font::WIFALIGN_LEFT;
+				label.font.params.h_align = Protean::Font::WIFALIGN_LEFT;
 				label.scrollbar.SetEnabled(false);
 				label.SetWrapEnabled(false);
 				AddWidget(&label, AttachmentOptions::NONE);
@@ -3644,19 +3644,19 @@ namespace wi::gui
 		}
 
 		scrollbar_horizontal.SetVertical(false);
-		scrollbar_horizontal.SetColor(wi::Color(80, 80, 80, 100), wi::gui::IDLE);
-		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = wi::Color(140, 140, 140, 140);
-		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = wi::Color(180, 180, 180, 180);
-		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = wi::Color::White();
+		scrollbar_horizontal.SetColor(Protean::Color(80, 80, 80, 100), Protean::Gui::IDLE);
+		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = Protean::Color(140, 140, 140, 140);
+		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = Protean::Color(180, 180, 180, 180);
+		scrollbar_horizontal.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = Protean::Color::White();
 		scrollbar_horizontal.knob_inset_border = XMFLOAT2(2, 4);
 		scrollbar_horizontal.SetOverScroll(0.1f);
 		AddWidget(&scrollbar_horizontal);
 
 		scrollbar_vertical.SetVertical(true);
-		scrollbar_vertical.SetColor(wi::Color(80, 80, 80, 100), wi::gui::IDLE);
-		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = wi::Color(140, 140, 140, 140);
-		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = wi::Color(180, 180, 180, 180);
-		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = wi::Color::White();
+		scrollbar_vertical.SetColor(Protean::Color(80, 80, 80, 100), Protean::Gui::IDLE);
+		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = Protean::Color(140, 140, 140, 140);
+		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = Protean::Color(180, 180, 180, 180);
+		scrollbar_vertical.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = Protean::Color::White();
 		scrollbar_vertical.knob_inset_border = XMFLOAT2(4, 2);
 		scrollbar_vertical.SetOverScroll(0.1f);
 		AddWidget(&scrollbar_vertical);
@@ -3706,7 +3706,7 @@ namespace wi::gui
 	{
 		widgets.clear();
 	}
-	void Window::Update(const wi::Canvas& canvas, float dt)
+	void Window::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -3763,7 +3763,7 @@ namespace wi::gui
 				}
 			}
 
-			if (resize_state == RESIZE_STATE_NONE && (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanStarting()))
+			if (resize_state == RESIZE_STATE_NONE && (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanStarting()))
 			{
 				if (pointerHitbox.intersects(toplefthitbox))
 				{
@@ -3807,7 +3807,7 @@ namespace wi::gui
 				}
 				resize_begin = pointerHitbox.pos;
 			}
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (resize_state != RESIZE_STATE_NONE)
 				{
@@ -3818,32 +3818,32 @@ namespace wi::gui
 
 					switch (resize_state)
 					{
-					case wi::gui::Window::RESIZE_STATE_LEFT:
+					case Protean::Gui::Window::RESIZE_STATE_LEFT:
 						this->Translate(XMFLOAT3(deltaX, 0, 0));
 						this->Scale(XMFLOAT3((scale.x - deltaX) / scale.x, 1, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_TOP:
+					case Protean::Gui::Window::RESIZE_STATE_TOP:
 						this->Translate(XMFLOAT3(0, deltaY, 0));
 						this->Scale(XMFLOAT3(1, (scale.y - deltaY) / scale.y, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_RIGHT:
+					case Protean::Gui::Window::RESIZE_STATE_RIGHT:
 						this->Scale(XMFLOAT3((scale.x + deltaX) / scale.x, 1, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_BOTTOM:
+					case Protean::Gui::Window::RESIZE_STATE_BOTTOM:
 						this->Scale(XMFLOAT3(1, (scale.y + deltaY) / scale.y, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_TOPLEFT:
+					case Protean::Gui::Window::RESIZE_STATE_TOPLEFT:
 						this->Translate(XMFLOAT3(deltaX, deltaY, 0));
 						this->Scale(XMFLOAT3((scale.x - deltaX) / scale.x, (scale.y - deltaY) / scale.y, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_TOPRIGHT:
+					case Protean::Gui::Window::RESIZE_STATE_TOPRIGHT:
 						this->Translate(XMFLOAT3(0, deltaY, 0));
 						this->Scale(XMFLOAT3((scale.x + deltaX) / scale.x, (scale.y - deltaY) / scale.y, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_BOTTOMRIGHT:
+					case Protean::Gui::Window::RESIZE_STATE_BOTTOMRIGHT:
 						this->Scale(XMFLOAT3((scale.x + deltaX) / scale.x, (scale.y + deltaY) / scale.y, 1));
 						break;
-					case wi::gui::Window::RESIZE_STATE_BOTTOMLEFT:
+					case Protean::Gui::Window::RESIZE_STATE_BOTTOMLEFT:
 						this->Translate(XMFLOAT3(deltaX, 0, 0));
 						this->Scale(XMFLOAT3((scale.x - deltaX) / scale.x, (scale.y + deltaY) / scale.y, 1));
 						break;
@@ -3851,7 +3851,7 @@ namespace wi::gui
 						break;
 					}
 
-					this->scale_local = wi::math::Max(this->scale_local, XMFLOAT3(control_size * 3, control_size * 2, 1)); // don't allow resize to negative or too small
+					this->scale_local = Protean::Math::Max(this->scale_local, XMFLOAT3(control_size * 3, control_size * 2, 1)); // don't allow resize to negative or too small
 					this->AttachTo(saved_parent);
 					resize_begin = pointerHitbox.pos;
 				}
@@ -3991,8 +3991,8 @@ namespace wi::gui
 		// Don't allow moving outside of screen:
 		if (parent == nullptr)
 		{
-			translation_local.x = wi::math::Clamp(translation_local.x, 0, canvas.GetLogicalWidth() - scale_local.x);
-			translation_local.y = wi::math::Clamp(translation_local.y, 0, canvas.GetLogicalHeight() - control_size);
+			translation_local.x = Protean::Math::Clamp(translation_local.x, 0, canvas.GetLogicalWidth() - scale_local.x);
+			translation_local.y = Protean::Math::Clamp(translation_local.y, 0, canvas.GetLogicalHeight() - control_size);
 			SetDirty();
 		}
 
@@ -4109,10 +4109,10 @@ namespace wi::gui
 
 		if (!IsMinimized() && IsVisible())
 		{
-			float wheel_delta = wi::input::GetPointer().z * 60.0f;
+			float wheel_delta = Protean::Input::GetPointer().z * 60.0f;
 			if (!local_force_disable)
 			{
-				wheel_delta -= wi::input::GetTouchPan().y;
+				wheel_delta -= Protean::Input::GetTouchPan().y;
 			}
 			if (wheel_delta != 0.0f && scroll_allowed && scrollbar_vertical.IsScrollbarRequired() && pointerHitbox.intersects(hitBox)) // when window is in focus, but other widgets aren't
 			{
@@ -4156,7 +4156,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT))
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT))
 			{
 				if (state == FOCUS)
 				{
@@ -4165,7 +4165,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT))
 			{
 				if (state == DEACTIVATING)
 				{
@@ -4187,7 +4187,7 @@ namespace wi::gui
 		if (state == IDLE && resize_blink_timer > 0)
 			state = FOCUS;
 	}
-	void Window::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void Window::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
@@ -4197,13 +4197,13 @@ namespace wi::gui
 
 		GetDevice()->EventBegin(name.c_str(), cmd);
 
-		wi::Color color = GetColor();
+		Protean::Color color = GetColor();
 
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -4234,7 +4234,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		// resize indicator:
@@ -4287,8 +4287,8 @@ namespace wi::gui
 
 			const Hitbox2D pointerHitbox = GetPointerHitbox();
 
-			wi::image::Params fx = sprites[state].params;
-			fx.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.blendFlag = Protean::BLENDMODE_ALPHA;
 			fx.pos.x -= resizehitboxwidth;
 			fx.pos.y -= resizehitboxwidth;
 			fx.siz.x += resizehitboxwidth * 2;
@@ -4313,77 +4313,77 @@ namespace wi::gui
 			if (resize_state == RESIZE_STATE_TOPLEFT || pointerHitbox.intersects(toplefthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.03f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
 				XMStoreFloat2(&fx.angular_softness_direction, XMVector2Normalize(XMVectorSet(-1, -1, 0, 0)));
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NWSE);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NWSE);
 			}
 			else if (resize_state == RESIZE_STATE_TOPRIGHT || pointerHitbox.intersects(toprighthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.03f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
 				XMStoreFloat2(&fx.angular_softness_direction, XMVector2Normalize(XMVectorSet(1, -1, 0, 0)));
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NESW);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NESW);
 			}
 			else if (resize_state == RESIZE_STATE_BOTTOMRIGHT || pointerHitbox.intersects(bottomrighthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.03f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
 				XMStoreFloat2(&fx.angular_softness_direction, XMVector2Normalize(XMVectorSet(1, 1, 0, 0)));
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NWSE);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NWSE);
 			}
 			else if (resize_state == RESIZE_STATE_BOTTOMLEFT || pointerHitbox.intersects(bottomlefthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.03f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.025f, std::abs(std::sin(resize_blink_timer * 4)));
 				XMStoreFloat2(&fx.angular_softness_direction, XMVector2Normalize(XMVectorSet(-1, 1, 0, 0)));
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NESW);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NESW);
 			}
 			else if (resize_state == RESIZE_STATE_LEFT || pointerHitbox.intersects(lefthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.25f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
 				fx.angular_softness_direction = XMFLOAT2(-1, 0);
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_EW);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_EW);
 			}
 			else if (resize_state == RESIZE_STATE_RIGHT || pointerHitbox.intersects(righthitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.25f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
 				fx.angular_softness_direction = XMFLOAT2(1, 0);
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_EW);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_EW);
 			}
 			else if (resize_state == RESIZE_STATE_TOP || pointerHitbox.intersects(tophitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.25f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
 				fx.angular_softness_direction = XMFLOAT2(0, -1);
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NS);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NS);
 			}
 			else if (resize_state == RESIZE_STATE_BOTTOM || pointerHitbox.intersects(bottomhitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.25f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
 				fx.angular_softness_direction = XMFLOAT2(0, 1);
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NS);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NS);
 			}
 		}
 
 		// base:
 		if (!IsCollapsed())
 		{
-			wi::image::Params params = sprites[IDLE].params;
-			const wi::Resource& res = sprites[IDLE].textureResource;
+			Protean::Image::Params params = sprites[IDLE].params;
+			const Protean::Resource& res = sprites[IDLE].textureResource;
 			if (res.IsValid())
 			{
-				params.sampleFlag = wi::image::SAMPLEMODE_WRAP;
+				params.sampleFlag = Protean::Image::SAMPLEMODE_WRAP;
 				const Texture& tex = res.GetTexture();
 				const float widget_aspect = scale_local.x / scale_local.y;
 				const float image_aspect = float(tex.desc.width) / float(tex.desc.height);
@@ -4402,14 +4402,14 @@ namespace wi::gui
 					}
 				}
 			}
-			wi::image::Draw(sprites[IDLE].GetTexture(), params, cmd);
+			Protean::Image::Draw(sprites[IDLE].GetTexture(), params, cmd);
 
 			if (background_overlay.IsValid())
 			{
-				params.blendFlag = wi::enums::BLENDMODE_ADDITIVE;
+				params.blendFlag = Protean::BLENDMODE_ADDITIVE;
 				params.color.w = 0;
 				params.setBackgroundMap(&background_overlay);
-				wi::image::Draw(nullptr, params, cmd);
+				Protean::Image::Draw(nullptr, params, cmd);
 			}
 		}
 
@@ -4432,19 +4432,19 @@ namespace wi::gui
 		//scissorRect.left = (int32_t)(0);
 		//scissorRect.right = (int32_t)(canvas.GetPhysicalWidth());
 		//scissorRect.top = (int32_t)(0);
-		//GraphicsDevice* device = wi::graphics::GetDevice();
+		//GraphicsDevice* device = Protean::Graphics::GetDevice();
 		//device->BindScissorRects(1, &scissorRect, cmd);
-		//wi::image::Draw(nullptr, wi::image::Params(scrollable_area.active_area.pos.x, scrollable_area.active_area.pos.y, scrollable_area.active_area.siz.x, scrollable_area.active_area.siz.y, wi::Color(255,0,255,100)), cmd);
+		//Protean::Image::Draw(nullptr, Protean::Image::Params(scrollable_area.active_area.pos.x, scrollable_area.active_area.pos.y, scrollable_area.active_area.siz.x, scrollable_area.active_area.siz.y, Protean::Color(255,0,255,100)), cmd);
 		//Hitbox2D p = scrollable_area.GetPointerHitbox();
-		//wi::image::Draw(nullptr, wi::image::Params(p.pos.x, p.pos.y, p.siz.x * 10, p.siz.y * 10, wi::Color(255,0,0,100)), cmd);
+		//Protean::Image::Draw(nullptr, Protean::Image::Params(p.pos.x, p.pos.y, p.siz.x * 10, p.siz.y * 10, Protean::Color(255,0,0,100)), cmd);
 		//if (!IsCollapsed())
 		//{
-		//	wi::image::Draw(nullptr, wi::image::Params(scrollable_area.translation.x, scrollable_area.translation.y, scale.x, 10, wi::Color(255,0,255,100)), cmd);
+		//	Protean::Image::Draw(nullptr, Protean::Image::Params(scrollable_area.translation.x, scrollable_area.translation.y, scale.x, 10, Protean::Color(255,0,255,100)), cmd);
 		//}
 
 		GetDevice()->EventEnd(cmd);
 	}
-	void Window::RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+	void Window::RenderTooltip(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 	{
 		// Window base tooltip is not rendered
 		for (auto& x : widgets)
@@ -4576,7 +4576,7 @@ namespace wi::gui
 	{
 		onResize = std::move(func);
 	}
-	void Window::SetColor(wi::Color color, int id)
+	void Window::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 		for (auto& widget : widgets)
@@ -4589,7 +4589,7 @@ namespace wi::gui
 			sprites[IDLE].params.color = color;
 		}
 	}
-	void Window::SetImage(wi::Resource resource, int id)
+	void Window::SetImage(Protean::Resource resource, int id)
 	{
 		Widget::SetImage(resource, id);
 		for (auto& widget : widgets)
@@ -4602,7 +4602,7 @@ namespace wi::gui
 			sprites[IDLE].textureResource = resource;
 		}
 	}
-	void Window::SetShadowColor(wi::Color color)
+	void Window::SetShadowColor(Protean::Color color)
 	{
 		Widget::SetShadowColor(color);
 		for (auto& widget : widgets)
@@ -4710,24 +4710,24 @@ namespace wi::gui
 			onResize();
 		}
 	}
-	void Window::ExportLocalization(wi::Localization& localization) const
+	void Window::ExportLocalization(Protean::Localization& localization) const
 	{
 		Widget::ExportLocalization(localization);
 		if (has_flag(localization_enabled, LocalizationEnabled::Children))
 		{
-			wi::Localization& section = localization.GetSection(GetName());
+			Protean::Localization& section = localization.GetSection(GetName());
 			for (auto& widget : widgets)
 			{
 				widget->ExportLocalization(section);
 			}
 		}
 	}
-	void Window::ImportLocalization(const wi::Localization& localization)
+	void Window::ImportLocalization(const Protean::Localization& localization)
 	{
 		Widget::ImportLocalization(localization);
 		if (has_flag(localization_enabled, LocalizationEnabled::Children))
 		{
-			const wi::Localization* section = localization.CheckSection(GetName());
+			const Protean::Localization* section = localization.CheckSection(GetName());
 			if (section == nullptr)
 				return;
 			for (auto& widget : widgets)
@@ -4863,7 +4863,7 @@ namespace wi::gui
 		Window::Create(name, window_controls);
 
 		SetSize(XMFLOAT2(cp_width, cp_height));
-		SetColor(wi::Color(100, 100, 100, 100));
+		SetColor(Protean::Color(100, 100, 100, 100));
 
 		float x = 250;
 		float y = 80;
@@ -4877,7 +4877,7 @@ namespace wi::gui
 		text_R.SetTooltip("Enter value for RED channel (0-255)");
 		text_R.SetDescription("R: ");
 		text_R.OnInputAccepted([this](const EventArgs& args) {
-			wi::Color color = GetPickColor();
+			Protean::Color color = GetPickColor();
 			color.setR((uint8_t)args.iValue);
 			SetPickColor(color);
 			FireEvents();
@@ -4892,7 +4892,7 @@ namespace wi::gui
 		text_G.SetTooltip("Enter value for GREEN channel (0-255)");
 		text_G.SetDescription("G: ");
 		text_G.OnInputAccepted([this](const EventArgs& args) {
-			wi::Color color = GetPickColor();
+			Protean::Color color = GetPickColor();
 			color.setG((uint8_t)args.iValue);
 			SetPickColor(color);
 			FireEvents();
@@ -4907,7 +4907,7 @@ namespace wi::gui
 		text_B.SetTooltip("Enter value for BLUE channel (0-255)");
 		text_B.SetDescription("B: ");
 		text_B.OnInputAccepted([this](const EventArgs& args) {
-			wi::Color color = GetPickColor();
+			Protean::Color color = GetPickColor();
 			color.setB((uint8_t)args.iValue);
 			SetPickColor(color);
 			FireEvents();
@@ -4923,7 +4923,7 @@ namespace wi::gui
 		text_H.SetTooltip("Enter value for HUE channel (0-360)");
 		text_H.SetDescription("H: ");
 		text_H.OnInputAccepted([this](const EventArgs& args) {
-			hue = wi::math::Clamp(args.fValue, 0, 360.0f);
+			hue = Protean::Math::Clamp(args.fValue, 0, 360.0f);
 			FireEvents();
 			});
 		AddWidget(&text_H);
@@ -4936,7 +4936,7 @@ namespace wi::gui
 		text_S.SetTooltip("Enter value for SATURATION channel (0-100)");
 		text_S.SetDescription("S: ");
 		text_S.OnInputAccepted([this](const EventArgs& args) {
-			saturation = wi::math::Clamp(args.fValue / 100.0f, 0, 1);
+			saturation = Protean::Math::Clamp(args.fValue / 100.0f, 0, 1);
 			FireEvents();
 			});
 		AddWidget(&text_S);
@@ -4949,7 +4949,7 @@ namespace wi::gui
 		text_V.SetTooltip("Enter value for LUMINANCE channel (0-100)");
 		text_V.SetDescription("V: ");
 		text_V.OnInputAccepted([this](const EventArgs& args) {
-			luminance = wi::math::Clamp(args.fValue / 100.0f, 0, 1);
+			luminance = Protean::Math::Clamp(args.fValue / 100.0f, 0, 1);
 			FireEvents();
 			});
 		AddWidget(&text_V);
@@ -4963,7 +4963,7 @@ namespace wi::gui
 		text_hex.SetDescription("#");
 		text_hex.font_description.params.scaling = 1.2f;
 		text_hex.OnInputAccepted([this](const EventArgs& args) {
-			wi::Color color(args.sValue.c_str());
+			Protean::Color color(args.sValue.c_str());
 			SetPickColor(color);
 			FireEvents();
 			});
@@ -4983,7 +4983,7 @@ namespace wi::gui
 	static const float colorpicker_radius_triangle = 68;
 	static const float colorpicker_radius = 75;
 	static const float colorpicker_width = 22;
-	void ColorPicker::Update(const wi::Canvas& canvas, float dt)
+	void ColorPicker::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -5009,12 +5009,12 @@ namespace wi::gui
 
 			XMFLOAT2 center = XMFLOAT2(translation.x + scale.x * 0.4f, translation.y + scale.y * 0.5f);
 			XMFLOAT2 pointer = GetPointerHitbox().pos;
-			float distance = wi::math::Distance(center, pointer);
+			float distance = Protean::Math::Distance(center, pointer);
 			bool hover_hue = (distance > colorpicker_radius * sca) && (distance < (colorpicker_radius + colorpicker_width)* sca);
 
 			float distTri = 0;
 			XMFLOAT4 A, B, C;
-			wi::math::ConstructTriangleEquilateral(colorpicker_radius_triangle, A, B, C);
+			Protean::Math::ConstructTriangleEquilateral(colorpicker_radius_triangle, A, B, C);
 			XMVECTOR _A = XMLoadFloat4(&A);
 			XMVECTOR _B = XMLoadFloat4(&B);
 			XMVECTOR _C = XMLoadFloat4(&C);
@@ -5028,7 +5028,7 @@ namespace wi::gui
 
 			bool dragged = false;
 
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (hover_hue)
 				{
@@ -5042,7 +5042,7 @@ namespace wi::gui
 				}
 			}
 
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (colorpickerstate > CPS_IDLE)
 				{
@@ -5058,7 +5058,7 @@ namespace wi::gui
 			if (colorpickerstate == CPS_HUE && dragged)
 			{
 				//hue pick
-				const float angle = wi::math::GetAngle(XMFLOAT2(pointer.x - center.x, pointer.y - center.y), XMFLOAT2(colorpicker_radius, 0));
+				const float angle = Protean::Math::GetAngle(XMFLOAT2(pointer.x - center.x, pointer.y - center.y), XMFLOAT2(colorpicker_radius, 0));
 				hue = angle / XM_2PI * 360.0f;
 				Activate();
 			}
@@ -5066,7 +5066,7 @@ namespace wi::gui
 			{
 				// saturation pick
 				float u, v, w;
-				wi::math::GetBarycentric(O, _A, _B, _C, u, v, w, true);
+				Protean::Math::GetBarycentric(O, _A, _B, _C, u, v, w, true);
 				// u = saturated corner (color)
 				// v = desaturated corner (white)
 				// w = no luminosity corner (black)
@@ -5097,7 +5097,7 @@ namespace wi::gui
 				Deactivate();
 			}
 
-			wi::Color color = GetPickColor();
+			Protean::Color color = GetPickColor();
 			text_R.SetValue((int)color.getR());
 			text_G.SetValue((int)color.getG());
 			text_B.SetValue((int)color.getB());
@@ -5112,7 +5112,7 @@ namespace wi::gui
 			}
 		}
 	}
-	void ColorPicker::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void ColorPicker::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Window::Render(canvas, cmd);
 
@@ -5121,19 +5121,19 @@ namespace wi::gui
 			return;
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		struct Vertex
 		{
 			XMFLOAT4 pos;
 			XMFLOAT4 col;
 		};
-		static wi::graphics::GPUBuffer vb_hue;
-		static wi::graphics::GPUBuffer vb_picker_saturation;
-		static wi::graphics::GPUBuffer vb_picker_hue;
-		static wi::graphics::GPUBuffer vb_preview;
+		static Protean::Graphics::GPUBuffer vb_hue;
+		static Protean::Graphics::GPUBuffer vb_picker_saturation;
+		static Protean::Graphics::GPUBuffer vb_picker_hue;
+		static Protean::Graphics::GPUBuffer vb_preview;
 
-		static wi::vector<Vertex> vertices_saturation;
+		static Protean::vector<Vertex> vertices_saturation;
 
 		static bool buffersComplete = false;
 		if (!buffersComplete)
@@ -5145,7 +5145,7 @@ namespace wi::gui
 				vertices_saturation.push_back({ XMFLOAT4(0,0,0,0),XMFLOAT4(1,0,0,1) });	// hue
 				vertices_saturation.push_back({ XMFLOAT4(0,0,0,0),XMFLOAT4(1,1,1,1) });	// white
 				vertices_saturation.push_back({ XMFLOAT4(0,0,0,0),XMFLOAT4(0,0,0,1) });	// black
-				wi::math::ConstructTriangleEquilateral(colorpicker_radius_triangle, vertices_saturation[0].pos, vertices_saturation[1].pos, vertices_saturation[2].pos);
+				Protean::Math::ConstructTriangleEquilateral(colorpicker_radius_triangle, vertices_saturation[0].pos, vertices_saturation[1].pos, vertices_saturation[2].pos);
 
 				// create alpha blended edge:
 				vertices_saturation.push_back(vertices_saturation[0]); // outer
@@ -5156,13 +5156,13 @@ namespace wi::gui
 				vertices_saturation.push_back(vertices_saturation[2]); // inner
 				vertices_saturation.push_back(vertices_saturation[0]); // outer
 				vertices_saturation.push_back(vertices_saturation[0]); // inner
-				wi::math::ConstructTriangleEquilateral(colorpicker_radius_triangle + 4, vertices_saturation[3].pos, vertices_saturation[5].pos, vertices_saturation[7].pos); // extrude outer
+				Protean::Math::ConstructTriangleEquilateral(colorpicker_radius_triangle + 4, vertices_saturation[3].pos, vertices_saturation[5].pos, vertices_saturation[7].pos); // extrude outer
 				vertices_saturation[9].pos = vertices_saturation[3].pos; // last outer
 			}
 			// hue
 			{
 				const float edge = 2.0f;
-				wi::vector<Vertex> vertices;
+				Protean::vector<Vertex> vertices;
 				uint32_t segment_count = 100;
 				// inner alpha blended edge
 				for (uint32_t i = 0; i <= segment_count; ++i)
@@ -5225,7 +5225,7 @@ namespace wi::gui
 			{
 				float _radius = 3;
 				float _width = 3;
-				wi::vector<Vertex> vertices;
+				Protean::vector<Vertex> vertices;
 				uint32_t segment_count = 100;
 				for (uint32_t i = 0; i <= segment_count; ++i)
 				{
@@ -5297,7 +5297,7 @@ namespace wi::gui
 
 		}
 
-		const wi::Color final_color = GetPickColor();
+		const Protean::Color final_color = GetPickColor();
 		const float angle = hue / 360.0f * XM_2PI;
 
 		const XMMATRIX Projection = canvas.GetProjection();
@@ -5406,7 +5406,7 @@ namespace wi::gui
 		if (IsEnabled())
 		{
 			XMFLOAT4 A, B, C;
-			wi::math::ConstructTriangleEquilateral(colorpicker_radius_triangle, A, B, C);
+			Protean::Math::ConstructTriangleEquilateral(colorpicker_radius_triangle, A, B, C);
 			XMVECTOR _A = XMLoadFloat4(&A);
 			XMVECTOR _B = XMLoadFloat4(&B);
 			XMVECTOR _C = XMLoadFloat4(&C);
@@ -5432,7 +5432,7 @@ namespace wi::gui
 			XMVECTOR inner_point = XMVectorSet(result.r, result.g, result.b, 1);
 
 			float u, v, w;
-			wi::math::GetBarycentric(inner_point, color_corner, white_corner, black_corner, u, v, w, true);
+			Protean::Math::GetBarycentric(inner_point, color_corner, white_corner, black_corner, u, v, w, true);
 
 			XMVECTOR picker_center = u * _A + v * _B + w * _C;
 
@@ -5473,13 +5473,13 @@ namespace wi::gui
 	}
 	void ColorPicker::ResizeLayout()
 	{
-		wi::gui::Window::ResizeLayout();
+		Protean::Gui::Window::ResizeLayout();
 		const float padding = 4;
 		const float width = GetWidgetAreaSize().x;
 		float y = GetWidgetAreaSize().y - control_size;
 		float jump = 20;
 
-		auto add = [&](wi::gui::Widget& widget) {
+		auto add = [&](Protean::Gui::Widget& widget) {
 			if (!widget.IsVisible())
 				return;
 			const float margin_left = 20;
@@ -5489,7 +5489,7 @@ namespace wi::gui
 			widget.SetPos(XMFLOAT2(margin_left, y));
 			widget.SetSize(XMFLOAT2(width - margin_left - margin_right, widget.GetSize().y));
 			};
-		auto add_right = [&](wi::gui::Widget& widget) {
+		auto add_right = [&](Protean::Gui::Widget& widget) {
 			if (!widget.IsVisible())
 				return;
 			const float margin_right = padding;
@@ -5515,7 +5515,7 @@ namespace wi::gui
 		y = control_size + 4;
 		add_right(text_hex);
 	}
-	void ColorPicker::SetColor(wi::Color color, int id)
+	void ColorPicker::SetColor(Protean::Color color, int id)
 	{
 		Window::SetColor(color, id);
 
@@ -5524,7 +5524,7 @@ namespace wi::gui
 			sprites[IDLE].params.color = color;
 		}
 	}
-	void ColorPicker::SetImage(wi::Resource resource, int id)
+	void ColorPicker::SetImage(Protean::Resource resource, int id)
 	{
 		Window::SetImage(resource, id);
 
@@ -5533,16 +5533,16 @@ namespace wi::gui
 			sprites[IDLE].textureResource = resource;
 		}
 	}
-	wi::Color ColorPicker::GetPickColor() const
+	Protean::Color ColorPicker::GetPickColor() const
 	{
 		hsv source;
 		source.h = hue;
 		source.s = saturation;
 		source.v = luminance;
 		rgb result = hsv2rgb(source);
-		return wi::Color::fromFloat4(XMFLOAT4(result.r, result.g, result.b, alphaSlider.GetValue() / 255.0f));
+		return Protean::Color::fromFloat4(XMFLOAT4(result.r, result.g, result.b, alphaSlider.GetValue() / 255.0f));
 	}
-	void ColorPicker::SetPickColor(wi::Color value)
+	void ColorPicker::SetPickColor(Protean::Color value)
 	{
 		if (colorpickerstate != CPS_IDLE)
 		{
@@ -5586,18 +5586,18 @@ namespace wi::gui
 		SetText(name);
 		OnSelect([](const EventArgs& args) {});
 
-		SetColor(wi::Color(100, 100, 100, 100), wi::gui::IDLE);
+		SetColor(Protean::Color(100, 100, 100, 100), Protean::Gui::IDLE);
 		for (int i = FOCUS + 1; i < WIDGETSTATE_COUNT; ++i)
 		{
 			sprites[i].params.color = sprites[FOCUS].params.color;
 			scrollbar.sprites[i].params.color = sprites[FOCUS].params.color;
 		}
-		font.params.v_align = wi::font::WIFALIGN_CENTER;
+		font.params.v_align = Protean::Font::WIFALIGN_CENTER;
 
-		scrollbar.SetColor(wi::Color(80, 80, 80, 100), wi::gui::IDLE);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = wi::Color(140, 140, 140, 140);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = wi::Color(180, 180, 180, 180);
-		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = wi::Color::White();
+		scrollbar.SetColor(Protean::Color(80, 80, 80, 100), Protean::Gui::IDLE);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_INACTIVE].params.color = Protean::Color(140, 140, 140, 140);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_HOVER].params.color = Protean::Color(180, 180, 180, 180);
+		scrollbar.sprites_knob[ScrollBar::SCROLLBAR_GRABBED].params.color = Protean::Color::White();
 		scrollbar.SetOverScroll(0.25f);
 
 		SetSize(XMFLOAT2(100, 200));
@@ -5646,7 +5646,7 @@ namespace wi::gui
 	{
 		return scale.y < (int)items.size() * item_height();
 	}
-	void TreeList::Update(const wi::Canvas& canvas, float dt)
+	void TreeList::Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!IsVisible())
 		{
@@ -5663,7 +5663,7 @@ namespace wi::gui
 			float vscale = scale.y;
 			Hitbox2D bottomhitbox = Hitbox2D(XMFLOAT2(translation.x, translation.y + vscale), XMFLOAT2(scale.x, resizehitboxwidth));
 
-			if (resize_state == RESIZE_STATE_NONE && (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanStarting()))
+			if (resize_state == RESIZE_STATE_NONE && (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanStarting()))
 			{
 				if (pointerHitbox.intersects(bottomhitbox))
 				{
@@ -5673,7 +5673,7 @@ namespace wi::gui
 				}
 				resize_begin = pointerHitbox.pos;
 			}
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				if (resize_state != RESIZE_STATE_NONE)
 				{
@@ -5691,7 +5691,7 @@ namespace wi::gui
 						break;
 					}
 
-					this->scale_local = wi::math::Max(this->scale_local, XMFLOAT3(item_height() * 3, item_height() * 3, 1)); // don't allow resize to negative or too small
+					this->scale_local = Protean::Math::Max(this->scale_local, XMFLOAT3(item_height() * 3, item_height() * 3, 1)); // don't allow resize to negative or too small
 					this->scale = this->scale_local;
 					this->AttachTo(saved_parent);
 					resize_begin = pointerHitbox.pos;
@@ -5756,12 +5756,12 @@ namespace wi::gui
 			}
 
 			bool clicked = false;
-			if (wi::input::Press(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Press(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				clicked = true;
 			}
 
-			if (onDelete && state == FOCUS && wi::input::Press(wi::input::KEYBOARD_BUTTON_DELETE) && !typing_active)
+			if (onDelete && state == FOCUS && Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_DELETE) && !typing_active)
 			{
 				int index = 0;
 				for (auto& item : items)
@@ -5779,7 +5779,7 @@ namespace wi::gui
 			}
 
 			bool click_down = false;
-			if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT) || wi::input::IsTouchPanning())
+			if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT) || Protean::Input::IsTouchPanning())
 			{
 				click_down = true;
 				if (state == FOCUS || state == DEACTIVATING)
@@ -5789,7 +5789,7 @@ namespace wi::gui
 				}
 			}
 
-			const float wheel_delta = wi::input::GetPointer().z;
+			const float wheel_delta = Protean::Input::GetPointer().z;
 			if (wheel_delta != 0.0f && scroll_allowed && scrollbar.IsScrollbarRequired() && pointerHitbox.intersects(hitBox))
 			{
 				const bool at_begin = (wheel_delta > 0 && scrollbar.IsScrolledToBegin());
@@ -5915,7 +5915,7 @@ namespace wi::gui
 									drag_start_pos = pointerHitbox.pos;
 								}
 
-								if (wi::input::IsDoubleClicked() && onDoubleClick != nullptr)
+								if (Protean::Input::IsDoubleClicked() && onDoubleClick != nullptr)
 								{
 									EventArgs args;
 									args.iValue = i;
@@ -5925,11 +5925,11 @@ namespace wi::gui
 								}
 								else
 								{
-									if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LCONTROL) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RCONTROL))
+									if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LCONTROL) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RCONTROL))
 									{
 										// control: nothing
 									}
-									else if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LSHIFT) || wi::input::Down(wi::input::KEYBOARD_BUTTON_RSHIFT))
+									else if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LSHIFT) || Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RSHIFT))
 									{
 										if (first_selected >= 0)
 										{
@@ -6061,20 +6061,20 @@ namespace wi::gui
 		font.params.posX = translation.x + 2;
 		font.params.posY = translation.y + sprites[state].params.siz.y * 0.5f;
 	}
-	void TreeList::Render(const wi::Canvas& canvas, CommandList cmd) const
+	void TreeList::Render(const Protean::Canvas& canvas, CommandList cmd) const
 	{
 		Widget::Render(canvas, cmd);
 		if (!IsVisible())
 		{
 			return;
 		}
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		// shadow:
 		if (shadow > 0)
 		{
-			wi::image::Params fx = sprites[state].params;
-			fx.gradient = wi::image::Params::Gradient::None;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.gradient = Protean::Image::Params::Gradient::None;
 			fx.pos.x -= shadow;
 			fx.pos.y -= shadow;
 			fx.siz.x += shadow * 2;
@@ -6101,7 +6101,7 @@ namespace wi::gui
 			{
 				fx.disableHighlight();
 			}
-			wi::image::Draw(nullptr, fx, cmd);
+			Protean::Image::Draw(nullptr, fx, cmd);
 		}
 
 		// resize indicator:
@@ -6112,8 +6112,8 @@ namespace wi::gui
 
 			const Hitbox2D pointerHitbox = GetPointerHitbox(false);
 
-			wi::image::Params fx = sprites[state].params;
-			fx.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			Protean::Image::Params fx = sprites[state].params;
+			fx.blendFlag = Protean::BLENDMODE_ALPHA;
 			fx.pos.x -= resizehitboxwidth;
 			fx.pos.y -= resizehitboxwidth;
 			fx.siz.x += resizehitboxwidth * 2;
@@ -6134,10 +6134,10 @@ namespace wi::gui
 			if (resize_state == RESIZE_STATE_BOTTOM || pointerHitbox.intersects(bottomhitbox))
 			{
 				fx.angular_softness_outer_angle = XM_PI * 0.25f;
-				fx.angular_softness_inner_angle = XM_PI * wi::math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
+				fx.angular_softness_inner_angle = XM_PI * Protean::Math::Lerp(0.0f, 0.24f, std::abs(std::sin(resize_blink_timer * 4)));
 				fx.angular_softness_direction = XMFLOAT2(0, 1);
-				wi::image::Draw(nullptr, fx, cmd);
-				wi::input::SetCursor(wi::input::CURSOR_RESIZE_NS);
+				Protean::Image::Draw(nullptr, fx, cmd);
+				Protean::Input::SetCursor(Protean::Input::CURSOR_RESIZE_NS);
 			}
 		}
 
@@ -6152,13 +6152,13 @@ namespace wi::gui
 
 		// list background
 		Hitbox2D itemlist_box = GetHitbox_ListArea();
-		wi::image::Params fx = sprites[state].params;
+		Protean::Image::Params fx = sprites[state].params;
 		fx.color = sprites[IDLE].params.color;
 		fx.pos = XMFLOAT3(itemlist_box.pos.x, itemlist_box.pos.y, 0);
 		fx.siz = XMFLOAT2(itemlist_box.siz.x, itemlist_box.siz.y);
-		wi::image::Draw(nullptr, fx, cmd);
+		Protean::Image::Draw(nullptr, fx, cmd);
 
-		wi::graphics::Rect rect_without_scrollbar;
+		Protean::Graphics::Rect rect_without_scrollbar;
 		rect_without_scrollbar.left = (int)itemlist_box.pos.x;
 		rect_without_scrollbar.right = (int)(itemlist_box.pos.x + itemlist_box.siz.x);
 		rect_without_scrollbar.top = (int)itemlist_box.pos.y;
@@ -6177,7 +6177,7 @@ namespace wi::gui
 			vertices[0].col = XMFLOAT4(1, 1, 1, 1);
 			vertices[1].col = XMFLOAT4(1, 1, 1, 1);
 			vertices[2].col = XMFLOAT4(1, 1, 1, 1);
-			wi::math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
+			Protean::Math::ConstructTriangleEquilateral(1, vertices[0].pos, vertices[1].pos, vertices[2].pos);
 
 			GPUBufferDesc desc;
 			desc.bind_flags = BindFlag::VERTEX_BUFFER;
@@ -6213,19 +6213,19 @@ namespace wi::gui
 			// selected box:
 			if (item.selected || item_highlight == i)
 			{
-				wi::image::Draw(nullptr
-					, wi::image::Params(name_box.pos.x, name_box.pos.y, name_box.siz.x, name_box.siz.y,
+				Protean::Image::Draw(nullptr
+					, Protean::Image::Params(name_box.pos.x, name_box.pos.y, name_box.siz.x, name_box.siz.y,
 						sprites[item.selected ? FOCUS : IDLE].params.color), cmd);
 			}
 
 			// Re-parent drop target highlight
 			if (drag_reparent_target == i)
 			{
-				wi::image::Params rp_fx = sprites[ACTIVE].params;
+				Protean::Image::Params rp_fx = sprites[ACTIVE].params;
 				rp_fx.pos = XMFLOAT3(name_box.pos.x, name_box.pos.y, 0);
 				rp_fx.siz = XMFLOAT2(name_box.siz.x, name_box.siz.y);
 				rp_fx.color.w *= 0.5f;
-				wi::image::Draw(nullptr, rp_fx, cmd);
+				Protean::Image::Draw(nullptr, rp_fx, cmd);
 			}
 
 			// opened flag triangle:
@@ -6234,7 +6234,7 @@ namespace wi::gui
 				device->BindPipelineState(&gui_internal().PSO_colored, cmd);
 
 				MiscCB cb;
-				cb.g_xColor = opener_highlight == i ? wi::Color::White().toFloat4() : sprites[FOCUS].params.color;
+				cb.g_xColor = opener_highlight == i ? Protean::Color::White().toFloat4() : sprites[FOCUS].params.color;
 				XMStoreFloat4x4(&cb.g_xTransform, XMMatrixScaling(item_height() * 0.3f, item_height() * 0.3f, 1) *
 					XMMatrixRotationZ(item.open ? XM_PIDIV2 : 0) *
 					XMMatrixTranslation(open_box.pos.x + open_box.siz.x * 0.5f, open_box.pos.y + open_box.siz.y * 0.25f, 0) *
@@ -6253,17 +6253,17 @@ namespace wi::gui
 			}
 
 			// Item name text:
-			wi::font::Params fp = wi::font::Params(
+			Protean::Font::Params fp = Protean::Font::Params(
 				name_box.pos.x + 1,
 				name_box.pos.y + name_box.siz.y * 0.5f,
-				wi::font::WIFONTSIZE_DEFAULT,
-				wi::font::WIFALIGN_LEFT,
-				wi::font::WIFALIGN_CENTER,
+				Protean::Font::WIFONTSIZE_DEFAULT,
+				Protean::Font::WIFALIGN_LEFT,
+				Protean::Font::WIFALIGN_CENTER,
 				font.params.color,
 				font.params.shadowColor
 			);
 			fp.style = font.params.style;
-			wi::font::Draw(item.name, fp, cmd);
+			Protean::Font::Draw(item.name, fp, cmd);
 			// Drag handle dots on the right side of each item
 			if (onReorder)
 			{
@@ -6278,8 +6278,8 @@ namespace wi::gui
 				{
 					for (int col = 0; col < 2; ++col)
 					{
-						wi::image::Draw(nullptr,
-						    wi::image::Params(hx + col * (ds + dg), hy + row * (ds + dg), ds, ds, dot_color),
+						Protean::Image::Draw(nullptr,
+						    Protean::Image::Params(hx + col * (ds + dg), hy + row * (ds + dg), ds, ds, dot_color),
 						    cmd);
 					}
 				}
@@ -6289,11 +6289,11 @@ namespace wi::gui
 		// Drop indicator line for drag-and-drop reorder (not shown when re-parenting)
 		if (dragging && drag_source >= 0 && drag_target >= 0 && drag_reparent_target < 0)
 		{
-			wi::image::Params indicator_fx = sprites[ACTIVE].params;
+			Protean::Image::Params indicator_fx = sprites[ACTIVE].params;
 			const float indicator_indent = std::max(0, drag_target_level) * item_height();
 			indicator_fx.pos = XMFLOAT3(itemlist_box.pos.x + indicator_indent, drag_indicator_y - 1.0f, 0);
 			indicator_fx.siz = XMFLOAT2(std::max(2.0f, itemlist_box.siz.x - indicator_indent), 2.0f);
-			wi::image::Draw(nullptr, indicator_fx, cmd);
+			Protean::Image::Draw(nullptr, indicator_fx, cmd);
 		}
 		// Floating ghost: semi-transparent label following the cursor while dragging
 		if (dragging && drag_source >= 0 && drag_source < (int)items.size())
@@ -6303,21 +6303,21 @@ namespace wi::gui
 			float ghost_w = itemlist_box.siz.x * 0.65f;
 			float ghost_x = drag_pointer_pos.x + 18.0f;
 			float ghost_y = drag_pointer_pos.y - ghost_h * 0.5f;
-			wi::image::Params ghost_bg = sprites[ACTIVE].params;
+			Protean::Image::Params ghost_bg = sprites[ACTIVE].params;
 			ghost_bg.pos = XMFLOAT3(ghost_x, ghost_y, 0);
 			ghost_bg.siz = XMFLOAT2(ghost_w, ghost_h);
 			ghost_bg.color.w *= 0.75f;
-			wi::image::Draw(nullptr, ghost_bg, cmd);
-			wi::font::Params gfp(
+			Protean::Image::Draw(nullptr, ghost_bg, cmd);
+			Protean::Font::Params gfp(
 				ghost_x + 6.0f,
 				ghost_y + ghost_h * 0.5f,
-				wi::font::WIFONTSIZE_DEFAULT,
-				wi::font::WIFALIGN_LEFT,
-				wi::font::WIFALIGN_CENTER,
+				Protean::Font::WIFONTSIZE_DEFAULT,
+				Protean::Font::WIFALIGN_LEFT,
+				Protean::Font::WIFALIGN_CENTER,
 				font.params.color,
 				font.params.shadowColor);
 			gfp.style = font.params.style;
-			wi::font::Draw(src_item.name, gfp, cmd);
+			Protean::Font::Draw(src_item.name, gfp, cmd);
 		}
 	}
 	void TreeList::OnSelect(std::function<void(const EventArgs& args)> func)
@@ -6465,7 +6465,7 @@ namespace wi::gui
 	{
 		return items[index];
 	}
-	void TreeList::SetColor(wi::Color color, int id)
+	void TreeList::SetColor(Protean::Color color, int id)
 	{
 		Widget::SetColor(color, id);
 		scrollbar.SetColor(color, id);

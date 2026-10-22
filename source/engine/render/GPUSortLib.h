@@ -2,7 +2,7 @@
 #include "core/CommonInclude.h"
 #include "render/GraphicsAPI/GraphicsDevice.h"
 
-namespace wi::gpusortlib
+namespace Protean::GPUSortLib
 {
 	// Perform radix sort on a GPU dataset
 	//	maxCount				-	Maximum size of the dataset. GPU count can be smaller (see: counterBuffer_read param)
@@ -12,11 +12,11 @@ namespace wi::gpusortlib
 	//	payloadBuffer_uint_RW	-	The payload buffer of uint32_t values to sort based on the keyBuffer [optional] (ReadWrite UNORDERED_ACCESS state)
 	void Sort(
 		uint32_t maxCount,
-		const wi::graphics::GPUBuffer& keyBuffer_uint_RW,
-		const wi::graphics::GPUBuffer& counterBuffer_RO,
+		const Protean::Graphics::GPUBuffer& keyBuffer_uint_RW,
+		const Protean::Graphics::GPUBuffer& counterBuffer_RO,
 		uint32_t counterReadOffset,
-		const wi::graphics::GPUBuffer& payloadBuffer_uint_RW,
-		wi::graphics::CommandList cmd
+		const Protean::Graphics::GPUBuffer& payloadBuffer_uint_RW,
+		Protean::Graphics::CommandList cmd
 	);
 
 	void Initialize();

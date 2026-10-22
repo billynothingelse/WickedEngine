@@ -12,7 +12,7 @@
 #include <SDL3/SDL.h>
 #endif
 
-namespace wi::audio
+namespace Protean::Audio
 {
 	void Initialize();
 
@@ -38,13 +38,13 @@ namespace wi::audio
 	//	Use SoundInstance for playback the sound data
 	struct Sound
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 	};
 	// SoundInstance can be used to play back a Sound with specified effects
 	struct SoundInstance
 	{
-		wi::allocator::shared_ptr<void> internal_state;
+		Protean::Allocator::shared_ptr<void> internal_state;
 		constexpr bool IsValid() const { return internal_state.IsValid(); }
 
 		// You can specify these params before creating the sound instance:

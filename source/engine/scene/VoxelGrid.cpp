@@ -6,10 +6,10 @@
 
 #include "meshoptimizer/meshoptimizer.h"
 
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean::Graphics;
+using namespace Protean;
 
-namespace wi
+namespace Protean
 {
 	void VoxelGrid::init(uint32_t dimX, uint32_t dimY, uint32_t dimZ)
 	{
@@ -108,7 +108,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_aabb(const wi::primitive::AABB& aabb, bool subtract)
+	void VoxelGrid::inject_aabb(const Protean::AABB& aabb, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -140,7 +140,7 @@ namespace wi
 		XMStoreUInt3(&mini, MIN);
 		XMStoreUInt3(&maxi, MAX);
 
-		wi::primitive::AABB aabb_src;
+		Protean::AABB aabb_src;
 		XMStoreFloat3(&aabb_src._min, MIN);
 		XMStoreFloat3(&aabb_src._max, MAX);
 
@@ -168,7 +168,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_sphere(const wi::primitive::Sphere& sphere, bool subtract)
+	void VoxelGrid::inject_sphere(const Protean::Sphere& sphere, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -210,7 +210,7 @@ namespace wi
 			{
 				for (uint32_t z = mini.z; z < maxi.z; ++z)
 				{
-					wi::primitive::AABB voxel_aabb;
+					Protean::AABB voxel_aabb;
 					XMUINT3 voxel_center_coord = XMUINT3(x, y, z);
 					XMFLOAT3 voxel_center_world = coord_to_world(voxel_center_coord);
 					voxel_aabb.createFromHalfWidth(voxel_center_world, voxelSize);
@@ -234,7 +234,7 @@ namespace wi
 			}
 		}
 	}
-	void VoxelGrid::inject_capsule(const wi::primitive::Capsule& capsule, bool subtract)
+	void VoxelGrid::inject_capsule(const Protean::Capsule& capsule, bool subtract)
 	{
 		const XMVECTOR CENTER = XMLoadFloat3(&center);
 		const XMVECTOR RESOLUTION = XMLoadUInt3(&resolution);
@@ -275,7 +275,7 @@ namespace wi
 			{
 				for (uint32_t z = mini.z; z < maxi.z; ++z)
 				{
-					wi::primitive::AABB voxel_aabb;
+					Protean::AABB voxel_aabb;
 					XMUINT3 voxel_center_coord = XMUINT3(x, y, z);
 					XMFLOAT3 voxel_center_world = coord_to_world(voxel_center_coord);
 					voxel_aabb.createFromHalfWidth(voxel_center_world, voxelSize);
@@ -414,13 +414,13 @@ namespace wi
 		voxelSize_rcp.z = 1.0f / voxelSize.z;
 	}
 
-	wi::primitive::AABB VoxelGrid::get_aabb() const
+	Protean::AABB VoxelGrid::get_aabb() const
 	{
 		AABB aabb;
 		aabb.createFromHalfWidth(center, XMFLOAT3(resolution.x * voxelSize.x, resolution.y * voxelSize.y, resolution.z * voxelSize.z));
 		return aabb;
 	}
-	void VoxelGrid::from_aabb(const wi::primitive::AABB& aabb)
+	void VoxelGrid::from_aabb(const Protean::AABB& aabb)
 	{
 		center = aabb.getCenter();
 		XMFLOAT3 halfwidth = aabb.getHalfWidth();
@@ -508,7 +508,7 @@ namespace wi
 		XMStoreUInt3(&mini, MIN);
 		XMStoreUInt3(&maxi, MAX);
 
-		wi::primitive::AABB aabb_src;
+		Protean::AABB aabb_src;
 		XMStoreFloat3(&aabb_src._min, MIN);
 		XMStoreFloat3(&aabb_src._max, MAX);
 
@@ -580,7 +580,7 @@ namespace wi
 	{
 		VoxelGrid traversed;
 		traversed.init(resolution.x, resolution.y, resolution.z);
-		wi::vector<int3> stack;
+		Protean::vector<int3> stack;
 
 		for(size_t i=0;i<voxels.size();++i)
 		{
@@ -646,7 +646,7 @@ namespace wi
 		}
 	}
 
-	void VoxelGrid::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void VoxelGrid::Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
@@ -684,12 +684,12 @@ namespace wi
 		static void LoadShaders()
 		{
 			PipelineStateDesc desc;
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VOXELGRID);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_POSITION_INSTANCE);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHREAD);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_FRONT);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_ADDITIVE);
+			desc.vs = Protean::Renderer::GetShader(Protean::VSTYPE_VOXELGRID);
+			desc.ps = Protean::Renderer::GetShader(Protean::PSTYPE_VERTEXCOLOR);
+			desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_POSITION_INSTANCE);
+			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHREAD);
+			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_FRONT);
+			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_ADDITIVE);
 			desc.pt = PrimitiveTopology::TRIANGLESTRIP;
 
 			GraphicsDevice* device = GetDevice();
@@ -703,7 +703,7 @@ namespace wi
 		// add box renderer for whole volume:
 		XMFLOAT4X4 boxmat;
 		XMStoreFloat4x4(&boxmat, get_aabb().getAsBoxMatrix());
-		wi::renderer::DrawBox(boxmat, debug_color_extent);
+		Protean::Renderer::DrawBox(boxmat, debug_color_extent);
 
 		// Add a cube for every filled voxel below:
 		uint32_t numVoxels = 0;
@@ -722,7 +722,7 @@ namespace wi
 		if (!shaders_loaded)
 		{
 			shaders_loaded = true;
-			static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+			static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 		}
 
@@ -739,7 +739,7 @@ namespace wi
 			uint32_t rgba;
 			float rgbaf;
 		} dbg_color;
-		dbg_color.rgba = wi::math::CompressColor(debug_color);
+		dbg_color.rgba = Protean::Math::CompressColor(debug_color);
 
 		size_t dst_offset = 0;
 		for (size_t i = 0; i < voxels.size(); ++i)
@@ -766,7 +766,7 @@ namespace wi
 			XMFLOAT3 pos = coord_to_world(coord);
 			XMVECTOR P = XMLoadFloat3(&pos);
 			DBGColor col;
-			col.rgba = wi::math::CompressColor(color);
+			col.rgba = Protean::Math::CompressColor(color);
 			P = XMVectorSetW(P, col.rgbaf);
 			XMStoreFloat4((XMFLOAT4*)mem.data + dst_offset, P);
 			dst_offset++;
@@ -1283,14 +1283,14 @@ namespace wi
 	}
 
 	void VoxelGrid::create_mesh(
-		wi::vector<uint32_t>& indices,
-		wi::vector<XMFLOAT3>& vertices,
+		Protean::vector<uint32_t>& indices,
+		Protean::vector<XMFLOAT3>& vertices,
 		bool simplify,
-		const wi::scene::Scene* navscene 
+		const Protean::Scene* navscene 
 	)
 	{
 		TRIANGLE triangles[10];
-		wi::vector<XMFLOAT3> unindexed_vertices;
+		Protean::vector<XMFLOAT3> unindexed_vertices;
 		// Note: step over the voxel grid's perimeter as well, without that the polygonize can leave holes on the sides
 		for (int x = -1; x < (int)resolution.x; ++x)
 		{
@@ -1343,8 +1343,8 @@ namespace wi
 
 		if (navscene != nullptr)
 		{
-			wi::jobsystem::context ctx;
-			wi::jobsystem::Dispatch(ctx, (uint32_t)vertices.size(), 64, [&](wi::jobsystem::JobArgs args) {
+			Protean::JobSystem::context ctx;
+			Protean::JobSystem::Dispatch(ctx, (uint32_t)vertices.size(), 64, [&](Protean::JobSystem::JobArgs args) {
 				XMFLOAT3& vertex = vertices[args.jobIndex];
 				XMFLOAT2 offsets[] = {
 					XMFLOAT2(0, 0),
@@ -1362,16 +1362,16 @@ namespace wi
 				float pushdown = voxelSize.y * 2;
 				for (auto& offset : offsets)
 				{
-					wi::primitive::Ray ray(XMFLOAT3(vertex.x + offset.x, vertex.y, vertex.z + offset.x), XMFLOAT3(0, -1, 0));
-					auto res = navscene->Intersects(ray, wi::enums::FILTER_OBJECT_ALL);
-					if (res.entity != wi::ecs::INVALID_ENTITY)
+					Protean::Ray ray(XMFLOAT3(vertex.x + offset.x, vertex.y, vertex.z + offset.x), XMFLOAT3(0, -1, 0));
+					auto res = navscene->Intersects(ray, Protean::FILTER_OBJECT_ALL);
+					if (res.entity != Protean::INVALID_ENTITY)
 					{
 						pushdown = std::min(pushdown, res.distance);
 					}
 				}
 				vertex.y -= pushdown;
 			});
-			wi::jobsystem::Wait(ctx);
+			Protean::JobSystem::Wait(ctx);
 		}
 
 		if (simplify)
@@ -1400,8 +1400,8 @@ namespace wi
 			unindexed_vertex_count = vertices.size();
 			size_t vertex_count = meshopt_generateVertexRemap(&remap[0], lod.data(), index_count, &vertices[0], unindexed_vertex_count, sizeof(XMFLOAT3));
 
-			wi::vector<uint32_t> simplified_indices(index_count);
-			wi::vector<XMFLOAT3> simplified_vertices(vertex_count);
+			Protean::vector<uint32_t> simplified_indices(index_count);
+			Protean::vector<XMFLOAT3> simplified_vertices(vertex_count);
 
 			meshopt_remapIndexBuffer(simplified_indices.data(), lod.data(), index_count, &remap[0]);
 			meshopt_remapVertexBuffer(simplified_vertices.data(), &vertices[0], unindexed_vertex_count, sizeof(XMFLOAT3), &remap[0]);

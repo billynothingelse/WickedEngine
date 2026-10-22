@@ -13,7 +13,7 @@
 #include <string>
 #include <functional>
 
-namespace wi::gui
+namespace Protean::Gui
 {
 
 	struct EventArgs
@@ -26,7 +26,7 @@ namespace wi::gui
 		bool bValue = false;	// generic boolean value of operation
 		int iValue = 0;			// generic integer value of operation
 		int iValue2 = 0;		// secondary generic integer value of operation
-		wi::Color color;		// color value of color picker operation
+		Protean::Color color;		// color value of color picker operation
 		std::string sValue;		// generic string value of operation
 		uint64_t userdata = 0;	// this will provide the userdata value that was set to a widget (or part of a widget)
 	};
@@ -109,23 +109,23 @@ namespace wi::gui
 
 	struct Theme
 	{
-		// Reduced version of wi::image::Params, excluding position, alignment, etc.
+		// Reduced version of Protean::Image::Params, excluding position, alignment, etc.
 		struct Image
 		{
-			inline static const wi::image::Params params; // prototype for default values
+			inline static const Protean::Image::Params params; // prototype for default values
 			XMFLOAT4 color = params.color;
-			wi::enums::BLENDMODE blendFlag = params.blendFlag;
-			wi::image::SAMPLEMODE sampleFlag = params.sampleFlag;
-			wi::image::QUALITY quality = params.quality;
+			Protean::BLENDMODE blendFlag = params.blendFlag;
+			Protean::Image::SAMPLEMODE sampleFlag = params.sampleFlag;
+			Protean::Image::QUALITY quality = params.quality;
 			bool background = params.isBackgroundEnabled();
 			bool corner_rounding = params.isCornerRoundingEnabled();
-			wi::image::Params::Rounding corners_rounding[arraysize(params.corners_rounding)];
+			Protean::Image::Params::Rounding corners_rounding[arraysize(params.corners_rounding)];
 			bool highlight = false;
 			XMFLOAT3 highlight_color = XMFLOAT3(1, 1, 1);
 			float highlight_spread = 1;
 			float border_soften = 0;
 
-			void Apply(wi::image::Params& params) const
+			void Apply(Protean::Image::Params& params) const
 			{
 				params.color = color;
 				params.blendFlag = blendFlag;
@@ -159,7 +159,7 @@ namespace wi::gui
 				params.highlight_spread = highlight_spread;
 				std::memcpy(params.corners_rounding, corners_rounding, sizeof(corners_rounding));
 			}
-			void CopyFrom(const wi::image::Params& params)
+			void CopyFrom(const Protean::Image::Params& params)
 			{
 				color = params.color;
 				blendFlag = params.blendFlag;
@@ -174,12 +174,12 @@ namespace wi::gui
 			}
 		} image;
 
-		// Reduced version of wi::font::Params, excluding position, alignment, etc.
+		// Reduced version of Protean::Font::Params, excluding position, alignment, etc.
 		struct Font
 		{
-			inline static const wi::font::Params params; // prototype for default values
-			wi::Color color = params.color;
-			wi::Color shadow_color = params.shadowColor;
+			inline static const Protean::Font::Params params; // prototype for default values
+			Protean::Color color = params.color;
+			Protean::Color shadow_color = params.shadowColor;
 			int style = params.style;
 			float softness = params.softness;
 			float bolden = params.bolden;
@@ -188,7 +188,7 @@ namespace wi::gui
 			float shadow_offset_x = params.shadow_offset_x;
 			float shadow_offset_y = params.shadow_offset_y;
 
-			void Apply(wi::font::Params& params) const
+			void Apply(Protean::Font::Params& params) const
 			{
 				params.color = color;
 				params.shadowColor = shadow_color;
@@ -200,7 +200,7 @@ namespace wi::gui
 				params.shadow_offset_x = shadow_offset_x;
 				params.shadow_offset_y = shadow_offset_y;
 			}
-			void CopyFrom(const wi::font::Params& params)
+			void CopyFrom(const Protean::Font::Params& params)
 			{
 				color = params.color;
 				shadow_color = params.shadowColor;
@@ -215,7 +215,7 @@ namespace wi::gui
 		} font;
 
 		float shadow = -1; // shadow radius, if less than 0, it won't be used to override
-		wi::Color shadow_color = wi::Color::Shadow(); // shadow color for whole widget
+		Protean::Color shadow_color = Protean::Color::Shadow(); // shadow color for whole widget
 		bool shadow_highlight = false;
 		XMFLOAT3 shadow_highlight_color = XMFLOAT3(1, 1, 1);
 		float shadow_highlight_spread = 1;
@@ -223,7 +223,7 @@ namespace wi::gui
 		Image tooltipImage;
 		Font tooltipFont;
 		float tooltip_shadow = -1; // shadow radius, if less than 0, it won't be used to override
-		wi::Color tooltip_shadow_color = wi::Color::Shadow();
+		Protean::Color tooltip_shadow_color = Protean::Color::Shadow();
 	};
 
 	class Widget;
@@ -232,13 +232,13 @@ namespace wi::gui
 	class GUI
 	{
 	private:
-		wi::vector<Widget*> widgets;
+		Protean::vector<Widget*> widgets;
 		bool focus = false;
 		bool visible = true;
 	public:
 
-		void Update(const wi::Canvas& canvas, float dt);
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+		void Update(const Protean::Canvas& canvas, float dt);
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const;
 
 		void AddWidget(Widget* widget);
 		void RemoveWidget(Widget* widget);
@@ -252,16 +252,16 @@ namespace wi::gui
 		void SetVisible(bool value) { visible = value; }
 		bool IsVisible() const { return visible; }
 
-		void SetColor(wi::Color color, int id = -1);
-		void SetImage(const wi::Resource& resource, int id = -1);
-		void SetShadowColor(wi::Color color);
+		void SetColor(Protean::Color color, int id = -1);
+		void SetImage(const Protean::Resource& resource, int id = -1);
+		void SetShadowColor(Protean::Color color);
 		void SetTheme(const Theme& theme, int id = -1);
 
-		void ExportLocalization(wi::Localization& localization) const;
-		void ImportLocalization(const wi::Localization& localization);
+		void ExportLocalization(Protean::Localization& localization) const;
+		void ImportLocalization(const Protean::Localization& localization);
 	};
 
-	class Widget : public wi::scene::TransformComponent
+	class Widget : public Protean::TransformComponent
 	{
 		friend class ComboBox;
 	private:
@@ -272,16 +272,16 @@ namespace wi::gui
 		bool visible = true;
 		LocalizationEnabled localization_enabled = LocalizationEnabled::All;
 		float shadow = 1; // shadow radius
-		wi::Color shadow_color = wi::Color::Shadow();
+		Protean::Color shadow_color = Protean::Color::Shadow();
 		bool shadow_highlight = false;
 		XMFLOAT3 shadow_highlight_color = XMFLOAT3(1, 1, 1);
 		float shadow_highlight_spread = 1;
 		WIDGETSTATE state = IDLE;
 		float tooltip_shadow = 1; // shadow radius
-		wi::Color tooltip_shadow_color = wi::Color::Shadow();
-		mutable wi::Sprite tooltipSprite;
-		mutable wi::SpriteFont tooltipFont;
-		mutable wi::SpriteFont scripttipFont;
+		Protean::Color tooltip_shadow_color = Protean::Color::Shadow();
+		mutable Protean::Sprite tooltipSprite;
+		mutable Protean::SpriteFont tooltipFont;
+		mutable Protean::SpriteFont scripttipFont;
 		float angular_highlight_width = 0;
 		float angular_highlight_timer = 0;
 		XMFLOAT4 angular_highlight_color = XMFLOAT4(1, 1, 1, 1);
@@ -315,7 +315,7 @@ namespace wi::gui
 		bool IsEnabled() const;
 		virtual void SetVisible(bool val);
 		bool IsVisible() const;
-		wi::Color GetColor() const;
+		Protean::Color GetColor() const;
 		float GetShadowRadius() const { return shadow; }
 		void SetShadowRadius(float value) { shadow = value; }
 
@@ -327,26 +327,26 @@ namespace wi::gui
 		void SetShadowHighlightSpread(float value) { shadow_highlight_spread = value; }
 
 		virtual void ResizeLayout() {};
-		virtual void Update(const wi::Canvas& canvas, float dt);
-		virtual void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
-		virtual void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const;
+		virtual void Update(const Protean::Canvas& canvas, float dt);
+		virtual void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const;
+		virtual void RenderTooltip(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const;
 
 		// last param default: set color for all states
 		//	you can specify a WIDGET_ID here, or your own custom ID if you use your own widget type
-		virtual void SetColor(wi::Color color, int id = -1);
-		virtual void SetShadowColor(wi::Color color);
-		virtual void SetImage(wi::Resource textureResource, int id = -1);
+		virtual void SetColor(Protean::Color color, int id = -1);
+		virtual void SetShadowColor(Protean::Color color);
+		virtual void SetImage(Protean::Resource textureResource, int id = -1);
 		virtual void SetTheme(const Theme& theme, int id = -1);
 		virtual const char* GetWidgetTypeName() const { return "Widget"; }
 
-		wi::Sprite sprites[WIDGETSTATE_COUNT];
-		wi::SpriteFont font;
+		Protean::Sprite sprites[WIDGETSTATE_COUNT];
+		Protean::SpriteFont font;
 
 		XMFLOAT3 translation = XMFLOAT3(0, 0, 0);
 		XMFLOAT3 scale = XMFLOAT3(1, 1, 1);
 
-		wi::primitive::Hitbox2D hitBox;
-		wi::graphics::Rect scissorRect;
+		Protean::Hitbox2D hitBox;
+		Protean::Graphics::Rect scissorRect;
 
 		Widget* parent = nullptr;
 		void AttachTo(Widget* parent);
@@ -355,12 +355,12 @@ namespace wi::gui
 		virtual void Activate();
 		virtual void Deactivate();
 
-		void ApplyScissor(const wi::Canvas& canvas, const wi::graphics::Rect rect, wi::graphics::CommandList cmd, bool constrain_to_parent = true) const;
-		wi::primitive::Hitbox2D GetPointerHitbox(bool constrained = true) const;
-		XMFLOAT2 GetPointerHighlightPos(const wi::Canvas& canvas) const;
+		void ApplyScissor(const Protean::Canvas& canvas, const Protean::Graphics::Rect rect, Protean::Graphics::CommandList cmd, bool constrain_to_parent = true) const;
+		Protean::Hitbox2D GetPointerHitbox(bool constrained = true) const;
+		XMFLOAT2 GetPointerHighlightPos(const Protean::Canvas& canvas) const;
 
-		wi::primitive::Hitbox2D active_area; // Pointer hitbox constrain area
-		void HitboxConstrain(wi::primitive::Hitbox2D& hb) const;
+		Protean::Hitbox2D active_area; // Pointer hitbox constrain area
+		void HitboxConstrain(Protean::Hitbox2D& hb) const;
 
 		bool priority_change = true;
 		uint32_t priority = 0;
@@ -370,8 +370,8 @@ namespace wi::gui
 		LocalizationEnabled GetLocalizationEnabled() const { return localization_enabled; }
 		void SetLocalizationEnabled(LocalizationEnabled value) { localization_enabled = value; }
 		void SetLocalizationEnabled(bool value) { localization_enabled = value ? LocalizationEnabled::All : LocalizationEnabled::None; }
-		virtual void ExportLocalization(wi::Localization& localization) const;
-		virtual void ImportLocalization(const wi::Localization& localization);
+		virtual void ExportLocalization(Protean::Localization& localization) const;
+		virtual void ImportLocalization(const Protean::Localization& localization);
 
 		void SetAngularHighlightWidth(float value) { angular_highlight_width = value; };
 		float GetAngularHighlightWidth() const { return angular_highlight_width; };
@@ -397,8 +397,8 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Button"; }
 
@@ -408,7 +408,7 @@ namespace wi::gui
 		void OnDrag(std::function<void(const EventArgs& args)> func);
 		void OnDragEnd(std::function<void(const EventArgs& args)> func);
 
-		wi::SpriteFont font_description;
+		Protean::SpriteFont font_description;
 		void SetDescription(const std::string& desc) { font_description.SetText(desc); }
 		const std::string GetDescription() const { return font_description.GetTextA(); }
 
@@ -421,7 +421,7 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name);
 
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 		const char* GetWidgetTypeName() const override { return "Image"; }
 	};
 
@@ -485,12 +485,12 @@ namespace wi::gui
 			SCROLLBAR_GRABBED,
 			SCROLLBAR_STATE_COUNT,
 		} scrollbar_state = SCROLLBAR_INACTIVE;
-		wi::Sprite sprites_knob[SCROLLBAR_STATE_COUNT];
+		Protean::Sprite sprites_knob[SCROLLBAR_STATE_COUNT];
 		XMFLOAT2 knob_inset_border = {};
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "ScrollBar"; }
 
@@ -507,9 +507,9 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Label"; }
 
@@ -531,7 +531,7 @@ namespace wi::gui
 	protected:
 		std::function<void(const EventArgs& args)> onInputAccepted;
 		std::function<void(const EventArgs& args)> onInput;
-		static wi::SpriteFont font_input;
+		static Protean::SpriteFont font_input;
 		bool cancel_input_enabled = true;
 		int float_precision = -1;
 
@@ -562,9 +562,9 @@ namespace wi::gui
 
 		void SetEnabled(bool val) override;
 		void SetVisible(bool val) override;
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "TextInputField"; }
 
@@ -573,7 +573,7 @@ namespace wi::gui
 		// Called when input was updated with new character:
 		void OnInput(std::function<void(const EventArgs& args)> func);
 
-		wi::SpriteFont font_description;
+		Protean::SpriteFont font_description;
 		void SetDescription(const std::string& desc) { font_description.SetText(desc); }
 		const std::string GetDescription() const { return font_description.GetTextA(); }
 
@@ -596,17 +596,17 @@ namespace wi::gui
 		// step : slider step size
 		void Create(float start, float end, float defaultValue, float step, const std::string& name);
 
-		wi::Sprite sprites_knob[WIDGETSTATE_COUNT];
+		Protean::Sprite sprites_knob[WIDGETSTATE_COUNT];
 
 		void SetValue(float value);
 		void SetValue(int value);
 		float GetValue() const;
 		void SetRange(float start, float end);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void RenderTooltip(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Slider"; }
 		WIDGETSTATE GetState() const override { return std::max(state, valueInputField.GetState()); };
@@ -630,8 +630,8 @@ namespace wi::gui
 		void SetCheck(bool value);
 		bool GetCheck() const;
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 		const char* GetWidgetTypeName() const override { return "CheckBox"; }
 
 		void OnClick(std::function<void(const EventArgs& args)> func);
@@ -672,18 +672,18 @@ namespace wi::gui
 			std::string name;
 			uint64_t userdata = 0;
 		};
-		wi::vector<Item> items;
+		Protean::vector<Item> items;
 
-		wi::Color drop_color = wi::Color::Ghost();
+		Protean::Color drop_color = Protean::Color::Ghost();
 		std::wstring invalid_selection_text;
 
 		TextInputField filter;
 		std::string filterText;
 		int filteredItemCount = 0;
 
-		float GetDropOffset(const wi::Canvas& canvas) const;
-		float GetDropX(const wi::Canvas& canvas) const;
-		float GetItemOffset(const wi::Canvas& canvas, int index) const;
+		float GetDropOffset(const Protean::Canvas& canvas) const;
+		float GetDropX(const Protean::Canvas& canvas) const;
+		float GetItemOffset(const Protean::Canvas& canvas, int index) const;
 	public:
 		void Create(const std::string& name);
 
@@ -706,18 +706,18 @@ namespace wi::gui
 		size_t GetItemCount() const { return items.size(); }
 		void SetInvalidSelectionText(const std::string& text);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "ComboBox"; }
 
 		void OnSelect(std::function<void(const EventArgs& args)> func);
 
-		wi::SpriteFont selected_font;
+		Protean::SpriteFont selected_font;
 
-		void ExportLocalization(wi::Localization& localization) const override;
-		void ImportLocalization(const wi::Localization& localization) override;
+		void ExportLocalization(Protean::Localization& localization) const override;
+		void ImportLocalization(const Protean::Localization& localization) override;
 
 		void SetDropArrowEnabled(bool value) { drop_arrow = value; }
 		bool IsDropArrowEnabled() const { return drop_arrow; }
@@ -729,7 +729,7 @@ namespace wi::gui
 	class Window :public Widget
 	{
 	protected:
-		wi::vector<Widget*> widgets;
+		Protean::vector<Widget*> widgets;
 		bool minimized = false;
 		bool has_titlebar = false;
 		bool right_aligned_image = false;
@@ -782,7 +782,7 @@ namespace wi::gui
 			}
 
 			// Add one widget in a row:
-			void add(wi::gui::Widget& widget)
+			void add(Protean::Gui::Widget& widget)
 			{
 				if (!widget.IsVisible())
 					return;
@@ -796,7 +796,7 @@ namespace wi::gui
 				y += padding;
 			}
 			// Add one widget to the right side:
-			void add_right(wi::gui::Widget& widget)
+			void add_right(Protean::Gui::Widget& widget)
 			{
 				if (!widget.IsVisible())
 					return;
@@ -817,7 +817,7 @@ namespace wi::gui
 				y += padding;
 			}
 			// Add one widget to fill the whole width:
-			void add_fullwidth(wi::gui::Widget& widget)
+			void add_fullwidth(Protean::Gui::Widget& widget)
 			{
 				if (!widget.IsVisible())
 					return;
@@ -833,7 +833,7 @@ namespace wi::gui
 				y += padding;
 			}
 			// Add one widget to fill the whole width and keep aspect ratio:
-			void add_fullwidth_aspect(wi::gui::Widget& widget)
+			void add_fullwidth_aspect(Protean::Gui::Widget& widget)
 			{
 				if (!widget.IsVisible())
 					return;
@@ -843,11 +843,11 @@ namespace wi::gui
 				y += widget.GetShadowRadius();
 				widget.SetPos(XMFLOAT2(margin_left, y));
 				float h_aspect = widget.GetSize().y / widget.GetSize().x;
-				const wi::Resource& res = widget.sprites[widget.GetState()].textureResource;
+				const Protean::Resource& res = widget.sprites[widget.GetState()].textureResource;
 				if (res.IsValid())
 				{
-					const wi::graphics::Texture& tex = res.GetTexture();
-					if (has_flag(tex.desc.misc_flags, wi::graphics::ResourceMiscFlag::TEXTURECUBE))
+					const Protean::Graphics::Texture& tex = res.GetTexture();
+					if (has_flag(tex.desc.misc_flags, Protean::Graphics::ResourceMiscFlag::TEXTURECUBE))
 					{
 						// fixed aspect for cubemap cross:
 						h_aspect = 3.0f / 4.0f;
@@ -867,7 +867,7 @@ namespace wi::gui
 
 			// Add multiple widgets in a row aligned to the right side:
 			template<typename... Args>
-			void add_right(wi::gui::Widget& widget, Args&&... args)
+			void add_right(Protean::Gui::Widget& widget, Args&&... args)
 			{
 				add_right(std::forward<Args>(args)...);
 				if (!widget.IsVisible())
@@ -885,7 +885,7 @@ namespace wi::gui
 				x -= widget.GetShadowRadius();
 			}
 
-			void helper_fitx(float sizx, wi::gui::Widget& widget)
+			void helper_fitx(float sizx, Protean::Gui::Widget& widget)
 			{
 				float left = widget.GetLeftTextWidth();
 				if (left > 0)
@@ -893,7 +893,7 @@ namespace wi::gui
 				widget.SetSize(XMFLOAT2(sizx - left, widget.GetSize().y));
 			}
 			template<typename... Args>
-			void helper_fitx(float sizx, wi::gui::Widget& widget, Args&&... args)
+			void helper_fitx(float sizx, Protean::Gui::Widget& widget, Args&&... args)
 			{
 				helper_fitx(sizx, widget);
 				helper_fitx(sizx, std::forward<Args>(args)...);
@@ -901,7 +901,7 @@ namespace wi::gui
 
 			// Add multiple widgets in a row, equally sized to fit
 			template<typename... Args>
-			void add(wi::gui::Widget& widget, Args&&... args)
+			void add(Protean::Gui::Widget& widget, Args&&... args)
 			{
 				constexpr size_t total_count = 1 + sizeof...(Args);
 				const float onewidth = (width - padding) / total_count - (padding * (total_count - 1));
@@ -944,12 +944,12 @@ namespace wi::gui
 		void RemoveWidgets();
 
 		void ResizeLayout() override;
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void RenderTooltip(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
-		void SetImage(wi::Resource resource, int id = -1) override;
-		void SetShadowColor(wi::Color color) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void RenderTooltip(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
+		void SetImage(Protean::Resource resource, int id = -1) override;
+		void SetShadowColor(Protean::Color color) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "Window"; }
 
@@ -979,10 +979,10 @@ namespace wi::gui
 		// Set whether the background image should be aligned to the right side while keeping aspect ratio
 		void SetRightAlignedImage(bool value) { right_aligned_image = value; }
 
-		void ExportLocalization(wi::Localization& localization) const override;
-		void ImportLocalization(const wi::Localization& localization) override;
+		void ExportLocalization(Protean::Localization& localization) const override;
+		void ImportLocalization(const Protean::Localization& localization) override;
 
-		wi::graphics::Texture background_overlay;
+		Protean::Graphics::Texture background_overlay;
 	};
 
 	// HSV-Color Picker
@@ -1004,15 +1004,15 @@ namespace wi::gui
 	public:
 		void Create(const std::string& name, WindowControls window_controls = WindowControls::ALL);
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
 		void ResizeLayout() override;
-		void SetColor(wi::Color color, int id = -1) override;
-		void SetImage(wi::Resource resource, int id = -1) override;
+		void SetColor(Protean::Color color, int id = -1) override;
+		void SetImage(Protean::Resource resource, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "ColorPicker"; }
 
-		wi::Color GetPickColor() const;
-		void SetPickColor(wi::Color value);
+		Protean::Color GetPickColor() const;
+		void SetPickColor(Protean::Color value);
 
 		void OnColorChanged(std::function<void(const EventArgs& args)> func);
 
@@ -1045,11 +1045,11 @@ namespace wi::gui
 		int item_highlight = -1;
 		int opener_highlight = -1;
 
-		wi::primitive::Hitbox2D GetHitbox_ListArea() const;
-		wi::primitive::Hitbox2D GetHitbox_Item(int visible_count, int level) const;
-		wi::primitive::Hitbox2D GetHitbox_ItemOpener(int visible_count, int level) const;
+		Protean::Hitbox2D GetHitbox_ListArea() const;
+		Protean::Hitbox2D GetHitbox_Item(int visible_count, int level) const;
+		Protean::Hitbox2D GetHitbox_ItemOpener(int visible_count, int level) const;
 
-		wi::vector<Item> items;
+		Protean::vector<Item> items;
 
 		float GetItemOffset(int index) const;
 		bool DoesItemHaveChildren(int index) const;
@@ -1091,9 +1091,9 @@ namespace wi::gui
 		int GetItemCount() const { return (int)items.size(); }
 		const Item& GetItem(int index) const;
 
-		void Update(const wi::Canvas& canvas, float dt) override;
-		void Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const override;
-		void SetColor(wi::Color color, int id = -1) override;
+		void Update(const Protean::Canvas& canvas, float dt) override;
+		void Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const override;
+		void SetColor(Protean::Color color, int id = -1) override;
 		void SetTheme(const Theme& theme, int id = -1) override;
 		const char* GetWidgetTypeName() const override { return "TreeList"; }
 
@@ -1108,10 +1108,10 @@ namespace wi::gui
 }
 
 template<>
-struct enable_bitmask_operators<wi::gui::Window::WindowControls> : std::true_type {};
+struct enable_bitmask_operators<Protean::Gui::Window::WindowControls> : std::true_type {};
 
 template<>
-struct enable_bitmask_operators<wi::gui::Window::AttachmentOptions> : std::true_type {};
+struct enable_bitmask_operators<Protean::Gui::Window::AttachmentOptions> : std::true_type {};
 
 template<>
-struct enable_bitmask_operators<wi::gui::LocalizationEnabled> : std::true_type {};
+struct enable_bitmask_operators<Protean::Gui::LocalizationEnabled> : std::true_type {};

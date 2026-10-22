@@ -10,7 +10,7 @@
 
 #include <memory>
 
-namespace wi::terrain
+namespace Protean::Terrain
 {
 	struct Chunk
 	{
@@ -36,16 +36,16 @@ namespace wi::terrain
 namespace std
 {
 	template <>
-	struct hash<wi::terrain::Chunk>
+	struct hash<Protean::Terrain::Chunk>
 	{
-		constexpr uint64_t operator()(const wi::terrain::Chunk& chunk) const
+		constexpr uint64_t operator()(const Protean::Terrain::Chunk& chunk) const
 		{
 			return chunk.compute_hash();
 		}
 	};
 }
 
-namespace wi::terrain
+namespace Protean::Terrain
 {
 	static constexpr int chunk_width = 64 + 3; // + 3: filler vertices for lod apron and grid perimeter
 	static constexpr float chunk_half_width = (chunk_width - 1) * 0.5f;
@@ -64,11 +64,11 @@ namespace wi::terrain
 	{
 		struct Map
 		{
-			wi::graphics::Texture texture;
-			wi::graphics::Texture texture_raw_block;
+			Protean::Graphics::Texture texture;
+			Protean::Graphics::Texture texture_raw_block;
 		};
 		Map maps[4];
-		wi::graphics::GPUBuffer tile_pool;
+		Protean::Graphics::GPUBuffer tile_pool;
 
 		uint8_t physical_tile_count_x = 0;
 		uint8_t physical_tile_count_y = 0;
@@ -83,32 +83,32 @@ namespace wi::terrain
 			}
 			constexpr operator uint16_t() const { return uint16_t(uint16_t(x) | (uint16_t(y) << 8u)); }
 		};
-		wi::vector<Tile> free_tiles;
+		Protean::vector<Tile> free_tiles;
 
 		struct PhysicalTile
 		{
 			const Tile* last_used = nullptr;
 			uint64_t free_frames = 0;
 		};
-		wi::vector<PhysicalTile> physical_tiles;
+		Protean::vector<PhysicalTile> physical_tiles;
 
 		struct Residency
 		{
-			wi::graphics::Texture feedbackMap;
-			wi::graphics::Texture residencyMap;
-			wi::graphics::GPUBuffer requestBuffer;
-			wi::graphics::GPUBuffer allocationBuffer;
-			wi::graphics::GPUBuffer allocationBuffer_CPU_readback[wi::graphics::GraphicsDevice::GetBufferCount()];
-			wi::graphics::GPUBuffer pageBuffer;
-			wi::graphics::GPUBuffer pageBuffer_CPU_upload[wi::graphics::GraphicsDevice::GetBufferCount()];
-			bool data_available_CPU[wi::graphics::GraphicsDevice::GetBufferCount()] = {};
+			Protean::Graphics::Texture feedbackMap;
+			Protean::Graphics::Texture residencyMap;
+			Protean::Graphics::GPUBuffer requestBuffer;
+			Protean::Graphics::GPUBuffer allocationBuffer;
+			Protean::Graphics::GPUBuffer allocationBuffer_CPU_readback[Protean::Graphics::GraphicsDevice::GetBufferCount()];
+			Protean::Graphics::GPUBuffer pageBuffer;
+			Protean::Graphics::GPUBuffer pageBuffer_CPU_upload[Protean::Graphics::GraphicsDevice::GetBufferCount()];
+			bool data_available_CPU[Protean::Graphics::GraphicsDevice::GetBufferCount()] = {};
 			int16_t cpu_resource_id = 0;
 			uint32_t resolution = 0;
 
 			void init(uint32_t resolution);
 			void reset();
 		};
-		wi::unordered_map<uint32_t, wi::vector<wi::allocator::shared_ptr<Residency>>> free_residencies; // per resolution residencies
+		Protean::unordered_map<uint32_t, Protean::vector<Protean::Allocator::shared_ptr<Residency>>> free_residencies; // per resolution residencies
 
 		bool allocate_tile(Tile& tile)
 		{
@@ -142,20 +142,20 @@ namespace wi::terrain
 				return ~0ull;
 			return physical_tiles[tile.x + tile.y * physical_tile_count_x].free_frames;
 		}
-		wi::allocator::shared_ptr<Residency> allocate_residency(uint32_t resolution)
+		Protean::Allocator::shared_ptr<Residency> allocate_residency(uint32_t resolution)
 		{
 			if (free_residencies[resolution].empty())
 			{
-				wi::allocator::shared_ptr<Residency> residency = wi::allocator::make_shared<Residency>();
+				Protean::Allocator::shared_ptr<Residency> residency = Protean::Allocator::make_shared<Residency>();
 				residency->init(resolution);
 				free_residencies[resolution].push_back(residency);
 			}
-			wi::allocator::shared_ptr<Residency> residency = free_residencies[resolution].back();
+			Protean::Allocator::shared_ptr<Residency> residency = free_residencies[resolution].back();
 			free_residencies[resolution].pop_back();
 			residency->reset();
 			return residency;
 		}
-		void free_residency(wi::allocator::shared_ptr<Residency>& residency)
+		void free_residency(Protean::Allocator::shared_ptr<Residency>& residency)
 		{
 			if (residency == nullptr)
 				return;
@@ -170,8 +170,8 @@ namespace wi::terrain
 
 	struct VirtualTexture
 	{
-		wi::allocator::shared_ptr<VirtualTextureAtlas::Residency> residency;
-		wi::vector<VirtualTextureAtlas::Tile> tiles;
+		Protean::Allocator::shared_ptr<VirtualTextureAtlas::Residency> residency;
+		Protean::vector<VirtualTextureAtlas::Tile> tiles;
 		uint32_t lod_count = 0;
 		uint32_t resolution = 0;
 
@@ -195,7 +195,7 @@ namespace wi::terrain
 			uint32_t lod = 0;
 			uint32_t tile_index = 0;
 		};
-		wi::vector<AllocationRequest> allocation_requests;
+		Protean::vector<AllocationRequest> allocation_requests;
 
 		// Attach this data to Virtual Texture because we will record these by separate CPU thread:
 		struct UpdateRequest
@@ -206,34 +206,34 @@ namespace wi::terrain
 			uint8_t tile_x = 0;
 			uint8_t tile_y = 0;
 		};
-		mutable wi::vector<UpdateRequest> update_requests;
-		wi::graphics::Texture blendmap;
+		mutable Protean::vector<UpdateRequest> update_requests;
+		Protean::Graphics::Texture blendmap;
 	};
 
 	struct BlendmapLayer
 	{
-		wi::vector<uint8_t> pixels;
+		Protean::vector<uint8_t> pixels;
 	};
 
 	struct ChunkData
 	{
-		wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity grass_entity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity props_entity = wi::ecs::INVALID_ENTITY;
+		Protean::Entity entity = Protean::INVALID_ENTITY;
+		Protean::Entity grass_entity = Protean::INVALID_ENTITY;
+		Protean::Entity props_entity = Protean::INVALID_ENTITY;
 		float prop_density_current = 1;
 		float grass_density_current = 1;
 		const XMFLOAT3* mesh_vertex_positions = nullptr;
-		wi::HairParticleSystem grass;
-		wi::vector<BlendmapLayer> blendmap_layers;
-		wi::vector<BlendmapLayer> spline_blendmap_layers;
-		wi::graphics::Texture blendmap;
-		wi::primitive::Sphere sphere;
+		Protean::HairParticleSystem grass;
+		Protean::vector<BlendmapLayer> blendmap_layers;
+		Protean::vector<BlendmapLayer> spline_blendmap_layers;
+		Protean::Graphics::Texture blendmap;
+		Protean::Sphere sphere;
 		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
 		bool visible = true;
 		bool invalidated = false;
-		wi::allocator::shared_ptr<VirtualTexture> vt;
-		wi::vector<uint16_t> heightmap_data;
-		wi::graphics::Texture heightmap;
+		Protean::Allocator::shared_ptr<VirtualTexture> vt;
+		Protean::vector<uint16_t> heightmap_data;
+		Protean::Graphics::Texture heightmap;
 
 		void enable_blendmap_layer(size_t materialIndex)
 		{
@@ -246,8 +246,8 @@ namespace wi::terrain
 
 	struct Prop
 	{
-		wi::vector<uint8_t> data; // serialized component data storage
-		wi::ecs::Entity source_entity = wi::ecs::INVALID_ENTITY; // the original entity that this prop was serialized from
+		Protean::vector<uint8_t> data; // serialized component data storage
+		Protean::Entity source_entity = Protean::INVALID_ENTITY; // the original entity that this prop was serialized from
 		int min_count_per_chunk = 0; // a chunk will try to generate min this many props of this type
 		int max_count_per_chunk = 10; // a chunk will try to generate max this many props of this type
 		int region = 0; // region selection in range [0,3] (0: base/grass, 1: slopes, 2: low altitude (bottom level-0), 3: high altitude (0-top level))
@@ -278,38 +278,38 @@ namespace wi::terrain
 		};
 		uint32_t _flags = CENTER_TO_CAM | REMOVAL | GRASS;
 
-		wi::ecs::Entity terrainEntity = wi::ecs::INVALID_ENTITY;
-		wi::ecs::Entity chunkGroupEntity = wi::ecs::INVALID_ENTITY;
-		wi::scene::Scene* scene = nullptr;
-		wi::vector<wi::ecs::Entity> materialEntities;
-		wi::vector<wi::ecs::Entity> splineMaterialEntities;
-		wi::ecs::Entity grassEntity = wi::ecs::INVALID_ENTITY;
-		wi::scene::WeatherComponent weather;
-		wi::HairParticleSystem grass_properties;
-		wi::scene::MaterialComponent grass_material;
-		wi::unordered_map<Chunk, ChunkData> chunks;
+		Protean::Entity terrainEntity = Protean::INVALID_ENTITY;
+		Protean::Entity chunkGroupEntity = Protean::INVALID_ENTITY;
+		Protean::Scene* scene = nullptr;
+		Protean::vector<Protean::Entity> materialEntities;
+		Protean::vector<Protean::Entity> splineMaterialEntities;
+		Protean::Entity grassEntity = Protean::INVALID_ENTITY;
+		Protean::WeatherComponent weather;
+		Protean::HairParticleSystem grass_properties;
+		Protean::MaterialComponent grass_material;
+		Protean::unordered_map<Chunk, ChunkData> chunks;
 		Chunk center_chunk;
-		wi::noise::Perlin perlin_noise;
-		wi::vector<Prop> props;
+		Protean::Noise::Perlin perlin_noise;
+		Protean::vector<Prop> props;
 		int grass_chunk_dist = 1;
 
 		// For generating scene on a background thread:
 		float generation_time_budget_milliseconds = 8; // after this much time, the generation thread will start to exit. This can help avoid a very long running, resource consuming and slow cancellation generation
-		wi::allocator::shared_ptr<Generator> generator;
+		Protean::Allocator::shared_ptr<Generator> generator;
 
-		wi::vector<VirtualTexture*> virtual_textures_in_use;
-		wi::graphics::Sampler sampler;
+		Protean::vector<VirtualTexture*> virtual_textures_in_use;
+		Protean::Graphics::Sampler sampler;
 		VirtualTextureAtlas atlas;
 
 		struct NoSparseCopy
 		{
-			const wi::graphics::Texture* texture_src = nullptr;
-			const wi::graphics::Texture* texture_dst = nullptr;
-			wi::graphics::Box srcbox = {};
+			const Protean::Graphics::Texture* texture_src = nullptr;
+			const Protean::Graphics::Texture* texture_dst = nullptr;
+			Protean::Graphics::Box srcbox = {};
 		};
-		mutable wi::vector<NoSparseCopy> nosparse_copies;
+		mutable Protean::vector<NoSparseCopy> nosparse_copies;
 
-		wi::graphics::GPUBuffer chunk_buffer;
+		Protean::Graphics::GPUBuffer chunk_buffer;
 		int chunk_buffer_range = 3; // how many chunks to upload to GPU in X and Z directions
 
 		constexpr bool IsCenterToCamEnabled() const { return _flags & CENTER_TO_CAM; }
@@ -340,8 +340,8 @@ namespace wi::terrain
 		float region2 = 2;
 		float region3 = 8;
 
-		wi::vector<wi::allocator::shared_ptr<Modifier>> modifiers;
-		wi::vector<Modifier*> modifiers_to_remove;
+		Protean::vector<Protean::Allocator::shared_ptr<Modifier>> modifiers;
+		Protean::vector<Modifier*> modifiers_to_remove;
 
 		Terrain();
 		~Terrain();
@@ -350,7 +350,7 @@ namespace wi::terrain
 		//	This will remove previously existing terrain
 		void Generation_Restart();
 		// This will run the actual generation tasks, call it once per frame
-		void Generation_Update(const wi::scene::CameraComponent& camera);
+		void Generation_Update(const Protean::CameraComponent& camera);
 		// Tells the generation thread that it should be cancelled and blocks until that is confirmed
 		void Generation_Cancel();
 		// Check if the terrain generation is currently busy (running in background)
@@ -359,21 +359,21 @@ namespace wi::terrain
 		void CreateChunkRegionTexture(ChunkData& chunk_data);
 
 		void UpdateVirtualTexturesCPU();
-		void UpdateVirtualTexturesGPU(wi::graphics::CommandList cmd) const;
-		void CopyVirtualTexturePageStatusGPU(wi::graphics::CommandList cmd) const;
-		void AllocateVirtualTextureTileRequestsGPU(wi::graphics::CommandList cmd) const;
-		void WritebackTileRequestsGPU(wi::graphics::CommandList cmd) const;
+		void UpdateVirtualTexturesGPU(Protean::Graphics::CommandList cmd) const;
+		void CopyVirtualTexturePageStatusGPU(Protean::Graphics::CommandList cmd) const;
+		void AllocateVirtualTextureTileRequestsGPU(Protean::Graphics::CommandList cmd) const;
+		void WritebackTileRequestsGPU(Protean::Graphics::CommandList cmd) const;
 
 		ShaderTerrain GetShaderTerrain() const;
 
 		void InvalidateProps();
 
-		void InvalidateChunksAtSpline(const wi::scene::SplineComponent& spline);
+		void InvalidateChunksAtSpline(const Protean::SplineComponent& spline);
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 
 	private:
-		wi::vector<wi::scene::MaterialComponent> materials; // temp storage allocation
+		Protean::vector<Protean::MaterialComponent> materials; // temp storage allocation
 		float chunk_scale_rcp = 1.0f / chunk_scale;
 	};
 
@@ -410,7 +410,7 @@ namespace wi::terrain
 			{
 			default:
 			case BlendMode::Normal:
-				height = wi::math::Lerp(height, value, weight);
+				height = Protean::Math::Lerp(height, value, weight);
 				break;
 			case BlendMode::Multiply:
 				height *= value * weight;
@@ -425,7 +425,7 @@ namespace wi::terrain
 	{
 		int octaves = 6;
 		uint32_t seed = 0;
-		wi::noise::Perlin perlin_noise;
+		Protean::Noise::Perlin perlin_noise;
 
 		PerlinModifier() { type = Type::Perlin; }
 		void Seed(uint32_t seed) override
@@ -448,7 +448,7 @@ namespace wi::terrain
 		float falloff = 6;
 		float perturbation = 0.1f;
 		uint32_t seed = 0;
-		wi::noise::Perlin perlin_noise;
+		Protean::Noise::Perlin perlin_noise;
 
 		VoronoiModifier() { type = Type::Voronoi; }
 		void Seed(uint32_t seed) override
@@ -467,7 +467,7 @@ namespace wi::terrain
 				p.x += std::sin(angle) * perturbation;
 				p.y += std::cos(angle) * perturbation;
 			}
-			wi::noise::voronoi::Result res = wi::noise::voronoi::compute(p.x, p.y, (float)seed);
+			Protean::Noise::Voronoi::Result res = Protean::Noise::Voronoi::compute(p.x, p.y, (float)seed);
 			float weight = std::pow(1 - saturate((res.distance - shape) * fade), std::max(0.0001f, falloff));
 			Blend(height, weight);
 		}
@@ -476,7 +476,7 @@ namespace wi::terrain
 	{
 		float amount = 0.1f; // multiplier for height values
 
-		wi::vector<uint8_t> data;
+		Protean::vector<uint8_t> data;
 		int width = 0;
 		int height = 0;
 

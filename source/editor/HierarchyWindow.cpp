@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "HierarchyWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void HierarchyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_HIERARCHY " Hierarchy", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_HIERARCHY " Hierarchy", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(480, 60));
 
 	closeButton.SetTooltip("Delete HierarchyComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -35,7 +33,7 @@ void HierarchyWindow::Create(EditorComponent* _editor)
 	parentCombo.Create("Parent: ");
 	parentCombo.SetSize(XMFLOAT2(wid, hei));
 	parentCombo.SetPos(XMFLOAT2(x, y));
-	parentCombo.OnSelect([this](wi::gui::EventArgs args) {
+	parentCombo.OnSelect([this](Protean::Gui::EventArgs args) {
 		Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
@@ -75,9 +73,9 @@ void HierarchyWindow::SetEntity(Entity entity)
 	scene.FindAllEntities(entities);
 
 	// Sort entities by hierarchy depth
-	wi::vector<wi::ecs::Entity> sorted_entities(entities.begin(), entities.end());
-	std::sort(sorted_entities.begin(), sorted_entities.end(), [&scene](wi::ecs::Entity a, wi::ecs::Entity b) {
-		auto get_depth = [&scene](const wi::ecs::Entity e) -> int {
+	Protean::vector<Protean::Entity> sorted_entities(entities.begin(), entities.end());
+	std::sort(sorted_entities.begin(), sorted_entities.end(), [&scene](Protean::Entity a, Protean::Entity b) {
+		auto get_depth = [&scene](const Protean::Entity e) -> int {
 			int depth = 0;
 			const HierarchyComponent* h = scene.hierarchy.GetComponent(e);
 			while (h != nullptr && h->parentID != INVALID_ENTITY)
@@ -172,7 +170,7 @@ void HierarchyWindow::SetEntity(Entity entity)
 
 void HierarchyWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	
 	parentCombo.SetPos(XMFLOAT2(60, 4));
 	parentCombo.SetSize(XMFLOAT2(GetSize().x - 86, parentCombo.GetSize().y));

@@ -4,7 +4,7 @@
 #include "audio/Audio.h"
 #include "resource/ResourceManager.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class Audio_BindLua
 	{
@@ -36,18 +36,18 @@ namespace wi::lua
 	class Sound_BindLua
 	{
 	public:
-		wi::Resource soundResource;
+		Protean::Resource soundResource;
 
 		inline static constexpr char className[] = "Sound";
 		static Luna<Sound_BindLua>::FunctionType methods[];
 		static Luna<Sound_BindLua>::PropertyType properties[];
 
 		Sound_BindLua(lua_State* L);
-		Sound_BindLua(const wi::audio::Sound& sound)
+		Sound_BindLua(const Protean::Audio::Sound& sound)
 		{
 			soundResource.SetSound(sound);
 		}
-		Sound_BindLua(const wi::Resource resource)
+		Sound_BindLua(const Protean::Resource resource)
 		{
 			soundResource = resource;
 		}
@@ -60,14 +60,14 @@ namespace wi::lua
 	class SoundInstance_BindLua
 	{
 	public:
-		wi::audio::SoundInstance soundinstance;
+		Protean::Audio::SoundInstance soundinstance;
 
 		inline static constexpr char className[] = "SoundInstance";
 		static Luna<SoundInstance_BindLua>::FunctionType methods[];
 		static Luna<SoundInstance_BindLua>::PropertyType properties[];
 
 		SoundInstance_BindLua(lua_State* L);
-		SoundInstance_BindLua(const wi::audio::SoundInstance& instance)
+		SoundInstance_BindLua(const Protean::Audio::SoundInstance& instance)
 		{
 			soundinstance = instance;
 		}
@@ -97,14 +97,14 @@ namespace wi::lua
 	class SoundInstance3D_BindLua
 	{
 	public:
-		wi::audio::SoundInstance3D soundinstance3D;
+		Protean::Audio::SoundInstance3D soundinstance3D;
 
 		inline static constexpr char className[] = "SoundInstance3D";
 		static Luna<SoundInstance3D_BindLua>::FunctionType methods[];
 		static Luna<SoundInstance3D_BindLua>::PropertyType properties[];
 
 		SoundInstance3D_BindLua(lua_State* L) { }
-		SoundInstance3D_BindLua(const wi::audio::SoundInstance3D& soundinstance3D) : soundinstance3D(soundinstance3D) {}
+		SoundInstance3D_BindLua(const Protean::Audio::SoundInstance3D& soundinstance3D) : soundinstance3D(soundinstance3D) {}
 		~SoundInstance3D_BindLua() { }
 
 		int SetListenerPos(lua_State* L);

@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <deque>
 
-namespace wi::allocator
+namespace Protean::Allocator
 {
 	// Allocation of consecutive bytes, but no freeing, instead the whole allocator can be reset
 	struct LinearAllocator
@@ -56,10 +56,10 @@ namespace wi::allocator
 			{
 				uint8_t data[sizeof(T)];
 			};
-			wi::vector<RawStruct> mem;
+			Protean::vector<RawStruct> mem;
 		};
-		wi::vector<Block> blocks;
-		wi::vector<T*> free_list;
+		Protean::vector<Block> blocks;
+		Protean::vector<T*> free_list;
 
 		template<typename... ARG>
 		inline T* allocate(ARG&&... args)
@@ -273,10 +273,10 @@ namespace wi::allocator
 		{
 			std::unique_ptr<RawStruct[]> mem;
 		};
-		wi::vector<Block> blocks;
-		wi::vector<RawStruct*> free_list;
+		Protean::vector<Block> blocks;
+		Protean::vector<RawStruct*> free_list;
 		//std::mutex locker;
-		wi::SpinLock locker;
+		Protean::SpinLock locker;
 
 		template<typename... ARG>
 		inline shared_ptr<T> allocate(ARG&&... args)
@@ -496,7 +496,7 @@ namespace wi::allocator
 			uint64_t deferred_release_frame = 0;
 			std::deque<std::pair<OffsetAllocator::Allocation, uint64_t>> deferred_release_queue;
 		};
-		wi::allocator::shared_ptr<AllocatorInternal> allocator; // shared ptr is used to let any allocations extend the lifeftime of the allocator
+		Protean::Allocator::shared_ptr<AllocatorInternal> allocator; // shared ptr is used to let any allocations extend the lifeftime of the allocator
 
 		// Returns the total size that the allocator manages:
 		constexpr uint64_t total_size_in_bytes() const { return uint64_t(page_count) * uint64_t(page_size); }
@@ -512,7 +512,7 @@ namespace wi::allocator
 		{
 			this->page_size = page_size;
 			this->page_count = page_count_from_bytes(total_size_in_bytes);
-			allocator = wi::allocator::make_shared_single<AllocatorInternal>();
+			allocator = Protean::Allocator::make_shared_single<AllocatorInternal>();
 			allocator->allocator.init(page_count, std::min(page_count, OffsetAllocator::default_maxallocations));
 			allocator->deferred_release_enabled = deferred_release;
 			allocator->deferred_release_frame = 0;
@@ -534,7 +534,7 @@ namespace wi::allocator
 
 		struct Allocation
 		{
-			wi::allocator::shared_ptr<AllocatorInternal> allocator; // the allocator is retained so that allocation can deallocate itself
+			Protean::Allocator::shared_ptr<AllocatorInternal> allocator; // the allocator is retained so that allocation can deallocate itself
 			AllocationInternal* internal_state = nullptr; // this is pointing within the allocator which is retained by shared_ptr
 			uint64_t byte_offset = ~0ull;
 

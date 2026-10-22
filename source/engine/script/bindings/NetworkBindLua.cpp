@@ -2,7 +2,7 @@
 #include "network/Network.h"
 #include "core/Helper.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<Network_BindLua>::FunctionType Network_BindLua::methods[] = {
@@ -18,8 +18,8 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Network_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Network_BindLua>::push_global(wi::lua::GetLuaState(), "network");
+			Luna<Network_BindLua>::Register(Protean::Lua::GetLuaState());
+			Luna<Network_BindLua>::push_global(Protean::Lua::GetLuaState(), "network");
 		}
 	}
 

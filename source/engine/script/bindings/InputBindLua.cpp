@@ -1,7 +1,7 @@
 #include "script/bindings/InputBindLua.h"
 #include "script/bindings/MathBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	Luna<Input_BindLua>::FunctionType Input_BindLua::methods[] = {
@@ -36,149 +36,149 @@ namespace wi::lua
 
 	int Input_BindLua::Down(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			Protean::Input::BUTTON button = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = Protean::Lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Down(button, playerindex));
+			Protean::Lua::SSetBool(L, Protean::Input::Down(button, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Down(int code, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "Down(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Press(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON code = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			Protean::Input::BUTTON code = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = Protean::Lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Press(code, playerindex));
+			Protean::Lua::SSetBool(L, Protean::Input::Press(code, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Press(int code, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "Press(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Release(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON code = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			Protean::Input::BUTTON code = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = Protean::Lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetBool(L, wi::input::Release(code, playerindex));
+			Protean::Lua::SSetBool(L, Protean::Input::Release(code, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Release(int code, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "Release(int code, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::Hold(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
+			Protean::Input::BUTTON button = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
 			uint32_t duration = 30;
 			if (argc > 1)
 			{
-				duration = wi::lua::SGetInt(L, 2);
+				duration = Protean::Lua::SGetInt(L, 2);
 			}
 			bool continuous = false;
 			if (argc > 2)
 			{
-				continuous = wi::lua::SGetBool(L, 3);
+				continuous = Protean::Lua::SGetBool(L, 3);
 			}
 			int playerindex = 0;
 			if (argc > 3)
 			{
-				playerindex = wi::lua::SGetInt(L, 4);
+				playerindex = Protean::Lua::SGetInt(L, 4);
 			}
-			wi::lua::SSetBool(L, wi::input::Hold(button, duration, continuous, playerindex));
+			Protean::Lua::SSetBool(L, Protean::Input::Hold(button, duration, continuous, playerindex));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "Hold(int code, opt int duration = 30, opt boolean continuous = false, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "Hold(int code, opt int duration = 30, opt boolean continuous = false, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetPointer(lua_State* L)
 	{
-		XMFLOAT4 P = wi::input::GetPointer();
+		XMFLOAT4 P = Protean::Input::GetPointer();
 		Luna<Vector_BindLua>::push(L, XMLoadFloat4(&P));
 		return 1;
 	}
 	int Input_BindLua::SetPointer(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec != nullptr)
 			{
-				wi::input::SetPointer(vec->data);
+				Protean::Input::SetPointer(vec->data);
 			}
 			else
-				wi::lua::SError(L, "SetPointer(Vector props) argument is not a Vector!");
+				Protean::Lua::SError(L, "SetPointer(Vector props) argument is not a Vector!");
 		}
 		else
-			wi::lua::SError(L, "SetPointer(Vector props) not enough arguments!");
+			Protean::Lua::SError(L, "SetPointer(Vector props) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetPointerDelta(lua_State* L)
 	{
-		Luna<Vector_BindLua>::push(L, XMLoadFloat2(&wi::input::GetMouseState().delta_position));
+		Luna<Vector_BindLua>::push(L, XMLoadFloat2(&Protean::Input::GetMouseState().delta_position));
 		return 1;
 	}
 	int Input_BindLua::HidePointer(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::HidePointer(wi::lua::SGetBool(L, 1));
+			Protean::Input::HidePointer(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "HidePointer(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "HidePointer(bool value) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::GetAnalog(lua_State* L)
 	{
 		XMFLOAT4 result = XMFLOAT4(0, 0, 0, 0);
 
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::GAMEPAD_ANALOG type = (wi::input::GAMEPAD_ANALOG)wi::lua::SGetInt(L, 1);
+			Protean::Input::GAMEPAD_ANALOG type = (Protean::Input::GAMEPAD_ANALOG)Protean::Lua::SGetInt(L, 1);
 			int playerindex = 0;
 			if (argc > 1)
 			{
-				playerindex = wi::lua::SGetInt(L, 2);
+				playerindex = Protean::Lua::SGetInt(L, 2);
 			}
-			result = wi::input::GetAnalog(type, playerindex);
+			result = Protean::Input::GetAnalog(type, playerindex);
 		}
 		else
-			wi::lua::SError(L, "GetAnalog(int type, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "GetAnalog(int type, opt int playerindex = 0) not enough arguments!");
 
 		Luna<Vector_BindLua>::push(L, XMLoadFloat4(&result));
 		return 1;
 	}
 	int Input_BindLua::GetTouches(lua_State* L)
 	{
-		auto& touches = wi::input::GetTouches();
+		auto& touches = Protean::Input::GetTouches();
 		for (auto& touch : touches)
 		{
 			Luna<Touch_BindLua>::push(L, touch);
@@ -187,7 +187,7 @@ namespace wi::lua
 	}
 	int Input_BindLua::SetControllerFeedback(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			ControllerFeedback_BindLua* fb = Luna<ControllerFeedback_BindLua>::lightcheck(L, 1); // Ferdinand Braun
@@ -196,134 +196,134 @@ namespace wi::lua
 				int playerindex = 0;
 				if (argc > 1)
 				{
-					playerindex = wi::lua::SGetInt(L, 2);
+					playerindex = Protean::Lua::SGetInt(L, 2);
 				}
-				wi::input::SetControllerFeedback(fb->feedback, playerindex);
+				Protean::Input::SetControllerFeedback(fb->feedback, playerindex);
 			}
 			else
 			{
-				wi::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) first argument is not a ControllerFeedback!");
+				Protean::Lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) first argument is not a ControllerFeedback!");
 			}
 		}
 		else
-			wi::lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) not enough arguments!");
+			Protean::Lua::SError(L, "SetControllerFeedback(ControllerFeedback feedback, opt int playerindex = 0) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::WhatIsPressed(lua_State* L)
 	{
 		int playerindex = 0;
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			playerindex = wi::lua::SGetInt(L, 1);
+			playerindex = Protean::Lua::SGetInt(L, 1);
 		}
-		wi::lua::SSetInt(L, (int)wi::input::WhatIsPressed(playerindex));
+		Protean::Lua::SSetInt(L, (int)Protean::Input::WhatIsPressed(playerindex));
 		return 1;
 	}
 	int Input_BindLua::IsGamepadButton(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc < 1)
 		{
-			wi::lua::SError(L, "IsGamepadButton(int button) not enough arguments!");
+			Protean::Lua::SError(L, "IsGamepadButton(int button) not enough arguments!");
 			return 0;
 		}
-		wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
-		wi::lua::SSetBool(L, wi::input::IsGamepadButton(button));
+		Protean::Input::BUTTON button = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
+		Protean::Lua::SSetBool(L, Protean::Input::IsGamepadButton(button));
 		return 1;
 	}
 	int Input_BindLua::ButtonToString(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::BUTTON button = (wi::input::BUTTON)wi::lua::SGetInt(L, 1);
-			wi::input::CONTROLLER_PREFERENCE preference = wi::input::CONTROLLER_PREFERENCE_GENERIC;
+			Protean::Input::BUTTON button = (Protean::Input::BUTTON)Protean::Lua::SGetInt(L, 1);
+			Protean::Input::CONTROLLER_PREFERENCE preference = Protean::Input::CONTROLLER_PREFERENCE_GENERIC;
 			if (argc > 1)
 			{
-				preference = (wi::input::CONTROLLER_PREFERENCE)wi::lua::SGetInt(L, 2);
+				preference = (Protean::Input::CONTROLLER_PREFERENCE)Protean::Lua::SGetInt(L, 2);
 			}
-			wi::lua::SSetString(L, wi::input::ButtonToString(button, preference));
+			Protean::Lua::SSetString(L, Protean::Input::ButtonToString(button, preference));
 			return 1;
 		}
-		wi::lua::SError(L, "ButtonToString(int button, opt int preference = CONTROLLER_PREFERENCE_GENERIC): not enough parameters!");
+		Protean::Lua::SError(L, "ButtonToString(int button, opt int preference = CONTROLLER_PREFERENCE_GENERIC): not enough parameters!");
 		return 0;
 	}
 	int Input_BindLua::StringToButton(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			const char* str = wi::lua::SGetString(L, 1);
-			wi::lua::SSetInt(L, (int)wi::input::StringToButton(str));
+			const char* str = Protean::Lua::SGetString(L, 1);
+			Protean::Lua::SSetInt(L, (int)Protean::Input::StringToButton(str));
 			return 1;
 		}
-		wi::lua::SError(L, "StringToButton(string str): not enough parameters!");
+		Protean::Lua::SError(L, "StringToButton(string str): not enough parameters!");
 		return 0;
 	}
 	int Input_BindLua::SetCursor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			wi::input::SetCursor(cursor);
+			Protean::Input::CURSOR cursor = (Protean::Input::CURSOR)Protean::Lua::SGetInt(L, 1);
+			Protean::Input::SetCursor(cursor);
 			return 0;
 		}
-		wi::lua::SError(L, "SetCursor(int cursor) not enough arguments!");
+		Protean::Lua::SError(L, "SetCursor(int cursor) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::SetCursorFromFile(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			const char* filename = wi::lua::SGetString(L, 2);
-			wi::input::SetCursorFromFile(cursor, filename);
+			Protean::Input::CURSOR cursor = (Protean::Input::CURSOR)Protean::Lua::SGetInt(L, 1);
+			const char* filename = Protean::Lua::SGetString(L, 2);
+			Protean::Input::SetCursorFromFile(cursor, filename);
 			return 0;
 		}
-		wi::lua::SError(L, "SetCursorFromFile(int cursor, string filename) not enough arguments!");
+		Protean::Lua::SError(L, "SetCursorFromFile(int cursor, string filename) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::ResetCursor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::input::CURSOR cursor = (wi::input::CURSOR)wi::lua::SGetInt(L, 1);
-			wi::input::ResetCursor(cursor);
+			Protean::Input::CURSOR cursor = (Protean::Input::CURSOR)Protean::Lua::SGetInt(L, 1);
+			Protean::Input::ResetCursor(cursor);
 			return 0;
 		}
-		wi::lua::SError(L, "ResetCursor(int cursor) not enough arguments!");
+		Protean::Lua::SError(L, "ResetCursor(int cursor) not enough arguments!");
 		return 0;
 	}
 	int Input_BindLua::ResetCursors(lua_State* L)
 	{
-		wi::input::ResetCursors();
+		Protean::Input::ResetCursors();
 		return 0;
 	}
 	int Input_BindLua::GetTouchPinch(lua_State* L)
 	{
-		wi::input::Pinch pinch = wi::input::GetTouchPinch();
+		Protean::Input::Pinch pinch = Protean::Input::GetTouchPinch();
 		Luna<Vector_BindLua>::push(L, pinch.position);
-		wi::lua::SSetFloat(L, pinch.scale);
-		wi::lua::SSetFloat(L, pinch.delta_scale);
+		Protean::Lua::SSetFloat(L, pinch.scale);
+		Protean::Lua::SSetFloat(L, pinch.delta_scale);
 		return 3;
 	}
 	int Input_BindLua::GetTouchPan(lua_State* L)
 	{
-		Luna<Vector_BindLua>::push(L, wi::input::GetTouchPan());
+		Luna<Vector_BindLua>::push(L, Protean::Input::GetTouchPan());
 		return 1;
 	}
 	int Input_BindLua::IsTouchPanning(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::input::IsTouchPanning());
+		Protean::Lua::SSetBool(L, Protean::Input::IsTouchPanning());
 		return 1;
 	}
 	int Input_BindLua::IsTouchPanStarting(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::input::IsTouchPanStarting());
+		Protean::Lua::SSetBool(L, Protean::Input::IsTouchPanStarting());
 		return 1;
 	}
 
@@ -333,9 +333,9 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Input_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Input_BindLua>::Register(Protean::Lua::GetLuaState());
 
-			wi::lua::RunText(R"(
+			Protean::Lua::RunText(R"(
 input = Input()
 
 BUTTON_NONE = 0
@@ -504,7 +504,7 @@ CURSOR_CROSS = 9
 
 	int Touch_BindLua::GetState(lua_State* L)
 	{
-		wi::lua::SSetInt(L, (int)touch.state);
+		Protean::Lua::SSetInt(L, (int)touch.state);
 		return 1;
 	}
 	int Touch_BindLua::GetPos(lua_State* L)
@@ -519,7 +519,7 @@ CURSOR_CROSS = 9
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Touch_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Touch_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 
@@ -541,48 +541,48 @@ CURSOR_CROSS = 9
 
 	int ControllerFeedback_BindLua::SetVibrationLeft(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			feedback.vibration_left = wi::lua::SGetFloat(L, 1);
+			feedback.vibration_left = Protean::Lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVibrationLeft(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetVibrationLeft(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int ControllerFeedback_BindLua::SetVibrationRight(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			feedback.vibration_right = wi::lua::SGetFloat(L, 1);
+			feedback.vibration_right = Protean::Lua::SGetFloat(L, 1);
 		}
 		else
 		{
-			wi::lua::SError(L, "SetVibrationRight(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetVibrationRight(float value) not enough arguments!");
 		}
 		return 0;
 	}
 	int ControllerFeedback_BindLua::SetLEDColor(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 1);
 			if (vec != nullptr)
 			{
-				feedback.led_color = wi::Color::fromFloat4(vec->data);
+				feedback.led_color = Protean::Color::fromFloat4(vec->data);
 			}
 			else
 			{
-				feedback.led_color.rgba = wi::lua::SGetInt(L, 1);
+				feedback.led_color.rgba = Protean::Lua::SGetInt(L, 1);
 			}
 		}
 		else
 		{
-			wi::lua::SError(L, "SetLEDColor(int hexcolor) not enough arguments!");
+			Protean::Lua::SError(L, "SetLEDColor(int hexcolor) not enough arguments!");
 		}
 		return 0;
 	}
@@ -593,7 +593,7 @@ CURSOR_CROSS = 9
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<ControllerFeedback_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<ControllerFeedback_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 

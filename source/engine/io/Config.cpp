@@ -4,7 +4,7 @@
 
 #include <mutex>
 
-namespace wi::config
+namespace Protean::Config
 {
 	bool Section::Has(const char* name) const
 	{
@@ -105,9 +105,9 @@ namespace wi::config
 		return it->second;
 	}
 
-	wi::vector<std::string> Section::GetTextArray(const char* name) const
+	Protean::vector<std::string> Section::GetTextArray(const char* name) const
 	{
-		wi::vector<std::string> result;
+		Protean::vector<std::string> result;
 		const auto it = values.find(name);
 		if (it == values.end())
 		{
@@ -143,10 +143,10 @@ namespace wi::config
 			result.push_back("");
 		return result;
 	}
-	wi::vector<int> Section::GetIntArray(const char* name) const
+	Protean::vector<int> Section::GetIntArray(const char* name) const
 	{
-		wi::vector<int> result;
-		wi::vector<std::string> strings = GetTextArray(name);
+		Protean::vector<int> result;
+		Protean::vector<std::string> strings = GetTextArray(name);
 		result.reserve(strings.size());
 		for (const auto& s : strings)
 		{
@@ -157,10 +157,10 @@ namespace wi::config
 		}
 		return result;
 	}
-	wi::vector<float> Section::GetFloatArray(const char* name) const
+	Protean::vector<float> Section::GetFloatArray(const char* name) const
 	{
-		wi::vector<float> result;
-		wi::vector<std::string> strings = GetTextArray(name);
+		Protean::vector<float> result;
+		Protean::vector<std::string> strings = GetTextArray(name);
 		result.reserve(strings.size());
 		for (const auto& s : strings)
 		{
@@ -211,7 +211,7 @@ namespace wi::config
 	{
 		values[name] = value;
 	}
-	void Section::Set(const char* name, const wi::vector<std::string>& arr)
+	void Section::Set(const char* name, const Protean::vector<std::string>& arr)
 	{
 		std::string result;
 		for (size_t i = 0; i < arr.size(); ++i)
@@ -222,7 +222,7 @@ namespace wi::config
 		}
 		values[name] = result;
 	}
-	void Section::Set(const char* name, const wi::vector<int>& arr)
+	void Section::Set(const char* name, const Protean::vector<int>& arr)
 	{
 		std::string result;
 		for (size_t i = 0; i < arr.size(); ++i)
@@ -233,7 +233,7 @@ namespace wi::config
 		}
 		values[name] = result;
 	}
-	void Section::Set(const char* name, const wi::vector<float>& arr)
+	void Section::Set(const char* name, const Protean::vector<float>& arr)
 	{
 		std::string result;
 		for (size_t i = 0; i < arr.size(); ++i)
@@ -248,10 +248,10 @@ namespace wi::config
 	bool File::Open(const char* filename)
 	{
 		this->filename = filename; // even if file couldn't be loaded, we remember the filename so it can be created on commit
-		if (!wi::helper::FileExists(filename))
+		if (!Protean::Helper::FileExists(filename))
 			return false;
-		wi::vector<uint8_t> filedata;
-		if (!wi::helper::FileRead(filename, filedata))
+		Protean::vector<uint8_t> filedata;
+		if (!Protean::Helper::FileRead(filename, filedata))
 			return false;
 
 		std::string text = std::string(filedata.begin(), filedata.end());
@@ -397,7 +397,7 @@ namespace wi::config
 	}
 	void File::Commit()
 	{
-		wi::unordered_map<Section*, wi::unordered_set<std::string>> committed_values;
+		Protean::unordered_map<Section*, Protean::unordered_set<std::string>> committed_values;
 		Section* section = this;
 		std::string text;
 		for (auto& line : opened_order)
@@ -485,10 +485,10 @@ namespace wi::config
 		std::scoped_lock lck(locker);
 		// Only write the file if content actually changed
 		bool should_write = true;
-		if (wi::helper::FileExists(filename))
+		if (Protean::Helper::FileExists(filename))
 		{
-			wi::vector<uint8_t> filedata;
-			if (wi::helper::FileRead(filename, filedata))
+			Protean::vector<uint8_t> filedata;
+			if (Protean::Helper::FileRead(filename, filedata))
 			{
 				std::string current_content(filedata.begin(), filedata.end());
 				// Normalize line endings for comparison (remove \r)
@@ -507,7 +507,7 @@ namespace wi::config
 		}
 		if (should_write)
 		{
-			wi::helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
+			Protean::Helper::FileWrite(filename, (const uint8_t*)text.c_str(), text.length());
 		}
 	}
 	Section& File::GetSection(const char* name)
@@ -519,9 +519,9 @@ namespace wi::config
 		return sections.find(name) != sections.end();
 	}
 
-	wi::vector<std::pair<std::string, const Section*>> File::GetSortedSections() const
+	Protean::vector<std::pair<std::string, const Section*>> File::GetSortedSections() const
 	{
-		wi::vector<std::pair<std::string, const Section*>> ret;
+		Protean::vector<std::pair<std::string, const Section*>> ret;
 		for (auto& it : sections)
 		{
 			ret.push_back(std::make_pair(it.first, &it.second));

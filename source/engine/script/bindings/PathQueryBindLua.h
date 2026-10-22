@@ -4,20 +4,20 @@
 #include "script/Luna.h"
 #include "scene/PathQuery.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class PathQuery_BindLua
 	{
-		wi::PathQuery owning;
+		Protean::PathQuery owning;
 	public:
-		wi::PathQuery* pathquery = &owning;
+		Protean::PathQuery* pathquery = &owning;
 		inline static constexpr char className[] = "PathQuery";
 		static Luna<PathQuery_BindLua>::FunctionType methods[];
 		static Luna<PathQuery_BindLua>::PropertyType properties[];
 
 		PathQuery_BindLua() = default;
 		PathQuery_BindLua(lua_State* L) {}
-		PathQuery_BindLua(wi::PathQuery* component) :pathquery(component) {}
+		PathQuery_BindLua(Protean::PathQuery* component) :pathquery(component) {}
 
 		int Process(lua_State* L);
 		int SearchCover(lua_State* L);

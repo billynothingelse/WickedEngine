@@ -1,28 +1,25 @@
 #include "stdafx.h"
 #include "VideoWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
-
-void VideoPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList cmd) const
+using namespace Protean::Graphics;
+using namespace Protean;
+void VideoPreview::Render(const Protean::Canvas& canvas, Protean::Graphics::CommandList cmd) const
 {
 	if (video == nullptr)
 		return;
 
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = Protean::Graphics::GetDevice();
 	device->EventBegin("Video Preview", cmd);
 
-	wi::image::Params params;
+	Protean::Image::Params params;
 	params.pos = translation;
 	params.siz = XMFLOAT2(scale.x, scale.y);
-	params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
+	params.blendFlag = Protean::BLENDMODE_OPAQUE;
 	if (!video->videoinstance.output.texture.IsValid())
 	{
-		params.color = wi::Color::Black();
+		params.color = Protean::Color::Black();
 	}
-	wi::image::Draw(&video->videoinstance.output.texture, params, cmd);
+	Protean::Image::Draw(&video->videoinstance.output.texture, params, cmd);
 
 	device->EventEnd(cmd);
 }
@@ -30,13 +27,13 @@ void VideoPreview::Render(const wi::Canvas& canvas, wi::graphics::CommandList cm
 void VideoWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_VIDEO " Video", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_VIDEO " Video", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(440, 840));
 
 	closeButton.SetTooltip("Delete VideoComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -50,22 +47,22 @@ void VideoWindow::Create(EditorComponent* _editor)
 
 	openButton.Create("Open File " ICON_OPEN);
 	openButton.SetTooltip("Open video file.\nSupported extensions: MP4");
-	openButton.OnClick([this](wi::gui::EventArgs args) {
+	openButton.OnClick([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		if (video != nullptr)
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Video (.mp4)";
-			params.extensions = wi::resourcemanager::GetSupportedVideoExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			params.extensions = Protean::ResourceManager::GetSupportedVideoExtensions();
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 					video->filename = fileName;
-					video->videoResource = wi::resourcemanager::Load(fileName);
+					video->videoResource = Protean::ResourceManager::Load(fileName);
 					if (video->videoResource.IsValid())
 					{
-						wi::video::CreateVideoInstance(&video->videoResource.GetVideo(), &video->videoinstance);
-						filenameLabel.SetText(wi::helper::GetFileNameFromPath(video->filename));
+						Protean::Video::CreateVideoInstance(&video->videoResource.GetVideo(), &video->videoinstance);
+						filenameLabel.SetText(Protean::Helper::GetFileNameFromPath(video->filename));
 					}
 					});
 				});
@@ -78,7 +75,7 @@ void VideoWindow::Create(EditorComponent* _editor)
 
 	playpauseButton.Create(ICON_PLAY);
 	playpauseButton.SetTooltip("Play/Pause selected video instance.");
-	playpauseButton.OnClick([this](wi::gui::EventArgs args) {
+	playpauseButton.OnClick([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		if (video != nullptr)
 		{
@@ -98,7 +95,7 @@ void VideoWindow::Create(EditorComponent* _editor)
 
 	stopButton.Create(ICON_STOP);
 	stopButton.SetTooltip("Stop selected video instance.");
-	stopButton.OnClick([this](wi::gui::EventArgs args) {
+	stopButton.OnClick([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		if (video != nullptr)
 		{
@@ -109,7 +106,7 @@ void VideoWindow::Create(EditorComponent* _editor)
 
 	volumeSlider.Create(0, 1, 1, 1000, "Volume: ");
 	volumeSlider.SetTooltip("Set volume level for the selected sound instance.");
-	volumeSlider.OnSlide([this](wi::gui::EventArgs args) {
+	volumeSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		if (video != nullptr)
 		{
@@ -122,7 +119,7 @@ void VideoWindow::Create(EditorComponent* _editor)
 	loopedCheckbox.Create("Looped: ");
 	loopedCheckbox.SetTooltip("Enable looping for the selected video instance.");
 	loopedCheckbox.SetCheckText(ICON_LOOP);
-	loopedCheckbox.OnClick([this](wi::gui::EventArgs args) {
+	loopedCheckbox.OnClick([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		if (video != nullptr)
 		{
@@ -132,7 +129,7 @@ void VideoWindow::Create(EditorComponent* _editor)
 	AddWidget(&loopedCheckbox);
 
 	timerSlider.Create(0, 1, 0, 1000, "Timer: ");
-	timerSlider.OnSlide([this](wi::gui::EventArgs args) {
+	timerSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		VideoComponent* video = editor->GetCurrentScene().videos.GetComponent(entity);
 		video->Seek(args.fValue);
 	});
@@ -163,7 +160,7 @@ void VideoWindow::SetEntity(Entity entity)
 
 	if (video != nullptr)
 	{
-		filenameLabel.SetText(wi::helper::GetFileNameFromPath(video->filename));
+		filenameLabel.SetText(Protean::Helper::GetFileNameFromPath(video->filename));
 		playpauseButton.SetEnabled(true);
 		stopButton.SetEnabled(true);
 		volumeSlider.SetEnabled(true);
@@ -181,12 +178,12 @@ void VideoWindow::SetEntity(Entity entity)
 
 		if (video->videoResource.IsValid())
 		{
-			const wi::video::Video& videofile = video->videoResource.GetVideo();
+			const Protean::Video::Video& videofile = video->videoResource.GetVideo();
 			std::string str;
-			if (videofile.profile == wi::graphics::VideoProfile::H264)
+			if (videofile.profile == Protean::Graphics::VideoProfile::H264)
 			{
 				str += "Format: H264 (AVC)\n";
-				if (GetDevice()->CheckCapability(wi::graphics::GraphicsDeviceCapability::VIDEO_DECODE_H264))
+				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VIDEO_DECODE_H264))
 				{
 					str += "GPU decode: Supported\n";
 				}
@@ -195,10 +192,10 @@ void VideoWindow::SetEntity(Entity entity)
 					str += "GPU decode: Not supported\n";
 				}
 			}
-			else if (videofile.profile == wi::graphics::VideoProfile::H265)
+			else if (videofile.profile == Protean::Graphics::VideoProfile::H265)
 			{
 				str += "Format: H265 (HEVC)\n";
-				if (GetDevice()->CheckCapability(wi::graphics::GraphicsDeviceCapability::VIDEO_DECODE_H265))
+				if (GetDevice()->CheckCapability(Protean::Graphics::GraphicsDeviceCapability::VIDEO_DECODE_H265))
 				{
 					str += "GPU decode: Supported\n";
 				}
@@ -212,7 +209,7 @@ void VideoWindow::SetEntity(Entity entity)
 				str += "Format: Unsupported\n";
 			}
 			str += videofile.audio.IsValid() ? "Audio track: available\n" : "Audio track: not available\n";
-			str += "Size: " + wi::helper::GetMemorySizeText(video->videoResource.GetVideo().data_stream.GetDesc().size) + "\n\n";
+			str += "Size: " + Protean::Helper::GetMemorySizeText(video->videoResource.GetVideo().data_stream.GetDesc().size) + "\n\n";
 
 			str += "Tip: if you have a material on this entity, the material basecolor and emissive textures will be replaced by video. If it has light, then the video will be used as light multiplier. This way you can set video textures into the 3D scene.\n\n";
 
@@ -252,7 +249,7 @@ void VideoWindow::SetEntity(Entity entity)
 
 void VideoWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(openButton);
@@ -262,7 +259,7 @@ void VideoWindow::ResizeLayout()
 	float h_aspect = 9.0f / 16.0f;
 	if (preview.video != nullptr && preview.video->videoResource.IsValid())
 	{
-		const wi::video::Video& video = preview.video->videoResource.GetVideo();
+		const Protean::Video::Video& video = preview.video->videoResource.GetVideo();
 		h_aspect = (float)video.height / (float)video.width;
 	}
 	preview.SetSize(XMFLOAT2(preview.GetSize().x, preview.GetSize().x * h_aspect));

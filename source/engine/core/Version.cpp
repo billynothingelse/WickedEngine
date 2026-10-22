@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace wi::version
+namespace Protean::Version
 {
 	// main engine core
 	const int major = 0;

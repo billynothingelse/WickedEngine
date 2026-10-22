@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "DummyVisualizer.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
 struct DummyVisualizer
 {
-	wi::graphics::GPUBuffer buffer;
-	wi::primitive::AABB aabb;
+	Protean::Graphics::GPUBuffer buffer;
+	Protean::AABB aabb;
 
 	struct Vertex
 	{
@@ -26,18 +26,18 @@ struct DummyVisualizer
 		{
 			static auto LoadShaders = [] {
 				PipelineStateDesc desc;
-				desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-				desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-				desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-				desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-				desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+				desc.vs = Protean::Renderer::GetShader(Protean::VSTYPE_VERTEXCOLOR);
+				desc.ps = Protean::Renderer::GetShader(Protean::PSTYPE_VERTEXCOLOR);
+				desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_VERTEXCOLOR);
+				desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
+				desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
 				desc.pt = PrimitiveTopology::TRIANGLELIST;
-				desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-				wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso[0]);
-				desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEFAULT);
-				wi::graphics::GetDevice()->CreatePipelineState(&desc, &pso[1]);
+				desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
+				Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &pso[0]);
+				desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEFAULT);
+				Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &pso[1]);
 				};
-			static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+			static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 			LoadShaders();
 		}
 
@@ -76,14 +76,14 @@ struct DummyVisualizer
 		const XMMATRIX& matrix,
 		const XMFLOAT4& color,
 		bool depth,
-		wi::graphics::CommandList cmd
+		Protean::Graphics::CommandList cmd
 	)
 	{
 		GraphicsDevice* device = GetDevice();
 
 		device->BindPipelineState(&pso[depth], cmd);
 
-		device->BindStencilRef(wi::enums::STENCILREF_DEFAULT, cmd);
+		device->BindStencilRef(Protean::STENCILREF_DEFAULT, cmd);
 
 		MiscCB sb;
 		XMStoreFloat4x4(&sb.g_xTransform, matrix);
@@ -107,7 +107,7 @@ struct DummyVisualizer
 
 namespace dummy
 {
-	void draw_male(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_male(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_male.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -115,7 +115,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_female(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_female(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_female.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -123,7 +123,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_soldier(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_soldier(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_soldier.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -131,7 +131,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_direction(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_direction(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_direction.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -139,7 +139,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_waypoint(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_waypoint(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_waypoint.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -147,7 +147,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_pickup(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_pickup(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_pickup.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -155,7 +155,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_vehicle(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_vehicle(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_vehicle.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));
@@ -163,7 +163,7 @@ namespace dummy
 			return;
 		vis.Draw(arraysize(vertices), arraysize(indices), world * VP, color, depth, cmd);
 	}
-	void draw_poi(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, wi::graphics::CommandList cmd, const wi::primitive::Frustum& frustum)
+	void draw_poi(const XMMATRIX& world, const XMMATRIX& VP, const XMFLOAT4& color, bool depth, Protean::Graphics::CommandList cmd, const Protean::Frustum& frustum)
 	{
 #include "dummy_poi.h"
 		static DummyVisualizer vis(vertices, arraysize(vertices), indices, arraysize(indices));

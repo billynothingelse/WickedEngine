@@ -2,20 +2,18 @@
 #include "HumanoidWindow.h"
 #include "ModelImporter.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void HumanoidWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_HUMANOID " Humanoid", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_HUMANOID " Humanoid", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 620));
 
 	closeButton.SetTooltip("Delete HumanoidComponent");
-	OnClose([this](wi::gui::EventArgs args) {
+	OnClose([this](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -33,7 +31,7 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			HumanoidComponent* humanoid = scene.humanoids.GetComponent(entity);
 			if (humanoid != nullptr) {
 				func(humanoid, args);
@@ -97,14 +95,14 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 	headRotMaxXSlider.Create(0, 90, 60, 180, "Head horizontal: ");
 	headRotMaxXSlider.SetTooltip("Limit horizontal head movement (input in degrees)");
 	headRotMaxXSlider.OnSlide(forEachSelected([] (auto humanoid, auto args) {
-		humanoid->head_rotation_max.x = wi::math::DegreesToRadians(args.fValue);
+		humanoid->head_rotation_max.x = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&headRotMaxXSlider);
 
 	headRotMaxYSlider.Create(0, 60, 30, 60, "Head vertical: ");
 	headRotMaxYSlider.SetTooltip("Limit vertical head movement (input in degrees)");
 	headRotMaxYSlider.OnSlide(forEachSelected([] (auto humanoid, auto args) {
-		humanoid->head_rotation_max.y = wi::math::DegreesToRadians(args.fValue);
+		humanoid->head_rotation_max.y = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&headRotMaxYSlider);
 
@@ -119,14 +117,14 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 	eyeRotMaxXSlider.Create(0, 40, 20, 40, "Eye horizontal: ");
 	eyeRotMaxXSlider.SetTooltip("Limit horizontal eye movement (input in degrees)");
 	eyeRotMaxXSlider.OnSlide(forEachSelected([] (auto humanoid, auto args) {
-		humanoid->eye_rotation_max.x = wi::math::DegreesToRadians(args.fValue);
+		humanoid->eye_rotation_max.x = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&eyeRotMaxXSlider);
 
 	eyeRotMaxYSlider.Create(0, 30, 15, 30, "Eye vertical: ");
 	eyeRotMaxYSlider.SetTooltip("Limit vertical eye movement (input in degrees)");
 	eyeRotMaxYSlider.OnSlide(forEachSelected([] (auto humanoid, auto args) {
-		humanoid->eye_rotation_max.y = wi::math::DegreesToRadians(args.fValue);
+		humanoid->eye_rotation_max.y = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&eyeRotMaxYSlider);
 
@@ -141,7 +139,7 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 	headSizeSlider.SetTooltip("Adjust head size.");
 	headSizeSlider.OnSlide(forEachSelected([this] (auto humanoid, auto args) {
 		Entity bone = humanoid->bones[size_t(HumanoidComponent::HumanoidBone::Head)];
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+		Protean::Scene& scene = editor->GetCurrentScene();
 		TransformComponent* transform = scene.transforms.GetComponent(bone);
 		if (transform != nullptr)
 		{
@@ -184,12 +182,12 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 	AddWidget(&legSpacingSlider);
 
 	boneList.Create("Bones: ");
-	boneList.OnSelect([this](wi::gui::EventArgs args) {
+	boneList.OnSelect([this](Protean::Gui::EventArgs args) {
 
 		if (args.iValue < 0)
 			return;
 
-		wi::Archive& archive = editor->AdvanceHistory(true);
+		Protean::Archive& archive = editor->AdvanceHistory(true);
 		archive << EditorComponent::HISTORYOP_SELECTION;
 		// record PREVIOUS selection state...
 		editor->RecordSelection(archive);
@@ -198,10 +196,10 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 
 		for (int i = 0; i < boneList.GetItemCount(); ++i)
 		{
-			const wi::gui::TreeList::Item& item = boneList.GetItem(i);
+			const Protean::Gui::TreeList::Item& item = boneList.GetItem(i);
 			if (item.selected)
 			{
-				wi::scene::PickResult pick;
+				Protean::PickResult pick;
 				pick.entity = (Entity)item.userdata;
 				if (pick.entity != INVALID_ENTITY)
 				{
@@ -222,8 +220,8 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 
 	activateAllRagdollsButton.Create("Activate all ragdolls");
 	activateAllRagdollsButton.SetTooltip("Import animations from a scene or model file and retarget them to this humanoid.");
-	activateAllRagdollsButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	activateAllRagdollsButton.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.humanoids.GetCount(); ++i)
 		{
 			scene.humanoids[i].SetRagdollPhysicsEnabled(true);
@@ -235,19 +233,19 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 
 	importAnimationsButton.Create(ICON_ANIMATION " Import animations");
 	importAnimationsButton.SetTooltip("Import animations from a scene or model file and retarget them to this humanoid.");
-	importAnimationsButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+	importAnimationsButton.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::OPEN;
 		params.description = "Animated models (wiscene, gltf, fbx, vrm, vrma)";
 		params.extensions = { "WISCENE", "GLTF", "GLB", "FBX", "VRM", "VRMA" };
-		wi::helper::FileDialog(params, [this](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-				std::string ext = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+		Protean::Helper::FileDialog(params, [this](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+				std::string ext = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(fileName));
 
 				Scene animscene;
 				if (!ext.compare("WISCENE"))
 				{
-					wi::scene::LoadModel(animscene, fileName);
+					Protean::LoadModel(animscene, fileName);
 				}
 				else if (!ext.compare("GLTF") || !ext.compare("GLB") || !ext.compare("VRM") || !ext.compare("VRMA"))
 				{
@@ -299,7 +297,7 @@ void HumanoidWindow::Create(EditorComponent* _editor)
 
 	animationTesterCombo.Create("Animation tester: ");
 	animationTesterCombo.SetTooltip("Select an animation from the list of children to this humanoid.\nThe selected animation will be played instantly and others will be stopped.");
-	animationTesterCombo.OnSelect([this](wi::gui::EventArgs args){
+	animationTesterCombo.OnSelect([this](Protean::Gui::EventArgs args){
 		Scene& scene = editor->GetCurrentScene();
 		for (size_t i = 0; i < scene.animations.GetCount(); ++i)
 		{
@@ -356,11 +354,11 @@ void HumanoidWindow::SetEntity(Entity entity)
 			ragdollCheckBox.SetEnabled(!humanoid->IsRagdollDisabled());
 			ragdoll2DCheckBox.SetCheck(humanoid->IsRagdoll2D());
 			capsuleShadowCheckBox.SetCheck(humanoid->IsCapsuleShadowDisabled());
-			headRotMaxXSlider.SetValue(wi::math::RadiansToDegrees(humanoid->head_rotation_max.x));
-			headRotMaxYSlider.SetValue(wi::math::RadiansToDegrees(humanoid->head_rotation_max.y));
+			headRotMaxXSlider.SetValue(Protean::Math::RadiansToDegrees(humanoid->head_rotation_max.x));
+			headRotMaxYSlider.SetValue(Protean::Math::RadiansToDegrees(humanoid->head_rotation_max.y));
 			headRotSpeedSlider.SetValue(humanoid->head_rotation_speed);
-			eyeRotMaxXSlider.SetValue(wi::math::RadiansToDegrees(humanoid->eye_rotation_max.x));
-			eyeRotMaxYSlider.SetValue(wi::math::RadiansToDegrees(humanoid->eye_rotation_max.y));
+			eyeRotMaxXSlider.SetValue(Protean::Math::RadiansToDegrees(humanoid->eye_rotation_max.x));
+			eyeRotMaxYSlider.SetValue(Protean::Math::RadiansToDegrees(humanoid->eye_rotation_max.y));
 			eyeRotSpeedSlider.SetValue(humanoid->eye_rotation_speed);
 			ragdollFatnessSlider.SetValue(humanoid->ragdoll_fatness);
 			ragdollHeadSizeSlider.SetValue(humanoid->ragdoll_headsize);
@@ -419,7 +417,7 @@ void HumanoidWindow::RefreshBoneList()
 			HumanoidComponent::HumanoidBone type = (HumanoidComponent::HumanoidBone)i;
 			Entity bone = humanoid->bones[i];
 
-			wi::gui::TreeList::Item item;
+			Protean::Gui::TreeList::Item item;
 			item.userdata = bone;
 			item.level = 1;
 
@@ -427,174 +425,174 @@ void HumanoidWindow::RefreshBoneList()
 
 			switch (type)
 			{
-			case wi::scene::HumanoidComponent::HumanoidBone::Hips:
+			case Protean::HumanoidComponent::HumanoidBone::Hips:
 				boneList.AddItem("Torso"); // grouping item
 				item.name += "Hips";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::Spine:
+			case Protean::HumanoidComponent::HumanoidBone::Spine:
 				item.name += "Spine";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::Chest:
+			case Protean::HumanoidComponent::HumanoidBone::Chest:
 				item.name += "Chest";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::UpperChest:
+			case Protean::HumanoidComponent::HumanoidBone::UpperChest:
 				item.name += "UpperChest";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::Neck:
+			case Protean::HumanoidComponent::HumanoidBone::Neck:
 				item.name += "Neck";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::Head:
+			case Protean::HumanoidComponent::HumanoidBone::Head:
 				boneList.AddItem("Head"); // grouping item
 				item.name += "Head";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftEye:
+			case Protean::HumanoidComponent::HumanoidBone::LeftEye:
 				item.name += "LeftEye";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightEye:
+			case Protean::HumanoidComponent::HumanoidBone::RightEye:
 				item.name += "RightEye";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::Jaw:
+			case Protean::HumanoidComponent::HumanoidBone::Jaw:
 				item.name += "Jaw";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftUpperLeg:
+			case Protean::HumanoidComponent::HumanoidBone::LeftUpperLeg:
 				boneList.AddItem("Legs"); // grouping item
 				item.name += "LeftUpperLeg";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftLowerLeg:
+			case Protean::HumanoidComponent::HumanoidBone::LeftLowerLeg:
 				item.name += "LeftLowerLeg";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftFoot:
+			case Protean::HumanoidComponent::HumanoidBone::LeftFoot:
 				item.name += "LeftFoot";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftToes:
+			case Protean::HumanoidComponent::HumanoidBone::LeftToes:
 				item.name += "LeftToes";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightUpperLeg:
+			case Protean::HumanoidComponent::HumanoidBone::RightUpperLeg:
 				item.name += "RightUpperLeg";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightLowerLeg:
+			case Protean::HumanoidComponent::HumanoidBone::RightLowerLeg:
 				item.name += "RightLowerLeg";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightFoot:
+			case Protean::HumanoidComponent::HumanoidBone::RightFoot:
 				item.name += "RightFoot";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightToes:
+			case Protean::HumanoidComponent::HumanoidBone::RightToes:
 				item.name += "RightToes";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftShoulder:
+			case Protean::HumanoidComponent::HumanoidBone::LeftShoulder:
 				boneList.AddItem("Arms"); // grouping item
 				item.name += "LeftShoulder";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftUpperArm:
+			case Protean::HumanoidComponent::HumanoidBone::LeftUpperArm:
 				item.name += "LeftUpperArm";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftLowerArm:
+			case Protean::HumanoidComponent::HumanoidBone::LeftLowerArm:
 				item.name += "LeftLowerArm";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftHand:
+			case Protean::HumanoidComponent::HumanoidBone::LeftHand:
 				item.name += "LeftHand";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightShoulder:
+			case Protean::HumanoidComponent::HumanoidBone::RightShoulder:
 				item.name += "RightShoulder";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightUpperArm:
+			case Protean::HumanoidComponent::HumanoidBone::RightUpperArm:
 				item.name += "RightUpperArm";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightLowerArm:
+			case Protean::HumanoidComponent::HumanoidBone::RightLowerArm:
 				item.name += "RightLowerArm";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightHand:
+			case Protean::HumanoidComponent::HumanoidBone::RightHand:
 				item.name += "RightHand";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftThumbMetacarpal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftThumbMetacarpal:
 				boneList.AddItem("Fingers"); // grouping item
 				item.name += "LeftThumbMetacarpal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftThumbProximal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftThumbProximal:
 				item.name += "LeftThumbProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftThumbDistal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftThumbDistal:
 				item.name += "LeftThumbDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftIndexProximal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftIndexProximal:
 				item.name += "LeftIndexProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftIndexIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::LeftIndexIntermediate:
 				item.name += "LeftIndexIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftIndexDistal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftIndexDistal:
 				item.name += "LeftIndexDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftMiddleProximal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleProximal:
 				item.name += "LeftMiddleProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftMiddleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleIntermediate:
 				item.name += "LeftMiddleIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftMiddleDistal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftMiddleDistal:
 				item.name += "LeftMiddleDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftRingProximal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftRingProximal:
 				item.name += "LeftRingProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftRingIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::LeftRingIntermediate:
 				item.name += "LeftRingIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftRingDistal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftRingDistal:
 				item.name += "LeftRingDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftLittleProximal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftLittleProximal:
 				item.name += "LeftLittleProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftLittleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::LeftLittleIntermediate:
 				item.name += "LeftLittleIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::LeftLittleDistal:
+			case Protean::HumanoidComponent::HumanoidBone::LeftLittleDistal:
 				item.name += "LeftLittleDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightThumbMetacarpal:
+			case Protean::HumanoidComponent::HumanoidBone::RightThumbMetacarpal:
 				item.name += "RightThumbMetacarpal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightThumbProximal:
+			case Protean::HumanoidComponent::HumanoidBone::RightThumbProximal:
 				item.name += "RightThumbProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightThumbDistal:
+			case Protean::HumanoidComponent::HumanoidBone::RightThumbDistal:
 				item.name += "RightThumbDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightIndexIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::RightIndexIntermediate:
 				item.name += "RightIndexIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightIndexDistal:
+			case Protean::HumanoidComponent::HumanoidBone::RightIndexDistal:
 				item.name += "RightIndexDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightIndexProximal:
+			case Protean::HumanoidComponent::HumanoidBone::RightIndexProximal:
 				item.name += "RightIndexProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightMiddleProximal:
+			case Protean::HumanoidComponent::HumanoidBone::RightMiddleProximal:
 				item.name += "RightMiddleProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightMiddleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::RightMiddleIntermediate:
 				item.name += "RightMiddleIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightMiddleDistal:
+			case Protean::HumanoidComponent::HumanoidBone::RightMiddleDistal:
 				item.name += "RightMiddleDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightRingProximal:
+			case Protean::HumanoidComponent::HumanoidBone::RightRingProximal:
 				item.name += "RightRingProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightRingIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::RightRingIntermediate:
 				item.name += "RightRingIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightRingDistal:
+			case Protean::HumanoidComponent::HumanoidBone::RightRingDistal:
 				item.name += "RightRingDistal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightLittleProximal:
+			case Protean::HumanoidComponent::HumanoidBone::RightLittleProximal:
 				item.name += "RightLittleProximal";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightLittleIntermediate:
+			case Protean::HumanoidComponent::HumanoidBone::RightLittleIntermediate:
 				item.name += "RightLittleIntermediate";
 				break;
-			case wi::scene::HumanoidComponent::HumanoidBone::RightLittleDistal:
+			case Protean::HumanoidComponent::HumanoidBone::RightLittleDistal:
 				item.name += "RightLittleDistal";
 				break;
 			default:
@@ -631,7 +629,7 @@ void HumanoidWindow::RefreshBoneList()
 
 void HumanoidWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 110;
 
 	layout.add_fullwidth(infoLabel);
@@ -673,7 +671,7 @@ void HumanoidWindow::UpdateHumanoids()
 	{
 		Scene& scene = editor->GetCurrentScene();
 		const CameraComponent& camera = editor->GetCurrentEditorScene().camera;
-		wi::primitive::Ray ray = editor->pickRay;
+		Protean::Ray ray = editor->pickRay;
 
 		for (size_t i = 0; i < scene.humanoids.GetCount(); ++i)
 		{
@@ -683,7 +681,7 @@ void HumanoidWindow::UpdateHumanoids()
 			const TransformComponent* transform = scene.transforms.GetComponent(bone);
 			if (transform != nullptr)
 			{
-				float dist = wi::math::Distance(transform->GetPosition(), ray.origin);
+				float dist = Protean::Math::Distance(transform->GetPosition(), ray.origin);
 				dist = std::min(1.0f, dist);
 				XMStoreFloat3(&humanoid.lookAt, camera.GetEye() + XMLoadFloat3(&ray.direction) * dist); // look at near plane position
 			}

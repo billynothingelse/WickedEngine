@@ -15,11 +15,9 @@
 
 #include <algorithm>
 
-using namespace wi::graphics;
-using namespace wi::scene;
-using namespace wi::enums;
-
-namespace wi
+using namespace Protean::Graphics;
+using namespace Protean;
+namespace Protean
 {
 	static Shader vertexShader;
 	static Shader vertexShader_shadow;
@@ -63,7 +61,7 @@ namespace wi
 
 	void EmittedParticleSystem::CreateSelfBuffers()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (particleBuffer.desc.size < MAX_PARTICLES * sizeof(Particle))
 		{
@@ -159,7 +157,7 @@ namespace wi
 			vb_col.descriptor_uav = device->GetDescriptorIndex(&generalBuffer, SubresourceType::UAV, vb_col.subresource_uav);
 			buffer_offset += vb_col.size;
 
-			primitiveBuffer = wi::renderer::GetIndexBufferForQuads(MAX_PARTICLES);
+			primitiveBuffer = Protean::Renderer::GetIndexBufferForQuads(MAX_PARTICLES);
 		}
 
 		if (IsSorted() && distanceBuffer.desc.size < MAX_PARTICLES * sizeof(float))
@@ -274,7 +272,7 @@ namespace wi
 
 	void EmittedParticleSystem::CreateRaytracingRenderData()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		if (device->CheckCapability(GraphicsDeviceCapability::RAYTRACING) && !BLAS.IsValid() && primitiveBuffer.IsValid())
 		{
@@ -357,7 +355,7 @@ namespace wi
 			EmitLocation& location = emit_locations.emplace_back();
 			location.transform.init();
 			location.count = (uint)emit;
-			location.color = wi::Color::White();
+			location.color = Protean::Color::White();
 			active_frames |= 1; // activate current frame
 		}
 
@@ -367,7 +365,7 @@ namespace wi
 		std::swap(aliveList[0], aliveList[1]);
 
 		// Read back statistics (with GPU delay):
-		const uint32_t oldest_stat_index = wi::graphics::GetDevice()->GetBufferIndex();
+		const uint32_t oldest_stat_index = Protean::Graphics::GetDevice()->GetBufferIndex();
 		memcpy(&statistics, statisticsReadbackBuffer[oldest_stat_index].mapped_data, sizeof(statistics));
 
 		if (statistics.aliveCount > 0 || statistics.aliveCount_afterSimulation > 0)
@@ -392,7 +390,7 @@ namespace wi
 			active_frames |= 1; // activate current frame
 		}
 	}
-	void EmittedParticleSystem::Burst(int num, const XMFLOAT3& position, const wi::Color& color)
+	void EmittedParticleSystem::Burst(int num, const XMFLOAT3& position, const Protean::Color& color)
 	{
 		if (IsPaused() || num <= 0)
 			return;
@@ -410,7 +408,7 @@ namespace wi
 			active_frames |= 1; // activate current frame
 		}
 	}
-	void EmittedParticleSystem::Burst(int num, const XMFLOAT4X4& transform, const wi::Color& color)
+	void EmittedParticleSystem::Burst(int num, const XMFLOAT4X4& transform, const Protean::Color& color)
 	{
 		if (IsPaused() || num <= 0)
 			return;
@@ -438,7 +436,7 @@ namespace wi
 		if (!particleBuffer.IsValid())
 			return;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("UpdateEmittedParticles", cmd);
 
 		if (!IsPaused() && dt > 0)
@@ -482,7 +480,7 @@ namespace wi
 				cb.xEmitterMeshGeometryOffset = mesh->geometryOffset + first_subset;
 				cb.xEmitterMeshGeometryCount = last_subset - first_subset;
 			}
-			cb.xEmitterRandomness = wi::random::GetRandom(0.0f, 1.0f);
+			cb.xEmitterRandomness = Protean::Random::GetRandom(0.0f, 1.0f);
 			cb.xParticleLifeSpan = life;
 			cb.xParticleLifeSpanRandomness = random_life;
 			cb.xParticleNormalFactor = normal_factor;
@@ -600,7 +598,7 @@ namespace wi
 
 			if (IsSPHEnabled())
 			{
-				auto range = wi::profiler::BeginRangeGPU("SPH - Simulation", cmd);
+				auto range = Protean::Profiler::BeginRangeGPU("SPH - Simulation", cmd);
 
 				// Smooth Particle Hydrodynamics:
 				device->EventBegin("SPH - Simulation", cmd);
@@ -723,7 +721,7 @@ namespace wi
 
 				device->EventEnd(cmd);
 
-				wi::profiler::EndRange(range);
+				Protean::Profiler::EndRange(range);
 			}
 
 			device->EventBegin("Simulate", cmd);
@@ -783,7 +781,7 @@ namespace wi
 		if (IsSorted())
 		{
 			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState::SHADER_RESOURCE_COMPUTE, ResourceState::UNORDERED_ACCESS), cmd);
-			wi::gpusortlib::Sort(MAX_PARTICLES, distanceBuffer, counterBuffer, offsetof(ParticleCounters, culledCount), culledIndirectionBuffer, cmd);
+			Protean::GPUSortLib::Sort(MAX_PARTICLES, distanceBuffer, counterBuffer, offsetof(ParticleCounters, culledCount), culledIndirectionBuffer, cmd);
 			device->Barrier(GPUBarrier::Buffer(&distanceBuffer, ResourceState::UNORDERED_ACCESS, ResourceState::SHADER_RESOURCE_COMPUTE), cmd);
 		}
 
@@ -826,7 +824,7 @@ namespace wi
 		}
 
 		// Statistics is copied to readback:
-		const uint32_t oldest_stat_index = wi::graphics::GetDevice()->GetBufferIndex();
+		const uint32_t oldest_stat_index = Protean::Graphics::GetDevice()->GetBufferIndex();
 		device->CopyBuffer(&statisticsReadbackBuffer[oldest_stat_index], 0, &counterBuffer, 0, sizeof(ParticleCounters), cmd);
 
 		{
@@ -850,16 +848,16 @@ namespace wi
 	{
 		if (IsInactive())
 			return;
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("EmittedParticle", cmd);
 
-		if (wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_ONLY)
+		if (Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_ONLY)
 		{
 			device->BindPipelineState(&PSO_wire, cmd);
 		}
 		else
 		{
-			const wi::enums::BLENDMODE blendMode = material.GetBlendMode();
+			const Protean::BLENDMODE blendMode = material.GetBlendMode();
 			device->BindPipelineState(&PSO[blendMode][shadertype_override == nullptr ? shaderType : *shadertype_override], cmd);
 
 			device->BindShadingRate(material.shadingRate, cmd);
@@ -884,7 +882,7 @@ namespace wi
 			device->DrawInstancedIndirect(&indirectBuffers, offsetof(EmitterIndirectArgs, draw_culled), cmd);
 		}
 
-		if (wi::renderer::GetWireframeMode() == wi::renderer::WIREFRAME_OVERLAY)
+		if (Protean::Renderer::GetWireframeMode() == Protean::Renderer::WIREFRAME_OVERLAY)
 		{
 			device->BindPipelineState(&PSO_wire, cmd);
 			if (ALLOW_MESH_SHADER && device->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
@@ -907,7 +905,7 @@ namespace wi
 		if (!material.IsCastingShadow())
 			return;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("EmittedParticle Shadow", cmd);
 
 		device->BindPipelineState(&PSO_shadow, cmd);
@@ -980,43 +978,43 @@ namespace wi
 	{
 		void LoadShaders()
 		{
-			wi::renderer::LoadShader(ShaderStage::VS, vertexShader, "emittedparticleVS.cso");
-			wi::renderer::LoadShader(ShaderStage::VS, vertexShader_shadow, "emittedparticleVS_shadow.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, shadowPS, "emittedparticlePS_shadow.cso");
+			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader, "emittedparticleVS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::VS, vertexShader_shadow, "emittedparticleVS_shadow.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, shadowPS, "emittedparticlePS_shadow.cso");
 
-			if (ALLOW_MESH_SHADER && wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+			if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
 			{
-				wi::renderer::LoadShader(ShaderStage::MS, meshShader, "emittedparticleMS.cso");
+				Protean::Renderer::LoadShader(ShaderStage::MS, meshShader, "emittedparticleMS.cso");
 			}
 
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT], "emittedparticlePS_soft.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_DISTORTION], "emittedparticlePS_soft_distortion.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SIMPLE], "emittedparticlePS_simple.cso");
-			wi::renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_LIGHTING], "emittedparticlePS_soft_lighting.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT], "emittedparticlePS_soft.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_DISTORTION], "emittedparticlePS_soft_distortion.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SIMPLE], "emittedparticlePS_simple.cso");
+			Protean::Renderer::LoadShader(ShaderStage::PS, pixelShader[EmittedParticleSystem::SOFT_LIGHTING], "emittedparticlePS_soft_lighting.cso");
 
-			wi::renderer::LoadShader(ShaderStage::CS, kickoffUpdateCS, "emittedparticle_kickoffUpdateCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, finishUpdateCS, "emittedparticle_finishUpdateCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, emitCS, "emittedparticle_emitCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, emitCS_VOLUME, "emittedparticle_emitCS_volume.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, emitCS_FROMMESH, "emittedparticle_emitCS_FROMMESH.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, sphpartitionCS, "emittedparticle_sphpartitionCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, sphcellallocationCS, "emittedparticle_sphcellallocationCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, sphbinningCS, "emittedparticle_sphbinningCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, sphdensityCS, "emittedparticle_sphdensityCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, sphforceCS, "emittedparticle_sphforceCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, simulateCS, "emittedparticle_simulateCS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING, "emittedparticle_simulateCS_SORTING.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, simulateCS_DEPTHCOLLISIONS, "emittedparticle_simulateCS_DEPTHCOLLISIONS.cso");
-			wi::renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING_DEPTHCOLLISIONS, "emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, kickoffUpdateCS, "emittedparticle_kickoffUpdateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, finishUpdateCS, "emittedparticle_finishUpdateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS, "emittedparticle_emitCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS_VOLUME, "emittedparticle_emitCS_volume.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, emitCS_FROMMESH, "emittedparticle_emitCS_FROMMESH.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, sphpartitionCS, "emittedparticle_sphpartitionCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, sphcellallocationCS, "emittedparticle_sphcellallocationCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, sphbinningCS, "emittedparticle_sphbinningCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, sphdensityCS, "emittedparticle_sphdensityCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, sphforceCS, "emittedparticle_sphforceCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS, "emittedparticle_simulateCS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING, "emittedparticle_simulateCS_SORTING.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_DEPTHCOLLISIONS, "emittedparticle_simulateCS_DEPTHCOLLISIONS.cso");
+			Protean::Renderer::LoadShader(ShaderStage::CS, simulateCS_SORTING_DEPTHCOLLISIONS, "emittedparticle_simulateCS_SORTING_DEPTHCOLLISIONS.cso");
 
 
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 			for (int i = 0; i < BLENDMODE_COUNT; ++i)
 			{
 				PipelineStateDesc desc;
 				desc.pt = PrimitiveTopology::TRIANGLESTRIP;
-				if (ALLOW_MESH_SHADER && wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
 				{
 					desc.ms = &meshShader;
 				}
@@ -1038,7 +1036,7 @@ namespace wi
 			{
 				PipelineStateDesc desc;
 				desc.pt = PrimitiveTopology::TRIANGLESTRIP;
-				if (ALLOW_MESH_SHADER && wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
+				if (ALLOW_MESH_SHADER && Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::MESH_SHADER))
 				{
 					desc.ms = &meshShader;
 				}
@@ -1071,7 +1069,7 @@ namespace wi
 
 	void EmittedParticleSystem::Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		RasterizerState rs;
 		rs.fill_mode = FillMode::SOLID;
@@ -1085,7 +1083,7 @@ namespace wi
 		rs.antialiased_line_enable = false;
 		rasterizerState = rs;
 
-		if (IsFormatUnorm(wi::renderer::format_depthbuffer_shadowmap))
+		if (IsFormatUnorm(Protean::Renderer::format_depthbuffer_shadowmap))
 		{
 			rs.depth_bias = -1;
 			rs.slope_scaled_depth_bias = -4.0f;
@@ -1195,20 +1193,20 @@ namespace wi
 		bd.independent_blend_enable = false;
 		blendState_shadow = bd;
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { EmittedParticleSystem_Internal::LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { EmittedParticleSystem_Internal::LoadShaders(); });
 		EmittedParticleSystem_Internal::LoadShaders();
 
-		wilog("wi::EmittedParticleSystem Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::EmittedParticleSystem Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 
-	void EmittedParticleSystem::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void EmittedParticleSystem::Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri)
 	{
 		if (archive.IsReadMode())
 		{
 			archive >> _flags;
 			archive >> (uint32_t&)shaderType;
-			wi::ecs::SerializeEntity(archive, meshID, seri);
+			Protean::SerializeEntity(archive, meshID, seri);
 			archive >> MAX_PARTICLES;
 			archive >> FIXED_TIMESTEP;
 			archive >> size;
@@ -1291,7 +1289,7 @@ namespace wi
 		{
 			archive << _flags;
 			archive << (uint32_t)shaderType;
-			wi::ecs::SerializeEntity(archive, meshID, seri);
+			Protean::SerializeEntity(archive, meshID, seri);
 			archive << MAX_PARTICLES;
 			archive << FIXED_TIMESTEP;
 			archive << size;

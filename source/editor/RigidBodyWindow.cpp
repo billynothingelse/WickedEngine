@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "RigidBodyWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void RigidBodyWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_RIGIDBODY " Rigid Body Physics", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 440));
 
 	closeButton.SetTooltip("Delete RigidBodyPhysicsComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -25,9 +23,9 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 		editor->componentsWnd.RefreshEntityTree();
 	});
 
-	auto forEachSelectedPhysicsComponent = [this](auto /* void(RigidBodyPhysicsComponent*, wi::gui::EventArgs) */ func) {
-		return [this, func](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+	auto forEachSelectedPhysicsComponent = [this](auto /* void(RigidBodyPhysicsComponent*, Protean::Gui::EventArgs) */ func) {
+		return [this, func](Protean::Gui::EventArgs args) {
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				RigidBodyPhysicsComponent* physicscomponent = scene.rigidbodies.GetComponent(x.entity);
@@ -39,7 +37,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 		};
 	};
 
-	auto forEachSelectedPhysicsComponentWithRefresh = [forEachSelectedPhysicsComponent](auto /* void(RigidBodyPhysicsComponent*, wi::gui::EventArgs) */ func) {
+	auto forEachSelectedPhysicsComponentWithRefresh = [forEachSelectedPhysicsComponent](auto /* void(RigidBodyPhysicsComponent*, Protean::Gui::EventArgs) */ func) {
 		return forEachSelectedPhysicsComponent([func](auto physicscomponent, auto args) {
 			func(physicscomponent, args);
 			physicscomponent->SetRefreshParametersNeeded();
@@ -54,7 +52,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	collisionShapeComboBox.AddItem("Convex Hull", RigidBodyPhysicsComponent::CollisionShape::CONVEX_HULL);
 	collisionShapeComboBox.AddItem("Triangle Mesh", RigidBodyPhysicsComponent::CollisionShape::TRIANGLE_MESH);
 	collisionShapeComboBox.AddItem("Height Field", RigidBodyPhysicsComponent::CollisionShape::HEIGHTFIELD);
-	collisionShapeComboBox.OnSelect([=](wi::gui::EventArgs args) {
+	collisionShapeComboBox.OnSelect([=](Protean::Gui::EventArgs args) {
 		forEachSelectedPhysicsComponent([](auto physicscomponent, auto args) {
 			RigidBodyPhysicsComponent::CollisionShape shape = (RigidBodyPhysicsComponent::CollisionShape)args.userdata;
 			if (physicscomponent->shape != shape)
@@ -235,12 +233,12 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 
 	physicsDebugCheckBox.Create(ICON_EYE " Physics visualizer: ");
 	physicsDebugCheckBox.SetTooltip("Visualize the physics world");
-	physicsDebugCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::physics::SetDebugDrawEnabled(args.bValue);
+	physicsDebugCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Physics::SetDebugDrawEnabled(args.bValue);
 		editor->generalWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 		editor->componentsWnd.constraintWnd.physicsDebugCheckBox.SetCheck(args.bValue);
 	});
-	physicsDebugCheckBox.SetCheck(wi::physics::IsDebugDrawEnabled());
+	physicsDebugCheckBox.SetCheck(Protean::Physics::IsDebugDrawEnabled());
 	AddWidget(&physicsDebugCheckBox);
 
 
@@ -260,7 +258,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 	characterSlopeSlider.Create(0, 90, 50, 90, "Max slope angle: ");
 	characterSlopeSlider.SetTooltip("Specify the slope angle that the character can stand on.");
 	characterSlopeSlider.OnSlide(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->character.maxSlopeAngle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->character.maxSlopeAngle = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&characterSlopeSlider);
 
@@ -361,13 +359,13 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 
 	maxRollAngleSlider.Create(0, 180, 0, 180, "Max Roll Angle: ");
 	maxRollAngleSlider.OnSlide(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->vehicle.max_roll_angle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->vehicle.max_roll_angle = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&maxRollAngleSlider);
 
 	maxSteeringAngleSlider.Create(0, 90, 0, 90, "Max Steering Angle: ");
 	maxSteeringAngleSlider.OnSlide(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->vehicle.max_steering_angle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->vehicle.max_steering_angle = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&maxSteeringAngleSlider);
 
@@ -422,7 +420,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 
 	motorcycleFBrakeSuspensionAngleSlider.Create(0, 90, 0, 90, "F. Brake Susp. Angle: ");
 	motorcycleFBrakeSuspensionAngleSlider.OnSlide(forEachSelectedPhysicsComponentWithRefresh([](auto physicscomponent, auto args) {
-		physicscomponent->vehicle.motorcycle.front_suspension_angle = wi::math::DegreesToRadians(args.fValue);
+		physicscomponent->vehicle.motorcycle.front_suspension_angle = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&motorcycleFBrakeSuspensionAngleSlider);
 
@@ -453,7 +451,7 @@ void RigidBodyWindow::Create(EditorComponent* _editor)
 
 	driveCheckbox.Create(ICON_VEHICLE " Drive in Editor: ");
 	driveCheckbox.SetTooltip("Override editor controls to drive this vehicle.\nControls: WASD for driving, left-right for camera rotation, Left Shift: brake, Space: handbrake\nController: R2: forward, L2: backward, Square/X: handbrake.");
-	driveCheckbox.OnClick([=](wi::gui::EventArgs args) {
+	driveCheckbox.OnClick([=](Protean::Gui::EventArgs args) {
 		if (args.bValue)
 		{
 			driving_entity = entity;
@@ -580,7 +578,7 @@ void RigidBodyWindow::SetEntity(Entity entity)
 		collisionShapeComboBox.SetSelectedByUserdataWithoutCallback((uint64_t)physicsComponent->shape);
 
 		characterCheckBox.SetCheck(physicsComponent->IsCharacterPhysics());
-		characterSlopeSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->character.maxSlopeAngle));
+		characterSlopeSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->character.maxSlopeAngle));
 		characterGravitySlider.SetValue(physicsComponent->character.gravityFactor);
 
 		vehicleCombo.SetSelectedByUserdataWithoutCallback((uint64_t)physicsComponent->vehicle.type);
@@ -595,8 +593,8 @@ void RigidBodyWindow::SetEntity(Entity entity)
 		rearWheelOffsetSlider.SetValue(physicsComponent->vehicle.rear_wheel_offset);
 		maxTorqueSlider.SetValue(physicsComponent->vehicle.max_engine_torque);
 		clutchStrengthSlider.SetValue(physicsComponent->vehicle.clutch_strength);
-		maxRollAngleSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->vehicle.max_roll_angle));
-		maxSteeringAngleSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->vehicle.max_steering_angle));
+		maxRollAngleSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->vehicle.max_roll_angle));
+		maxSteeringAngleSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->vehicle.max_steering_angle));
 		fourwheelCheckbox.SetCheck(physicsComponent->vehicle.car.four_wheel_drive);
 		motorleanCheckbox.SetCheck(physicsComponent->vehicle.motorcycle.lean_control);
 
@@ -610,7 +608,7 @@ void RigidBodyWindow::SetEntity(Entity entity)
 		rSuspensionFrequencySlider.SetValue(physicsComponent->vehicle.rear_suspension.frequency);
 		rSuspensionDampingSlider.SetValue(physicsComponent->vehicle.rear_suspension.damping);
 
-		motorcycleFBrakeSuspensionAngleSlider.SetValue(wi::math::RadiansToDegrees(physicsComponent->vehicle.motorcycle.front_suspension_angle));
+		motorcycleFBrakeSuspensionAngleSlider.SetValue(Protean::Math::RadiansToDegrees(physicsComponent->vehicle.motorcycle.front_suspension_angle));
 		motorcycleFBrakeTorqueSlider.SetValue(physicsComponent->vehicle.motorcycle.front_brake_torque);
 		motorcycleRBrakeTorqueSlider.SetValue(physicsComponent->vehicle.motorcycle.rear_brake_torque);
 
@@ -629,7 +627,7 @@ void RigidBodyWindow::SetEntity(Entity entity)
 			if (!scene.Entity_IsDescendant(wheelEntity, entity))
 				continue;
 			const NameComponent* name = scene.names.GetComponent(wheelEntity);
-			if (name != nullptr && wi::helper::toUpper(name->name).find("WHEEL") != std::string::npos)
+			if (name != nullptr && Protean::Helper::toUpper(name->name).find("WHEEL") != std::string::npos)
 			{
 				wheelEntityFrontLeftCombo.AddItem(name->name, (uint64_t)wheelEntity);
 				wheelEntityFrontRightCombo.AddItem(name->name, (uint64_t)wheelEntity);
@@ -655,7 +653,7 @@ void RigidBodyWindow::SetEntity(Entity entity)
 void RigidBodyWindow::ResizeLayout()
 {
 	RefreshShapeType();
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 145;
 
 	layout.add(collisionShapeComboBox);
@@ -757,7 +755,7 @@ void RigidBodyWindow::ResizeLayout()
 		RigidBodyPhysicsComponent::Vehicle::Type type = (RigidBodyPhysicsComponent::Vehicle::Type)vehicleCombo.GetSelectedUserdata();
 		switch (type)
 		{
-		case wi::scene::RigidBodyPhysicsComponent::Vehicle::Type::Car:
+		case Protean::RigidBodyPhysicsComponent::Vehicle::Type::Car:
 			motorcycleFBrakeSuspensionAngleSlider.SetVisible(false);
 			motorcycleFBrakeTorqueSlider.SetVisible(false);
 			motorcycleRBrakeTorqueSlider.SetVisible(false);
@@ -774,7 +772,7 @@ void RigidBodyWindow::ResizeLayout()
 			motorleanCheckbox.SetVisible(false);
 			layout.add_right(fourwheelCheckbox);
 			break;
-		case wi::scene::RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle:
+		case Protean::RigidBodyPhysicsComponent::Vehicle::Type::Motorcycle:
 			motorcycleFBrakeSuspensionAngleSlider.SetVisible(true);
 			motorcycleFBrakeTorqueSlider.SetVisible(true);
 			motorcycleRBrakeTorqueSlider.SetVisible(true);

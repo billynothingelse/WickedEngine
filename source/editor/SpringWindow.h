@@ -1,23 +1,23 @@
 #pragma once
 class EditorComponent;
 
-class SpringWindow : public wi::gui::Window
+class SpringWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Button resetAllButton;
-	wi::gui::CheckBox disabledCheckBox;
-	wi::gui::CheckBox gravityCheckBox;
-	wi::gui::Slider stiffnessSlider;
-	wi::gui::Slider dragSlider;
-	wi::gui::Slider windSlider;
-	wi::gui::Slider gravitySlider;
-	wi::gui::Slider hitradiusSlider;
+	Protean::Gui::Button resetAllButton;
+	Protean::Gui::CheckBox disabledCheckBox;
+	Protean::Gui::CheckBox gravityCheckBox;
+	Protean::Gui::Slider stiffnessSlider;
+	Protean::Gui::Slider dragSlider;
+	Protean::Gui::Slider windSlider;
+	Protean::Gui::Slider gravitySlider;
+	Protean::Gui::Slider hitradiusSlider;
 
 	void ResizeLayout() override;
 };

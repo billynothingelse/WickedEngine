@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "MaterialWindow.h"
 
-using namespace wi::graphics;
-using namespace wi::ecs;
-using namespace wi::scene;
-
-void AddTexturePropertiesString(const wi::graphics::TextureDesc& desc, std::string& str, uint32_t full_mip_count = 0)
+using namespace Protean::Graphics;
+using namespace Protean;
+void AddTexturePropertiesString(const Protean::Graphics::TextureDesc& desc, std::string& str, uint32_t full_mip_count = 0)
 {
 	uint32_t full_width = desc.width;
 	uint32_t full_height = desc.height;
@@ -35,7 +33,7 @@ void AddTexturePropertiesString(const wi::graphics::TextureDesc& desc, std::stri
 	str += GetFormatString(desc.format);
 	str += "\nSwizzle: ";
 	str += GetSwizzleString(desc.swizzle);
-	str += "\nMemory: " + wi::helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc));
+	str += "\nMemory: " + Protean::Helper::GetMemorySizeText(ComputeTextureMemorySizeInBytes(desc));
 }
 
 MaterialComponent* get_material(Scene& scene, PickResult x)
@@ -72,13 +70,13 @@ void ResetTexAnim(MaterialComponent* material)
 void MaterialWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_MATERIAL " Material", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_MATERIAL " Material", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 1580));
 
 	closeButton.SetTooltip("Delete MaterialComponent");
-	OnClose([this](wi::gui::EventArgs args) {
+	OnClose([this](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -96,7 +94,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [=] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				MaterialComponent* material = get_material(scene, x);
@@ -109,30 +107,30 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	presetLoadButton.Create("Load preset");
 	presetLoadButton.SetTooltip("Load material preset from file");
 	presetLoadButton.SetSize(XMFLOAT2(wid, hei));
-	presetLoadButton.OnClick([this](wi::gui::EventArgs args) {
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+	presetLoadButton.OnClick([this](Protean::Gui::EventArgs args) {
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::OPEN;
 		params.description = "Material Preset (.ini)";
 		params.extensions = { "ini" };
-		wi::helper::FileDialog(params, [this](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
-				wi::config::File config;
+		Protean::Helper::FileDialog(params, [this](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [this, fileName](uint64_t userdata) {
+				Protean::Config::File config;
 				if (!config.Open(fileName.c_str()))
 				{
-					wi::backlog::post("Failed to load material preset: " + fileName, wi::backlog::LogLevel::Warning);
+					Protean::Backlog::post("Failed to load material preset: " + fileName, Protean::Backlog::LogLevel::Warning);
 					return;
 				}
 
 				if (!config.HasSection("material"))
 				{
-					wi::backlog::post("Invalid material preset: " + fileName, wi::backlog::LogLevel::Warning);
+					Protean::Backlog::post("Invalid material preset: " + fileName, Protean::Backlog::LogLevel::Warning);
 					return;
 				}
 
-				const wi::config::Section& materialSection = config.GetSection("material");
+				const Protean::Config::Section& materialSection = config.GetSection("material");
 
 				// Apply preset to all selected materials
-				wi::scene::Scene& scene = editor->GetCurrentScene();
+				Protean::Scene& scene = editor->GetCurrentScene();
 				for (const auto& selected : editor->translator.selected)
 				{
 					MaterialComponent* material = get_material(scene, selected);
@@ -141,8 +139,8 @@ void MaterialWindow::Create(EditorComponent* _editor)
 
 					// Load combobox values
 					if (materialSection.Has("ShaderType")) material->shaderType = (MaterialComponent::SHADERTYPE)materialSection.GetInt("ShaderType");
-					if (materialSection.Has("BlendMode")) material->userBlendMode = (wi::enums::BLENDMODE)materialSection.GetInt("BlendMode");
-					if (materialSection.Has("ShadingRate")) material->shadingRate = (wi::graphics::ShadingRate)materialSection.GetInt("ShadingRate");
+					if (materialSection.Has("BlendMode")) material->userBlendMode = (Protean::BLENDMODE)materialSection.GetInt("BlendMode");
+					if (materialSection.Has("ShadingRate")) material->shadingRate = (Protean::Graphics::ShadingRate)materialSection.GetInt("ShadingRate");
 
 					// Load checkbox values
 					if (materialSection.Has("ReceiveShadow")) material->SetReceiveShadow(materialSection.GetBool("ReceiveShadow"));
@@ -233,22 +231,22 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	presetSaveButton.Create("Save preset");
 	presetSaveButton.SetTooltip("Save material preset to file");
 	presetSaveButton.SetSize(XMFLOAT2(wid, hei));
-	presetSaveButton.OnClick([this](wi::gui::EventArgs args) {
+	presetSaveButton.OnClick([this](Protean::Gui::EventArgs args) {
 		MaterialComponent* material = editor->GetCurrentScene().materials.GetComponent(entity);
 		if (material == nullptr)
 			return;
 
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::SAVE;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::SAVE;
 		params.description = "Material Preset (.ini)";
 		params.extensions = { "ini" };
-		wi::helper::FileDialog(params, [material](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [material, fileName](uint64_t userdata) {
-				const std::string filePath = wi::helper::ForceExtension(fileName, "ini");
-				wi::config::File config;
+		Protean::Helper::FileDialog(params, [material](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [material, fileName](uint64_t userdata) {
+				const std::string filePath = Protean::Helper::ForceExtension(fileName, "ini");
+				Protean::Config::File config;
 				config.Open(filePath.c_str());
 
-				wi::config::Section& materialSection = config.GetSection("material");
+				Protean::Config::Section& materialSection = config.GetSection("material");
 
 				// Save combobox values
 				materialSection.Set("ShaderType", (int)material->shaderType);
@@ -333,7 +331,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 				materialSection.Set("ExtinctionColorA", material->extinctionColor.w);
 
 				config.Commit();
-				wi::backlog::post("Material preset saved: " + filePath);
+				Protean::Backlog::post("Material preset saved: " + filePath);
 			});
 		});
 	});
@@ -470,7 +468,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 
 
 	shaderTypeComboBox.Create("Shader: ");
-	shaderTypeComboBox.SetTooltip("Select a shader for this material. \nCustom shaders (*) will also show up here (see wi::renderer:RegisterCustomShader() for more info.)\nNote that custom shaders (*) can't select between blend modes, as they are created with an explicit blend mode.");
+	shaderTypeComboBox.SetTooltip("Select a shader for this material. \nCustom shaders (*) will also show up here (see Protean::Renderer:RegisterCustomShader() for more info.)\nNote that custom shaders (*) can't select between blend modes, as they are created with an explicit blend mode.");
 	shaderTypeComboBox.SetPos(XMFLOAT2(x, y += step));
 	shaderTypeComboBox.SetSize(XMFLOAT2(wid, hei));
 	shaderTypeComboBox.OnSelect(forEachSelected([this] (auto material, auto args) {
@@ -494,14 +492,14 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	blendModeComboBox.SetPos(XMFLOAT2(x, y += step));
 	blendModeComboBox.SetSize(XMFLOAT2(wid, hei));
 	blendModeComboBox.OnSelect(forEachSelected([] (auto material, auto args) {
-		material->userBlendMode = (wi::enums::BLENDMODE)args.userdata;
+		material->userBlendMode = (Protean::BLENDMODE)args.userdata;
 	}));
-	blendModeComboBox.AddItem("Opaque", wi::enums::BLENDMODE_OPAQUE);
-	blendModeComboBox.AddItem("Alpha", wi::enums::BLENDMODE_ALPHA);
-	blendModeComboBox.AddItem("Premultiplied", wi::enums::BLENDMODE_PREMULTIPLIED);
-	blendModeComboBox.AddItem("Additive", wi::enums::BLENDMODE_ADDITIVE);
-	blendModeComboBox.AddItem("Multiply", wi::enums::BLENDMODE_MULTIPLY);
-	blendModeComboBox.AddItem("Inverse", wi::enums::BLENDMODE_INVERSE);
+	blendModeComboBox.AddItem("Opaque", Protean::BLENDMODE_OPAQUE);
+	blendModeComboBox.AddItem("Alpha", Protean::BLENDMODE_ALPHA);
+	blendModeComboBox.AddItem("Premultiplied", Protean::BLENDMODE_PREMULTIPLIED);
+	blendModeComboBox.AddItem("Additive", Protean::BLENDMODE_ADDITIVE);
+	blendModeComboBox.AddItem("Multiply", Protean::BLENDMODE_MULTIPLY);
+	blendModeComboBox.AddItem("Inverse", Protean::BLENDMODE_INVERSE);
 	blendModeComboBox.SetEnabled(false);
 	blendModeComboBox.SetTooltip("Set the blend mode of the material.");
 	AddWidget(&blendModeComboBox);
@@ -666,7 +664,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	anisotropyRotationSlider.SetSize(XMFLOAT2(wid, hei));
 	anisotropyRotationSlider.SetPos(XMFLOAT2(x, y += step));
 	anisotropyRotationSlider.OnSlide(forEachSelected([] (auto material, auto args) {
-		material->anisotropy_rotation = wi::math::DegreesToRadians(args.fValue);
+		material->anisotropy_rotation = Protean::Math::DegreesToRadians(args.fValue);
 	}));
 	AddWidget(&anisotropyRotationSlider);
 
@@ -830,7 +828,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	interiorRotationSlider.Create(0, 360, 0, 360, "Interior Rotation: ");
 	interiorRotationSlider.SetTooltip("Set the cubemap horizontal rotation for the interior mapping (if material uses interior mapping shader)");
 	interiorRotationSlider.OnSlide(forEachSelected([] (auto material, auto args) {
-		float radians = wi::math::DegreesToRadians(args.fValue);
+		float radians = Protean::Math::DegreesToRadians(args.fValue);
 		material->SetInteriorMappingRotation(radians);
 	}));
 	AddWidget(&interiorRotationSlider);
@@ -844,8 +842,8 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	materialNameField.SetTooltip("Set a name for the material...");
 	materialNameField.SetPos(XMFLOAT2(10, y += step));
 	materialNameField.SetSize(XMFLOAT2(300, hei));
-	materialNameField.OnInputAccepted([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	materialNameField.OnInputAccepted([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			NameComponent* name = scene.names.GetComponent(x.entity);
@@ -870,7 +868,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	colorComboBox.SetTooltip("Choose the destination data of the color picker.");
 	AddWidget(&colorComboBox);
 
-	colorPicker.Create("Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
 	colorPicker.SetPos(XMFLOAT2(10, y += step));
 	colorPicker.SetVisible(true);
 	colorPicker.SetEnabled(true);
@@ -964,7 +962,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 			break;
 		}
 	}
-	textureSlotComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	textureSlotComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 
 		std::string tooltiptext;
 
@@ -1041,25 +1039,25 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	textureSlotLoadButton.SetSize(XMFLOAT2(wid, hei));
 	textureSlotLoadButton.SetPos(XMFLOAT2(x, y += step));
 	textureSlotLoadButton.SetTooltip("Load texture from file on disk");
-	textureSlotLoadButton.OnClick([this](wi::gui::EventArgs args) {
+	textureSlotLoadButton.OnClick([this](Protean::Gui::EventArgs args) {
 		int slot = textureSlotComboBox.GetSelected();
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::OPEN;
 		params.description = "Texture";
-		params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-		wi::helper::FileDialog(params, [this, slot](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+		Protean::Helper::FileDialog(params, [this, slot](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 				MaterialComponent* material = editor->GetCurrentScene().materials.GetComponent(entity);
-				const wi::resourcemanager::Flags flags = material->GetTextureSlotResourceFlags(MaterialComponent::TEXTURESLOT(slot));
+				const Protean::ResourceManager::Flags flags = material->GetTextureSlotResourceFlags(MaterialComponent::TEXTURESLOT(slot));
 
-				wi::Archive& archive = editor->AdvanceHistory();
+				Protean::Archive& archive = editor->AdvanceHistory();
 				archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 				editor->RecordEntity(archive, entity);
 
-				material->textures[slot].resource = wi::resourcemanager::Load(fileName, flags);
+				material->textures[slot].resource = Protean::ResourceManager::Load(fileName, flags);
 				material->textures[slot].name = fileName;
 				material->SetDirty();
-				textureSlotLabel.SetText(wi::helper::GetFileNameFromPath(fileName));
+				textureSlotLabel.SetText(Protean::Helper::GetFileNameFromPath(fileName));
 				textureSlotComboBox.SetSelected(slot);
 				textureSlotImage.SetImage(material->textures[slot].resource);
 
@@ -1073,7 +1071,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	textureSlotSelectButton.SetSize(XMFLOAT2(wid, hei));
 	textureSlotSelectButton.SetPos(XMFLOAT2(x + wid / 3 + 1, y));
 	textureSlotSelectButton.SetTooltip("Select texture from current scene");
-	textureSlotSelectButton.OnClick([this](wi::gui::EventArgs args) {
+	textureSlotSelectButton.OnClick([this](Protean::Gui::EventArgs args) {
 		RecreateTexturePickerButtons();
 		texturePickerWindow.SetVisible(true);
 	});
@@ -1083,7 +1081,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	textureSlotClearButton.SetSize(XMFLOAT2(wid, hei));
 	textureSlotClearButton.SetPos(XMFLOAT2(x + 2 * wid / 3 + 2, y));
 	textureSlotClearButton.SetTooltip("Clear texture from slot");
-	textureSlotClearButton.OnClick([this](wi::gui::EventArgs args) {
+	textureSlotClearButton.OnClick([this](Protean::Gui::EventArgs args) {
 		MaterialComponent* material = editor->GetCurrentScene().materials.GetComponent(entity);
 		if (material == nullptr)
 			return;
@@ -1092,7 +1090,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 
 		if (material->textures[slot].resource.IsValid())
 		{
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
@@ -1100,7 +1098,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 			material->textures[slot].name = "";
 			material->SetDirty();
 			textureSlotLabel.SetText("");
-			textureSlotImage.SetImage(wi::Resource());
+			textureSlotImage.SetImage(Protean::Resource());
 
 			editor->RecordEntity(archive, entity);
 		}
@@ -1134,8 +1132,8 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	const float screenW = editor->GetLogicalWidth();
 	const float screenH = editor->GetLogicalHeight();
 
-	auto wctrl = wi::gui::Window::WindowControls::ALL;
-	wctrl &= ~wi::gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
+	auto wctrl = Protean::Gui::Window::WindowControls::ALL;
+	wctrl &= ~Protean::Gui::Window::WindowControls::RESIZE_BOTTOMLEFT;
 	texturePickerWindow.Create("", wctrl);
 	texturePickerWindow.SetVisible(false);
 	const float texturePickerWindowW = screenW / 3.20f;
@@ -1143,7 +1141,7 @@ void MaterialWindow::Create(EditorComponent* _editor)
 	texturePickerWindow.SetSize(XMFLOAT2(texturePickerWindowW, texturePickerWindowH));
 	texturePickerWindow.SetPos(XMFLOAT2(screenW / 2.0f - texturePickerWindowW / 2.0f, screenH / 2.0f - texturePickerWindowH / 2.0f));
 
-	texturePickerWindow.OnClose([this](wi::gui::EventArgs args) {
+	texturePickerWindow.OnClose([this](Protean::Gui::EventArgs args) {
 		texturePickerWindow.SetVisible(false);
 	});
 	editor->GetGUI().AddWidget(&texturePickerWindow);
@@ -1206,7 +1204,7 @@ void MaterialWindow::SetEntity(Entity entity)
 		saturationSlider.SetValue(material->saturation);
 		pomSlider.SetValue(material->parallaxOcclusionMapping);
 		anisotropyStrengthSlider.SetValue(material->anisotropy_strength);
-		anisotropyRotationSlider.SetValue(wi::math::RadiansToDegrees(material->anisotropy_rotation));
+		anisotropyRotationSlider.SetValue(Protean::Math::RadiansToDegrees(material->anisotropy_rotation));
 		displacementMappingSlider.SetValue(material->displacementMapping);
 		subsurfaceScatteringSlider.SetValue(material->subsurfaceScattering.w);
 		texAnimFrameRateSlider.SetValue(material->texAnimFrameRate);
@@ -1232,7 +1230,7 @@ void MaterialWindow::SetEntity(Entity entity)
 		shaderTypeComboBox.AddItem("Interior", MaterialComponent::SHADERTYPE_INTERIORMAPPING);
 		int customShaderSelection = -1;
 		int customShaderItem = MaterialComponent::SHADERTYPE_COUNT;
-		for (auto& x : wi::renderer::GetCustomShaders())
+		for (auto& x : Protean::Renderer::GetCustomShaders())
 		{
 			shaderTypeComboBox.AddItem("*" + x.name, (uint64_t)x.id);
 			if (x.id == material->GetCustomShaderID())
@@ -1269,22 +1267,22 @@ void MaterialWindow::SetEntity(Entity entity)
 		{
 		default:
 		case 0:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(material->baseColor));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(material->baseColor));
 			break;
 		case 1:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(material->specularColor));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(material->specularColor));
 			break;
 		case 2:
-			colorPicker.SetPickColor(wi::Color::fromFloat3(XMFLOAT3(material->emissiveColor.x, material->emissiveColor.y, material->emissiveColor.z)));
+			colorPicker.SetPickColor(Protean::Color::fromFloat3(XMFLOAT3(material->emissiveColor.x, material->emissiveColor.y, material->emissiveColor.z)));
 			break;
 		case 3:
-			colorPicker.SetPickColor(wi::Color::fromFloat3(XMFLOAT3(material->subsurfaceScattering.x, material->subsurfaceScattering.y, material->subsurfaceScattering.z)));
+			colorPicker.SetPickColor(Protean::Color::fromFloat3(XMFLOAT3(material->subsurfaceScattering.x, material->subsurfaceScattering.y, material->subsurfaceScattering.z)));
 			break;
 		case 4:
-			colorPicker.SetPickColor(wi::Color::fromFloat3(XMFLOAT3(material->sheenColor.x, material->sheenColor.y, material->sheenColor.z)));
+			colorPicker.SetPickColor(Protean::Color::fromFloat3(XMFLOAT3(material->sheenColor.x, material->sheenColor.y, material->sheenColor.z)));
 			break;
 		case 5:
-			colorPicker.SetPickColor(wi::Color::fromFloat4(material->extinctionColor));
+			colorPicker.SetPickColor(Protean::Color::fromFloat4(material->extinctionColor));
 			break;
 		}
 
@@ -1319,9 +1317,9 @@ void MaterialWindow::SetEntity(Entity entity)
 		interiorOffsetXSlider.SetValue(material->interiorMappingOffset.x);
 		interiorOffsetYSlider.SetValue(material->interiorMappingOffset.y);
 		interiorOffsetZSlider.SetValue(material->interiorMappingOffset.z);
-		interiorRotationSlider.SetValue(wi::math::RadiansToDegrees(material->interiorMappingRotation));
+		interiorRotationSlider.SetValue(Protean::Math::RadiansToDegrees(material->interiorMappingRotation));
 
-		shadingRateComboBox.SetEnabled(wi::graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING));
+		shadingRateComboBox.SetEnabled(Protean::Graphics::GetDevice()->CheckCapability(GraphicsDeviceCapability::VARIABLE_RATE_SHADING));
 
 		if (material->IsUsingSpecularGlossinessWorkflow())
 		{
@@ -1331,7 +1329,7 @@ void MaterialWindow::SetEntity(Entity entity)
 
 		const int slot = textureSlotComboBox.GetSelected();
 		textureSlotImage.SetImage(material->textures[slot].resource);
-		textureSlotLabel.SetText(wi::helper::GetFileNameFromPath(material->textures[slot].name));
+		textureSlotLabel.SetText(Protean::Helper::GetFileNameFromPath(material->textures[slot].name));
 		textureSlotUvsetField.SetText(std::to_string(material->textures[slot].uvset));
 		if (changed)
 		{
@@ -1345,7 +1343,7 @@ void MaterialWindow::SetEntity(Entity entity)
 		colorComboBox.SetEnabled(false);
 		colorPicker.SetEnabled(false);
 
-		textureSlotImage.SetImage(wi::Resource());
+		textureSlotImage.SetImage(Protean::Resource());
 		textureSlotLabel.SetText("");
 		textureSlotUvsetField.SetText("");
 	}
@@ -1365,38 +1363,38 @@ void MaterialWindow::RecreateTexturePickerButtons()
 
 	// Create buttons for each unique texture
 	uniqueTextures.clear();
-	wi::resourcemanager::CollectResources(uniqueTextures, wi::resourcemanager::ResourceType::TEXTURE);
+	Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType::TEXTURE);
 	for (auto& [textureName, textureResource] : uniqueTextures)
 	{
 		texturePickerButtons.emplace_back();
-		wi::gui::Button& button = texturePickerButtons.back();
+		Protean::Gui::Button& button = texturePickerButtons.back();
 
 		button.Create("");
 		button.SetImage(textureResource);
-		std::string tooltipText = wi::helper::GetFileNameFromPath(textureName) + "\nFull path: " + textureName;
+		std::string tooltipText = Protean::Helper::GetFileNameFromPath(textureName) + "\nFull path: " + textureName;
 		AddTexturePropertiesString(textureResource.GetTexture().GetDesc(), tooltipText, textureResource.GetTextureFullMipCount());
 		button.SetTooltip(tooltipText);
 		texturePickerWindow.AddWidget(&button);
 		button.SetVisible(false);
 
 		std::string capturedName = textureName;
-		wi::Resource capturedResource = textureResource;
+		Protean::Resource capturedResource = textureResource;
 
-		button.OnClick([this, capturedName, capturedResource](wi::gui::EventArgs args) {
+		button.OnClick([this, capturedName, capturedResource](Protean::Gui::EventArgs args) {
 			MaterialComponent* material = editor->GetCurrentScene().materials.GetComponent(entity);
 			if (material == nullptr)
 				return;
 
 			const int slot = textureSlotComboBox.GetSelected();
 
-			wi::Archive& archive = editor->AdvanceHistory();
+			Protean::Archive& archive = editor->AdvanceHistory();
 			archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 			editor->RecordEntity(archive, entity);
 
 			material->textures[slot].resource = capturedResource;
 			material->textures[slot].name = capturedName;
 			material->SetDirty();
-			textureSlotLabel.SetText(wi::helper::GetFileNameFromPath(capturedName));
+			textureSlotLabel.SetText(Protean::Helper::GetFileNameFromPath(capturedName));
 			textureSlotImage.SetImage(capturedResource);
 
 			editor->RecordEntity(archive, entity);
@@ -1409,7 +1407,7 @@ void MaterialWindow::RecreateTexturePickerButtons()
 
 void MaterialWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 150;
 
 	Scene& scene = editor->GetCurrentScene();
@@ -1418,7 +1416,7 @@ void MaterialWindow::ResizeLayout()
 	if (texturePickerWindow.IsVisible())
 	{
 		uniqueTextures.clear();
-		wi::resourcemanager::CollectResources(uniqueTextures, wi::resourcemanager::ResourceType::TEXTURE);
+		Protean::ResourceManager::CollectResources(uniqueTextures, Protean::ResourceManager::ResourceType::TEXTURE);
 		if (texturePickerButtons.size() != uniqueTextures.size())
 		{
 			RecreateTexturePickerButtons();
@@ -1543,13 +1541,13 @@ void MaterialWindow::ResizeLayout()
 
 		if (!texturePickerButtons.empty())
 		{
-			wi::gui::Theme theme;
-			theme.image.CopyFrom(texturePickerWindow.sprites[wi::gui::IDLE].params);
+			Protean::Gui::Theme theme;
+			theme.image.CopyFrom(texturePickerWindow.sprites[Protean::Gui::IDLE].params);
 			theme.image.background = false;
-			theme.image.blendFlag = wi::enums::BLENDMODE_ALPHA;
-			theme.image.color = wi::Color::White();
+			theme.image.blendFlag = Protean::BLENDMODE_ALPHA;
+			theme.image.color = Protean::Color::White();
 			theme.font.CopyFrom(font.params);
-			theme.shadow_color = wi::Color::lerp(theme.font.color, wi::Color::Transparent(), 0.25f);
+			theme.shadow_color = Protean::Color::lerp(theme.font.color, Protean::Color::Transparent(), 0.25f);
 			theme.tooltipFont.CopyFrom(tooltipFont.params);
 			theme.tooltipImage.CopyFrom(tooltipSprite.params);
 
@@ -1561,11 +1559,11 @@ void MaterialWindow::ResizeLayout()
 
 			for (size_t i = 0; i < texturePickerButtons.size(); ++i)
 			{
-				wi::gui::Button& button = texturePickerButtons[i];
+				Protean::Gui::Button& button = texturePickerButtons[i];
 
 				button.SetTheme(theme);
-				button.SetColor(wi::Color::White(), wi::gui::IDLE);
-				button.SetColor(wi::Color(255, 255, 255, 150), wi::gui::FOCUS);
+				button.SetColor(Protean::Color::White(), Protean::Gui::IDLE);
+				button.SetColor(Protean::Color(255, 255, 255, 150), Protean::Gui::FOCUS);
 				button.SetShadowRadius(0);
 
 				button.SetSize(XMFLOAT2(preview_size, preview_size));

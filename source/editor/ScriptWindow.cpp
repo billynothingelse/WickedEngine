@@ -1,18 +1,18 @@
 #include "stdafx.h"
 #include "ScriptWindow.h"
 
-using namespace wi::scene;
+using namespace Protean;
 
 void ScriptWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_SCRIPT " Script", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_SCRIPT " Script", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(520, 80));
 
 	closeButton.SetTooltip("Delete Script");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -29,9 +29,9 @@ void ScriptWindow::Create(EditorComponent* _editor)
 	fileButton.Create("Open File...");
 	fileButton.SetDescription("File: ");
 	fileButton.SetSize(XMFLOAT2(wid, hei));
-	fileButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
-		wi::scene::ScriptComponent* script = scene.scripts.GetComponent(entity);
+	fileButton.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
+		Protean::ScriptComponent* script = scene.scripts.GetComponent(entity);
 		if (script == nullptr)
 			return;
 
@@ -44,14 +44,14 @@ void ScriptWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Lua Script (*.lua)";
-			params.extensions = wi::resourcemanager::GetSupportedScriptExtensions();
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			params.extensions = Protean::ResourceManager::GetSupportedScriptExtensions();
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 					script->CreateFromFile(fileName);
-					fileButton.SetText(wi::helper::GetFileNameFromPath(fileName));
+					fileButton.SetText(Protean::Helper::GetFileNameFromPath(fileName));
 					});
 				});
 		}
@@ -61,8 +61,8 @@ void ScriptWindow::Create(EditorComponent* _editor)
 	playonceCheckBox.Create("Once: ");
 	playonceCheckBox.SetTooltip("Play the script only one time, and stop immediately.\nUseful for having custom update frequency logic in the script.");
 	playonceCheckBox.SetSize(XMFLOAT2(hei, hei));
-	playonceCheckBox.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	playonceCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ScriptComponent* script = scene.scripts.GetComponent(x.entity);
@@ -76,8 +76,8 @@ void ScriptWindow::Create(EditorComponent* _editor)
 	playstopButton.Create("");
 	playstopButton.SetTooltip("Play / Stop script");
 	playstopButton.SetSize(XMFLOAT2(wid, hei));
-	playstopButton.OnClick([=](wi::gui::EventArgs args) {
-		wi::scene::Scene& scene = editor->GetCurrentScene();
+	playstopButton.OnClick([=](Protean::Gui::EventArgs args) {
+		Protean::Scene& scene = editor->GetCurrentScene();
 		for (auto& x : editor->translator.selected)
 		{
 			ScriptComponent* script = scene.scripts.GetComponent(x.entity);
@@ -99,18 +99,18 @@ void ScriptWindow::Create(EditorComponent* _editor)
 	SetVisible(false);
 }
 
-void ScriptWindow::SetEntity(wi::ecs::Entity entity)
+void ScriptWindow::SetEntity(Protean::Entity entity)
 {
 	this->entity = entity;
 
-	wi::scene::Scene& scene = editor->GetCurrentScene();
-	wi::scene::ScriptComponent* script = scene.scripts.GetComponent(entity);
+	Protean::Scene& scene = editor->GetCurrentScene();
+	Protean::ScriptComponent* script = scene.scripts.GetComponent(entity);
 
 	if (script != nullptr)
 	{
 		if (script->resource.IsValid())
 		{
-			fileButton.SetText(wi::helper::GetFileNameFromPath(script->filename));
+			fileButton.SetText(Protean::Helper::GetFileNameFromPath(script->filename));
 		}
 		else
 		{
@@ -124,10 +124,10 @@ void ScriptWindow::SetEntity(wi::ecs::Entity entity)
 	}
 }
 
-void ScriptWindow::Update(const wi::Canvas& canvas, float dt)
+void ScriptWindow::Update(const Protean::Canvas& canvas, float dt)
 {
-	wi::scene::Scene& scene = editor->GetCurrentScene();
-	wi::scene::ScriptComponent* script = scene.scripts.GetComponent(entity);
+	Protean::Scene& scene = editor->GetCurrentScene();
+	Protean::ScriptComponent* script = scene.scripts.GetComponent(entity);
 	if (script != nullptr)
 	{
 		if (script->IsPlaying())
@@ -140,17 +140,17 @@ void ScriptWindow::Update(const wi::Canvas& canvas, float dt)
 		}
 	}
 
-	wi::gui::Window::Update(canvas, dt);
+	Protean::Gui::Window::Update(canvas, dt);
 }
 void ScriptWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	fileButton.SetPos(XMFLOAT2(60, 4));
 	fileButton.SetSize(XMFLOAT2(GetSize().x - 65, fileButton.GetSize().y));
 
-	wi::scene::Scene& scene = editor->GetCurrentScene();
-	wi::scene::ScriptComponent* script = scene.scripts.GetComponent(entity);
+	Protean::Scene& scene = editor->GetCurrentScene();
+	Protean::ScriptComponent* script = scene.scripts.GetComponent(entity);
 	if (script != nullptr && script->resource.IsValid())
 	{
 		playstopButton.SetVisible(true);

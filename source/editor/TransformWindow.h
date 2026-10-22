@@ -1,45 +1,45 @@
 #pragma once
 class EditorComponent;
 
-class TransformWindow : public wi::gui::Window
+class TransformWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Button clearButton;
-	wi::gui::Button moveToEditorCameraButton;
-	wi::gui::Button applyScaleToObjectButton;
+	Protean::Gui::Button clearButton;
+	Protean::Gui::Button moveToEditorCameraButton;
+	Protean::Gui::Button applyScaleToObjectButton;
 
-	wi::gui::TextInputField txInput;
-	wi::gui::TextInputField tyInput;
-	wi::gui::TextInputField tzInput;
+	Protean::Gui::TextInputField txInput;
+	Protean::Gui::TextInputField tyInput;
+	Protean::Gui::TextInputField tzInput;
 
-	wi::gui::TextInputField rollInput;
-	wi::gui::TextInputField pitchInput;
-	wi::gui::TextInputField yawInput;
+	Protean::Gui::TextInputField rollInput;
+	Protean::Gui::TextInputField pitchInput;
+	Protean::Gui::TextInputField yawInput;
 
-	wi::gui::TextInputField rxInput;
-	wi::gui::TextInputField ryInput;
-	wi::gui::TextInputField rzInput;
-	wi::gui::TextInputField rwInput;
+	Protean::Gui::TextInputField rxInput;
+	Protean::Gui::TextInputField ryInput;
+	Protean::Gui::TextInputField rzInput;
+	Protean::Gui::TextInputField rwInput;
 
-	wi::gui::TextInputField sxInput;
-	wi::gui::TextInputField syInput;
-	wi::gui::TextInputField szInput;
-	wi::gui::TextInputField suInput;
+	Protean::Gui::TextInputField sxInput;
+	Protean::Gui::TextInputField syInput;
+	Protean::Gui::TextInputField szInput;
+	Protean::Gui::TextInputField suInput;
 
-	wi::gui::TextInputField snapScaleInput;
-	wi::gui::TextInputField snapRotateInput;
-	wi::gui::TextInputField snapTranslateInput;
+	Protean::Gui::TextInputField snapScaleInput;
+	Protean::Gui::TextInputField snapRotateInput;
+	Protean::Gui::TextInputField snapTranslateInput;
 
-	wi::gui::Button resetTranslationButton;
-	wi::gui::Button resetScaleButton;
-	wi::gui::Button resetScaleUniformButton;
-	wi::gui::Button resetRotationButton;
+	Protean::Gui::Button resetTranslationButton;
+	Protean::Gui::Button resetScaleButton;
+	Protean::Gui::Button resetScaleUniformButton;
+	Protean::Gui::Button resetRotationButton;
 
 	void ResizeLayout() override;
 };

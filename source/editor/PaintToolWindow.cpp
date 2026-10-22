@@ -2,20 +2,19 @@
 #include "PaintToolWindow.h"
 #include "render/shaders/ShaderInterop_Renderer.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
-using namespace wi::primitive;
+using namespace Protean;
+using namespace Protean::Graphics;
+using namespace Protean;
 
 void PaintToolWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create("Paint Tool", wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::RESIZE_RIGHT);
+	Protean::Gui::Window::Create("Paint Tool", Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::RESIZE_RIGHT);
 	SetText("Paint Tool " ICON_PAINTTOOL);
 	SetSize(XMFLOAT2(300, 800));
 
-	colorPicker.Create("Color", wi::gui::Window::WindowControls::NONE);
+	colorPicker.Create("Color", Protean::Gui::Window::WindowControls::NONE);
 
 	modeComboBox.Create("Mode: ");
 	modeComboBox.SetTooltip("Choose paint tool mode");
@@ -32,7 +31,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	modeComboBox.AddItem(ICON_HAIR " Hairparticle - Length (Alpha)", MODE_HAIRPARTICLE_LENGTH);
 	modeComboBox.AddItem(ICON_MESH " Wind weight (Alpha)", MODE_WIND);
 	modeComboBox.SetSelected(0);
-	modeComboBox.OnSelect([this](wi::gui::EventArgs args) {
+	modeComboBox.OnSelect([this](Protean::Gui::EventArgs args) {
 		switch (args.userdata)
 		{
 		case MODE_DISABLED:
@@ -94,13 +93,13 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	AddWidget(&modeComboBox);
 
 	infoLabel.Create("Paint Tool is disabled.");
-	infoLabel.SetColor(wi::Color::Transparent());
+	infoLabel.SetColor(Protean::Color::Transparent());
 	infoLabel.SetFitTextEnabled(true);
 	AddWidget(&infoLabel);
 
 	radiusSlider.Create(0.1f, 20.0f, 1, 10000, "Brush Radius: ");
 	radiusSlider.SetTooltip("Set the brush radius in pixel units");
-	radiusSlider.OnSlide([this](wi::gui::EventArgs args) {
+	radiusSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		if (GetMode() == MODE_TEXTURE)
 		{
 			texture_paint_radius = args.fValue;
@@ -138,7 +137,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	{
 		stabilizerSlider.SetValue((float)editor->main->config.GetSection("paint_tool").GetInt("stabilizer"));
 	}
-	stabilizerSlider.OnSlide([=](wi::gui::EventArgs args) {
+	stabilizerSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("paint_tool").Set("stabilizer", args.iValue);
 		editor->main->config.Commit();
 		});
@@ -150,7 +149,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	{
 		backfaceCheckBox.SetCheck(editor->main->config.GetSection("paint_tool").GetBool("backfaces"));
 	}
-	backfaceCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	backfaceCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("paint_tool").Set("backfaces", args.bValue);
 		editor->main->config.Commit();
 		});
@@ -163,7 +162,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	{
 		wireCheckBox.SetCheck(editor->main->config.GetSection("paint_tool").GetBool("wireframe"));
 	}
-	wireCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	wireCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("paint_tool").Set("wireframe", args.bValue);
 		editor->main->config.Commit();
 		});
@@ -175,7 +174,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	{
 		pressureCheckBox.SetCheck(editor->main->config.GetSection("paint_tool").GetBool("pressure"));
 	}
-	pressureCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	pressureCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		editor->main->config.GetSection("paint_tool").Set("pressure", args.bValue);
 		editor->main->config.Commit();
 		});
@@ -230,7 +229,7 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 
 	saveTextureButton.Create("Save Texture");
 	saveTextureButton.SetTooltip("Save edited texture.");
-	saveTextureButton.OnClick([this] (wi::gui::EventArgs args) {
+	saveTextureButton.OnClick([this] (Protean::Gui::EventArgs args) {
 
 		Scene& scene = editor->GetCurrentScene();
 		for (auto& selected : editor->translator.selected)
@@ -251,21 +250,21 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 
 			uint64_t sel = textureSlotComboBox.GetItemUserData(textureSlotComboBox.GetSelected());
 
-			wi::vector<uint8_t> texturefiledata;
-			if (wi::helper::saveTextureToMemoryFile(editTexture.texture, "PNG", texturefiledata))
+			Protean::vector<uint8_t> texturefiledata;
+			if (Protean::Helper::saveTextureToMemoryFile(editTexture.texture, "PNG", texturefiledata))
 			{
 				material->textures[sel].resource.SetFileData(texturefiledata);
 				// Register into resource manager:
-				material->textures[sel].resource = wi::resourcemanager::Load(
+				material->textures[sel].resource = Protean::ResourceManager::Load(
 					material->textures[sel].name,
-					wi::resourcemanager::Flags::NONE,
+					Protean::ResourceManager::Flags::NONE,
 					texturefiledata.data(),
 					texturefiledata.size()
 				);
 			}
 			else
 			{
-				wi::helper::messageBox("Saving texture failed! :(");
+				Protean::Helper::messageBox("Saving texture failed! :(");
 			}
 		}
 
@@ -275,11 +274,11 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	brushTextureButton.Create("");
 	brushTextureButton.SetDescription("Brush tex: ");
 	brushTextureButton.SetTooltip("Open an image to use as brush texture (splatting mode).\nSplat mode means that the texture will be relative to the brush position");
-	brushTextureButton.sprites[wi::gui::IDLE].params.color = wi::Color::White();
-	brushTextureButton.sprites[wi::gui::FOCUS].params.color = wi::Color::Gray();
-	brushTextureButton.sprites[wi::gui::ACTIVE].params.color = wi::Color::White();
-	brushTextureButton.sprites[wi::gui::DEACTIVATING].params.color = wi::Color::Gray();
-	brushTextureButton.OnClick([this](wi::gui::EventArgs args) {
+	brushTextureButton.sprites[Protean::Gui::IDLE].params.color = Protean::Color::White();
+	brushTextureButton.sprites[Protean::Gui::FOCUS].params.color = Protean::Color::Gray();
+	brushTextureButton.sprites[Protean::Gui::ACTIVE].params.color = Protean::Color::White();
+	brushTextureButton.sprites[Protean::Gui::DEACTIVATING].params.color = Protean::Color::Gray();
+	brushTextureButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (brushTex.IsValid())
 		{
 			brushTex = {};
@@ -287,13 +286,13 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					brushTex = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					brushTex = Protean::ResourceManager::Load(fileName);
 					brushTextureButton.SetImage(brushTex);
 					});
 				});
@@ -304,11 +303,11 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 	revealTextureButton.Create("");
 	revealTextureButton.SetDescription("Reveal tex: ");
 	revealTextureButton.SetTooltip("Open an image to use as reveal mode texture.\nReveal mode means that the texture will use the UV of the mesh. It will be multiplied by brush tex.");
-	revealTextureButton.sprites[wi::gui::IDLE].params.color = wi::Color::White();
-	revealTextureButton.sprites[wi::gui::FOCUS].params.color = wi::Color::Gray();
-	revealTextureButton.sprites[wi::gui::ACTIVE].params.color = wi::Color::White();
-	revealTextureButton.sprites[wi::gui::DEACTIVATING].params.color = wi::Color::Gray();
-	revealTextureButton.OnClick([this](wi::gui::EventArgs args) {
+	revealTextureButton.sprites[Protean::Gui::IDLE].params.color = Protean::Color::White();
+	revealTextureButton.sprites[Protean::Gui::FOCUS].params.color = Protean::Color::Gray();
+	revealTextureButton.sprites[Protean::Gui::ACTIVE].params.color = Protean::Color::White();
+	revealTextureButton.sprites[Protean::Gui::DEACTIVATING].params.color = Protean::Color::Gray();
+	revealTextureButton.OnClick([this](Protean::Gui::EventArgs args) {
 		if (revealTex.IsValid())
 		{
 			revealTex = {};
@@ -316,13 +315,13 @@ void PaintToolWindow::Create(EditorComponent* _editor)
 		}
 		else
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "Texture";
-			params.extensions = wi::resourcemanager::GetSupportedImageExtensions();
-			wi::helper::FileDialog(params, [this](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
-					revealTex = wi::resourcemanager::Load(fileName);
+			params.extensions = Protean::ResourceManager::GetSupportedImageExtensions();
+			Protean::Helper::FileDialog(params, [this](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+					revealTex = Protean::ResourceManager::Load(fileName);
 					revealTextureButton.SetImage(revealTex);
 					});
 				});
@@ -391,14 +390,14 @@ void PaintToolWindow::UpdateData(float dt)
 	XMFLOAT2 posNew;
 	posNew.x = editor->GetLogicalWidth() * 0.5f;
 	posNew.y = editor->GetLogicalHeight() * 0.5f;
-	if (editor->GetGUI().HasFocus() || wi::backlog::isActive())
+	if (editor->GetGUI().HasFocus() || Protean::Backlog::isActive())
 	{
 		pos = posNew;
 		strokes.clear();
 		return;
 	}
 
-	const bool pointer_down = wi::input::Down(wi::input::MOUSE_BUTTON_LEFT);
+	const bool pointer_down = Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT);
 	if (!pointer_down)
 	{
 		stroke_dist = FLT_MAX;
@@ -419,7 +418,7 @@ void PaintToolWindow::UpdateData(float dt)
 	const float radius = radiusSlider.GetValue();
 	const float amount = amountSlider.GetValue();
 	const float smoothness = smoothnessSlider.GetValue();
-	const wi::Color color = colorPicker.GetPickColor();
+	const Protean::Color color = colorPicker.GetPickColor();
 	const XMFLOAT4 color_float = color.toFloat4();
 	const bool backfaces = backfaceCheckBox.GetCheck();
 	const bool wireframe = wireCheckBox.GetCheck();
@@ -449,14 +448,14 @@ void PaintToolWindow::UpdateData(float dt)
 	const CameraComponent& camera = editor->GetCurrentEditorScene().camera;
 	const XMMATRIX VP = camera.GetViewProjection();
 	const XMVECTOR F = camera.GetAt();
-	const float brush_rotation = wi::random::GetRandom(0.0f, rotationSlider.GetValue() * XM_2PI);
+	const float brush_rotation = Protean::Random::GetRandom(0.0f, rotationSlider.GetValue() * XM_2PI);
 
 	const XMVECTOR spline_p0 = strokes.empty() ? XMVectorSet(posNew.x, posNew.y, pressureNew, 0) : XMVectorSet(strokes[0].position.x, strokes[0].position.y, strokes[0].pressure, 0);
 	const XMVECTOR spline_p1 = strokes.size() < 2 ? spline_p0 : XMVectorSet(strokes[1].position.x, strokes[1].position.y, strokes[1].pressure, 0);
 	const XMVECTOR spline_p2 = strokes.size() < 3 ? spline_p1 : XMVectorSet(strokes[2].position.x, strokes[2].position.y, strokes[2].pressure, 0);
 	const XMVECTOR spline_p3 = strokes.size() < 4 ? spline_p2 : XMVectorSet(strokes[3].position.x, strokes[3].position.y, strokes[3].pressure, 0);
 
-	int substep_count = (int)std::ceil(wi::math::Distance(pos, posNew) / (radius * pressureNew));
+	int substep_count = (int)std::ceil(Protean::Math::Distance(pos, posNew) / (radius * pressureNew));
 	substep_count = std::max(1, std::min(100, substep_count));
 
 	for (int substep = 0; substep < substep_count; ++substep)
@@ -473,7 +472,7 @@ void PaintToolWindow::UpdateData(float dt)
 		);
 		XMFLOAT2 pos_eval;
 		XMStoreFloat2(&pos_eval, spline_p);
-		stroke_dist += wi::math::Distance(pos, pos_eval);
+		stroke_dist += Protean::Math::Distance(pos, pos_eval);
 		pos = pos_eval;
 		pressure = XMVectorGetZ(spline_p);
 		const float pressure_radius = radius * pressure;
@@ -492,7 +491,7 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_TEXTURE:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, ~0u, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, ~0u, ~0u, scene);
 
 			ObjectComponent* object = scene.objects.GetComponent(brushIntersect.entity);
 			if (object == nullptr || object->meshID == INVALID_ENTITY)
@@ -523,14 +522,14 @@ void PaintToolWindow::UpdateData(float dt)
 					texturename += materialname->name;
 					texturename += "_";
 				}
-				texturename += std::to_string(wi::random::GetRandom(std::numeric_limits<int>::max()));
+				texturename += std::to_string(Protean::Random::GetRandom(std::numeric_limits<int>::max()));
 				texturename += ".PNG";
 				uint64_t sel = textureSlotComboBox.GetItemUserData(textureSlotComboBox.GetSelected());
 				material->textures[sel].name = texturename;
-				material->textures[sel].resource = wi::renderer::CreatePaintableTexture(1024, 1024, 1, wi::Color::White());
+				material->textures[sel].resource = Protean::Renderer::CreatePaintableTexture(1024, 1024, 1, Protean::Color::White());
 				editTexture = GetEditTextureSlot(*material, &uvset);
 
-				wi::backlog::post("Paint Tool created default texture: " + texturename);
+				Protean::Backlog::post("Paint Tool created default texture: " + texturename);
 			}
 
 			if (!editTexture.texture.IsValid())
@@ -554,7 +553,7 @@ void PaintToolWindow::UpdateData(float dt)
 
 			if (painting)
 			{
-				GraphicsDevice* device = wi::graphics::GetDevice();
+				GraphicsDevice* device = Protean::Graphics::GetDevice();
 				if (!cmd.IsValid())
 				{
 					cmd = device->BeginCommandList();
@@ -565,7 +564,7 @@ void PaintToolWindow::UpdateData(float dt)
 				// Need to requery this because RecordHistory might swap textures on material:
 				editTexture = GetEditTextureSlot(*material, &uvset);
 
-				wi::renderer::PaintTextureParams paintparams = {};
+				Protean::Renderer::PaintTextureParams paintparams = {};
 
 				paintparams.editTex = editTexture.texture;
 				if (brushTex.IsValid())
@@ -590,11 +589,11 @@ void PaintToolWindow::UpdateData(float dt)
 				paintparams.push.xPaintBrushRotation = brush_rotation;
 				paintparams.push.xPaintBrushShape = (uint)brushShapeComboBox.GetSelected();
 
-				wi::renderer::PaintIntoTexture(paintparams);
+				Protean::Renderer::PaintIntoTexture(paintparams);
 			}
 			if (substep == substep_count - 1)
 			{
-				wi::renderer::PaintRadius paintrad;
+				Protean::Renderer::PaintRadius paintrad;
 				paintrad.objectEntity = brushIntersect.entity;
 				paintrad.subset = brushIntersect.subsetIndex;
 				paintrad.radius = radius;
@@ -604,7 +603,7 @@ void PaintToolWindow::UpdateData(float dt)
 				paintrad.dimensions.y = desc.height;
 				paintrad.rotation = brush_rotation;
 				paintrad.shape = (uint)brushShapeComboBox.GetSelected();
-				wi::renderer::DrawPaintRadius(paintrad);
+				Protean::Renderer::DrawPaintRadius(paintrad);
 			}
 		}
 		break;
@@ -612,14 +611,14 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_TERRAIN_MATERIAL:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, wi::enums::FILTER_TERRAIN, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, Protean::FILTER_TERRAIN, ~0u, scene);
 			if (brushIntersect.entity == INVALID_ENTITY)
 				break;
 
 			const Sphere sphere = Sphere(brushIntersect.position, radius);
 			const XMVECTOR CENTER = XMLoadFloat3(&sphere.center);
 
-			wi::terrain::Terrain* terrain = nullptr;
+			Protean::Terrain::Terrain* terrain = nullptr;
 			for (size_t i = 0; i < scene.terrains.GetCount(); ++i)
 			{
 				for (auto& chunk : scene.terrains[i].chunks)
@@ -643,7 +642,7 @@ void PaintToolWindow::UpdateData(float dt)
 					continue;
 
 				const size_t objectIndex = scene.objects.GetIndex(chunk_data.entity);
-				const wi::primitive::AABB& aabb = scene.aabb_objects[objectIndex];
+				const Protean::AABB& aabb = scene.aabb_objects[objectIndex];
 				if (!sphere.intersects(aabb))
 					continue;
 
@@ -673,22 +672,22 @@ void PaintToolWindow::UpdateData(float dt)
 						if (!backfaces && XMVectorGetX(XMVector3Dot(F, N)) > 0)
 							continue;
 
-						const float dist = wi::math::Distance(P, CENTER);
+						const float dist = Protean::Math::Distance(P, CENTER);
 						if (dist <= pressure_radius)
 						{
 							RecordHistory(chunk_data.entity);
 							rebuild = true;
-							const float affection = amount * wi::math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
+							const float affection = amount * Protean::Math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
 
 							float vcol = float(pixels[j]) / 255.0f;
-							vcol = wi::math::Lerp(vcol, 1, affection);
+							vcol = Protean::Math::Lerp(vcol, 1, affection);
 							pixels[j] = uint8_t(vcol * 255);
 
 							// blend out layers above:
 							for (size_t l = terrain_material_layer + 1; l < chunk_data.blendmap_layers.size(); ++l)
 							{
 								vcol = float(chunk_data.blendmap_layers[l].pixels[j]) / 255.0f;
-								vcol = wi::math::Lerp(vcol, 0, affection);
+								vcol = Protean::Math::Lerp(vcol, 0, affection);
 								chunk_data.blendmap_layers[l].pixels[j] = uint8_t(vcol * 255);
 							}
 						}
@@ -711,7 +710,7 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_WIND:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, Protean::FILTER_OBJECT_ALL, ~0u, scene);
 			if (brushIntersect.entity == INVALID_ENTITY)
 				break;
 
@@ -768,7 +767,7 @@ void PaintToolWindow::UpdateData(float dt)
 					case MODE_VERTEXCOLOR:
 						if (mesh->vertex_colors.empty())
 						{
-							mesh->vertex_colors.resize(mesh->vertex_positions.size(), wi::Color::White().rgba); // fill white
+							mesh->vertex_colors.resize(mesh->vertex_positions.size(), Protean::Color::White().rgba); // fill white
 							rebuild = true;
 						}
 						break;
@@ -793,7 +792,7 @@ void PaintToolWindow::UpdateData(float dt)
 						}
 						else
 						{
-							P = wi::scene::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
+							P = Protean::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
 						}
 						P = XMVector3Transform(P, W);
 						N = XMVector3Normalize(XMVector3TransformNormal(N, W));
@@ -801,26 +800,26 @@ void PaintToolWindow::UpdateData(float dt)
 						if (!backfaces && XMVectorGetX(XMVector3Dot(F, N)) > 0)
 							continue;
 
-						const float dist = wi::math::Distance(P, CENTER);
+						const float dist = Protean::Math::Distance(P, CENTER);
 						if (dist <= pressure_radius)
 						{
 							RecordHistory(object.meshID);
 							rebuild = true;
-							const float affection = amount * wi::math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
+							const float affection = amount * Protean::Math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
 
 							switch (mode)
 							{
 							case MODE_VERTEXCOLOR:
 							{
-								wi::Color vcol = mesh->vertex_colors[j];
-								vcol = wi::Color::lerp(vcol, color, affection);
+								Protean::Color vcol = mesh->vertex_colors[j];
+								vcol = Protean::Color::lerp(vcol, color, affection);
 								mesh->vertex_colors[j] = vcol.rgba;
 							}
 							break;
 							case MODE_WIND:
 							{
-								wi::Color vcol = wi::Color(0, 0, 0, mesh->vertex_windweights[j]);
-								vcol = wi::Color::lerp(vcol, color, affection);
+								Protean::Color vcol = Protean::Color(0, 0, 0, mesh->vertex_windweights[j]);
+								vcol = Protean::Color::lerp(vcol, color, affection);
 								mesh->vertex_windweights[j] = vcol.getA();
 							}
 							break;
@@ -848,34 +847,34 @@ void PaintToolWindow::UpdateData(float dt)
 							};
 
 							const XMVECTOR P[arraysize(triangle)] = {
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[0]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[1]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[2]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : Protean::SkinVertex(*mesh, *armature, triangle[0]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : Protean::SkinVertex(*mesh, *armature, triangle[1]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : Protean::SkinVertex(*mesh, *armature, triangle[2]), W),
 							};
 
-							wi::renderer::RenderableTriangle tri;
+							Protean::Renderer::RenderableTriangle tri;
 							XMStoreFloat3(&tri.positionA, P[0]);
 							XMStoreFloat3(&tri.positionB, P[1]);
 							XMStoreFloat3(&tri.positionC, P[2]);
 							if (mode == MODE_WIND && !mesh->vertex_windweights.empty())
 							{
-								tri.colorA = wi::Color::lerp(wi::Color::Black(), wi::Color::White(), float(mesh->vertex_windweights[triangle[0]]) / 255.0f);
-								tri.colorB = wi::Color::lerp(wi::Color::Black(), wi::Color::White(), float(mesh->vertex_windweights[triangle[1]]) / 255.0f);
-								tri.colorC = wi::Color::lerp(wi::Color::Black(), wi::Color::White(), float(mesh->vertex_windweights[triangle[2]]) / 255.0f);
+								tri.colorA = Protean::Color::lerp(Protean::Color::Black(), Protean::Color::White(), float(mesh->vertex_windweights[triangle[0]]) / 255.0f);
+								tri.colorB = Protean::Color::lerp(Protean::Color::Black(), Protean::Color::White(), float(mesh->vertex_windweights[triangle[1]]) / 255.0f);
+								tri.colorC = Protean::Color::lerp(Protean::Color::Black(), Protean::Color::White(), float(mesh->vertex_windweights[triangle[2]]) / 255.0f);
 							}
 							else if (mode == MODE_VERTEXCOLOR && !mesh->vertex_colors.empty())
 							{
-								tri.colorA = wi::Color(mesh->vertex_colors[triangle[0]]);
-								tri.colorB = wi::Color(mesh->vertex_colors[triangle[1]]);
-								tri.colorC = wi::Color(mesh->vertex_colors[triangle[2]]);
+								tri.colorA = Protean::Color(mesh->vertex_colors[triangle[0]]);
+								tri.colorB = Protean::Color(mesh->vertex_colors[triangle[1]]);
+								tri.colorC = Protean::Color(mesh->vertex_colors[triangle[2]]);
 							}
 							else
 							{
-								tri.colorA = wi::Color::White();
-								tri.colorB = wi::Color::White();
-								tri.colorC = wi::Color::White();
+								tri.colorA = Protean::Color::White();
+								tri.colorB = Protean::Color::White();
+								tri.colorC = Protean::Color::White();
 							}
-							wi::renderer::DrawTriangle(tri, true);
+							Protean::Renderer::DrawTriangle(tri, true);
 						}
 					}
 				}
@@ -892,7 +891,7 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_SCULPTING_SUBTRACT:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, terrain_only ? wi::enums::FILTER_TERRAIN : wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, terrain_only ? Protean::FILTER_TERRAIN : Protean::FILTER_OBJECT_ALL, ~0u, scene);
 			if (brushIntersect.entity == INVALID_ENTITY)
 				break;
 
@@ -908,7 +907,7 @@ void PaintToolWindow::UpdateData(float dt)
 				ObjectComponent& object = scene.objects[objectIndex];
 				if (object.meshID == INVALID_ENTITY)
 					continue;
-				if (terrain_only && (object.GetFilterMask() & wi::enums::FILTER_TERRAIN) == 0)
+				if (terrain_only && (object.GetFilterMask() & Protean::FILTER_TERRAIN) == 0)
 					continue;
 
 				MeshComponent* mesh = scene.meshes.GetComponent(object.meshID);
@@ -965,7 +964,7 @@ void PaintToolWindow::UpdateData(float dt)
 						}
 						else
 						{
-							P = wi::scene::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
+							P = Protean::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
 						}
 						P = XMVector3Transform(P, W);
 						N = XMVector3Normalize(XMVector3TransformNormal(N, W));
@@ -974,17 +973,17 @@ void PaintToolWindow::UpdateData(float dt)
 						if (!backfaces && dotN > 0)
 							continue;
 
-						const float dist = wi::math::Distance(P, CENTER);
+						const float dist = Protean::Math::Distance(P, CENTER);
 						if (dist <= pressure_radius)
 						{
-							const float affection = amount * wi::math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
+							const float affection = amount * Protean::Math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
 							sculpting_indices.push_back({ j, affection });
 						}
 					}
 
-					wi::terrain::Terrain* terrain = nullptr;
-					wi::terrain::ChunkData* chunk_data = nullptr;
-					if (object.GetFilterMask() & wi::enums::FILTER_TERRAIN)
+					Protean::Terrain::Terrain* terrain = nullptr;
+					Protean::Terrain::ChunkData* chunk_data = nullptr;
+					if (object.GetFilterMask() & Protean::FILTER_TERRAIN)
 					{
 						for (size_t i = 0; i < scene.terrains.GetCount(); ++i)
 						{
@@ -1024,7 +1023,7 @@ void PaintToolWindow::UpdateData(float dt)
 							if (chunk_data != nullptr)
 							{
 								float height = mesh->vertex_positions[x.ind].y;
-								chunk_data->heightmap_data[x.ind] = uint16_t(wi::math::InverseLerp(terrain->bottomLevel, terrain->topLevel, height) * 65535);
+								chunk_data->heightmap_data[x.ind] = uint16_t(Protean::Math::InverseLerp(terrain->bottomLevel, terrain->topLevel, height) * 65535);
 							}
 						}
 
@@ -1057,22 +1056,22 @@ void PaintToolWindow::UpdateData(float dt)
 								mesh->indices[j + 2],
 							};
 							const XMVECTOR P[arraysize(triangle)] = {
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[0]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[1]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[2]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : Protean::SkinVertex(*mesh, *armature, triangle[0]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : Protean::SkinVertex(*mesh, *armature, triangle[1]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : Protean::SkinVertex(*mesh, *armature, triangle[2]), W),
 							};
 
-							wi::renderer::RenderableTriangle tri;
+							Protean::Renderer::RenderableTriangle tri;
 							XMStoreFloat3(&tri.positionA, P[0]);
 							XMStoreFloat3(&tri.positionB, P[1]);
 							XMStoreFloat3(&tri.positionC, P[2]);
 							tri.colorA.w = 0.8f;
 							tri.colorB.w = 0.8f;
 							tri.colorC.w = 0.8f;
-							wi::renderer::DrawTriangle(tri, true);
+							Protean::Renderer::DrawTriangle(tri, true);
 						}
 
-						wi::renderer::RenderableLine sculpt_dir_line;
+						Protean::Renderer::RenderableLine sculpt_dir_line;
 						sculpt_dir_line.color_start = XMFLOAT4(0, 1, 0, 1);
 						sculpt_dir_line.color_end = XMFLOAT4(0, 1, 0, 1);
 						sculpt_dir_line.start = brushIntersect.position;
@@ -1081,7 +1080,7 @@ void PaintToolWindow::UpdateData(float dt)
 							XMLoadFloat3(&sculpt_dir_line.start) +
 							XMVector3Normalize(XMLoadFloat3(&sculpting_normal))
 						);
-						wi::renderer::DrawLine(sculpt_dir_line);
+						Protean::Renderer::DrawLine(sculpt_dir_line);
 					}
 				}
 
@@ -1097,7 +1096,7 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_SOFTBODY_PHYSICS:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, Protean::FILTER_OBJECT_ALL, ~0u, scene);
 			if (brushIntersect.entity == INVALID_ENTITY)
 				break;
 
@@ -1129,7 +1128,7 @@ void PaintToolWindow::UpdateData(float dt)
 					{
 						XMVECTOR P = SkinVertex(*mesh, *softbody, (uint32_t)j);
 
-						const float dist = wi::math::Distance(P, CENTER);
+						const float dist = Protean::Math::Distance(P, CENTER);
 						if (dist <= pressure_radius)
 						{
 							RecordHistory(object.meshID);
@@ -1156,7 +1155,7 @@ void PaintToolWindow::UpdateData(float dt)
 						const float weight1 = softbody->weights[i1];
 						const float weight2 = softbody->weights[i2];
 						XMVECTOR N0 = XMVectorZero(), N1 = XMVectorZero(), N2 = XMVectorZero();
-						wi::renderer::RenderableTriangle tri;
+						Protean::Renderer::RenderableTriangle tri;
 						XMVECTOR P0 = SkinVertex(*mesh, *softbody, i0, &N0);
 						XMVECTOR P1 = SkinVertex(*mesh, *softbody, i1, &N1);
 						XMVECTOR P2 = SkinVertex(*mesh, *softbody, i2, &N2);
@@ -1177,12 +1176,12 @@ void PaintToolWindow::UpdateData(float dt)
 							tri.colorC = XMFLOAT4(1, 1, 1, 1);
 						if (wireframe)
 						{
-							wi::renderer::DrawTriangle(tri, true);
+							Protean::Renderer::DrawTriangle(tri, true);
 						}
 						if (weight0 == 0 && weight1 == 0 && weight2 == 0)
 						{
 							tri.colorA = tri.colorB = tri.colorC = XMFLOAT4(1, 0, 0, 0.8f);
-							wi::renderer::DrawTriangle(tri);
+							Protean::Renderer::DrawTriangle(tri);
 						}
 					}
 				}
@@ -1195,7 +1194,7 @@ void PaintToolWindow::UpdateData(float dt)
 		case MODE_HAIRPARTICLE_LENGTH:
 		{
 			Ray pickRay = editor->pickRay;
-			brushIntersect = wi::scene::Pick(pickRay, wi::enums::FILTER_OBJECT_ALL, ~0u, scene);
+			brushIntersect = Protean::Pick(pickRay, Protean::FILTER_OBJECT_ALL, ~0u, scene);
 			if (brushIntersect.entity == INVALID_ENTITY)
 				break;
 
@@ -1204,7 +1203,7 @@ void PaintToolWindow::UpdateData(float dt)
 
 			for (size_t i = 0; i < scene.hairs.GetCount(); ++i)
 			{
-				wi::HairParticleSystem& hair = scene.hairs[i];
+				Protean::HairParticleSystem& hair = scene.hairs[i];
 				if (hair.meshID == INVALID_ENTITY || !sphere.intersects(hair.aabb))
 					continue;
 
@@ -1233,7 +1232,7 @@ void PaintToolWindow::UpdateData(float dt)
 						}
 						else
 						{
-							P = wi::scene::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
+							P = Protean::SkinVertex(*mesh, *armature, (uint32_t)j, &N);
 						}
 						P = XMVector3Transform(P, W);
 						N = XMVector3Normalize(XMVector3TransformNormal(N, W));
@@ -1241,7 +1240,7 @@ void PaintToolWindow::UpdateData(float dt)
 						if (!backfaces && XMVectorGetX(XMVector3Dot(F, N)) > 0)
 							continue;
 
-						const float dist = wi::math::Distance(P, CENTER);
+						const float dist = Protean::Math::Distance(P, CENTER);
 						if (dist <= pressure_radius)
 						{
 							RecordHistory(hairEntity);
@@ -1256,22 +1255,22 @@ void PaintToolWindow::UpdateData(float dt)
 							case MODE_HAIRPARTICLE_LENGTH:
 								if (hair.vertex_lengths[j] > 0) // don't change distribution
 								{
-									const float affection = amount * wi::math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
-									hair.vertex_lengths[j] = wi::math::Lerp(hair.vertex_lengths[j], color_float.w, affection);
+									const float affection = amount * Protean::Math::SmoothStep(0, smoothness, 1 - dist / pressure_radius);
+									hair.vertex_lengths[j] = Protean::Math::Lerp(hair.vertex_lengths[j], color_float.w, affection);
 									// don't let it "remove" the vertex by keeping its length above zero:
 									//	(because if removed, distribution also changes which might be distracting)
-									hair.vertex_lengths[j] = wi::math::Clamp(hair.vertex_lengths[j], 1.0f / 255.0f, 1.0f);
+									hair.vertex_lengths[j] = Protean::Math::Clamp(hair.vertex_lengths[j], 1.0f / 255.0f, 1.0f);
 								}
 								break;
 							default:
 								break;
 							}
-							hair._flags |= wi::HairParticleSystem::REBUILD_BUFFERS;
+							hair._flags |= Protean::HairParticleSystem::REBUILD_BUFFERS;
 						}
 					}
 				}
 
-				if (hair._flags & wi::HairParticleSystem::REBUILD_BUFFERS)
+				if (hair._flags & Protean::HairParticleSystem::REBUILD_BUFFERS)
 				{
 					for (size_t i = 0; i < scene.terrains.GetCount(); ++i)
 					{
@@ -1303,16 +1302,16 @@ void PaintToolWindow::UpdateData(float dt)
 								mesh->indices[j + 2],
 							};
 							const XMVECTOR P[arraysize(triangle)] = {
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[0]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[1]), W),
-								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[2]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : Protean::SkinVertex(*mesh, *armature, triangle[0]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : Protean::SkinVertex(*mesh, *armature, triangle[1]), W),
+								XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : Protean::SkinVertex(*mesh, *armature, triangle[2]), W),
 							};
 
-							wi::renderer::RenderableTriangle tri;
+							Protean::Renderer::RenderableTriangle tri;
 							XMStoreFloat3(&tri.positionA, P[0]);
 							XMStoreFloat3(&tri.positionB, P[1]);
 							XMStoreFloat3(&tri.positionC, P[2]);
-							wi::renderer::DrawTriangle(tri, true);
+							Protean::Renderer::DrawTriangle(tri, true);
 						}
 					}
 
@@ -1324,17 +1323,17 @@ void PaintToolWindow::UpdateData(float dt)
 							hair.indices[j + 2],
 						};
 						const XMVECTOR P[arraysize(triangle)] = {
-							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[0]), W),
-							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[1]), W),
-							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : wi::scene::SkinVertex(*mesh, *armature, triangle[2]), W),
+							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[0]]) : Protean::SkinVertex(*mesh, *armature, triangle[0]), W),
+							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[1]]) : Protean::SkinVertex(*mesh, *armature, triangle[1]), W),
+							XMVector3Transform(armature == nullptr ? XMLoadFloat3(&mesh->vertex_positions[triangle[2]]) : Protean::SkinVertex(*mesh, *armature, triangle[2]), W),
 						};
 
-						wi::renderer::RenderableTriangle tri;
+						Protean::Renderer::RenderableTriangle tri;
 						XMStoreFloat3(&tri.positionA, P[0]);
 						XMStoreFloat3(&tri.positionB, P[1]);
 						XMStoreFloat3(&tri.positionC, P[2]);
 						tri.colorA = tri.colorB = tri.colorC = XMFLOAT4(1, 0, 1, 0.9f);
-						wi::renderer::DrawTriangle(tri, false);
+						Protean::Renderer::DrawTriangle(tri, false);
 					}
 				}
 			}
@@ -1357,17 +1356,17 @@ namespace PaintTool_Internal
 
 	void LoadShaders()
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		{
 			PipelineStateDesc desc;
 
-			desc.vs = wi::renderer::GetShader(wi::enums::VSTYPE_VERTEXCOLOR);
-			desc.ps = wi::renderer::GetShader(wi::enums::PSTYPE_VERTEXCOLOR);
-			desc.il = wi::renderer::GetInputLayout(wi::enums::ILTYPE_VERTEXCOLOR);
-			desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHDISABLED);
-			desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-			desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+			desc.vs = Protean::Renderer::GetShader(Protean::VSTYPE_VERTEXCOLOR);
+			desc.ps = Protean::Renderer::GetShader(Protean::PSTYPE_VERTEXCOLOR);
+			desc.il = Protean::Renderer::GetInputLayout(Protean::ILTYPE_VERTEXCOLOR);
+			desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHDISABLED);
+			desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
+			desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
 			desc.pt = PrimitiveTopology::TRIANGLELIST;
 
 			device->CreatePipelineState(&desc, &pso);
@@ -1382,23 +1381,23 @@ namespace PaintTool_Internal
 }
 using namespace PaintTool_Internal;
 
-void PaintToolWindow::DrawBrush(const wi::Canvas& canvas, CommandList cmd) const
+void PaintToolWindow::DrawBrush(const Protean::Canvas& canvas, CommandList cmd) const
 {
 	const MODE mode = GetMode();
-	if (mode == MODE_DISABLED || mode == MODE_TEXTURE || wi::backlog::isActive())
+	if (mode == MODE_DISABLED || mode == MODE_TEXTURE || Protean::Backlog::isActive())
 		return;
 
 	static bool shaders_loaded = false;
 	if (!shaders_loaded)
 	{
 		shaders_loaded = true;
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 	}
 
 	const CameraComponent& camera = editor->GetCurrentEditorScene().camera;
 
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 	device->EventBegin("Paint Tool", cmd);
 	device->BindPipelineState(&pso, cmd);
@@ -1469,7 +1468,7 @@ PaintToolWindow::MODE PaintToolWindow::GetMode() const
 	return (MODE)modeComboBox.GetSelectedUserdata();
 }
 
-void PaintToolWindow::WriteHistoryData(Entity entity, wi::Archive& archive, CommandList cmd)
+void PaintToolWindow::WriteHistoryData(Entity entity, Protean::Archive& archive, CommandList cmd)
 {
 	Scene& scene = editor->GetCurrentScene();
 
@@ -1496,7 +1495,7 @@ void PaintToolWindow::WriteHistoryData(Entity entity, wi::Archive& archive, Comm
 		if (cmd.IsValid())
 		{
 			// Make a copy of texture to edit and replace material resource:
-			GraphicsDevice* device = wi::graphics::GetDevice();
+			GraphicsDevice* device = Protean::Graphics::GetDevice();
 			TextureSlot newslot;
 			TextureDesc desc = editTexture.texture.GetDesc();
 			desc.format = Format::R8G8B8A8_UNORM; // force format to one that is writable by GPU
@@ -1524,7 +1523,7 @@ void PaintToolWindow::WriteHistoryData(Entity entity, wi::Archive& archive, Comm
 					&srgb_format
 				);
 			}
-			wi::renderer::CopyTexture2D(
+			Protean::Renderer::CopyTexture2D(
 				newslot.texture, 0, 0, 0,
 				editTexture.texture, 0, 0, 0,
 				cmd
@@ -1578,7 +1577,7 @@ void PaintToolWindow::WriteHistoryData(Entity entity, wi::Archive& archive, Comm
 	case PaintToolWindow::MODE_HAIRPARTICLE_REMOVE_TRIANGLE:
 	case PaintToolWindow::MODE_HAIRPARTICLE_LENGTH:
 	{
-		wi::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
+		Protean::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
 		if (hair == nullptr)
 			break;
 
@@ -1590,7 +1589,7 @@ void PaintToolWindow::WriteHistoryData(Entity entity, wi::Archive& archive, Comm
 			bool found = false;
 			for (size_t i = 0; i < scene.terrains.GetCount() && !found; ++i)
 			{
-				wi::terrain::Terrain& terrain = scene.terrains[i];
+				Protean::Terrain::Terrain& terrain = scene.terrains[i];
 				for (auto& chunk : terrain.chunks)
 				{
 					auto& chunk_data = chunk.second;
@@ -1626,7 +1625,7 @@ void PaintToolWindow::RecordHistory(Entity entity, CommandList cmd)
 	else if(!historyStartDatas.empty() && strokes.empty())
 	{
 		currentHistory = &editor->AdvanceHistory();
-		wi::Archive& archive = *currentHistory;
+		Protean::Archive& archive = *currentHistory;
 		archive << EditorComponent::HISTORYOP_PAINTTOOL;
 		archive << (uint32_t)GetMode();
 		archive << historyStartDatas.size();
@@ -1647,12 +1646,12 @@ void PaintToolWindow::RecordHistory(Entity entity, CommandList cmd)
 		historyStartDatas.clear();
 	}
 }
-void PaintToolWindow::ConsumeHistoryOperation(wi::Archive& archive, bool undo)
+void PaintToolWindow::ConsumeHistoryOperation(Protean::Archive& archive, bool undo)
 {
 	MODE historymode;
 	archive >> (uint32_t&)historymode;
 
-	wi::vector<Entity> entities;
+	Protean::vector<Entity> entities;
 	archive >> entities;
 
 	uint64_t jump_pos = 0;
@@ -1739,15 +1738,15 @@ void PaintToolWindow::ConsumeHistoryOperation(wi::Archive& archive, bool undo)
 			// refresh terrain heightmap in case this mesh was a terrain chunk:
 			for (size_t i = 0; i < scene.terrains.GetCount(); ++i)
 			{
-				wi::terrain::Terrain& terrain = scene.terrains[i];
+				Protean::Terrain::Terrain& terrain = scene.terrains[i];
 				for (auto& it : terrain.chunks)
 				{
-					wi::terrain::ChunkData& chunk_data = it.second;
+					Protean::Terrain::ChunkData& chunk_data = it.second;
 					if (chunk_data.entity == entity)
 					{
 						for (size_t v = 0; v < chunk_data.heightmap_data.size(); ++v)
 						{
-							chunk_data.heightmap_data[v] = uint16_t(wi::math::InverseLerp(terrain.bottomLevel, terrain.topLevel, mesh->vertex_positions[v].y) * 65535);
+							chunk_data.heightmap_data[v] = uint16_t(Protean::Math::InverseLerp(terrain.bottomLevel, terrain.topLevel, mesh->vertex_positions[v].y) * 65535);
 						}
 						chunk_data.heightmap = {};
 						terrain.CreateChunkRegionTexture(chunk_data);
@@ -1775,23 +1774,23 @@ void PaintToolWindow::ConsumeHistoryOperation(wi::Archive& archive, bool undo)
 		case PaintToolWindow::MODE_HAIRPARTICLE_REMOVE_TRIANGLE:
 		case PaintToolWindow::MODE_HAIRPARTICLE_LENGTH:
 		{
-			wi::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
+			Protean::HairParticleSystem* hair = scene.hairs.GetComponent(entity);
 			if (hair == nullptr)
 				break;
 
-			wi::HairParticleSystem archive_hair;
+			Protean::HairParticleSystem archive_hair;
 			archive >> archive_hair.vertex_lengths;
 
 			hair->vertex_lengths = archive_hair.vertex_lengths;
 
-			hair->_flags |= wi::HairParticleSystem::REBUILD_BUFFERS;
+			hair->_flags |= Protean::HairParticleSystem::REBUILD_BUFFERS;
 		}
 		break;
 		case PaintToolWindow::MODE_TERRAIN_MATERIAL:
 		{
 			for (size_t i = 0; i < scene.terrains.GetCount(); ++i)
 			{
-				wi::terrain::Terrain& terrain = scene.terrains[i];
+				Protean::Terrain::Terrain& terrain = scene.terrains[i];
 				for (auto& chunk : terrain.chunks)
 				{
 					auto& chunk_data = chunk.second;
@@ -1836,7 +1835,7 @@ PaintToolWindow::TextureSlot PaintToolWindow::GetEditTextureSlot(const MaterialC
 	retVal.srgb_subresource = material.textures[sel].resource.GetTextureSRGBSubresource();
 	return retVal;
 }
-void PaintToolWindow::ReplaceEditTextureSlot(wi::scene::MaterialComponent& material, const TextureSlot& textureslot)
+void PaintToolWindow::ReplaceEditTextureSlot(Protean::MaterialComponent& material, const TextureSlot& textureslot)
 {
 	uint64_t sel = textureSlotComboBox.GetItemUserData(textureSlotComboBox.GetSelected());
 	material.textures[sel].resource.SetTexture(textureslot.texture, textureslot.srgb_subresource);
@@ -1845,7 +1844,7 @@ void PaintToolWindow::ReplaceEditTextureSlot(wi::scene::MaterialComponent& mater
 
 void PaintToolWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	layout.margin_left = 110;
 
@@ -1872,14 +1871,14 @@ void PaintToolWindow::ResizeLayout()
 		Scene& scene = editor->GetCurrentScene();
 		if (scene.terrains.GetCount() > 0)
 		{
-			const wi::terrain::Terrain& terrain = scene.terrains[0];
+			const Protean::Terrain::Terrain& terrain = scene.terrains[0];
 
-			wi::gui::Theme theme;
-			theme.image.CopyFrom(sprites[wi::gui::IDLE].params);
+			Protean::Gui::Theme theme;
+			theme.image.CopyFrom(sprites[Protean::Gui::IDLE].params);
 			theme.image.background = false;
-			theme.image.blendFlag = wi::enums::BLENDMODE_ALPHA;
+			theme.image.blendFlag = Protean::BLENDMODE_ALPHA;
 			theme.font.CopyFrom(font.params);
-			theme.shadow_color = wi::Color::lerp(theme.font.color, wi::Color::Transparent(), 0.25f);
+			theme.shadow_color = Protean::Color::lerp(theme.font.color, Protean::Color::Transparent(), 0.25f);
 			theme.tooltipFont.CopyFrom(tooltipFont.params);
 			theme.tooltipImage.CopyFrom(tooltipSprite.params);
 
@@ -1892,16 +1891,16 @@ void PaintToolWindow::ResizeLayout()
 			{
 				Entity entity = terrain.materialEntities[i];
 
-				wi::gui::Button& button = terrain_material_buttons[i];
+				Protean::Gui::Button& button = terrain_material_buttons[i];
 
 				button.SetTheme(theme);
-				button.SetColor(wi::Color::White());
-				button.SetColor(wi::Color(255, 255, 255, 150), wi::gui::IDLE);
+				button.SetColor(Protean::Color::White());
+				button.SetColor(Protean::Color(255, 255, 255, 150), Protean::Gui::IDLE);
 				button.SetShadowRadius(0);
 
 				if (terrain_material_layer == i)
 				{
-					button.SetColor(wi::Color::White());
+					button.SetColor(Protean::Color::White());
 					button.SetShadowRadius(3);
 				}
 
@@ -1925,8 +1924,8 @@ void PaintToolWindow::ResizeLayout()
 				{
 					button.SetTooltip(name->name);
 				}
-				button.font.params.h_align = wi::font::WIFALIGN_CENTER;
-				button.font.params.v_align = wi::font::WIFALIGN_BOTTOM;
+				button.font.params.h_align = Protean::Font::WIFALIGN_CENTER;
+				button.font.params.v_align = Protean::Font::WIFALIGN_BOTTOM;
 
 				button.SetSize(XMFLOAT2(preview_size, preview_size));
 				button.SetPos(XMFLOAT2((i % cells) * (preview_size + border) + border, offset_y));
@@ -1944,10 +1943,10 @@ void PaintToolWindow::RecreateTerrainMaterialButtons()
 	if (editor == nullptr)
 		return;
 
-	const wi::scene::Scene& scene = editor->GetCurrentScene();
+	const Protean::Scene& scene = editor->GetCurrentScene();
 	if (scene.terrains.GetCount() == 0)
 		return;
-	const wi::terrain::Terrain& terrain = scene.terrains[0];
+	const Protean::Terrain::Terrain& terrain = scene.terrains[0];
 
 	for (auto& x : terrain_material_buttons)
 	{
@@ -1959,13 +1958,13 @@ void PaintToolWindow::RecreateTerrainMaterialButtons()
 	{
 		Entity entity = terrain.materialEntities[i];
 
-		wi::gui::Button& button = terrain_material_buttons[i];
+		Protean::Gui::Button& button = terrain_material_buttons[i];
 		button.Create("");
 		AddWidget(&button);
 		button.SetText("");
 		button.SetTooltip("");
 
-		button.OnClick([i, this](wi::gui::EventArgs args) {
+		button.OnClick([i, this](Protean::Gui::EventArgs args) {
 			terrain_material_layer = i;
 		});
 	}

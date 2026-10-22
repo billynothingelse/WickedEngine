@@ -10,72 +10,72 @@
 #include "scene/SceneComponents.h"
 #include "render/shaders/ShaderInterop_HairParticle.h"
 
-namespace wi
+namespace Protean
 {
 	class Archive;
 }
 
-namespace wi
+namespace Protean
 {
 	class HairParticleSystem
 	{
 	public:
-		wi::graphics::GPUBuffer constantBuffer;
-		wi::graphics::GPUBuffer generalBuffer;
-		wi::scene::MeshComponent::BufferView simulation_view;
-		wi::scene::MeshComponent::BufferView vb_pos[2];
-		wi::scene::MeshComponent::BufferView vb_nor;
-		wi::scene::MeshComponent::BufferView vb_pos_raytracing;
-		wi::scene::MeshComponent::BufferView vb_uvs;
-		wi::scene::MeshComponent::BufferView wetmap;
-		wi::scene::MeshComponent::BufferView ib_culled;
-		wi::scene::MeshComponent::BufferView indirect_view;
-		wi::scene::MeshComponent::BufferView prim_view;
+		Protean::Graphics::GPUBuffer constantBuffer;
+		Protean::Graphics::GPUBuffer generalBuffer;
+		Protean::MeshComponent::BufferView simulation_view;
+		Protean::MeshComponent::BufferView vb_pos[2];
+		Protean::MeshComponent::BufferView vb_nor;
+		Protean::MeshComponent::BufferView vb_pos_raytracing;
+		Protean::MeshComponent::BufferView vb_uvs;
+		Protean::MeshComponent::BufferView wetmap;
+		Protean::MeshComponent::BufferView ib_culled;
+		Protean::MeshComponent::BufferView indirect_view;
+		Protean::MeshComponent::BufferView prim_view;
 
-		wi::graphics::GPUBuffer indexBuffer;
-		wi::graphics::GPUBuffer vertexBuffer_length;
+		Protean::Graphics::GPUBuffer indexBuffer;
+		Protean::Graphics::GPUBuffer vertexBuffer_length;
 
-		wi::graphics::RaytracingAccelerationStructure BLAS;
+		Protean::Graphics::RaytracingAccelerationStructure BLAS;
 
-		void CreateFromMesh(const wi::scene::MeshComponent& mesh);
+		void CreateFromMesh(const Protean::MeshComponent& mesh);
 		void DeleteRenderData();
 		void CreateRenderData();
 		void CreateRaytracingRenderData();
 
 		void UpdateCPU(
-			const wi::scene::TransformComponent& transform,
-			const wi::scene::MeshComponent& mesh,
+			const Protean::TransformComponent& transform,
+			const Protean::MeshComponent& mesh,
 			float dt
 		);
 
 		static void InitializeGPUBuffersIfNeeded(
 			const HairParticleSystem* hairs,
 			size_t hairCount,
-			wi::graphics::CommandList cmd
+			Protean::Graphics::CommandList cmd
 		);
 
 		struct UpdateGPUItem
 		{
 			const HairParticleSystem* hair = nullptr;
 			uint32_t instanceIndex = 0;
-			const wi::scene::MeshComponent* mesh = nullptr;
-			const wi::scene::MaterialComponent* material = nullptr;
+			const Protean::MeshComponent* mesh = nullptr;
+			const Protean::MaterialComponent* material = nullptr;
 		};
 		// Update a batch of hair particles by GPU
 		static void UpdateGPU(
 			const UpdateGPUItem* items,
 			uint32_t itemCount,
-			wi::graphics::CommandList cmd
+			Protean::Graphics::CommandList cmd
 		);
 
 		void Draw(
-			const wi::scene::MaterialComponent& material,
-			wi::enums::RENDERPASS renderPass,
-			wi::graphics::CommandList cmd,
+			const Protean::MaterialComponent& material,
+			Protean::RENDERPASS renderPass,
+			Protean::Graphics::CommandList cmd,
 			uint16_t camera_mask = 1
 		) const;
 
-		wi::ecs::Entity meshID = wi::ecs::INVALID_ENTITY;
+		Protean::Entity meshID = Protean::INVALID_ENTITY;
 
 		enum FLAGS
 		{
@@ -97,7 +97,7 @@ namespace wi
 		float gravityPower = 0;
 		float randomness = 0.2f;
 		float viewDistance = 200;
-		wi::vector<float> vertex_lengths;
+		Protean::vector<float> vertex_lengths;
 		float width = 1;
 		float uniformity = 1;
 
@@ -106,22 +106,22 @@ namespace wi
 			XMFLOAT4 texMulAdd = XMFLOAT4(1, 1, 0, 0);
 			float size = 1;
 		};
-		wi::vector<AtlasRect> atlas_rects;
+		Protean::vector<AtlasRect> atlas_rects;
 
 		// Non-serialized attributes:
 		XMFLOAT4X4 world;
-		wi::primitive::AABB aabb;
-		wi::vector<uint32_t> indices; // it is dependent on vertex_lengths and contains triangles with non-zero lengths
+		Protean::AABB aabb;
+		Protean::vector<uint32_t> indices; // it is dependent on vertex_lengths and contains triangles with non-zero lengths
 		uint32_t layerMask = ~0u;
 		mutable bool regenerate_frame = true;
-		wi::graphics::Format position_format = wi::graphics::Format::R16G16B16A16_UNORM;
+		Protean::Graphics::Format position_format = Protean::Graphics::Format::R16G16B16A16_UNORM;
 		mutable bool must_rebuild_blas = true;
 		mutable bool gpu_initialized = false;
 		// Cached constant buffer last uploaded to the GPU, used to skip
 		// redundant per-frame uploads while the contents are unchanged.
 		mutable HairParticleCB constantBufferData = {};
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 
 		static void Initialize();
 

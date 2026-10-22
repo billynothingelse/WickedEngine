@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace wi::font
+namespace Protean::Font
 {
 	// Do not alter order because it is bound to lua manually
 	enum Alignment
@@ -44,10 +44,10 @@ namespace wi::font
 		float spacingX = 0, spacingY = 0; // minimum spacing between characters (logical canvas units)
 		Alignment h_align = WIFALIGN_LEFT; // horizontal alignment
 		Alignment v_align = WIFALIGN_TOP; // vertical alignment
-		wi::Color color; // base color of the text characters
-		wi::Color shadowColor; // transparent disables, any other color enables shadow under text
+		Protean::Color color; // base color of the text characters
+		Protean::Color shadowColor; // transparent disables, any other color enables shadow under text
 		float h_wrap = -1; // wrap start width (-1 default for no wrap) (logical canvas units)
-		int style = 0; // 0: use default font style, other values can be taken from the wi::font::AddFontStyle() funtion's return value
+		int style = 0; // 0: use default font style, other values can be taken from the Protean::Font::AddFontStyle() funtion's return value
 		float softness = 0; // value in [0,1] range (requires SDF rendering to be enabled)
 		float bolden = 0; // value in [0,1] range (requires SDF rendering to be enabled)
 		float shadow_softness = 0.5f; // value in [0,1] range (requires SDF rendering to be enabled)
@@ -103,8 +103,8 @@ namespace wi::font
 			int size = WIFONTSIZE_DEFAULT,
 			Alignment h_align = WIFALIGN_LEFT,
 			Alignment v_align = WIFALIGN_TOP,
-			wi::Color color = wi::Color(255, 255, 255, 255),
-			wi::Color shadowColor = wi::Color(0, 0, 0, 0)
+			Protean::Color color = Protean::Color(255, 255, 255, 255),
+			Protean::Color shadowColor = Protean::Color(0, 0, 0, 0)
 		) :
 			position(posX, posY, 0),
 			size(size),
@@ -115,8 +115,8 @@ namespace wi::font
 		{}
 
 		Params(
-			wi::Color color,
-			wi::Color shadowColor = wi::Color(0, 0, 0, 0),
+			Protean::Color color,
+			Protean::Color shadowColor = Protean::Color(0, 0, 0, 0),
 			float softness = 0.08f,
 			float bolden = 0,
 			float shadow_softness = 0.5f,
@@ -139,7 +139,7 @@ namespace wi::font
 	void Initialize();
 
 	// Get the texture that contains currently cached glyphs
-	const wi::graphics::Texture* GetAtlas();
+	const Protean::Graphics::Texture* GetAtlas();
 
 	// Create a font from a file. It must be an existing .ttf file.
 	//	fontName : path to .ttf font
@@ -157,20 +157,20 @@ namespace wi::font
 	int AddFontStyle(const std::string& fontName, const uint8_t* data, size_t size, bool copyData = false);
 
 	// Set canvas for the CommandList to handle DPI-aware font rendering on the current thread
-	void SetCanvas(const wi::Canvas& current_canvas);
+	void SetCanvas(const Protean::Canvas& current_canvas);
 	// Call once per frame to update font atlas texture
 	//	upscaling : this should be the DPI upscaling factor, otherwise there will be no upscaling. Upscaling will cause glyphs to be cached at higher resolution.
 	void UpdateAtlas(float upscaling = 1.0f);
 
 	// Draw text with specified parameters and return cursor for last word
 	//	The next Draw() can continue from where this left off by using the return value of this function
-	//	in wi::font::Params::cursor
-	Cursor Draw(const char* text, size_t text_length, const Params& params, wi::graphics::CommandList cmd);
-	Cursor Draw(const wchar_t* text, size_t text_length, const Params& params, wi::graphics::CommandList cmd);
-	Cursor Draw(const char* text, const Params& params, wi::graphics::CommandList cmd);
-	Cursor Draw(const wchar_t* text, const Params& params, wi::graphics::CommandList cmd);
-	Cursor Draw(const std::string& text, const Params& params, wi::graphics::CommandList cmd);
-	Cursor Draw(const std::wstring& text, const Params& params, wi::graphics::CommandList cmd);
+	//	in Protean::Font::Params::cursor
+	Cursor Draw(const char* text, size_t text_length, const Params& params, Protean::Graphics::CommandList cmd);
+	Cursor Draw(const wchar_t* text, size_t text_length, const Params& params, Protean::Graphics::CommandList cmd);
+	Cursor Draw(const char* text, const Params& params, Protean::Graphics::CommandList cmd);
+	Cursor Draw(const wchar_t* text, const Params& params, Protean::Graphics::CommandList cmd);
+	Cursor Draw(const std::string& text, const Params& params, Protean::Graphics::CommandList cmd);
+	Cursor Draw(const std::wstring& text, const Params& params, Protean::Graphics::CommandList cmd);
 
 	// Computes the text's size measurements in logical canvas coordinates
 	XMFLOAT2 TextSize(const char* text, size_t text_length, const Params& params);

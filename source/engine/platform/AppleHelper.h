@@ -5,7 +5,7 @@
 
 // The purpose of this helper is to expose functionality that is specific to Apple platform and must be implemented in Objective C++
 
-namespace wi::apple
+namespace Protean::Apple
 {
 void SetMetalLayerToWindow(void* window, void* layer);
 void* GetViewFromWindow(void* window);

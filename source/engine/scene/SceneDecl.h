@@ -1,6 +1,6 @@
 #pragma once
 
-namespace wi::scene
+namespace Protean
 {
 	struct NameComponent;
 	struct LayerComponent;

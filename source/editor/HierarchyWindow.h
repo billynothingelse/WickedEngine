@@ -1,18 +1,18 @@
 #pragma once
 class EditorComponent;
 
-class HierarchyWindow : public wi::gui::Window
+class HierarchyWindow : public Protean::Gui::Window
 {
 private:
-	wi::unordered_set<wi::ecs::Entity> entities;
+	Protean::unordered_set<Protean::Entity> entities;
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::ComboBox parentCombo;
+	Protean::Gui::ComboBox parentCombo;
 
 	void ResizeLayout() override;
 };

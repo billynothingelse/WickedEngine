@@ -267,10 +267,17 @@ project "Tests"
 	location (ROOT .. "/build/projects/Samples")
 	debugdir (SOURCE .. "/samples/Tests")
 	files { SOURCE .. "/samples/Tests/*.h", SOURCE .. "/samples/Tests/*.cpp" }
-	removefiles { SOURCE .. "/samples/Tests/main_*" }
+	removefiles { SOURCE .. "/samples/Tests/main_*", SOURCE .. "/samples/Tests/CustomShaderLifecycleTest.cpp" }
 	UseEngine()
 	filter "system:windows"
 		files { SOURCE .. "/samples/Tests/main_Windows.cpp", SOURCE .. "/samples/Tests/Tests.rc" }
 	filter "system:linux"
 		files { SOURCE .. "/samples/Tests/main_SDL2.cpp" }
 	filter {}
+
+-- Headless unit test, run it from any directory
+project "CustomShaderLifecycleTest"
+	kind "ConsoleApp"
+	location (ROOT .. "/build/projects/Samples")
+	files { SOURCE .. "/samples/Tests/CustomShaderLifecycleTest.cpp" }
+	UseEngine()

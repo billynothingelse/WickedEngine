@@ -5,7 +5,7 @@
 #include "render/Enums.h"
 #include "scene/SceneDecl.h"
 
-namespace wi
+namespace Protean
 {
 	struct TrailRenderer
 	{
@@ -16,19 +16,19 @@ namespace wi
 			XMFLOAT4 color = XMFLOAT4(1, 1, 1, 1);
 			XMFLOAT4 rotation = XMFLOAT4(0, 0, 0, 0); // if all zero then auto camera facing node
 		};
-		wi::vector<TrailPoint> points;
+		Protean::vector<TrailPoint> points;
 		struct CutSegment
 		{
 			uint32_t id : 31;
 			uint32_t looped : 1;
 		};
-		wi::vector<CutSegment> cuts;
+		Protean::vector<CutSegment> cuts;
 		XMFLOAT4 color = XMFLOAT4(1, 1, 1, 1);
-		wi::enums::BLENDMODE blendMode = wi::enums::BLENDMODE_ALPHA;
+		Protean::BLENDMODE blendMode = Protean::BLENDMODE_ALPHA;
 		uint32_t subdivision = 100;
 		float width = 1;
-		wi::graphics::Texture texture;
-		wi::graphics::Texture texture2;
+		Protean::Graphics::Texture texture;
+		Protean::Graphics::Texture texture2;
 		XMFLOAT4 texMulAdd = XMFLOAT4(1, 1, 0, 0);
 		XMFLOAT4 texMulAdd2 = XMFLOAT4(1, 1, 0, 0);
 		float depth_soften = 10;
@@ -46,7 +46,7 @@ namespace wi
 		// Fades the curve and remove points that can be removed:
 		void Fade(float amount);
 
-		void Draw(const wi::scene::CameraComponent& camera, wi::graphics::CommandList cmd) const;
+		void Draw(const Protean::CameraComponent& camera, Protean::Graphics::CommandList cmd) const;
 
 		static void Initialize();
 	};

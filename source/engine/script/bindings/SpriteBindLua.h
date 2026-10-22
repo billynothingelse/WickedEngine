@@ -3,18 +3,18 @@
 #include "script/Luna.h"
 #include "render/Sprite.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class Sprite_BindLua
 	{
 	public:
-		wi::Sprite sprite;
+		Protean::Sprite sprite;
 
 		inline static constexpr char className[] = "Sprite";
 		static Luna<Sprite_BindLua>::FunctionType methods[];
 		static Luna<Sprite_BindLua>::PropertyType properties[];
 
-		Sprite_BindLua(const wi::Sprite& sprite);
+		Sprite_BindLua(const Protean::Sprite& sprite);
 		Sprite_BindLua(lua_State* L);
 
 		int SetParams(lua_State* L);

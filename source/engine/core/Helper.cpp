@@ -53,7 +53,7 @@
 #include <sys/sysctl.h>
 #endif // __APPLE__
 
-namespace wi::helper
+namespace Protean::Helper
 {
 
 	std::string toUpper(const std::string& s)
@@ -107,7 +107,7 @@ namespace wi::helper
 		StringConvert(caption, wcaption);
 		MessageBox(GetActiveWindow(), wmsg.c_str(), wcaption.c_str(), 0);
 #elif defined(__APPLE__)
-		wi::apple::MessageBox(caption.c_str(), msg.c_str());
+		Protean::Apple::MessageBox(caption.c_str(), msg.c_str());
 #elif defined(SDL2) || defined(SDL3)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, caption.c_str(), msg.c_str(), NULL);
 #endif
@@ -158,7 +158,7 @@ namespace wi::helper
 		}
 #elif defined(__APPLE__)
 		
-		return (MessageBoxResult)wi::apple::MessageBox(caption.c_str(), msg.c_str(), buttons.c_str());
+		return (MessageBoxResult)Protean::Apple::MessageBox(caption.c_str(), msg.c_str(), buttons.c_str());
 		
 #elif defined(SDL2) || defined(SDL3)
 		const SDL_MessageBoxButtonData buttons_data[] = {
@@ -196,12 +196,12 @@ namespace wi::helper
 		return MessageBoxResult::Cancel;
 	}
 
-	std::string screenshot(const wi::graphics::SwapChain& swapchain, const std::string& name)
+	std::string screenshot(const Protean::Graphics::SwapChain& swapchain, const std::string& name)
 	{
-		return screenshot(wi::graphics::GetDevice()->GetBackBuffer(&swapchain));
+		return screenshot(Protean::Graphics::GetDevice()->GetBackBuffer(&swapchain));
 	}
 
-	std::string screenshot(const wi::graphics::Texture& texture, const std::string& name)
+	std::string screenshot(const Protean::Graphics::Texture& texture, const std::string& name)
 	{
 		std::string directory;
 		if (name.empty())
@@ -234,11 +234,11 @@ namespace wi::helper
 		return "";
 	}
 
-	bool saveTextureToMemory(const wi::graphics::Texture& texture, wi::vector<uint8_t>& texturedata)
+	bool saveTextureToMemory(const Protean::Graphics::Texture& texture, Protean::vector<uint8_t>& texturedata)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		TextureDesc desc = texture.GetDesc();
 
@@ -324,11 +324,11 @@ namespace wi::helper
 		return stagingTex.mapped_data != nullptr;
 	}
 
-	bool saveTextureToMemoryFile(const wi::graphics::Texture& texture, const std::string& fileExtension, wi::vector<uint8_t>& filedata)
+	bool saveTextureToMemoryFile(const Protean::Graphics::Texture& texture, const std::string& fileExtension, Protean::vector<uint8_t>& filedata)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 		TextureDesc desc = texture.GetDesc();
-		wi::vector<uint8_t> texturedata;
+		Protean::vector<uint8_t> texturedata;
 		if (saveTextureToMemory(texture, texturedata))
 		{
 			return saveTextureToMemoryFile(texturedata, desc, fileExtension, filedata);
@@ -336,12 +336,12 @@ namespace wi::helper
 		return false;
 	}
 
-	bool saveTextureToMemoryFile(const wi::vector<uint8_t>& texturedata, const wi::graphics::TextureDesc& desc, const std::string& fileExtension, wi::vector<uint8_t>& filedata)
+	bool saveTextureToMemoryFile(const Protean::vector<uint8_t>& texturedata, const Protean::Graphics::TextureDesc& desc, const std::string& fileExtension, Protean::vector<uint8_t>& filedata)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 		const uint32_t data_stride = GetFormatStride(desc.format);
 
-		std::string extension = wi::helper::toUpper(fileExtension);
+		std::string extension = Protean::Helper::toUpper(fileExtension);
 
 		if (extension.compare("DDS") == 0)
 		{
@@ -349,186 +349,186 @@ namespace wi::helper
 			dds::DXGI_FORMAT dds_format = dds::DXGI_FORMAT_UNKNOWN;
 			switch (desc.format)
 			{
-			case wi::graphics::Format::R32G32B32A32_FLOAT:
+			case Protean::Graphics::Format::R32G32B32A32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_FLOAT;
 				break;
-			case wi::graphics::Format::R32G32B32A32_UINT:
+			case Protean::Graphics::Format::R32G32B32A32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_UINT;
 				break;
-			case wi::graphics::Format::R32G32B32A32_SINT:
+			case Protean::Graphics::Format::R32G32B32A32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32A32_SINT;
 				break;
-			case wi::graphics::Format::R32G32B32_FLOAT:
+			case Protean::Graphics::Format::R32G32B32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_FLOAT;
 				break;
-			case wi::graphics::Format::R32G32B32_UINT:
+			case Protean::Graphics::Format::R32G32B32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_UINT;
 				break;
-			case wi::graphics::Format::R32G32B32_SINT:
+			case Protean::Graphics::Format::R32G32B32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32B32_SINT;
 				break;
-			case wi::graphics::Format::R16G16B16A16_FLOAT:
+			case Protean::Graphics::Format::R16G16B16A16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_FLOAT;
 				break;
-			case wi::graphics::Format::R16G16B16A16_UNORM:
+			case Protean::Graphics::Format::R16G16B16A16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_UNORM;
 				break;
-			case wi::graphics::Format::R16G16B16A16_UINT:
+			case Protean::Graphics::Format::R16G16B16A16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_UINT;
 				break;
-			case wi::graphics::Format::R16G16B16A16_SNORM:
+			case Protean::Graphics::Format::R16G16B16A16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_SNORM;
 				break;
-			case wi::graphics::Format::R16G16B16A16_SINT:
+			case Protean::Graphics::Format::R16G16B16A16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16G16B16A16_SINT;
 				break;
-			case wi::graphics::Format::R32G32_FLOAT:
+			case Protean::Graphics::Format::R32G32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32G32_FLOAT;
 				break;
-			case wi::graphics::Format::R32G32_UINT:
+			case Protean::Graphics::Format::R32G32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32G32_UINT;
 				break;
-			case wi::graphics::Format::R32G32_SINT:
+			case Protean::Graphics::Format::R32G32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32G32_SINT;
 				break;
-			case wi::graphics::Format::R10G10B10A2_UNORM:
+			case Protean::Graphics::Format::R10G10B10A2_UNORM:
 				dds_format = dds::DXGI_FORMAT_R10G10B10A2_UNORM;
 				break;
-			case wi::graphics::Format::R10G10B10A2_UINT:
+			case Protean::Graphics::Format::R10G10B10A2_UINT:
 				dds_format = dds::DXGI_FORMAT_R10G10B10A2_UINT;
 				break;
-			case wi::graphics::Format::R11G11B10_FLOAT:
+			case Protean::Graphics::Format::R11G11B10_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R11G11B10_FLOAT;
 				break;
-			case wi::graphics::Format::R8G8B8A8_UNORM:
+			case Protean::Graphics::Format::R8G8B8A8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UNORM;
 				break;
-			case wi::graphics::Format::R8G8B8A8_UNORM_SRGB:
+			case Protean::Graphics::Format::R8G8B8A8_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 				break;
-			case wi::graphics::Format::R8G8B8A8_UINT:
+			case Protean::Graphics::Format::R8G8B8A8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_UINT;
 				break;
-			case wi::graphics::Format::R8G8B8A8_SNORM:
+			case Protean::Graphics::Format::R8G8B8A8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_SNORM;
 				break;
-			case wi::graphics::Format::R8G8B8A8_SINT:
+			case Protean::Graphics::Format::R8G8B8A8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8G8B8A8_SINT;
 				break;
-			case wi::graphics::Format::B8G8R8A8_UNORM:
+			case Protean::Graphics::Format::B8G8R8A8_UNORM:
 				dds_format = dds::DXGI_FORMAT_B8G8R8A8_UNORM;
 				break;
-			case wi::graphics::Format::B8G8R8A8_UNORM_SRGB:
+			case Protean::Graphics::Format::B8G8R8A8_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 				break;
-			case wi::graphics::Format::R16G16_FLOAT:
+			case Protean::Graphics::Format::R16G16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16G16_FLOAT;
 				break;
-			case wi::graphics::Format::R16G16_UNORM:
+			case Protean::Graphics::Format::R16G16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16_UNORM;
 				break;
-			case wi::graphics::Format::R16G16_UINT:
+			case Protean::Graphics::Format::R16G16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16G16_UINT;
 				break;
-			case wi::graphics::Format::R16G16_SNORM:
+			case Protean::Graphics::Format::R16G16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16G16_SNORM;
 				break;
-			case wi::graphics::Format::R16G16_SINT:
+			case Protean::Graphics::Format::R16G16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16G16_SINT;
 				break;
-			case wi::graphics::Format::D32_FLOAT:
-			case wi::graphics::Format::R32_FLOAT:
+			case Protean::Graphics::Format::D32_FLOAT:
+			case Protean::Graphics::Format::R32_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R32_FLOAT;
 				break;
-			case wi::graphics::Format::R32_UINT:
+			case Protean::Graphics::Format::R32_UINT:
 				dds_format = dds::DXGI_FORMAT_R32_UINT;
 				break;
-			case wi::graphics::Format::R32_SINT:
+			case Protean::Graphics::Format::R32_SINT:
 				dds_format = dds::DXGI_FORMAT_R32_SINT;
 				break;
-			case wi::graphics::Format::R9G9B9E5_SHAREDEXP:
+			case Protean::Graphics::Format::R9G9B9E5_SHAREDEXP:
 				dds_format = dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP;
 				break;
-			case wi::graphics::Format::R8G8_UNORM:
+			case Protean::Graphics::Format::R8G8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8_UNORM;
 				break;
-			case wi::graphics::Format::R8G8_UINT:
+			case Protean::Graphics::Format::R8G8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8G8_UINT;
 				break;
-			case wi::graphics::Format::R8G8_SNORM:
+			case Protean::Graphics::Format::R8G8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8G8_SNORM;
 				break;
-			case wi::graphics::Format::R8G8_SINT:
+			case Protean::Graphics::Format::R8G8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8G8_SINT;
 				break;
-			case wi::graphics::Format::R16_FLOAT:
+			case Protean::Graphics::Format::R16_FLOAT:
 				dds_format = dds::DXGI_FORMAT_R16_FLOAT;
 				break;
-			case wi::graphics::Format::D16_UNORM:
-			case wi::graphics::Format::R16_UNORM:
+			case Protean::Graphics::Format::D16_UNORM:
+			case Protean::Graphics::Format::R16_UNORM:
 				dds_format = dds::DXGI_FORMAT_R16_UNORM;
 				break;
-			case wi::graphics::Format::R16_UINT:
+			case Protean::Graphics::Format::R16_UINT:
 				dds_format = dds::DXGI_FORMAT_R16_UINT;
 				break;
-			case wi::graphics::Format::R16_SNORM:
+			case Protean::Graphics::Format::R16_SNORM:
 				dds_format = dds::DXGI_FORMAT_R16_SNORM;
 				break;
-			case wi::graphics::Format::R16_SINT:
+			case Protean::Graphics::Format::R16_SINT:
 				dds_format = dds::DXGI_FORMAT_R16_SINT;
 				break;
-			case wi::graphics::Format::R8_UNORM:
+			case Protean::Graphics::Format::R8_UNORM:
 				dds_format = dds::DXGI_FORMAT_R8_UNORM;
 				break;
-			case wi::graphics::Format::R8_UINT:
+			case Protean::Graphics::Format::R8_UINT:
 				dds_format = dds::DXGI_FORMAT_R8_UINT;
 				break;
-			case wi::graphics::Format::R8_SNORM:
+			case Protean::Graphics::Format::R8_SNORM:
 				dds_format = dds::DXGI_FORMAT_R8_SNORM;
 				break;
-			case wi::graphics::Format::R8_SINT:
+			case Protean::Graphics::Format::R8_SINT:
 				dds_format = dds::DXGI_FORMAT_R8_SINT;
 				break;
-			case wi::graphics::Format::BC1_UNORM:
+			case Protean::Graphics::Format::BC1_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC1_UNORM;
 				break;
-			case wi::graphics::Format::BC1_UNORM_SRGB:
+			case Protean::Graphics::Format::BC1_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC1_UNORM_SRGB;
 				break;
-			case wi::graphics::Format::BC2_UNORM:
+			case Protean::Graphics::Format::BC2_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC2_UNORM;
 				break;
-			case wi::graphics::Format::BC2_UNORM_SRGB:
+			case Protean::Graphics::Format::BC2_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC2_UNORM_SRGB;
 				break;
-			case wi::graphics::Format::BC3_UNORM:
+			case Protean::Graphics::Format::BC3_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC3_UNORM;
 				break;
-			case wi::graphics::Format::BC3_UNORM_SRGB:
+			case Protean::Graphics::Format::BC3_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC3_UNORM_SRGB;
 				break;
-			case wi::graphics::Format::BC4_UNORM:
+			case Protean::Graphics::Format::BC4_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC4_UNORM;
 				break;
-			case wi::graphics::Format::BC4_SNORM:
+			case Protean::Graphics::Format::BC4_SNORM:
 				dds_format = dds::DXGI_FORMAT_BC4_SNORM;
 				break;
-			case wi::graphics::Format::BC5_UNORM:
+			case Protean::Graphics::Format::BC5_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC5_UNORM;
 				break;
-			case wi::graphics::Format::BC5_SNORM:
+			case Protean::Graphics::Format::BC5_SNORM:
 				dds_format = dds::DXGI_FORMAT_BC5_SNORM;
 				break;
-			case wi::graphics::Format::BC6H_UF16:
+			case Protean::Graphics::Format::BC6H_UF16:
 				dds_format = dds::DXGI_FORMAT_BC6H_UF16;
 				break;
-			case wi::graphics::Format::BC6H_SF16:
+			case Protean::Graphics::Format::BC6H_SF16:
 				dds_format = dds::DXGI_FORMAT_BC6H_SF16;
 				break;
-			case wi::graphics::Format::BC7_UNORM:
+			case Protean::Graphics::Format::BC7_UNORM:
 				dds_format = dds::DXGI_FORMAT_BC7_UNORM;
 				break;
-			case wi::graphics::Format::BC7_UNORM_SRGB:
+			case Protean::Graphics::Format::BC7_UNORM_SRGB:
 				dds_format = dds::DXGI_FORMAT_BC7_UNORM_SRGB;
 				break;
 			default:
@@ -556,7 +556,7 @@ namespace wi::helper
 			if (desc.format == Format::R16_UNORM || desc.format == Format::R16_UINT || desc.format == Format::R16_SNORM || desc.format == Format::R16_SINT)
 			{
 				// Specialized handling for 16-bit single channel PNG:
-				wi::vector<uint8_t> src_bigendian = texturedata;
+				Protean::vector<uint8_t> src_bigendian = texturedata;
 				uint16_t* dest = (uint16_t*)src_bigendian.data();
 				for (uint32_t i = 0; i < desc.width * desc.height; ++i)
 				{
@@ -571,18 +571,18 @@ namespace wi::helper
 			{
 				// Specialized handling for 16-bit PNG:
 				//	Two channel RG data is expanded to RGBA (2-channel PNG is not good because that is interpreted as red and alpha)
-				wi::vector<uint8_t> src_bigendian = texturedata;
+				Protean::vector<uint8_t> src_bigendian = texturedata;
 				const uint32_t* src_rg = (const uint32_t*)src_bigendian.data();
-				wi::vector<wi::Color16> dest_rgba(desc.width * desc.height);
+				Protean::vector<Protean::Color16> dest_rgba(desc.width * desc.height);
 				for (uint32_t i = 0; i < desc.width * desc.height; ++i)
 				{
 					uint32_t rg = src_rg[i];
-					wi::Color16& rgba = dest_rgba[i];
+					Protean::Color16& rgba = dest_rgba[i];
 					uint16_t r = rg & 0xFFFF;
 					r = (r >> 8) | ((r & 0xFF) << 8); // little endian to big endian
 					uint16_t g = (rg >> 16u) & 0xFFFF;
 					g = (g >> 8) | ((g & 0xFF) << 8); // little endian to big endian
-					rgba = wi::Color16(r, g, 0xFFFF, 0xFFFF);
+					rgba = Protean::Color16(r, g, 0xFFFF, 0xFFFF);
 				}
 				unsigned error = lodepng::encode(filedata, (const unsigned char*)dest_rgba.data(), desc.width, desc.height, LCT_RGBA, 16);
 				return error == 0;
@@ -590,11 +590,11 @@ namespace wi::helper
 			else if (desc.format == Format::R16G16B16A16_UNORM || desc.format == Format::R16G16B16A16_UINT || desc.format == Format::R16G16B16A16_SNORM || desc.format == Format::R16G16B16A16_SINT)
 			{
 				// Specialized handling for 16-bit PNG:
-				wi::vector<uint8_t> src_bigendian = texturedata;
-				wi::Color16* dest = (wi::Color16*)src_bigendian.data();
+				Protean::vector<uint8_t> src_bigendian = texturedata;
+				Protean::Color16* dest = (Protean::Color16*)src_bigendian.data();
 				for (uint32_t i = 0; i < desc.width * desc.height; ++i)
 				{
-					wi::Color16 rgba = dest[i];
+					Protean::Color16 rgba = dest[i];
 					uint16_t r = rgba.getR();
 					r = (r >> 8) | ((r & 0xFF) << 8); // little endian to big endian
 					uint16_t g = rgba.getG();
@@ -603,7 +603,7 @@ namespace wi::helper
 					b = (b >> 8) | ((b & 0xFF) << 8); // little endian to big endian
 					uint16_t a = rgba.getA();
 					a = (a >> 8) | ((a & 0xFF) << 8); // little endian to big endian
-					rgba = wi::Color16(r, g, b, a);
+					rgba = Protean::Color16(r, g, b, a);
 					dest[i] = rgba;
 				}
 				unsigned error = lodepng::encode(filedata, src_bigendian, desc.width, desc.height, LCT_RGBA, 16);
@@ -612,7 +612,7 @@ namespace wi::helper
 			else if (desc.format == Format::R32_FLOAT || desc.format == Format::D32_FLOAT || desc.format == Format::D32_FLOAT_S8X24_UINT)
 			{
 				// Specialized handling for 16-bit single channel PNG from a 32-bit float source:
-				wi::vector<uint8_t> dst_bigendian(desc.width * desc.height * sizeof(uint16_t));
+				Protean::vector<uint8_t> dst_bigendian(desc.width * desc.height * sizeof(uint16_t));
 				const float* src = (const float*)texturedata.data();
 				uint16_t* dest = (uint16_t*)dst_bigendian.data();
 				for (uint32_t i = 0; i < desc.width * desc.height; ++i)
@@ -634,7 +634,7 @@ namespace wi::helper
 			uint32_t height = 0;
 			uint32_t depth = 0;
 		};
-		wi::vector<MipDesc> mips;
+		Protean::vector<MipDesc> mips;
 		mips.reserve(desc.mip_levels);
 
 		uint32_t data_count = 0;
@@ -731,13 +731,13 @@ namespace wi::helper
 		else if (desc.format == Format::R16G16B16A16_UNORM || desc.format == Format::R16G16B16A16_UINT)
 		{
 			// This will be converted first to rgba8 before saving to common format:
-			wi::Color16* dataSrc = (wi::Color16*)texturedata.data();
-			wi::Color* data32 = (wi::Color*)texturedata.data();
+			Protean::Color16* dataSrc = (Protean::Color16*)texturedata.data();
+			Protean::Color* data32 = (Protean::Color*)texturedata.data();
 
 			for (uint32_t i = 0; i < data_count; ++i)
 			{
-				wi::Color16 pixel16 = dataSrc[i];
-				data32[i] = wi::Color::fromFloat4(pixel16.toFloat4());
+				Protean::Color16 pixel16 = dataSrc[i];
+				data32[i] = Protean::Color::fromFloat4(pixel16.toFloat4());
 			}
 		}
 		else if (desc.format == Format::R11G11B10_FLOAT)
@@ -969,7 +969,7 @@ namespace wi::helper
 
 		filedata.clear();
 		stbi_write_func* func = [](void* context, void* data, int size) {
-			wi::vector<uint8_t>& filedata = *(wi::vector<uint8_t>*)context;
+			Protean::vector<uint8_t>& filedata = *(Protean::vector<uint8_t>*)context;
 			for (int i = 0; i < size; ++i)
 			{
 				filedata.push_back(*((uint8_t*)data + i));
@@ -997,7 +997,7 @@ namespace wi::helper
 		}
 		else if (!extension.compare("H"))
 		{
-			const size_t datasize = mip.width * mip.height * sizeof(wi::Color);
+			const size_t datasize = mip.width * mip.height * sizeof(Protean::Color);
 			std::string ss;
 			ss += "struct EmbeddedImage {\n";
 			ss += "const unsigned int width = " + std::to_string(mip.width) + ";\n";
@@ -1020,7 +1020,7 @@ namespace wi::helper
 		}
 		else if (!extension.compare("RAW"))
 		{
-			filedata.resize(mip.width * mip.height * sizeof(wi::Color));
+			filedata.resize(mip.width * mip.height * sizeof(Protean::Color));
 			std::memcpy(filedata.data(), mip.address, filedata.size());
 			return true;
 		}
@@ -1032,11 +1032,11 @@ namespace wi::helper
 		return write_result != 0;
 	}
 
-	bool saveTextureToFile(const wi::graphics::Texture& texture, const std::string& fileName)
+	bool saveTextureToFile(const Protean::Graphics::Texture& texture, const std::string& fileName)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 		TextureDesc desc = texture.GetDesc();
-		wi::vector<uint8_t> data;
+		Protean::vector<uint8_t> data;
 		if (saveTextureToMemory(texture, data))
 		{
 			return saveTextureToFile(data, desc, fileName);
@@ -1044,12 +1044,12 @@ namespace wi::helper
 		return false;
 	}
 
-	bool saveTextureToFile(const wi::vector<uint8_t>& texturedata, const wi::graphics::TextureDesc& desc, const std::string& fileName)
+	bool saveTextureToFile(const Protean::vector<uint8_t>& texturedata, const Protean::Graphics::TextureDesc& desc, const std::string& fileName)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 
 		std::string ext = GetExtensionFromFileName(fileName);
-		wi::vector<uint8_t> filedata;
+		Protean::vector<uint8_t> filedata;
 		if (saveTextureToMemoryFile(texturedata, desc, ext, filedata))
 		{
 			return FileWrite(fileName, filedata.data(), filedata.size());
@@ -1058,13 +1058,13 @@ namespace wi::helper
 		return false;
 	}
 
-	bool saveBufferToMemory(const wi::graphics::GPUBuffer& buffer, wi::vector<uint8_t>& data)
+	bool saveBufferToMemory(const Protean::Graphics::GPUBuffer& buffer, Protean::vector<uint8_t>& data)
 	{
-		using namespace wi::graphics;
+		using namespace Protean::Graphics;
 		GraphicsDevice* device = GetDevice();
 
 		GPUBufferDesc desc = buffer.desc;
-		desc.usage = wi::graphics::Usage::READBACK;
+		desc.usage = Protean::Graphics::Usage::READBACK;
 		desc.bind_flags = {};
 		desc.misc_flags = {};
 		GPUBuffer staging;
@@ -1092,7 +1092,7 @@ namespace wi::helper
 		return success;
 	}
 
-	bool CreateCursorFromTexture(const wi::graphics::Texture& texture, int hotspotX, int hotspotY, wi::vector<uint8_t>& data)
+	bool CreateCursorFromTexture(const Protean::Graphics::Texture& texture, int hotspotX, int hotspotY, Protean::vector<uint8_t>& data)
 	{
 		if (!saveTextureToMemoryFile(texture, "ico", data))
 			return false;
@@ -1327,10 +1327,10 @@ namespace wi::helper
 			return true;
 		}
 
-		wi::backlog::post("File not found: " + fileName, wi::backlog::LogLevel::Warning);
+		Protean::Backlog::post("File not found: " + fileName, Protean::Backlog::LogLevel::Warning);
 		return false;
 	}
-	bool FileRead(const std::string& fileName, wi::vector<uint8_t>& data, size_t max_read, size_t offset)
+	bool FileRead(const std::string& fileName, Protean::vector<uint8_t>& data, size_t max_read, size_t offset)
 	{
 		return FileRead_Impl(fileName, data, max_read, offset);
 	}
@@ -1419,7 +1419,7 @@ namespace wi::helper
 #ifdef PLATFORM_PS5
 		return "/app0";
 #elif defined(__APPLE__)
-		return wi::apple::GetResourcePath();
+		return Protean::Apple::GetResourcePath();
 #else
 		auto path = std::filesystem::current_path();
 		return FromWString(path.generic_wstring());
@@ -1445,7 +1445,7 @@ namespace wi::helper
 		}
 		return std::string(str, length);
 #elif defined(__APPLE__)
-		return wi::apple::GetExecutablePath();
+		return Protean::Apple::GetExecutablePath();
 #else
 		return std::filesystem::canonical("/proc/self/exe").string();
 #endif // _WIN32
@@ -1454,7 +1454,7 @@ namespace wi::helper
 	std::string GetSaveDataPath()
 	{
 #if defined(__APPLE__)
-		return wi::apple::GetApplicationSupportPath();
+		return Protean::Apple::GetApplicationSupportPath();
 #elif defined(__SCE__)
 		return "/savedata0";
 #elif _WIN32
@@ -1493,7 +1493,7 @@ namespace wi::helper
 			//	Second string is extensions, each separated by ';' and at the end of all, a '\0'
 			//	Then the whole container string is closed with an other '\0'
 			//		For example: "model files\0*.model;*.obj;\0"  <-- this string literal has "model files" as description and two accepted extensions "model" and "obj"
-			wi::vector<wchar_t> filter;
+			Protean::vector<wchar_t> filter;
 			filter.reserve(256);
 			{
 				for (auto& x : params.description)
@@ -1572,7 +1572,7 @@ namespace wi::helper
 #if defined(PLATFORM_LINUX) || defined(PLATFORM_APPLE)
 		if (!pfd::settings::available())
 		{
-			wilog_messagebox("[wi::helper::FileDialog()] No file dialog backend available! Install zenity or kdialog.");
+			wilog_messagebox("[Protean::Helper::FileDialog()] No file dialog backend available! Install zenity or kdialog.");
 			return;
 		}
 
@@ -1658,7 +1658,7 @@ namespace wi::helper
 			if (entry.is_directory())
 				continue;
 			std::string filename = FromWString(entry.path().filename().generic_wstring());
-			if (filter_extension.empty() || wi::helper::toUpper(wi::helper::GetExtensionFromFileName(filename)).compare(wi::helper::toUpper(filter_extension)) == 0)
+			if (filter_extension.empty() || Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(filename)).compare(Protean::Helper::toUpper(filter_extension)) == 0)
 			{
 				onSuccess(directory + filename);
 			}
@@ -2050,23 +2050,23 @@ namespace wi::helper
 #ifdef PLATFORM_WINDOWS_DESKTOP
 		std::string op = "start \"\" \"" + url + "\"";
 		int status = system(op.c_str());
-		wi::backlog::post("wi::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
+		Protean::Backlog::post("Protean::Helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
 		return;
 #endif // PLATFORM_WINDOWS_DESKTOP
 
 #ifdef PLATFORM_LINUX
 		std::string op = "xdg-open " + url;
 		int status = system(op.c_str());
-		wi::backlog::post("wi::helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
+		Protean::Backlog::post("Protean::Helper::OpenUrl(" + url + ") returned status: " + std::to_string(status));
 		return;
 #endif // PLATFORM_WINDOWS_DESKTOP
 		
 #ifdef __APPLE__
-		wi::apple::OpenUrl(url.c_str());
+		Protean::Apple::OpenUrl(url.c_str());
 		return;
 #endif // __APPLE__
 
-		wi::backlog::post("wi::helper::OpenUrl(" + url + "): not implemented for this operating system!", wi::backlog::LogLevel::Warning);
+		Protean::Backlog::post("Protean::Helper::OpenUrl(" + url + "): not implemented for this operating system!", Protean::Backlog::LogLevel::Warning);
 	}
 
 	MemoryUsage GetMemoryUsage()
@@ -2136,7 +2136,7 @@ namespace wi::helper
 		// there doesn't seem to be an easy way to determine
 		// swapped out memory
 #elif defined(PLATFORM_PS5)
-		wi::graphics::GraphicsDevice::MemoryUsage gpumem = wi::graphics::GetDevice()->GetMemoryUsage();
+		Protean::Graphics::GraphicsDevice::MemoryUsage gpumem = Protean::Graphics::GetDevice()->GetMemoryUsage();
 		mem.process_physical = mem.total_physical = gpumem.budget;
 		mem.process_virtual = mem.total_virtual = gpumem.usage;
 #elif defined(__APPLE__)
@@ -2207,7 +2207,7 @@ namespace wi::helper
 		return ss.str();
 	}
 
-	std::string GetPlatformErrorString(wi::platform::error_type code)
+	std::string GetPlatformErrorString(Protean::Platform::error_type code)
 	{
 		std::string str;
 
@@ -2217,7 +2217,7 @@ namespace wi::helper
 		wchar_t wtext[1024] = {};
 		_snwprintf_s(wtext, arraysize(wtext), arraysize(wtext), L"0x%08x (%s)", code, errMsg);
 		char text[1024] = {};
-		wi::helper::StringConvert(wtext, text, arraysize(text));
+		Protean::Helper::StringConvert(wtext, text, arraysize(text));
 		str = text;
 #endif // _WIN32
 
@@ -2230,7 +2230,7 @@ namespace wi::helper
 		return str;
 	}
 
-	bool Compress(const uint8_t* src_data, size_t src_size, wi::vector<uint8_t>& dst_data, int level)
+	bool Compress(const uint8_t* src_data, size_t src_size, Protean::vector<uint8_t>& dst_data, int level)
 	{
 		dst_data.resize(ZSTD_compressBound(src_size));
 		size_t res = ZSTD_compress(dst_data.data(), dst_data.size(), src_data, src_size, level);
@@ -2240,7 +2240,7 @@ namespace wi::helper
 		return true;
 	}
 
-	bool Decompress(const uint8_t* src_data, size_t src_size, wi::vector<uint8_t>& dst_data)
+	bool Decompress(const uint8_t* src_data, size_t src_size, Protean::vector<uint8_t>& dst_data)
 	{
 		size_t res = ZSTD_getFrameContentSize(src_data, src_size);
 		if (ZSTD_isError(res))
@@ -2284,7 +2284,7 @@ namespace wi::helper
 		StringConvert(str, wstr);
 		SDL_free(str);
 #elif defined(__APPLE__)
-		std::string str = wi::apple::GetClipboardText();
+		std::string str = Protean::Apple::GetClipboardText();
 		StringConvert(str, wstr);
 #endif // PLATFORM_WINDOWS_DESKTOP
 
@@ -2317,18 +2317,18 @@ namespace wi::helper
 #elif defined(__APPLE__)
 		std::string str;
 		StringConvert(wstr, str);
-		wi::apple::SetClipboardText(str.c_str());
+		Protean::Apple::SetClipboardText(str.c_str());
 #endif // PLATFORM_WINDOWS_DESKTOP
 	}
 
-	void SetClipboardImage(const wi::graphics::Texture& texture)
+	void SetClipboardImage(const Protean::Graphics::Texture& texture)
 	{
 #ifdef PLATFORM_WINDOWS_DESKTOP
-		wi::vector<uint8_t> rgba;
+		Protean::vector<uint8_t> rgba;
 		if (!saveTextureToMemoryFile(texture, "RAW", rgba)) // "RAW" file format saves it to uncompressed RGBA bytes
 			return;
 
-		const size_t row_stride = wi::graphics::ComputeTextureMipRowPitch(texture.desc, 0);
+		const size_t row_stride = Protean::Graphics::ComputeTextureMipRowPitch(texture.desc, 0);
 		const size_t image_size = row_stride * texture.desc.height;
 		const size_t total_size = sizeof(BITMAPINFOHEADER) + image_size;
 		HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, total_size);
@@ -2378,10 +2378,10 @@ namespace wi::helper
 			GlobalFree(hClipboardData);
 		}
 #elif defined(__APPLE__)
-		wi::vector<uint8_t> png;
+		Protean::vector<uint8_t> png;
 		if (!saveTextureToMemoryFile(texture, "PNG", png))
 			return;
-		wi::apple::SetClipboardImagePNG(png.data(), png.size());
+		Protean::Apple::SetClipboardImagePNG(png.data(), png.size());
 #endif // PLATFORM_WINDOWS_DESKTOP
 	}
 }

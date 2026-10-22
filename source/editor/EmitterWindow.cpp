@@ -1,19 +1,17 @@
 #include "stdafx.h"
 #include "EmitterWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void EmitterWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_EMITTER " Emitter", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_EMITTER " Emitter", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(300, 1120));
 
 	closeButton.SetTooltip("Delete EmittedParticleSystem");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -32,10 +30,10 @@ void EmitterWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this](auto func) {
 		return [this, func](auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
-				wi::EmittedParticleSystem* emitter = scene.emitters.GetComponent(x.entity);
+				Protean::EmittedParticleSystem* emitter = scene.emitters.GetComponent(x.entity);
 				if (emitter != nullptr) {
 					func(emitter, args);
 				}
@@ -87,12 +85,12 @@ void EmitterWindow::Create(EditorComponent* _editor)
 	shaderTypeComboBox.Create("ShaderType: ");
 	shaderTypeComboBox.SetPos(XMFLOAT2(x, y += step));
 	shaderTypeComboBox.SetSize(XMFLOAT2(wid, itemheight));
-	shaderTypeComboBox.AddItem("SIMPLE", wi::EmittedParticleSystem::PARTICLESHADERTYPE::SIMPLE);
-	shaderTypeComboBox.AddItem("SOFT", wi::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT);
-	shaderTypeComboBox.AddItem("DISTORTION", wi::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_DISTORTION);
-	shaderTypeComboBox.AddItem("LIGHTING", wi::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_LIGHTING);
+	shaderTypeComboBox.AddItem("SIMPLE", Protean::EmittedParticleSystem::PARTICLESHADERTYPE::SIMPLE);
+	shaderTypeComboBox.AddItem("SOFT", Protean::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT);
+	shaderTypeComboBox.AddItem("DISTORTION", Protean::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_DISTORTION);
+	shaderTypeComboBox.AddItem("LIGHTING", Protean::EmittedParticleSystem::PARTICLESHADERTYPE::SOFT_LIGHTING);
 	shaderTypeComboBox.OnSelect(forEachSelected([](auto emitter, auto args) {
-		emitter->shaderType = (wi::EmittedParticleSystem::PARTICLESHADERTYPE)args.userdata;
+		emitter->shaderType = (Protean::EmittedParticleSystem::PARTICLESHADERTYPE)args.userdata;
 	}));
 	shaderTypeComboBox.SetEnabled(false);
 	shaderTypeComboBox.SetTooltip("Choose a shader type for the particles. This is responsible of how they will be rendered.");
@@ -146,10 +144,10 @@ void EmitterWindow::Create(EditorComponent* _editor)
 	debugCheckBox.Create("DEBUG: ");
 	debugCheckBox.SetPos(XMFLOAT2(x, y += step));
 	debugCheckBox.SetSize(XMFLOAT2(itemheight, itemheight));
-	debugCheckBox.OnClick([](wi::gui::EventArgs args) {
-		wi::renderer::SetToDrawDebugEmitters(args.bValue);
+	debugCheckBox.OnClick([](Protean::Gui::EventArgs args) {
+		Protean::Renderer::SetToDrawDebugEmitters(args.bValue);
 	});
-	debugCheckBox.SetCheck(wi::renderer::GetToDrawDebugEmitters());
+	debugCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugEmitters());
 	debugCheckBox.SetTooltip("Toggle debug visualizer for emitters.");
 	AddWidget(&debugCheckBox);
 
@@ -624,11 +622,11 @@ void EmitterWindow::SetEntity(Entity entity)
 		SetEnabled(false);
 
 	}
-	debugCheckBox.SetCheck(wi::renderer::GetToDrawDebugEmitters());
+	debugCheckBox.SetCheck(Protean::Renderer::GetToDrawDebugEmitters());
 
 }
 
-wi::EmittedParticleSystem* EmitterWindow::GetEmitter()
+Protean::EmittedParticleSystem* EmitterWindow::GetEmitter()
 {
 	if (entity == INVALID_ENTITY)
 	{
@@ -636,7 +634,7 @@ wi::EmittedParticleSystem* EmitterWindow::GetEmitter()
 	}
 
 	Scene& scene = editor->GetCurrentScene();
-	wi::EmittedParticleSystem* emitter = scene.emitters.GetComponent(entity);
+	Protean::EmittedParticleSystem* emitter = scene.emitters.GetComponent(entity);
 
 	return emitter;
 }
@@ -681,7 +679,7 @@ void EmitterWindow::UpdateData()
 	std::string ss;
 	ss += "Tip: You can modify the Material on this entity to set texture, color, emissive to the particles. Particles can also be spawned from a mesh surface if you specify a mesh for it.\n\n";
 	ss += "Emitter Mesh: " + (meshName != nullptr ? meshName->name : "NO EMITTER MESH") + " (" + std::to_string(emitter->meshID) + ")\n";
-	ss += "Memory usage: " + wi::helper::GetMemorySizeText(emitter->GetMemorySizeInBytes()) + "\n";
+	ss += "Memory usage: " + Protean::Helper::GetMemorySizeText(emitter->GetMemorySizeInBytes()) + "\n";
 	ss += "\n";
 
 	auto data = emitter->GetStatistics();
@@ -696,24 +694,24 @@ void EmitterWindow::UpdateData()
 	{
 		x.textureResource.SetTexture(*emitter->GetOpacityCurveTex());
 	}
-	emitOpacityCurveStartSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_IDLE);
-	emitOpacityCurveStartSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_FOCUS);
-	emitOpacityCurveStartSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
-	emitOpacityCurveStartSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
+	emitOpacityCurveStartSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_IDLE);
+	emitOpacityCurveStartSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_FOCUS);
+	emitOpacityCurveStartSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
+	emitOpacityCurveStartSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
 
 	for (auto& x : emitOpacityCurveEndSlider.sprites)
 	{
 		x.textureResource.SetTexture(*emitter->GetOpacityCurveTex());
 	}
-	emitOpacityCurveEndSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_IDLE);
-	emitOpacityCurveEndSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_FOCUS);
-	emitOpacityCurveEndSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
-	emitOpacityCurveEndSlider.SetColor(wi::Color::White(), wi::gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
+	emitOpacityCurveEndSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_IDLE);
+	emitOpacityCurveEndSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_FOCUS);
+	emitOpacityCurveEndSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_ACTIVE);
+	emitOpacityCurveEndSlider.SetColor(Protean::Color::White(), Protean::Gui::WIDGET_ID_SLIDER_BASE_DEACTIVATING);
 }
 
 void EmitterWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 130;
 
 	layout.add_fullwidth(infoLabel);

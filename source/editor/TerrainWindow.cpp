@@ -3,21 +3,19 @@
 
 #include "stb_image.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 ModifierWindow::ModifierWindow(const std::string& name)
 {
-	wi::gui::Window::Create(name, wi::gui::Window::WindowControls::CLOSE_AND_COLLAPSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(name, Protean::Gui::Window::WindowControls::CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(200, 100));
 
 	blendCombo.Create("Blend: ");
 	blendCombo.SetSize(XMFLOAT2(100, 20));
-	blendCombo.AddItem("Normal", (uint64_t)wi::terrain::Modifier::BlendMode::Normal);
-	blendCombo.AddItem("Additive", (uint64_t)wi::terrain::Modifier::BlendMode::Additive);
-	blendCombo.AddItem("Multiply", (uint64_t)wi::terrain::Modifier::BlendMode::Multiply);
-	blendCombo.OnSelect([=](wi::gui::EventArgs args) {
-		modifier->blend = (wi::terrain::Modifier::BlendMode)args.userdata;
+	blendCombo.AddItem("Normal", (uint64_t)Protean::Terrain::Modifier::BlendMode::Normal);
+	blendCombo.AddItem("Additive", (uint64_t)Protean::Terrain::Modifier::BlendMode::Additive);
+	blendCombo.AddItem("Multiply", (uint64_t)Protean::Terrain::Modifier::BlendMode::Multiply);
+	blendCombo.OnSelect([=](Protean::Gui::EventArgs args) {
+		modifier->blend = (Protean::Terrain::Modifier::BlendMode)args.userdata;
 		generation_callback();
 	});
 	AddWidget(&blendCombo);
@@ -25,7 +23,7 @@ ModifierWindow::ModifierWindow(const std::string& name)
 	weightSlider.Create(0, 1, 0.5f, 10000, "Weight: ");
 	weightSlider.SetSize(XMFLOAT2(100, 20));
 	weightSlider.SetTooltip("Blending amount");
-	weightSlider.OnSlide([=](wi::gui::EventArgs args) {
+	weightSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		modifier->weight = args.fValue;
 		generation_callback();
 	});
@@ -34,20 +32,20 @@ ModifierWindow::ModifierWindow(const std::string& name)
 	scaleSlider.Create(0.1f, 10000, 1000, 10000, "Scale: ");
 	scaleSlider.SetSize(XMFLOAT2(100, 20));
 	scaleSlider.SetTooltip("Horizontal world scale of the modifier");
-	scaleSlider.OnSlide([=](wi::gui::EventArgs args) {
+	scaleSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		modifier->SetScale(args.fValue);
 		generation_callback();
 	});
 	AddWidget(&scaleSlider);
 }
-void ModifierWindow::Bind(wi::terrain::Modifier* ptr)
+void ModifierWindow::Bind(Protean::Terrain::Modifier* ptr)
 {
 	modifier = ptr;
-	modifier->blend = (wi::terrain::Modifier::BlendMode)blendCombo.GetItemUserData(blendCombo.GetSelected());
+	modifier->blend = (Protean::Terrain::Modifier::BlendMode)blendCombo.GetItemUserData(blendCombo.GetSelected());
 	modifier->weight = weightSlider.GetValue();
 	modifier->SetScale(scaleSlider.GetValue());
 }
-void ModifierWindow::From(wi::terrain::Modifier* ptr)
+void ModifierWindow::From(Protean::Terrain::Modifier* ptr)
 {
 	modifier = ptr;
 	blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)ptr->blend);
@@ -60,8 +58,8 @@ PerlinModifierWindow::PerlinModifierWindow() : ModifierWindow("Perlin Noise")
 	octavesSlider.Create(1, 8, 6, 7, "Octaves: ");
 	octavesSlider.SetTooltip("Octave count for the perlin noise");
 	octavesSlider.SetSize(XMFLOAT2(100, 20));
-	octavesSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::PerlinModifier*)modifier)->octaves = args.iValue;
+	octavesSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::PerlinModifier*)modifier)->octaves = args.iValue;
 		generation_callback();
 		});
 	AddWidget(&octavesSlider);
@@ -80,12 +78,12 @@ void PerlinModifierWindow::ResizeLayout()
 
 	layout.add(octavesSlider);
 }
-void PerlinModifierWindow::Bind(wi::terrain::PerlinModifier* ptr)
+void PerlinModifierWindow::Bind(Protean::Terrain::PerlinModifier* ptr)
 {
 	ModifierWindow::Bind(ptr);
 	ptr->octaves = (int)octavesSlider.GetValue();
 }
-void PerlinModifierWindow::From(wi::terrain::PerlinModifier* ptr)
+void PerlinModifierWindow::From(Protean::Terrain::PerlinModifier* ptr)
 {
 	ModifierWindow::From(ptr);
 	octavesSlider.SetValue((float)ptr->octaves);
@@ -96,8 +94,8 @@ VoronoiModifierWindow::VoronoiModifierWindow() : ModifierWindow("Voronoi Noise")
 	fadeSlider.Create(0, 100, 2.59f, 10000, "Fade: ");
 	fadeSlider.SetTooltip("Fade out voronoi regions by distance from cell's center");
 	fadeSlider.SetSize(XMFLOAT2(100, 20));
-	fadeSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::VoronoiModifier*)modifier)->fade = args.fValue;
+	fadeSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::VoronoiModifier*)modifier)->fade = args.fValue;
 		generation_callback();
 		});
 	AddWidget(&fadeSlider);
@@ -105,8 +103,8 @@ VoronoiModifierWindow::VoronoiModifierWindow() : ModifierWindow("Voronoi Noise")
 	shapeSlider.Create(0, 1, 0.7f, 10000, "Shape: ");
 	shapeSlider.SetTooltip("How much the voronoi shape will be kept");
 	shapeSlider.SetSize(XMFLOAT2(100, 20));
-	shapeSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::VoronoiModifier*)modifier)->shape = args.fValue;
+	shapeSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::VoronoiModifier*)modifier)->shape = args.fValue;
 		generation_callback();
 		});
 	AddWidget(&shapeSlider);
@@ -114,8 +112,8 @@ VoronoiModifierWindow::VoronoiModifierWindow() : ModifierWindow("Voronoi Noise")
 	falloffSlider.Create(0, 8, 6, 10000, "Falloff: ");
 	falloffSlider.SetTooltip("Controls the falloff of the voronoi distance fade effect");
 	falloffSlider.SetSize(XMFLOAT2(100, 20));
-	falloffSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::VoronoiModifier*)modifier)->falloff = args.fValue;
+	falloffSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::VoronoiModifier*)modifier)->falloff = args.fValue;
 		generation_callback();
 		});
 	AddWidget(&falloffSlider);
@@ -123,8 +121,8 @@ VoronoiModifierWindow::VoronoiModifierWindow() : ModifierWindow("Voronoi Noise")
 	perturbationSlider.Create(0, 1, 0.1f, 10000, "Perturbation: ");
 	perturbationSlider.SetTooltip("Controls the random look of voronoi region edges");
 	perturbationSlider.SetSize(XMFLOAT2(100, 20));
-	perturbationSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::VoronoiModifier*)modifier)->perturbation = args.fValue;
+	perturbationSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::VoronoiModifier*)modifier)->perturbation = args.fValue;
 		generation_callback();
 		});
 	AddWidget(&perturbationSlider);
@@ -146,7 +144,7 @@ void VoronoiModifierWindow::ResizeLayout()
 	layout.add(falloffSlider);
 	layout.add(perturbationSlider);
 }
-void VoronoiModifierWindow::Bind(wi::terrain::VoronoiModifier* ptr)
+void VoronoiModifierWindow::Bind(Protean::Terrain::VoronoiModifier* ptr)
 {
 	ModifierWindow::Bind(ptr);
 	ptr->fade = fadeSlider.GetValue();
@@ -154,7 +152,7 @@ void VoronoiModifierWindow::Bind(wi::terrain::VoronoiModifier* ptr)
 	ptr->falloff = falloffSlider.GetValue();
 	ptr->perturbation = perturbationSlider.GetValue();
 }
-void VoronoiModifierWindow::From(wi::terrain::VoronoiModifier* ptr)
+void VoronoiModifierWindow::From(Protean::Terrain::VoronoiModifier* ptr)
 {
 	ModifierWindow::From(ptr);
 	fadeSlider.SetValue(ptr->fade);
@@ -170,32 +168,32 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 
 	amountSlider.Create(0, 1, 0.1f, 1000, "Amount: ");
 	amountSlider.SetSize(XMFLOAT2(100, 20));
-	amountSlider.OnSlide([=](wi::gui::EventArgs args) {
-		((wi::terrain::HeightmapModifier*)modifier)->amount = args.fValue;
+	amountSlider.OnSlide([=](Protean::Gui::EventArgs args) {
+		((Protean::Terrain::HeightmapModifier*)modifier)->amount = args.fValue;
 		generation_callback();
 		});
 	AddWidget(&amountSlider);
 
 	loadButton.Create("Load Heightmap...");
 	loadButton.SetTooltip("Load a heightmap texture, where the red channel corresponds to terrain height and the resolution to dimensions.\nThe heightmap will be placed in the world center.\nIt is recommended to use a 16-bit PNG for heightmaps.");
-	loadButton.OnClick([=](wi::gui::EventArgs args) {
+	loadButton.OnClick([=](Protean::Gui::EventArgs args) {
 
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::OPEN;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::OPEN;
 		params.description = "*.png";
 		params.extensions = { "PNG" };
-		wi::helper::FileDialog(params, [=](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		Protean::Helper::FileDialog(params, [=](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-				auto* heightmap_modifier = (wi::terrain::HeightmapModifier*)modifier;
+				auto* heightmap_modifier = (Protean::Terrain::HeightmapModifier*)modifier;
 				heightmap_modifier->data.clear();
 				heightmap_modifier->width = 0;
 				heightmap_modifier->height = 0;
 				int bpp = 0;
-				wi::vector<uint8_t> filedata;
-				if (!wi::helper::FileRead(fileName, filedata))
+				Protean::vector<uint8_t> filedata;
+				if (!Protean::Helper::FileRead(fileName, filedata))
 				{
-					wi::backlog::post("Heightmap loading failed, file couldn't be found: " + fileName, wi::backlog::LogLevel::Error);
+					Protean::Backlog::post("Heightmap loading failed, file couldn't be found: " + fileName, Protean::Backlog::LogLevel::Error);
 				}
 
 				if (stbi_is_16_bit_from_memory((const stbi_uc*)filedata.data(), (int)filedata.size()))
@@ -210,7 +208,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						wi::backlog::post("Heightmap loading unknown failure for 16-bit image: " + fileName, wi::backlog::LogLevel::Error);
+						Protean::Backlog::post("Heightmap loading unknown failure for 16-bit image: " + fileName, Protean::Backlog::LogLevel::Error);
 					}
 				}
 				else
@@ -224,7 +222,7 @@ HeightmapModifierWindow::HeightmapModifierWindow() : ModifierWindow("Heightmap")
 					}
 					else
 					{
-						wi::backlog::post("Heightmap loading failure for 8-bit image: " + fileName, wi::backlog::LogLevel::Error);
+						Protean::Backlog::post("Heightmap loading failure for 8-bit image: " + fileName, Protean::Backlog::LogLevel::Error);
 					}
 				}
 			});
@@ -247,18 +245,18 @@ void HeightmapModifierWindow::ResizeLayout()
 	layout.add(amountSlider);
 	layout.add(loadButton);
 }
-void HeightmapModifierWindow::Bind(wi::terrain::HeightmapModifier* ptr)
+void HeightmapModifierWindow::Bind(Protean::Terrain::HeightmapModifier* ptr)
 {
 	ModifierWindow::Bind(ptr);
 	ptr->amount = amountSlider.GetValue();
 }
-void HeightmapModifierWindow::From(wi::terrain::HeightmapModifier* ptr)
+void HeightmapModifierWindow::From(Protean::Terrain::HeightmapModifier* ptr)
 {
 	ModifierWindow::From(ptr);
 	amountSlider.SetValue(ptr->amount);
 }
 
-PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, wi::scene::Scene* scene)
+PropWindow::PropWindow(Protean::Terrain::Terrain* terrain, Protean::Terrain::Prop* prop, Protean::Scene* scene)
 	:prop(prop)
 	,scene(scene)
 {
@@ -271,14 +269,14 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 
 	if(!prop->data.empty()) // extract object name
 	{
-		wi::Archive archive = wi::Archive(prop->data.data(), prop->data.size());
+		Protean::Archive archive = Protean::Archive(prop->data.data(), prop->data.size());
 		EntitySerializer serializer;
 		entity = scene->Entity_Serialize(
 			archive,
 			serializer,
 			INVALID_ENTITY,
-			wi::scene::Scene::EntitySerializeFlags::RECURSIVE |
-			wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags::RECURSIVE |
+			Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 
 		const NameComponent* name = scene->names.GetComponent(entity);
@@ -291,7 +289,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 		scene->Entity_Remove(entity);
 	}
 
-	wi::gui::Window::Create(windowName, wi::gui::Window::WindowControls::CLOSE_AND_COLLAPSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(windowName, Protean::Gui::Window::WindowControls::CLOSE_AND_COLLAPSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 
 	constexpr auto elementSize = XMFLOAT2(100, 20);
 
@@ -310,7 +308,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	}
 	AddWidget(&meshCombo);
 
-	meshCombo.OnSelect([=](wi::gui::EventArgs args) {
+	meshCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		if(args.userdata == entity)
 		{
 			return;
@@ -321,15 +319,15 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 		SetText(name);
 		label.SetText(name);
 
-		const wi::ecs::Entity ent = static_cast<wi::ecs::Entity>(args.userdata);
+		const Protean::Entity ent = static_cast<Protean::Entity>(args.userdata);
 
-		wi::Archive archive;
+		Protean::Archive archive;
 		EntitySerializer serializer;
 		scene->Entity_Serialize(
 			archive,
 			serializer,
 			ent,
-			wi::scene::Scene::EntitySerializeFlags::RECURSIVE | wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 		archive.WriteData(prop->data);
 		prop->source_entity = ent;
@@ -342,7 +340,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	minCountPerChunkInput.SetSize(elementSize);
 	minCountPerChunkInput.SetValue(prop->min_count_per_chunk);
 	minCountPerChunkInput.SetTooltip("A chunk will try to generate min this many props of this type");
-	minCountPerChunkInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	minCountPerChunkInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		prop->min_count_per_chunk = std::min(prop->max_count_per_chunk, args.iValue);
 		generation_callback();
 	});
@@ -353,7 +351,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	maxCountPerChunkInput.SetSize(elementSize);
 	maxCountPerChunkInput.SetValue(prop->max_count_per_chunk);
 	maxCountPerChunkInput.SetTooltip("A chunk will try to generate max this many props of this type");
-	maxCountPerChunkInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	maxCountPerChunkInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		prop->max_count_per_chunk = std::max(prop->min_count_per_chunk, args.iValue);
 		generation_callback();
 	});
@@ -367,7 +365,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	regionCombo.AddItem("Low altitude ", 2);
 	regionCombo.AddItem("High altitude", 3);
 	regionCombo.SetSelectedByUserdataWithoutCallback(prop->region);
-	regionCombo.OnSelect([=](wi::gui::EventArgs args) {
+	regionCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 		prop->region = static_cast<int>(args.userdata);
 		generation_callback();
 	});
@@ -377,7 +375,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	regionPowerSlider.SetSize(elementSize);
 	regionPowerSlider.SetValue(prop->region_power);
 	regionPowerSlider.SetTooltip("Region weight affection power factor");
-	regionPowerSlider.OnSlide([=](wi::gui::EventArgs args) {
+	regionPowerSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->region_power = args.fValue;
 		generation_callback();
 		});
@@ -387,7 +385,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	noiseFrequencySlider.SetSize(elementSize);
 	noiseFrequencySlider.SetValue(prop->noise_frequency);
 	noiseFrequencySlider.SetTooltip("Perlin noise's frequency for placement factor");
-	noiseFrequencySlider.OnSlide([=](wi::gui::EventArgs args) {
+	noiseFrequencySlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->noise_frequency = args.fValue;
 		generation_callback();
 		});
@@ -397,7 +395,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	noisePowerSlider.SetSize(elementSize);
 	noisePowerSlider.SetValue(prop->noise_power);
 	noisePowerSlider.SetTooltip("Perlin noise's power");
-	noisePowerSlider.OnSlide([=](wi::gui::EventArgs args) {
+	noisePowerSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->noise_power = args.fValue;
 		generation_callback();
 		});
@@ -407,7 +405,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	thresholdSlider.SetSize(elementSize);
 	thresholdSlider.SetValue(prop->threshold);
 	thresholdSlider.SetTooltip("The chance of placement (higher is less chance)");
-	thresholdSlider.OnSlide([=](wi::gui::EventArgs args) {
+	thresholdSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->threshold = args.fValue;
 		generation_callback();
 	});
@@ -417,7 +415,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	minSizeSlider.SetSize(elementSize);
 	minSizeSlider.SetValue(prop->min_size);
 	minSizeSlider.SetTooltip("Scaling randomization range min");
-	minSizeSlider.OnSlide([=](wi::gui::EventArgs args) {
+	minSizeSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->min_size = std::min(args.fValue, prop->max_size);
 		generation_callback();
 	});
@@ -427,7 +425,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	maxSizeSlider.SetSize(elementSize);
 	maxSizeSlider.SetValue(prop->max_size);
 	maxSizeSlider.SetTooltip("Scaling randomization range max");
-	maxSizeSlider.OnSlide([=](wi::gui::EventArgs args) {
+	maxSizeSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		prop->max_size = std::max(args.fValue, prop->min_size);
 		generation_callback();
 	});
@@ -438,7 +436,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	minYOffsetInput.SetSize(elementSize);
 	minYOffsetInput.SetValue(prop->min_y_offset);
 	minYOffsetInput.SetTooltip("Minimal randomized offset on vertical axis");
-	minYOffsetInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	minYOffsetInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		prop->min_y_offset = std::min(args.fValue, prop->max_y_offset);
 		generation_callback();
 	});
@@ -449,7 +447,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 	maxYOffsetInput.SetSize(elementSize);
 	maxYOffsetInput.SetValue(prop->max_y_offset);
 	maxYOffsetInput.SetTooltip("Maximum randomized offset on vertical axis");
-	maxYOffsetInput.OnInputAccepted([=](wi::gui::EventArgs args) {
+	maxYOffsetInput.OnInputAccepted([=](Protean::Gui::EventArgs args) {
 		prop->max_y_offset = std::max(args.fValue, prop->min_y_offset);
 		generation_callback();
 	});
@@ -461,7 +459,7 @@ PropWindow::PropWindow(wi::terrain::Terrain* terrain, wi::terrain::Prop* prop, w
 
 void PropWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 
 	layout.margin_left = 150;
 
@@ -482,13 +480,13 @@ void PropWindow::ResizeLayout()
 PropsWindow::PropsWindow(EditorComponent* editor)
 	:editor(editor)
 {
-	wi::gui::Window::Create("Props", wi::gui::Window::WindowControls::COLLAPSE);
+	Protean::Gui::Window::Create("Props", Protean::Gui::Window::WindowControls::COLLAPSE);
 
 	SetCollapsed(true);
 
 	addButton.Create("Add prop");
 	addButton.SetSize(XMFLOAT2(100, 20));
-	addButton.OnClick([this](wi::gui::EventArgs args) {
+	addButton.OnClick([this](Protean::Gui::EventArgs args) {
 		terrain->props.emplace_back();
 		AddWindow(terrain->props.back());
 	});
@@ -497,7 +495,7 @@ PropsWindow::PropsWindow(EditorComponent* editor)
 	reloadButton.Create("Reload props");
 	reloadButton.SetSize(XMFLOAT2(100, 20));
 	reloadButton.SetTooltip("Reload all props from their source entities to update with latest component changes");
-	reloadButton.OnClick([editor](wi::gui::EventArgs args) {
+	reloadButton.OnClick([editor](Protean::Gui::EventArgs args) {
 		editor->ReloadTerrainProps();
 	});
 	AddWidget(&reloadButton);
@@ -530,11 +528,11 @@ void PropsWindow::Rebuild()
 	}
 }
 
-void PropsWindow::AddWindow(wi::terrain::Prop& prop)
+void PropsWindow::AddWindow(Protean::Terrain::Prop& prop)
 {
 	PropWindow* wnd = new PropWindow(terrain, &prop, &editor->GetCurrentScene());
 	wnd->generation_callback = generation_callback;
-	wnd->OnClose([this, wnd](wi::gui::EventArgs args) {
+	wnd->OnClose([this, wnd](Protean::Gui::EventArgs args) {
 		windows_to_remove.push_back(wnd);
 	});
 	AddWidget(wnd);
@@ -544,7 +542,7 @@ void PropsWindow::AddWindow(wi::terrain::Prop& prop)
 	editor->generalWnd.RefreshTheme();
 }
 
-void PropsWindow::Update(const wi::Canvas& canvas, float dt)
+void PropsWindow::Update(const Protean::Canvas& canvas, float dt)
 {
 	if(windows.size() != terrain->props.size())
 	{
@@ -600,7 +598,7 @@ void PropsWindow::ResizeLayout()
 
 	SetSize(XMFLOAT2(GetScale().x, control_size + layout.y));
 
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 }
 
 void TerrainWindow::Create(EditorComponent* _editor)
@@ -609,13 +607,13 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	RemoveWidgets();
 	ClearTransform();
 
-	wi::gui::Window::Create(ICON_TERRAIN " Terrain", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_TERRAIN " Terrain", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 1000));
 
 	closeButton.SetTooltip("Delete Terrain.");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -661,7 +659,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	centerToCamCheckBox.SetSize(XMFLOAT2(hei, hei));
 	centerToCamCheckBox.SetPos(XMFLOAT2(x, y));
 	centerToCamCheckBox.SetCheck(true);
-	centerToCamCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	centerToCamCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		terrain->SetCenterToCamEnabled(args.bValue);
 		});
 	AddWidget(&centerToCamCheckBox);
@@ -671,7 +669,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	removalCheckBox.SetSize(XMFLOAT2(hei, hei));
 	removalCheckBox.SetPos(XMFLOAT2(x + 100, y));
 	removalCheckBox.SetCheck(true);
-	removalCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	removalCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		terrain->SetRemovalEnabled(args.bValue);
 		});
 	AddWidget(&removalCheckBox);
@@ -681,7 +679,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	grassCheckBox.SetSize(XMFLOAT2(hei, hei));
 	grassCheckBox.SetPos(XMFLOAT2(x, y += step));
 	grassCheckBox.SetCheck(true);
-	grassCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	grassCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		terrain->SetGrassEnabled(args.bValue);
 		});
 	AddWidget(&grassCheckBox);
@@ -691,7 +689,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	physicsCheckBox.SetSize(XMFLOAT2(hei, hei));
 	physicsCheckBox.SetPos(XMFLOAT2(x, y += step));
 	physicsCheckBox.SetCheck(true);
-	physicsCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	physicsCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		terrain->SetPhysicsEnabled(args.bValue);
 		});
 	AddWidget(&physicsCheckBox);
@@ -701,7 +699,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	tessellationCheckBox.SetSize(XMFLOAT2(hei, hei));
 	tessellationCheckBox.SetPos(XMFLOAT2(x, y += step));
 	tessellationCheckBox.SetCheck(true);
-	tessellationCheckBox.OnClick([=](wi::gui::EventArgs args) {
+	tessellationCheckBox.OnClick([=](Protean::Gui::EventArgs args) {
 		terrain->SetTessellationEnabled(args.bValue);
 		});
 	AddWidget(&tessellationCheckBox);
@@ -710,10 +708,10 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	lodSlider.SetTooltip("Set the LOD (Level Of Detail) distance multiplier.\nLow values increase LOD detail in distance");
 	lodSlider.SetSize(XMFLOAT2(wid, hei));
 	lodSlider.SetPos(XMFLOAT2(x, y += step));
-	lodSlider.OnSlide([this](wi::gui::EventArgs args) {
+	lodSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		for (auto& it : terrain->chunks)
 		{
-			const wi::terrain::ChunkData& chunk_data = it.second;
+			const Protean::Terrain::ChunkData& chunk_data = it.second;
 			if (chunk_data.entity != INVALID_ENTITY)
 			{
 				ObjectComponent* object = terrain->scene->objects.GetComponent(chunk_data.entity);
@@ -731,7 +729,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	generationSlider.SetTooltip("How far out chunks will be generated (value is in number of chunks)");
 	generationSlider.SetSize(XMFLOAT2(wid, hei));
 	generationSlider.SetPos(XMFLOAT2(x, y += step));
-	generationSlider.OnSlide([this](wi::gui::EventArgs args) {
+	generationSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->generation = args.iValue;
 		});
 	AddWidget(&generationSlider);
@@ -740,7 +738,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	propGenerationSlider.SetTooltip("How far out props will be generated (value is in number of chunks)");
 	propGenerationSlider.SetSize(XMFLOAT2(wid, hei));
 	propGenerationSlider.SetPos(XMFLOAT2(x, y += step));
-	propGenerationSlider.OnSlide([this](wi::gui::EventArgs args) {
+	propGenerationSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->prop_generation = args.iValue;
 		});
 	AddWidget(&propGenerationSlider);
@@ -749,7 +747,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	physicsGenerationSlider.SetTooltip("How far out physics meshes will be generated (value is in number of chunks)");
 	physicsGenerationSlider.SetSize(XMFLOAT2(wid, hei));
 	physicsGenerationSlider.SetPos(XMFLOAT2(x, y += step));
-	physicsGenerationSlider.OnSlide([this](wi::gui::EventArgs args) {
+	physicsGenerationSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->physics_generation = args.iValue;
 		});
 	AddWidget(&physicsGenerationSlider);
@@ -758,7 +756,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	propDensitySlider.SetTooltip("Modifies overall prop density.");
 	propDensitySlider.SetSize(XMFLOAT2(wid, hei));
 	propDensitySlider.SetPos(XMFLOAT2(x, y += step));
-	propDensitySlider.OnSlide([this](wi::gui::EventArgs args) {
+	propDensitySlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->prop_density = args.fValue;
 		});
 	AddWidget(&propDensitySlider);
@@ -767,7 +765,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	grassDensitySlider.SetTooltip("Modifies overall grass density.");
 	grassDensitySlider.SetSize(XMFLOAT2(wid, hei));
 	grassDensitySlider.SetPos(XMFLOAT2(x, y += step));
-	grassDensitySlider.OnSlide([this](wi::gui::EventArgs args) {
+	grassDensitySlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->grass_density = args.fValue;
 		});
 	AddWidget(&grassDensitySlider);
@@ -776,9 +774,9 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	grassLengthSlider.SetTooltip("Modifies overall grass length.");
 	grassLengthSlider.SetSize(XMFLOAT2(wid, hei));
 	grassLengthSlider.SetPos(XMFLOAT2(x, y += step));
-	grassLengthSlider.OnSlide([this](wi::gui::EventArgs args) {
+	grassLengthSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->grass_properties.length = args.fValue;
-		wi::HairParticleSystem* hair = terrain->scene->hairs.GetComponent(terrain->grassEntity);
+		Protean::HairParticleSystem* hair = terrain->scene->hairs.GetComponent(terrain->grassEntity);
 		if (hair != nullptr)
 		{
 			hair->length = args.fValue;
@@ -790,9 +788,9 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	grassDistanceSlider.SetTooltip("Modifies grass view distance.");
 	grassDistanceSlider.SetSize(XMFLOAT2(wid, hei));
 	grassDistanceSlider.SetPos(XMFLOAT2(x, y += step));
-	grassDistanceSlider.OnSlide([this](wi::gui::EventArgs args) {
+	grassDistanceSlider.OnSlide([this](Protean::Gui::EventArgs args) {
 		terrain->grass_properties.viewDistance = args.fValue;
-		wi::HairParticleSystem* hair = terrain->scene->hairs.GetComponent(terrain->grassEntity);
+		Protean::HairParticleSystem* hair = terrain->scene->hairs.GetComponent(terrain->grassEntity);
 		if (hair != nullptr)
 		{
 			hair->viewDistance = args.fValue;
@@ -809,7 +807,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	presetCombo.AddItem("Mountains", PRESET_MOUNTAINS);
 	presetCombo.AddItem("Arctic", PRESET_ARCTIC);
 	presetCombo.AddItem("Desert", PRESET_DESERT);
-	presetCombo.OnSelect([=](wi::gui::EventArgs args) {
+	presetCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 
 		terrain->Generation_Cancel();
 		for (auto& modifier : modifiers)
@@ -822,8 +820,8 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		terrain->modifiers_to_remove.clear();
 		PerlinModifierWindow* perlin = new PerlinModifierWindow;
 		VoronoiModifierWindow* voronoi = new VoronoiModifierWindow;
-		perlin->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)wi::terrain::Modifier::BlendMode::Additive);
-		voronoi->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)wi::terrain::Modifier::BlendMode::Multiply);
+		perlin->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode::Additive);
+		voronoi->blendCombo.SetSelectedByUserdataWithoutCallback((uint64_t)Protean::Terrain::Modifier::BlendMode::Multiply);
 
 		switch (args.userdata)
 		{
@@ -920,9 +918,9 @@ void TerrainWindow::Create(EditorComponent* _editor)
 			break;
 		}
 
-		wi::allocator::shared_ptr<wi::terrain::PerlinModifier> terrain_perlin = wi::allocator::make_shared_single<wi::terrain::PerlinModifier>();
+		Protean::Allocator::shared_ptr<Protean::Terrain::PerlinModifier> terrain_perlin = Protean::Allocator::make_shared_single<Protean::Terrain::PerlinModifier>();
 		terrain->modifiers.emplace_back() = terrain_perlin;
-		wi::allocator::shared_ptr<wi::terrain::VoronoiModifier> terrain_voronoi = wi::allocator::make_shared_single<wi::terrain::VoronoiModifier>();
+		Protean::Allocator::shared_ptr<Protean::Terrain::VoronoiModifier> terrain_voronoi = Protean::Allocator::make_shared_single<Protean::Terrain::VoronoiModifier>();
 		terrain->modifiers.emplace_back() = terrain_voronoi;
 
 		editor->GetCurrentEditorScene().scene.weathers.Clear();
@@ -951,7 +949,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	addModifierCombo.AddItem("Perlin Noise");
 	addModifierCombo.AddItem("Voronoi Noise");
 	addModifierCombo.AddItem("Heightmap Image");
-	addModifierCombo.OnSelect([=](wi::gui::EventArgs args) {
+	addModifierCombo.OnSelect([=](Protean::Gui::EventArgs args) {
 
 		addModifierCombo.SetSelectedWithoutCallback(-1);
 		terrain->Generation_Cancel();
@@ -962,7 +960,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		case 0:
 			{
 				PerlinModifierWindow* ptr = new PerlinModifierWindow;
-				wi::allocator::shared_ptr<wi::terrain::PerlinModifier> modifier = wi::allocator::make_shared_single<wi::terrain::PerlinModifier>();
+				Protean::Allocator::shared_ptr<Protean::Terrain::PerlinModifier> modifier = Protean::Allocator::make_shared_single<Protean::Terrain::PerlinModifier>();
 				terrain->modifiers.push_back(modifier);
 				ptr->From(modifier.get());
 				AddModifier(ptr);
@@ -971,7 +969,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		case 1:
 			{
 				VoronoiModifierWindow* ptr = new VoronoiModifierWindow;
-				wi::allocator::shared_ptr<wi::terrain::VoronoiModifier> modifier = wi::allocator::make_shared_single<wi::terrain::VoronoiModifier>();
+				Protean::Allocator::shared_ptr<Protean::Terrain::VoronoiModifier> modifier = Protean::Allocator::make_shared_single<Protean::Terrain::VoronoiModifier>();
 				terrain->modifiers.push_back(modifier);
 				ptr->From(modifier.get());
 				AddModifier(ptr);
@@ -980,7 +978,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		case 2:
 			{
 				HeightmapModifierWindow* ptr = new HeightmapModifierWindow;
-				wi::allocator::shared_ptr<wi::terrain::HeightmapModifier> modifier = wi::allocator::make_shared_single<wi::terrain::HeightmapModifier>();
+				Protean::Allocator::shared_ptr<Protean::Terrain::HeightmapModifier> modifier = Protean::Allocator::make_shared_single<Protean::Terrain::HeightmapModifier>();
 				terrain->modifiers.push_back(modifier);
 				ptr->From(modifier.get());
 				AddModifier(ptr);
@@ -996,7 +994,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	scaleSlider.SetTooltip("Size of one chunk in horizontal directions.\nLarger chunk scale will cover larger distance, but will have less detail per unit.");
 	scaleSlider.SetSize(XMFLOAT2(wid, hei));
 	scaleSlider.SetPos(XMFLOAT2(x, y += step));
-	scaleSlider.OnSlide([=](wi::gui::EventArgs args) {
+	scaleSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->chunk_scale = args.fValue;
 		generate_callback();
 		});
@@ -1006,7 +1004,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	seedSlider.SetTooltip("Seed for terrain randomness");
 	seedSlider.SetSize(XMFLOAT2(wid, hei));
 	seedSlider.SetPos(XMFLOAT2(x, y += step));
-	seedSlider.OnSlide([=](wi::gui::EventArgs args) {
+	seedSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->seed = (uint32_t)args.iValue;
 		generate_callback();
 		});
@@ -1016,7 +1014,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	bottomLevelSlider.SetTooltip("Terrain mesh grid lowest level");
 	bottomLevelSlider.SetSize(XMFLOAT2(wid, hei));
 	bottomLevelSlider.SetPos(XMFLOAT2(x, y += step));
-	bottomLevelSlider.OnSlide([=](wi::gui::EventArgs args) {
+	bottomLevelSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->bottomLevel = args.fValue;
 		generate_callback();
 		});
@@ -1026,7 +1024,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	topLevelSlider.SetTooltip("Terrain mesh grid topmost level");
 	topLevelSlider.SetSize(XMFLOAT2(wid, hei));
 	topLevelSlider.SetPos(XMFLOAT2(x, y += step));
-	topLevelSlider.OnSlide([=](wi::gui::EventArgs args) {
+	topLevelSlider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->topLevel = args.fValue;
 		generate_callback();
 		});
@@ -1048,7 +1046,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	region1Slider.SetTooltip("The region's falloff power");
 	region1Slider.SetSize(XMFLOAT2(wid, hei));
 	region1Slider.SetPos(XMFLOAT2(x, y += step));
-	region1Slider.OnSlide([=](wi::gui::EventArgs args) {
+	region1Slider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->region1 = args.fValue;
 		generate_callback();
 		});
@@ -1058,7 +1056,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	region2Slider.SetTooltip("The region's falloff power");
 	region2Slider.SetSize(XMFLOAT2(wid, hei));
 	region2Slider.SetPos(XMFLOAT2(x, y += step));
-	region2Slider.OnSlide([=](wi::gui::EventArgs args) {
+	region2Slider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->region2 = args.fValue;
 		generate_callback();
 		});
@@ -1068,25 +1066,25 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	region3Slider.SetTooltip("The region's falloff power");
 	region3Slider.SetSize(XMFLOAT2(wid, hei));
 	region3Slider.SetPos(XMFLOAT2(x, y += step));
-	region3Slider.OnSlide([=](wi::gui::EventArgs args) {
+	region3Slider.OnSlide([=](Protean::Gui::EventArgs args) {
 		terrain->region3 = args.fValue;
 		generate_callback();
 		});
 	AddWidget(&region3Slider);
 
-	materialCombos[wi::terrain::MATERIAL_BASE].Create("Base material: ");
-	materialCombos[wi::terrain::MATERIAL_SLOPE].Create("Slope material: ");
-	materialCombos[wi::terrain::MATERIAL_LOW_ALTITUDE].Create("Low altitude material: ");
-	materialCombos[wi::terrain::MATERIAL_HIGH_ALTITUDE].Create("High altitude material: ");
+	materialCombos[Protean::Terrain::MATERIAL_BASE].Create("Base material: ");
+	materialCombos[Protean::Terrain::MATERIAL_SLOPE].Create("Slope material: ");
+	materialCombos[Protean::Terrain::MATERIAL_LOW_ALTITUDE].Create("Low altitude material: ");
+	materialCombos[Protean::Terrain::MATERIAL_HIGH_ALTITUDE].Create("High altitude material: ");
 
 	for (size_t i = 0; i < arraysize(materialCombos); ++i)
 	{
 		materialCombos[i].SetTooltip("Select material entity");
 		materialCombos[i].SetSize(XMFLOAT2(wid, hei));
 		materialCombos[i].SetPos(XMFLOAT2(x, y += step));
-		materialCombos[i].OnSelect([this, i](wi::gui::EventArgs args) {
+		materialCombos[i].OnSelect([this, i](Protean::Gui::EventArgs args) {
 			const Scene& scene = editor->GetCurrentScene();
-			wi::ecs::Entity entity = static_cast<wi::ecs::Entity>(args.userdata);
+			Protean::Entity entity = static_cast<Protean::Entity>(args.userdata);
 			if (entity != INVALID_ENTITY && scene.materials.Contains(entity))
 			{
 				if (terrain->materialEntities[i] != entity)
@@ -1109,9 +1107,9 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	materialCombo_GrassParticle.SetTooltip("Select material entity");
 	materialCombo_GrassParticle.SetSize(XMFLOAT2(wid, hei));
 	materialCombo_GrassParticle.SetPos(XMFLOAT2(x, y += step));
-	materialCombo_GrassParticle.OnSelect([this](wi::gui::EventArgs args) {
+	materialCombo_GrassParticle.OnSelect([this](Protean::Gui::EventArgs args) {
 		const Scene& scene = editor->GetCurrentScene();
-		wi::ecs::Entity entity = static_cast<wi::ecs::Entity>(args.userdata);
+		Protean::Entity entity = static_cast<Protean::Entity>(args.userdata);
 		if (entity != INVALID_ENTITY && scene.materials.Contains(entity))
 		{
 			if (terrain->grassEntity != entity)
@@ -1130,26 +1128,26 @@ void TerrainWindow::Create(EditorComponent* _editor)
 	propsWindow.reset(new PropsWindow(editor));
 	AddWidget(propsWindow.get());
 
-	saveHeightmapButton.OnClick([=](wi::gui::EventArgs args) {
+	saveHeightmapButton.OnClick([=](Protean::Gui::EventArgs args) {
 
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::SAVE;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::SAVE;
 		params.description = "PNG";
 		params.extensions = { "PNG" };
-		wi::helper::FileDialog(params, [=](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		Protean::Helper::FileDialog(params, [=](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-				wi::primitive::AABB aabb;
+				Protean::AABB aabb;
 				for (auto& chunk : terrain->chunks)
 				{
 					const size_t index = terrain->scene->objects.GetIndex(chunk.second.entity);
 					if (index == INVALID_INDEX)
 						continue;
-					const wi::primitive::AABB& object_aabb = terrain->scene->aabb_objects[index];
-					aabb = wi::primitive::AABB::Merge(aabb, object_aabb);
+					const Protean::AABB& object_aabb = terrain->scene->aabb_objects[index];
+					aabb = Protean::AABB::Merge(aabb, object_aabb);
 				}
 
-				wi::vector<uint8_t> data;
+				Protean::vector<uint8_t> data;
 				int width = int(aabb.getHalfWidth().x * 2 + 1);
 				int height = int(aabb.getHalfWidth().z * 2 + 1);
 				data.resize(width * height * sizeof(uint16_t), 0);
@@ -1174,24 +1172,24 @@ void TerrainWindow::Create(EditorComponent* _editor)
 								p.x -= aabb._min.x;
 								p.z -= aabb._min.z;
 								int coord = int(p.x) + int(p.z) * width;
-								dest[coord] = uint16_t(wi::math::InverseLerp(aabb._min.y, aabb._max.y, p.y) * 65535u);
+								dest[coord] = uint16_t(Protean::Math::InverseLerp(aabb._min.y, aabb._max.y, p.y) * 65535u);
 							}
 						}
 					}
 				}
 
-				std::string extension = wi::helper::GetExtensionFromFileName(fileName);
+				std::string extension = Protean::Helper::GetExtensionFromFileName(fileName);
 				std::string filename_replaced = fileName;
 				if (extension != "PNG")
 				{
-					filename_replaced = wi::helper::ReplaceExtension(fileName, "PNG");
+					filename_replaced = Protean::Helper::ReplaceExtension(fileName, "PNG");
 				}
 
-				wi::graphics::TextureDesc desc;
+				Protean::Graphics::TextureDesc desc;
 				desc.width = uint32_t(width);
 				desc.height = uint32_t(height);
-				desc.format = wi::graphics::Format::R16_UNORM;
-				bool success = wi::helper::saveTextureToFile(data, desc, filename_replaced);
+				desc.format = Protean::Graphics::Format::R16_UNORM;
+				bool success = Protean::Helper::saveTextureToFile(data, desc, filename_replaced);
 				assert(success);
 
 				if (success)
@@ -1204,34 +1202,34 @@ void TerrainWindow::Create(EditorComponent* _editor)
 		});
 
 
-	saveRegionButton.OnClick([=](wi::gui::EventArgs args) {
+	saveRegionButton.OnClick([=](Protean::Gui::EventArgs args) {
 
-		wi::helper::FileDialogParams params;
-		params.type = wi::helper::FileDialogParams::SAVE;
+		Protean::Helper::FileDialogParams params;
+		params.type = Protean::Helper::FileDialogParams::SAVE;
 		params.description = "JPG, PNG";
 		params.extensions = { "JPG", "PNG" };
-		wi::helper::FileDialog(params, [=](std::string fileName) {
-			wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+		Protean::Helper::FileDialog(params, [=](std::string fileName) {
+			Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-				wi::primitive::AABB aabb;
+				Protean::AABB aabb;
 				for (auto& chunk : terrain->chunks)
 				{
 					const size_t index = terrain->scene->objects.GetIndex(chunk.second.entity);
 					if (index == INVALID_INDEX)
 						continue;
-					const wi::primitive::AABB& object_aabb = terrain->scene->aabb_objects[index];
-					aabb = wi::primitive::AABB::Merge(aabb, object_aabb);
+					const Protean::AABB& object_aabb = terrain->scene->aabb_objects[index];
+					aabb = Protean::AABB::Merge(aabb, object_aabb);
 				}
 
-				wi::vector<uint8_t> data;
+				Protean::vector<uint8_t> data;
 				int width = int(aabb.getHalfWidth().x * 2 + 1);
 				int height = int(aabb.getHalfWidth().z * 2 + 1);
-				data.resize(width * height * sizeof(wi::Color), 0);
-				wi::Color* dest = (wi::Color*)data.data();
+				data.resize(width * height * sizeof(Protean::Color), 0);
+				Protean::Color* dest = (Protean::Color*)data.data();
 
 				for (auto& chunk : terrain->chunks)
 				{
-					const wi::terrain::ChunkData& chunk_data = chunk.second;
+					const Protean::Terrain::ChunkData& chunk_data = chunk.second;
 					const ObjectComponent* object = terrain->scene->objects.GetComponent(chunk.second.entity);
 					if (object != nullptr)
 					{
@@ -1250,7 +1248,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 								p.x -= aabb._min.x;
 								p.z -= aabb._min.z;
 								int coord = int(p.x) + int(p.z) * width;
-								dest[coord] = wi::Color(
+								dest[coord] = Protean::Color(
 									chunk_data.blendmap_layers[0].pixels[i],
 									chunk_data.blendmap_layers[1].pixels[i],
 									chunk_data.blendmap_layers[2].pixels[i],
@@ -1262,18 +1260,18 @@ void TerrainWindow::Create(EditorComponent* _editor)
 					}
 				}
 
-				std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+				std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(fileName));
 				std::string filename_replaced = fileName;
 				if (extension != "JPG" && extension != "PNG")
 				{
-					filename_replaced = wi::helper::ReplaceExtension(fileName, "JPG");
+					filename_replaced = Protean::Helper::ReplaceExtension(fileName, "JPG");
 				}
 
-				wi::graphics::TextureDesc desc;
+				Protean::Graphics::TextureDesc desc;
 				desc.width = uint32_t(width);
 				desc.height = uint32_t(height);
-				desc.format = wi::graphics::Format::R8G8B8A8_UNORM;
-				bool success = wi::helper::saveTextureToFile(data, desc, filename_replaced);
+				desc.format = Protean::Graphics::Format::R8G8B8A8_UNORM;
+				bool success = Protean::Helper::saveTextureToFile(data, desc, filename_replaced);
 				assert(success);
 
 				if (success)
@@ -1289,7 +1287,7 @@ void TerrainWindow::Create(EditorComponent* _editor)
 }
 void TerrainWindow::SetEntity(Entity entity)
 {
-	wi::scene::Scene& scene = editor->GetCurrentScene();
+	Protean::Scene& scene = editor->GetCurrentScene();
 
 	if (this->entity == entity)
 		return;
@@ -1334,24 +1332,24 @@ void TerrainWindow::SetEntity(Entity entity)
 		switch (x->type)
 		{
 		default:
-		case wi::terrain::Modifier::Type::Perlin:
+		case Protean::Terrain::Modifier::Type::Perlin:
 		{
 			PerlinModifierWindow* modifier = new PerlinModifierWindow;
-			modifier->From((wi::terrain::PerlinModifier*)x.get());
+			modifier->From((Protean::Terrain::PerlinModifier*)x.get());
 			AddModifier(modifier);
 		}
 		break;
-		case wi::terrain::Modifier::Type::Voronoi:
+		case Protean::Terrain::Modifier::Type::Voronoi:
 		{
 			VoronoiModifierWindow* modifier = new VoronoiModifierWindow;
-			modifier->From((wi::terrain::VoronoiModifier*)x.get());
+			modifier->From((Protean::Terrain::VoronoiModifier*)x.get());
 			AddModifier(modifier);
 		}
 		break;
-		case wi::terrain::Modifier::Type::Heightmap:
+		case Protean::Terrain::Modifier::Type::Heightmap:
 		{
 			HeightmapModifierWindow* modifier = new HeightmapModifierWindow;
-			modifier->From((wi::terrain::HeightmapModifier*)x.get());
+			modifier->From((Protean::Terrain::HeightmapModifier*)x.get());
 			AddModifier(modifier);
 		}
 		break;
@@ -1364,8 +1362,8 @@ void TerrainWindow::SetEntity(Entity entity)
 }
 void TerrainWindow::RefreshMaterialComboBoxes()
 {
-	wi::scene::Scene& scene = editor->GetCurrentScene();
-	auto fillMaterialCombo = [&](wi::gui::ComboBox& comboBox, Entity selected) {
+	Protean::Scene& scene = editor->GetCurrentScene();
+	auto fillMaterialCombo = [&](Protean::Gui::ComboBox& comboBox, Entity selected) {
 		comboBox.ClearItems();
 		comboBox.AddItem("NO MATERIAL", INVALID_ENTITY);
 		for (size_t i = 0; i < scene.materials.GetCount(); ++i)
@@ -1407,7 +1405,7 @@ void TerrainWindow::AddModifier(ModifierWindow* modifier_window)
 	modifiers.emplace_back().reset(modifier_window);
 	AddWidget(modifier_window);
 
-	modifier_window->OnClose([=](wi::gui::EventArgs args) {
+	modifier_window->OnClose([=](Protean::Gui::EventArgs args) {
 		// Can't delete modifier in itself, so add to a deferred deletion queue:
 		terrain->modifiers_to_remove.push_back(modifier_window->modifier);
 		modifiers_to_remove.push_back(modifier_window);
@@ -1421,39 +1419,39 @@ void TerrainWindow::SetupAssets()
 	Scene& currentScene = editor->GetCurrentScene();
 
 	Entity terrainEntity = CreateEntity();
-	wi::terrain::Terrain& terrain_preset = currentScene.terrains.Create(terrainEntity);
+	Protean::Terrain::Terrain& terrain_preset = currentScene.terrains.Create(terrainEntity);
 	currentScene.names.Create(terrainEntity) = "terrain";
 
 	SetEntity(terrainEntity);
 
 	terrain_preset.materialEntities.clear();
-	terrain_preset.materialEntities.resize(wi::terrain::MATERIAL_COUNT);
-	for (int i = 0; i < wi::terrain::MATERIAL_COUNT; ++i)
+	terrain_preset.materialEntities.resize(Protean::Terrain::MATERIAL_COUNT);
+	for (int i = 0; i < Protean::Terrain::MATERIAL_COUNT; ++i)
 	{
 		terrain_preset.materialEntities[i] = CreateEntity();
 		currentScene.materials.Create(terrain_preset.materialEntities[i]);
 		switch (i)
 		{
-		case wi::terrain::MATERIAL_BASE:
+		case Protean::Terrain::MATERIAL_BASE:
 			currentScene.names.Create(terrain_preset.materialEntities[i]) = "Base";
 			break;
-		case wi::terrain::MATERIAL_SLOPE:
+		case Protean::Terrain::MATERIAL_SLOPE:
 			currentScene.names.Create(terrain_preset.materialEntities[i]) = "Slope";
 			break;
-		case wi::terrain::MATERIAL_LOW_ALTITUDE:
+		case Protean::Terrain::MATERIAL_LOW_ALTITUDE:
 			currentScene.names.Create(terrain_preset.materialEntities[i]) = "LowAltitude";
 			break;
-		case wi::terrain::MATERIAL_HIGH_ALTITUDE:
+		case Protean::Terrain::MATERIAL_HIGH_ALTITUDE:
 			currentScene.names.Create(terrain_preset.materialEntities[i]) = "HighAltitude";
 			break;
 		}
 		currentScene.Component_Attach(terrain_preset.materialEntities[i], entity);
 	}
 
-	MaterialComponent* material_Base = currentScene.materials.GetComponent(terrain_preset.materialEntities[wi::terrain::MATERIAL_BASE]);
-	MaterialComponent* material_Slope = currentScene.materials.GetComponent(terrain_preset.materialEntities[wi::terrain::MATERIAL_SLOPE]);
-	MaterialComponent* material_LowAltitude = currentScene.materials.GetComponent(terrain_preset.materialEntities[wi::terrain::MATERIAL_LOW_ALTITUDE]);
-	MaterialComponent* material_HighAltitude = currentScene.materials.GetComponent(terrain_preset.materialEntities[wi::terrain::MATERIAL_HIGH_ALTITUDE]);
+	MaterialComponent* material_Base = currentScene.materials.GetComponent(terrain_preset.materialEntities[Protean::Terrain::MATERIAL_BASE]);
+	MaterialComponent* material_Slope = currentScene.materials.GetComponent(terrain_preset.materialEntities[Protean::Terrain::MATERIAL_SLOPE]);
+	MaterialComponent* material_LowAltitude = currentScene.materials.GetComponent(terrain_preset.materialEntities[Protean::Terrain::MATERIAL_LOW_ALTITUDE]);
+	MaterialComponent* material_HighAltitude = currentScene.materials.GetComponent(terrain_preset.materialEntities[Protean::Terrain::MATERIAL_HIGH_ALTITUDE]);
 
 	material_Base->SetRoughness(1);
 	material_Base->SetReflectance(0.005f);
@@ -1461,16 +1459,16 @@ void TerrainWindow::SetupAssets()
 	material_LowAltitude->SetRoughness(1);
 	material_HighAltitude->SetRoughness(1);
 
-	std::string asset_path = wi::helper::GetCurrentPath() + "/Content/terrain/";
-	if (!wi::helper::DirectoryExists(asset_path))
+	std::string asset_path = Protean::Helper::GetCurrentPath() + "/Content/terrain/";
+	if (!Protean::Helper::DirectoryExists(asset_path))
 	{
 		// Source tree layout: working directory is data/editor, content is in data/content
-		asset_path = wi::helper::GetCurrentPath() + "/../content/terrain/";
+		asset_path = Protean::Helper::GetCurrentPath() + "/../content/terrain/";
 	}
-	if (!wi::helper::DirectoryExists(asset_path))
+	if (!Protean::Helper::DirectoryExists(asset_path))
 	{
 		// In UWP or older Editor content, it's not in Content folder:
-		asset_path = wi::helper::GetCurrentPath() + "/terrain/";
+		asset_path = Protean::Helper::GetCurrentPath() + "/terrain/";
 	}
 
 	material_Base->textures[MaterialComponent::BASECOLORMAP].name = asset_path + "base.jpg";
@@ -1609,8 +1607,8 @@ void TerrainWindow::SetupAssets()
 		terrain_preset.materialEntities.push_back(materialEntity);
 	}
 
-	wi::jobsystem::context ctx;
-	wi::jobsystem::Dispatch(ctx, (uint32_t)terrain_preset.materialEntities.size(), 1, [&](wi::jobsystem::JobArgs args) {
+	Protean::JobSystem::context ctx;
+	Protean::JobSystem::Dispatch(ctx, (uint32_t)terrain_preset.materialEntities.size(), 1, [&](Protean::JobSystem::JobArgs args) {
 		Entity entity = terrain_preset.materialEntities[args.jobIndex];
 		MaterialComponent* material = currentScene.materials.GetComponent(entity);
 		if (material == nullptr)
@@ -1618,7 +1616,7 @@ void TerrainWindow::SetupAssets()
 		material->CreateRenderData();
 	});
 
-	wi::config::File config;
+	Protean::Config::File config;
 	config.Open(std::string(asset_path + "props.ini").c_str());
 	std::unordered_map<std::string, Scene> prop_scenes;
 
@@ -1626,7 +1624,7 @@ void TerrainWindow::SetupAssets()
 	for (const auto& it : sorted_sections)
 	{
 		const std::string& section_name = it.first;
-		const wi::config::Section& section = *it.second;
+		const Protean::Config::Section& section = *it.second;
 		Entity entity = INVALID_ENTITY;
 		Scene* scene = &editor->GetCurrentScene();
 
@@ -1635,7 +1633,7 @@ void TerrainWindow::SetupAssets()
 			std::string text = section.GetText("file");
 			if (prop_scenes.count(text) == 0)
 			{
-				wi::scene::LoadModel(prop_scenes[text], asset_path + text);
+				Protean::LoadModel(prop_scenes[text], asset_path + text);
 			}
 			if (prop_scenes.count(text) != 0)
 			{
@@ -1652,7 +1650,7 @@ void TerrainWindow::SetupAssets()
 			continue;
 		}
 
-		wi::terrain::Prop& prop = terrain_preset.props.emplace_back();
+		Protean::Terrain::Prop& prop = terrain_preset.props.emplace_back();
 
 		if (section.Has("min_count_per_chunk"))
 		{
@@ -1699,19 +1697,19 @@ void TerrainWindow::SetupAssets()
 			prop.max_y_offset = section.GetFloat("max_y_offset");
 		}
 
-		wi::Archive archive;
+		Protean::Archive archive;
 		EntitySerializer seri;
 		scene->Entity_Serialize(
 			archive,
 			seri,
 			entity,
-			wi::scene::Scene::EntitySerializeFlags::RECURSIVE | wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+			Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 		);
 		archive.WriteData(prop.data);
 		scene->Entity_Remove(entity); // The entities will be placed by terrain generator, we don't need the default object that the scene has anymore
 	}
 
-	wi::jobsystem::Wait(ctx);
+	Protean::JobSystem::Wait(ctx);
 
 	for (auto& it : prop_scenes)
 	{
@@ -1720,7 +1718,7 @@ void TerrainWindow::SetupAssets()
 
 	// Grass config:
 	std::string grassWiscenePath = asset_path + "grass.wiscene";
-	if (wi::helper::FileExists(grassWiscenePath))
+	if (Protean::Helper::FileExists(grassWiscenePath))
 	{
 		// New method: grass from wiscene file
 		Scene grassScene;
@@ -1739,8 +1737,8 @@ void TerrainWindow::SetupAssets()
 		currentScene.materials.Create(terrain_preset.grassEntity);
 		currentScene.hairs.Create(terrain_preset.grassEntity) = terrain_preset.grass_properties;
 		MaterialComponent* material_Grass = currentScene.materials.GetComponent(terrain_preset.grassEntity);
-		wi::HairParticleSystem* grass = currentScene.hairs.GetComponent(terrain_preset.grassEntity);
-		wi::config::File grass_config;
+		Protean::HairParticleSystem* grass = currentScene.hairs.GetComponent(terrain_preset.grassEntity);
+		Protean::Config::File grass_config;
 		grass_config.Open(std::string(asset_path + "grass.ini").c_str());
 		if (grass_config.Has("texture"))
 		{
@@ -1797,7 +1795,7 @@ void TerrainWindow::SetupAssets()
 	RefreshMaterialComboBoxes();
 }
 
-void TerrainWindow::Update(const wi::Canvas& canvas, float dt)
+void TerrainWindow::Update(const Protean::Canvas& canvas, float dt)
 {
 	// Check whether any modifiers were "closed", and we will really remove them here if so:
 	if (!modifiers_to_remove.empty())
@@ -1817,7 +1815,7 @@ void TerrainWindow::Update(const wi::Canvas& canvas, float dt)
 		modifiers_to_remove.clear();
 	}
 
-	wi::gui::Window::Update(canvas, dt);
+	Protean::Gui::Window::Update(canvas, dt);
 }
 void TerrainWindow::ResizeLayout()
 {
@@ -1864,5 +1862,5 @@ void TerrainWindow::ResizeLayout()
 
 	SetSize(XMFLOAT2(GetScale().x, layout.y + control_size));
 
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 }

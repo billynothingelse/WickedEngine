@@ -15,9 +15,8 @@
 
 #define CONTENT_DIR "../../Content/"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
+using namespace Protean;
+using namespace Protean::Graphics;
 
 Shader imguiVS;
 Shader imguiPS;
@@ -60,14 +59,14 @@ bool ImGui_Impl_CreateDeviceObjects()
 	textureData.row_pitch = width * GetFormatStride(textureDesc.format);
 	textureData.slice_pitch = textureData.row_pitch * height;
 
-	wi::graphics::GetDevice()->CreateTexture(&textureDesc, &textureData, &fontTexture);
+	Protean::Graphics::GetDevice()->CreateTexture(&textureDesc, &textureData, &fontTexture);
 
 	SamplerDesc samplerDesc;
 	samplerDesc.address_u = TextureAddressMode::WRAP;
 	samplerDesc.address_v = TextureAddressMode::WRAP;
 	samplerDesc.address_w = TextureAddressMode::WRAP;
 	samplerDesc.filter = Filter::MIN_MAG_MIP_LINEAR;
-	wi::graphics::GetDevice()->CreateSampler(&samplerDesc, &sampler);
+	Protean::Graphics::GetDevice()->CreateSampler(&samplerDesc, &sampler);
 
 	// Store our identifier
 	io.Fonts->SetTexID((ImTextureID)&fontTexture);
@@ -84,11 +83,11 @@ bool ImGui_Impl_CreateDeviceObjects()
 	desc.vs = &imguiVS;
 	desc.ps = &imguiPS;
 	desc.il = &imguiInputLayout;
-	desc.dss = wi::renderer::GetDepthStencilState(wi::enums::DSSTYPE_DEPTHREAD);
-	desc.rs = wi::renderer::GetRasterizerState(wi::enums::RSTYPE_DOUBLESIDED);
-	desc.bs = wi::renderer::GetBlendState(wi::enums::BSTYPE_TRANSPARENT);
+	desc.dss = Protean::Renderer::GetDepthStencilState(Protean::DSSTYPE_DEPTHREAD);
+	desc.rs = Protean::Renderer::GetRasterizerState(Protean::RSTYPE_DOUBLESIDED);
+	desc.bs = Protean::Renderer::GetBlendState(Protean::BSTYPE_TRANSPARENT);
 	desc.pt = PrimitiveTopology::TRIANGLELIST;
-	wi::graphics::GetDevice()->CreatePipelineState(&desc, &imguiPSO);
+	Protean::Graphics::GetDevice()->CreatePipelineState(&desc, &imguiPSO);
 
 	return true;
 }
@@ -109,13 +108,13 @@ void Example_ImGui::Initialize()
 {
 	// Compile shaders
 	{
-		auto shaderPath = wi::renderer::GetShaderSourcePath();
-		wi::renderer::SetShaderSourcePath(wi::helper::GetCurrentPath() + "/");
+		auto shaderPath = Protean::Renderer::GetShaderSourcePath();
+		Protean::Renderer::SetShaderSourcePath(Protean::Helper::GetCurrentPath() + "/");
 
-		wi::renderer::LoadShader(ShaderStage::VS, imguiVS, "ImGuiVS.cso");
-		wi::renderer::LoadShader(ShaderStage::PS, imguiPS, "ImGuiPS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::VS, imguiVS, "ImGuiVS.cso");
+		Protean::Renderer::LoadShader(ShaderStage::PS, imguiPS, "ImGuiPS.cso");
 
-		wi::renderer::SetShaderSourcePath(shaderPath);
+		Protean::Renderer::SetShaderSourcePath(shaderPath);
 	}
 
 	// Setup Dear ImGui context
@@ -157,7 +156,7 @@ void Example_ImGui::Initialize()
 	ActivatePath(&renderer);
 }
 
-void Example_ImGui::Compose(wi::graphics::CommandList cmd)
+void Example_ImGui::Compose(Protean::Graphics::CommandList cmd)
 {
 	Application::Compose(cmd);
 
@@ -179,7 +178,7 @@ void Example_ImGui::Compose(wi::graphics::CommandList cmd)
 
 	auto* bd = ImGui_Impl_GetBackendData();
 
-	GraphicsDevice* device = wi::graphics::GetDevice();
+	GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 	// Get memory for vertex and index buffers
 	const uint64_t vbSize = sizeof(ImDrawVert) * drawData->TotalVtxCount;
@@ -331,30 +330,30 @@ void Example_ImGuiRenderer::Load()
 
 	label.Create("Label1");
 	label.SetText("Wicked Engine ImGui integration");
-	label.font.params.h_align = wi::font::WIFALIGN_CENTER;
+	label.font.params.h_align = Protean::Font::WIFALIGN_CENTER;
 	label.SetSize(XMFLOAT2(240, 20));
 	GetGUI().AddWidget(&label);
 
 	// Reset all state that tests might have modified:
-	wi::eventhandler::SetVSync(true);
-	wi::renderer::SetToDrawGridHelper(false);
-	wi::renderer::SetTemporalAAEnabled(true);
-	wi::renderer::ClearWorld(wi::scene::GetScene());
-	wi::scene::GetScene().weather = WeatherComponent();
+	Protean::EventHandler::SetVSync(true);
+	Protean::Renderer::SetToDrawGridHelper(false);
+	Protean::Renderer::SetTemporalAAEnabled(true);
+	Protean::Renderer::ClearWorld(Protean::GetScene());
+	Protean::GetScene().weather = WeatherComponent();
 	this->ClearSprites();
 	this->ClearFonts();
-	if (wi::lua::GetLuaState() != nullptr) {
-		wi::lua::KillProcesses();
+	if (Protean::Lua::GetLuaState() != nullptr) {
+		Protean::Lua::KillProcesses();
 	}
 
 	// Reset camera position:
 	TransformComponent transform;
 	transform.Translate(XMFLOAT3(0, 2.f, -4.5f));
 	transform.UpdateTransform();
-	wi::scene::GetCamera().TransformCamera(transform);
+	Protean::GetCamera().TransformCamera(transform);
 
 	// Load model.
-	wi::scene::LoadModel(CONTENT_DIR "models/teapot.wiscene");
+	Protean::LoadModel(CONTENT_DIR "models/teapot.wiscene");
 
 	RenderPath3D::Load();
 }
@@ -418,23 +417,23 @@ void Example_ImGuiRenderer::Update(float dt)
 		ImGui::End();
 	}
 
-	Scene& scene = wi::scene::GetScene();
+	Scene& scene = Protean::GetScene();
 	// teapot_material Base Base_mesh Top Top_mesh editorLight
-	wi::ecs::Entity e_teapot_base = scene.Entity_FindByName("Base");
-	wi::ecs::Entity e_teapot_top = scene.Entity_FindByName("Top");
-	assert(e_teapot_base != wi::ecs::INVALID_ENTITY);
-	assert(e_teapot_top != wi::ecs::INVALID_ENTITY);
+	Protean::Entity e_teapot_base = scene.Entity_FindByName("Base");
+	Protean::Entity e_teapot_top = scene.Entity_FindByName("Top");
+	assert(e_teapot_base != Protean::INVALID_ENTITY);
+	assert(e_teapot_top != Protean::INVALID_ENTITY);
 	TransformComponent* transform_base = scene.transforms.GetComponent(e_teapot_base);
 	TransformComponent* transform_top = scene.transforms.GetComponent(e_teapot_top);
 	assert(transform_base != nullptr);
 	assert(transform_top != nullptr);
 	float rotation = dt;
-	if (wi::input::Down(wi::input::KEYBOARD_BUTTON_LEFT))
+	if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_LEFT))
 	{
 		transform_base->Rotate(XMVectorSet(0, rotation, 0, 1));
 		transform_top->Rotate(XMVectorSet(0, rotation, 0, 1));
 	}
-	else if (wi::input::Down(wi::input::KEYBOARD_BUTTON_RIGHT))
+	else if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_RIGHT))
 	{
 		transform_base->Rotate(XMVectorSet(0, -rotation, 0, 1));
 		transform_top->Rotate(XMVectorSet(0, -rotation, 0, 1));

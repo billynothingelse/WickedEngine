@@ -22,9 +22,9 @@
 #include <fstream>
 #include <chrono>
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi::backlog
+namespace Protean::Backlog
 {
 	bool enabled = false;
 	bool was_ever_enabled = enabled;
@@ -32,14 +32,14 @@ namespace wi::backlog
 	const size_t deleteFromLine = 500; // Only limits in-memory display buffer, not file
 	float pos = 5;
 	int historyPos = 0;
-	wi::font::Params font_params;
-	wi::Color backgroundColor = wi::Color(17, 30, 43, 255);
+	Protean::Font::Params font_params;
+	Protean::Color backgroundColor = Protean::Color(17, 30, 43, 255);
 	Texture backgroundTex;
 	bool refitscroll = false;
-	wi::gui::TextInputField inputField;
-	wi::gui::Button toggleButton;
-	wi::gui::GUI GUI;
-	wi::gui::ScrollBar scrollbar;
+	Protean::Gui::TextInputField inputField;
+	Protean::Gui::Button toggleButton;
+	Protean::Gui::GUI GUI;
+	Protean::Gui::ScrollBar scrollbar;
 	float autoscroll = 0; // automatic scroll behaviour while backlog is not really updated with a proper scrollbar (init screen, shader compile, etc) the text should still scroll
 
 	bool locked = false;
@@ -61,7 +61,7 @@ namespace wi::backlog
 		std::atomic<bool> running{ false };
 		std::atomic<bool> initialized{ false };
 		std::atomic<uint32_t> autoFlushInterval{ 1000 };
-		wi::Timer lastFlushTimer;
+		Protean::Timer lastFlushTimer;
 		std::ofstream logFileStream;
 		std::string currentLogFilePath;
 		std::mutex flushMutex; // Synchronous flush requests
@@ -80,7 +80,7 @@ namespace wi::backlog
 			logFileStream.open(filepath, std::ios::binary | std::ios::trunc);
 			if (!logFileStream.is_open())
 			{
-				wi::helper::DebugOut("Failed to open log file: " + filepath + "\n", wi::helper::DebugLevel::Error);
+				Protean::Helper::DebugOut("Failed to open log file: " + filepath + "\n", Protean::Helper::DebugLevel::Error);
 			}
 
 			writerThread = std::thread([this]() {
@@ -294,11 +294,11 @@ namespace wi::backlog
 		scrollbar.Scroll(direction);
 		autoscroll += direction;
 	}
-	void Update(const wi::Canvas& canvas, float dt)
+	void Update(const Protean::Canvas& canvas, float dt)
 	{
 		if (!locked)
 		{
-			if (wi::input::Press(wi::input::KEYBOARD_BUTTON_HOME))
+			if (Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_HOME))
 			{
 				Toggle();
 			}
@@ -306,24 +306,24 @@ namespace wi::backlog
 			if (isActive())
 			{
 
-				if (wi::input::Press(wi::input::KEYBOARD_BUTTON_UP))
+				if (Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_UP))
 				{
 					historyPrev();
 				}
-				if (wi::input::Press(wi::input::KEYBOARD_BUTTON_DOWN))
+				if (Protean::Input::Press(Protean::Input::KEYBOARD_BUTTON_DOWN))
 				{
 					historyNext();
 				}
-				if (wi::input::Down(wi::input::KEYBOARD_BUTTON_PAGEUP))
+				if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_PAGEUP))
 				{
 					Scroll(1000.0f * dt);
 				}
-				if (wi::input::Down(wi::input::KEYBOARD_BUTTON_PAGEDOWN))
+				if (Protean::Input::Down(Protean::Input::KEYBOARD_BUTTON_PAGEDOWN))
 				{
 					Scroll(-1000.0f * dt);
 				}
 
-				Scroll(wi::input::GetPointer().z * 20);
+				Scroll(Protean::Input::GetPointer().z * 20);
 
 				static bool created = false;
 				if (!created)
@@ -331,7 +331,7 @@ namespace wi::backlog
 					created = true;
 					inputField.Create("");
 					inputField.SetCancelInputEnabled(false);
-					inputField.OnInputAccepted([](const wi::gui::EventArgs& args) {
+					inputField.OnInputAccepted([](const Protean::Gui::EventArgs& args) {
 						historyPos = 0;
 						post(args.sValue);
 						LogEntry entry;
@@ -347,7 +347,7 @@ namespace wi::backlog
 						}
 						if (!blockLuaExec)
 						{
-							wi::lua::RunText(args.sValue);
+							Protean::Lua::RunText(args.sValue);
 						}
 						else
 						{
@@ -355,31 +355,31 @@ namespace wi::backlog
 						}
 						inputField.SetText("");
 					});
-					const wi::Color theme_color_idle = wi::Color(30, 40, 60, 200);
-					const wi::Color theme_color_focus = wi::Color(70, 150, 170, 220);
-					const wi::Color theme_color_active = wi::Color::White();
-					const wi::Color theme_color_deactivating = wi::Color::lerp(theme_color_focus, wi::Color::White(), 0.5f);
-					const wi::Color shadow_color = wi::Color(80, 140, 180, 100);
-					const wi::Color font_color = wi::Color(160, 240, 250, 255);
+					const Protean::Color theme_color_idle = Protean::Color(30, 40, 60, 200);
+					const Protean::Color theme_color_focus = Protean::Color(70, 150, 170, 220);
+					const Protean::Color theme_color_active = Protean::Color::White();
+					const Protean::Color theme_color_deactivating = Protean::Color::lerp(theme_color_focus, Protean::Color::White(), 0.5f);
+					const Protean::Color shadow_color = Protean::Color(80, 140, 180, 100);
+					const Protean::Color font_color = Protean::Color(160, 240, 250, 255);
 					inputField.SetColor(theme_color_idle); // all states the same, it's gonna be always active anyway
-					inputField.font.params.color = wi::Color(160, 240, 250, 255);
-					inputField.font.params.shadowColor = wi::Color::Transparent();
+					inputField.font.params.color = Protean::Color(160, 240, 250, 255);
+					inputField.font.params.shadowColor = Protean::Color::Transparent();
 
 					toggleButton.Create("V");
-					toggleButton.OnClick([](const wi::gui::EventArgs& args) {
+					toggleButton.OnClick([](const Protean::Gui::EventArgs& args) {
 						Toggle();
 						});
-					toggleButton.SetColor(theme_color_idle, wi::gui::IDLE);
-					toggleButton.SetColor(theme_color_focus, wi::gui::FOCUS);
-					toggleButton.SetColor(theme_color_active, wi::gui::ACTIVE);
-					toggleButton.SetColor(theme_color_deactivating, wi::gui::DEACTIVATING);
+					toggleButton.SetColor(theme_color_idle, Protean::Gui::IDLE);
+					toggleButton.SetColor(theme_color_focus, Protean::Gui::FOCUS);
+					toggleButton.SetColor(theme_color_active, Protean::Gui::ACTIVE);
+					toggleButton.SetColor(theme_color_deactivating, Protean::Gui::DEACTIVATING);
 					toggleButton.SetShadowRadius(5);
 					toggleButton.SetShadowColor(shadow_color);
 					toggleButton.font.params.color = font_color;
 					toggleButton.font.params.rotation = XM_PI;
 					toggleButton.font.params.size = 24;
 					toggleButton.font.params.scaling = 3;
-					toggleButton.font.params.shadowColor = wi::Color::Transparent();
+					toggleButton.font.params.shadowColor = Protean::Color::Transparent();
 					for (int i = 0; i < arraysize(toggleButton.sprites); ++i)
 					{
 						toggleButton.sprites[i].params.enableCornerRounding();
@@ -387,14 +387,14 @@ namespace wi::backlog
 					}
 
 					scrollbar.SetVertical(true);
-					scrollbar.SetColor(theme_color_idle, wi::gui::IDLE);
-					scrollbar.SetColor(theme_color_focus, wi::gui::FOCUS);
-					scrollbar.SetColor(theme_color_active, wi::gui::ACTIVE);
-					scrollbar.SetColor(theme_color_deactivating, wi::gui::DEACTIVATING);
-					scrollbar.SetColor(theme_color_focus, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
-					scrollbar.SetColor(font_color, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
-					scrollbar.SetColor(theme_color_active, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
-					scrollbar.SetColor(theme_color_active, wi::gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
+					scrollbar.SetColor(theme_color_idle, Protean::Gui::IDLE);
+					scrollbar.SetColor(theme_color_focus, Protean::Gui::FOCUS);
+					scrollbar.SetColor(theme_color_active, Protean::Gui::ACTIVE);
+					scrollbar.SetColor(theme_color_deactivating, Protean::Gui::DEACTIVATING);
+					scrollbar.SetColor(theme_color_focus, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_INACTIVE);
+					scrollbar.SetColor(font_color, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_HOVER);
+					scrollbar.SetColor(theme_color_active, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
+					scrollbar.SetColor(theme_color_active, Protean::Gui::WIDGET_ID_SCROLLBAR_KNOB_GRABBED);
 					scrollbar.SetShadowRadius(5);
 					scrollbar.SetShadowColor(shadow_color);
 					for (int i = 0; i < arraysize(scrollbar.sprites); ++i)
@@ -414,12 +414,12 @@ namespace wi::backlog
 						scrollbar.sprites_knob[i].params.corners_rounding[3].radius = 8;
 					}
 				}
-				if (inputField.GetState() != wi::gui::ACTIVE)
+				if (inputField.GetState() != Protean::Gui::ACTIVE)
 				{
 					inputField.SetAsActive();
 				}
 
-				const float textheight = wi::font::TextHeight(getText(), font_params); // only call when it's active, this allocates
+				const float textheight = Protean::Font::TextHeight(getText(), font_params); // only call when it's active, this allocates
 				scrollbar.SetListLength(std::max(textheight, canvas.GetLogicalHeight()));
 				autoscroll = 0; // when scrollbar active then no autoscroll
 			}
@@ -437,7 +437,7 @@ namespace wi::backlog
 		{
 			pos -= speed * dt;
 		}
-		pos = wi::math::Clamp(pos, -canvas.GetLogicalHeight(), 0);
+		pos = Protean::Math::Clamp(pos, -canvas.GetLogicalHeight(), 0);
 
 		inputField.SetSize(XMFLOAT2(canvas.GetLogicalWidth() - 40, 20));
 		inputField.SetPos(XMFLOAT2(20, canvas.GetLogicalHeight() - 40 + pos));
@@ -452,7 +452,7 @@ namespace wi::backlog
 		scrollbar.Update(canvas, dt);
 	}
 	void Draw(
-		const wi::Canvas& canvas,
+		const Protean::Canvas& canvas,
 		CommandList cmd,
 		ColorSpace colorspace
 	)
@@ -465,18 +465,18 @@ namespace wi::backlog
 		GraphicsDevice* device = GetDevice();
 		device->EventBegin("Backlog", cmd);
 
-		wi::image::Params fx = wi::image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
+		Protean::Image::Params fx = Protean::Image::Params((float)canvas.GetLogicalWidth(), (float)canvas.GetLogicalHeight());
 		fx.pos = XMFLOAT3(0, pos, 0);
-		fx.opacity = wi::math::Lerp(0.9f, 0, saturate(-pos / canvas.GetLogicalHeight()));
+		fx.opacity = Protean::Math::Lerp(0.9f, 0, saturate(-pos / canvas.GetLogicalHeight()));
 		if (colorspace != ColorSpace::SRGB)
 		{
 			fx.enableLinearOutputMapping(9);
 		}
 		fx.color = backgroundColor;
-		wi::image::Draw(backgroundTex.IsValid() ? &backgroundTex : nullptr, fx, cmd);
+		Protean::Image::Draw(backgroundTex.IsValid() ? &backgroundTex : nullptr, fx, cmd);
 
-		wi::image::Params inputbg;
-		inputbg.color = wi::Color(80, 140, 180, 200);
+		Protean::Image::Params inputbg;
+		inputbg.color = Protean::Color(80, 140, 180, 200);
 		inputbg.pos = inputField.translation;
 		inputbg.pos.x -= 8;
 		inputbg.pos.y -= 8;
@@ -492,7 +492,7 @@ namespace wi::backlog
 		{
 			inputbg.enableLinearOutputMapping(9);
 		}
-		wi::image::Draw(nullptr, inputbg, cmd);
+		Protean::Image::Draw(nullptr, inputbg, cmd);
 
 		if (colorspace != ColorSpace::SRGB)
 		{
@@ -504,7 +504,7 @@ namespace wi::backlog
 		}
 		inputField.Render(canvas, cmd);
 
-		wi::graphics::Rect rect;
+		Protean::Graphics::Rect rect;
 		rect.left = 0;
 		rect.right = (int32_t)canvas.GetPhysicalWidth();
 		rect.top = 0;
@@ -529,17 +529,17 @@ namespace wi::backlog
 	}
 
 	void DrawOutputText(
-		const wi::Canvas& canvas,
+		const Protean::Canvas& canvas,
 		CommandList cmd,
 		ColorSpace colorspace
 	)
 	{
-		wi::font::SetCanvas(canvas); // always set here as it can be called from outside...
-		wi::font::Params params = font_params;
+		Protean::Font::SetCanvas(canvas); // always set here as it can be called from outside...
+		Protean::Font::Params params = font_params;
 		params.cursor = {};
 		if (refitscroll)
 		{
-			const float textheight = wi::font::TextHeight(getText(), font_params);
+			const float textheight = Protean::Font::TextHeight(getText(), font_params);
 			const float limit = canvas.GetLogicalHeight() - 50;
 			if (scrollbar.GetOffset() + textheight > limit)
 			{
@@ -571,19 +571,19 @@ namespace wi::backlog
 			switch (x.level)
 			{
 			case LogLevel::Warning:
-				params.color = wi::Color::Warning();
+				params.color = Protean::Color::Warning();
 				break;
 			case LogLevel::Error:
-				params.color = wi::Color::Error();
+				params.color = Protean::Color::Error();
 				break;
 			case LogLevel::Success:
-				params.color = wi::Color::Success();
+				params.color = Protean::Color::Success();
 				break;
 			default:
 				params.color = font_params.color;
 				break;
 			}
-			params.cursor = wi::font::Draw(x.text, params, cmd);
+			params.cursor = Protean::Font::Draw(x.text, params, cmd);
 		}
 
 		unseen = LogLevel::None;
@@ -655,13 +655,13 @@ namespace wi::backlog
 		{
 		default:
 		case LogLevel::Default:
-			wi::helper::DebugOut(str, wi::helper::DebugLevel::Normal);
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Normal);
 			break;
 		case LogLevel::Warning:
-			wi::helper::DebugOut(str, wi::helper::DebugLevel::Warning);
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Warning);
 			break;
 		case LogLevel::Error:
-			wi::helper::DebugOut(str, wi::helper::DebugLevel::Error);
+			Protean::Helper::DebugOut(str, Protean::Helper::DebugLevel::Error);
 			break;
 		}
 
@@ -711,7 +711,7 @@ namespace wi::backlog
 	{
 		backgroundTex = *texture;
 	}
-	void setBackgroundColor(wi::Color color)
+	void setBackgroundColor(Protean::Color color)
 	{
 		backgroundColor = color;
 	}
@@ -723,7 +723,7 @@ namespace wi::backlog
 	{
 		font_params.spacingY = value;
 	}
-	void setFontColor(wi::Color color)
+	void setFontColor(Protean::Color color)
 	{
 		font_params.color = color;
 	}
@@ -778,9 +778,9 @@ namespace wi::backlog
 
 	std::string GetLogFile()
 	{
-		if (logfile_path.empty() || !wi::helper::DirectoryExists(wi::helper::GetDirectoryFromPath(logfile_path)))
+		if (logfile_path.empty() || !Protean::Helper::DirectoryExists(Protean::Helper::GetDirectoryFromPath(logfile_path)))
 		{
-			return wi::helper::GetCurrentPath() + "/log.txt";
+			return Protean::Helper::GetCurrentPath() + "/log.txt";
 		}
 		return logfile_path;
 	}

@@ -2,7 +2,7 @@
 #include "core/CommonInclude.h"
 #include "input/Input.h"
 
-namespace wi::input::xinput
+namespace Protean::Input::XInput
 {
 	// Call once per frame to read and update controller states
 	void Update();
@@ -12,8 +12,8 @@ namespace wi::input::xinput
 
 	// Returns whether the controller identified by index parameter is available or not.
 	//	Id state parameter is not nullptr, and the controller is available, the state will be written into it
-	bool GetControllerState(wi::input::ControllerState* state, int index);
+	bool GetControllerState(Protean::Input::ControllerState* state, int index);
 
 	// Sends feedback data for the controller identified by index parameter to output
-	void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index);
+	void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index);
 }

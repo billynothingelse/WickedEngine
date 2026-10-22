@@ -4,9 +4,9 @@
 #include "render/SpriteFont.h"
 #include "render/Renderer.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi
+namespace Protean
 {
 	void RenderPath2D::DeleteGPUResources()
 	{
@@ -26,7 +26,7 @@ namespace wi
 		current_buffersize = GetInternalResolution();
 		current_layoutscale = 0; // invalidate layout
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		const uint32_t sampleCount = std::max(getMSAASampleCount(), getMSAASampleCount2D());
 
@@ -114,8 +114,8 @@ namespace wi
 				}
 				if (y.videoinstance != nullptr)
 				{
-					wi::video::UpdateVideo(y.videoinstance, dt);
-					if (wi::video::IsDecodingRequired(y.videoinstance))
+					Protean::Video::UpdateVideo(y.videoinstance, dt);
+					if (Protean::Video::IsDecodingRequired(y.videoinstance))
 					{
 						video_decodes.push_back(y.videoinstance);
 					}
@@ -165,7 +165,7 @@ namespace wi
 			const_cast<RenderPath2D*>(this)->PreRender();
 		}
 
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		CommandList video_cmd;
 		if (!video_decodes.empty())
@@ -174,15 +174,15 @@ namespace wi
 			device->EventBegin("RenderPath2D video decoding", video_cmd);
 			for (auto& x : video_decodes)
 			{
-				wi::video::DecodeVideo(x, video_cmd);
+				Protean::Video::DecodeVideo(x, video_cmd);
 			}
 			device->EventEnd(video_cmd);
 		}
 
 		CommandList cmd = device->BeginCommandList();
 		device->EventBegin("RenderPath2D::Render", cmd);
-		wi::image::SetCanvas(*this);
-		wi::font::SetCanvas(*this);
+		Protean::Image::SetCanvas(*this);
+		Protean::Font::SetCanvas(*this);
 
 		if (!video_decodes.empty())
 		{
@@ -190,23 +190,23 @@ namespace wi
 			device->EventBegin("RenderPath2D video resolving", cmd);
 			for (auto& x : video_decodes)
 			{
-				wi::video::ResolveVideoToRGB(x, cmd);
+				Protean::Video::ResolveVideoToRGB(x, cmd);
 			}
 			device->EventEnd(cmd);
 		}
 
-		wi::renderer::ProcessDeferredTextureRequests(cmd);
+		Protean::Renderer::ProcessDeferredTextureRequests(cmd);
 
 		if (GetGUIBlurredBackground() != nullptr)
 		{
-			wi::image::SetBackground(*GetGUIBlurredBackground());
+			Protean::Image::SetBackground(*GetGUIBlurredBackground());
 		}
 
 		const Texture* dsv = GetDepthStencil();
 
 		if (rtStencilExtracted.IsValid())
 		{
-			wi::renderer::ExtractStencil(*dsv, rtStencilExtracted, cmd);
+			Protean::Renderer::ExtractStencil(*dsv, rtStencilExtracted, cmd);
 		}
 
 		RenderPassImage rp[4];
@@ -245,7 +245,7 @@ namespace wi
 		vp.height = (float)rtFinal.GetDesc().height;
 		device->BindViewports(1, &vp, cmd);
 
-		wi::graphics::Rect rect;
+		Protean::Graphics::Rect rect;
 		rect.left = 0;
 		rect.right = (int32_t)rtFinal.GetDesc().width;
 		rect.top = 0;
@@ -261,11 +261,11 @@ namespace wi
 			{
 				if (y.sprite != nullptr)
 				{
-					if (!stencil_scaled && y.sprite->params.stencilComp != wi::image::STENCILMODE_DISABLED && stencilScaled.IsValid())
+					if (!stencil_scaled && y.sprite->params.stencilComp != Protean::Image::STENCILMODE_DISABLED && stencilScaled.IsValid())
 					{
 						// Only need a scaled stencil mask if there are any stenciled sprites, and only once is enough before the first one
 						stencil_scaled = true;
-						wi::renderer::ScaleStencilMask(vp, rtStencilExtracted, cmd);
+						Protean::Renderer::ScaleStencilMask(vp, rtStencilExtracted, cmd);
 					}
 					if (y.videoinstance != nullptr)
 					{
@@ -291,18 +291,18 @@ namespace wi
 	}
 	void RenderPath2D::Compose(CommandList cmd) const
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 		device->EventBegin("RenderPath2D::Compose", cmd);
 
-		wi::image::Params fx;
+		Protean::Image::Params fx;
 		fx.enableFullScreen();
-		fx.blendFlag = wi::enums::BLENDMODE_PREMULTIPLIED;
+		fx.blendFlag = Protean::BLENDMODE_PREMULTIPLIED;
 		if (colorspace != ColorSpace::SRGB)
 		{
 			// Convert the regular SRGB result of the render path to linear space for HDR compositing:
 			fx.enableLinearOutputMapping(hdr_scaling);
 		}
-		wi::image::Draw(&GetRenderResult2D(), fx, cmd);
+		Protean::Image::Draw(&GetRenderResult2D(), fx, cmd);
 
 		device->EventEnd(cmd);
 
@@ -310,7 +310,7 @@ namespace wi
 	}
 
 
-	void RenderPath2D::AddSprite(wi::Sprite* sprite, const std::string& layer)
+	void RenderPath2D::AddSprite(Protean::Sprite* sprite, const std::string& layer)
 	{
 		for (auto& x : layers)
 		{
@@ -321,7 +321,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::RemoveSprite(wi::Sprite* sprite)
+	void RenderPath2D::RemoveSprite(Protean::Sprite* sprite)
 	{
 		for (auto& x : layers)
 		{
@@ -348,7 +348,7 @@ namespace wi
 		}
 		CleanLayers();
 	}
-	int RenderPath2D::GetSpriteOrder(wi::Sprite* sprite)
+	int RenderPath2D::GetSpriteOrder(Protean::Sprite* sprite)
 	{
 		for (auto& x : layers)
 		{
@@ -363,7 +363,7 @@ namespace wi
 		return 0;
 	}
 
-	void RenderPath2D::AddFont(wi::SpriteFont* font, const std::string& layer)
+	void RenderPath2D::AddFont(Protean::SpriteFont* font, const std::string& layer)
 	{
 		for (auto& x : layers)
 		{
@@ -374,7 +374,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::RemoveFont(wi::SpriteFont* font)
+	void RenderPath2D::RemoveFont(Protean::SpriteFont* font)
 	{
 		for (auto& x : layers)
 		{
@@ -399,7 +399,7 @@ namespace wi
 		}
 		CleanLayers();
 	}
-	int RenderPath2D::GetFontOrder(wi::SpriteFont* font)
+	int RenderPath2D::GetFontOrder(Protean::SpriteFont* font)
 	{
 		for (auto& x : layers)
 		{
@@ -414,7 +414,7 @@ namespace wi
 		return 0;
 	}
 
-	void RenderPath2D::AddVideoSprite(wi::video::VideoInstance* videoinstance, wi::Sprite* sprite, const std::string& layer)
+	void RenderPath2D::AddVideoSprite(Protean::Video::VideoInstance* videoinstance, Protean::Sprite* sprite, const std::string& layer)
 	{
 		for (auto& x : layers)
 		{
@@ -453,7 +453,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::SetSpriteOrder(wi::Sprite* sprite, int order)
+	void RenderPath2D::SetSpriteOrder(Protean::Sprite* sprite, int order)
 	{
 		for (auto& x : layers)
 		{
@@ -467,7 +467,7 @@ namespace wi
 		}
 		SortLayers();
 	}
-	void RenderPath2D::SetFontOrder(wi::SpriteFont* font, int order)
+	void RenderPath2D::SetFontOrder(Protean::SpriteFont* font, int order)
 	{
 		for (auto& x : layers)
 		{
@@ -529,7 +529,7 @@ namespace wi
 			{
 				continue;
 			}
-			wi::vector<RenderItem2D> itemsToRetain;
+			Protean::vector<RenderItem2D> itemsToRetain;
 			for (auto& y : x.items)
 			{
 				if (y.sprite != nullptr || y.font != nullptr || y.videoinstance != nullptr)

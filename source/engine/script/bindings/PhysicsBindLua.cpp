@@ -4,7 +4,7 @@
 #include "script/bindings/MathBindLua.h"
 #include "script/bindings/PrimitiveBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	Luna<Physics_BindLua>::FunctionType Physics_BindLua::methods[] = {
 		lunamethod(Physics_BindLua, SetEnabled),
@@ -60,266 +60,266 @@ namespace wi::lua
 
 	int Physics_BindLua::SetEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Physics::SetEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetEnabled(bool value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::IsEnabled(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::physics::IsEnabled());
+		Protean::Lua::SSetBool(L, Protean::Physics::IsEnabled());
 		return 1;
 	}
 	int Physics_BindLua::SetSimulationEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetSimulationEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Physics::SetSimulationEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetSimulationEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetSimulationEnabled(bool value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::IsSimulationEnabled(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::physics::IsSimulationEnabled());
+		Protean::Lua::SSetBool(L, Protean::Physics::IsSimulationEnabled());
 		return 1;
 	}
 	int Physics_BindLua::SetInterpolationEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetInterpolationEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Physics::SetInterpolationEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetInterpolationEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetInterpolationEnabled(bool value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::IsInterpolationEnabled(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::physics::IsInterpolationEnabled());
+		Protean::Lua::SSetBool(L, Protean::Physics::IsInterpolationEnabled());
 		return 1;
 	}
 	int Physics_BindLua::SetDebugDrawEnabled(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetDebugDrawEnabled(wi::lua::SGetBool(L, 1));
+			Protean::Physics::SetDebugDrawEnabled(Protean::Lua::SGetBool(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetDebugDrawEnabled(bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetDebugDrawEnabled(bool value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::IsDebugDrawEnabled(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::physics::IsDebugDrawEnabled());
+		Protean::Lua::SSetBool(L, Protean::Physics::IsDebugDrawEnabled());
 		return 1;
 	}
 	int Physics_BindLua::SetAccuracy(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetAccuracy(wi::lua::SGetInt(L, 1));
+			Protean::Physics::SetAccuracy(Protean::Lua::SGetInt(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetAccuracy(int value) not enough arguments!");
+			Protean::Lua::SError(L, "SetAccuracy(int value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetAccuracy(lua_State* L)
 	{
-		wi::lua::SSetInt(L, wi::physics::GetAccuracy());
+		Protean::Lua::SSetInt(L, Protean::Physics::GetAccuracy());
 		return 1;
 	}
 	int Physics_BindLua::SetFrameRate(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetFrameRate(wi::lua::SGetFloat(L, 1));
+			Protean::Physics::SetFrameRate(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetFrameRate(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetFrameRate(float value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetFrameRate(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, wi::physics::GetFrameRate());
+		Protean::Lua::SSetFloat(L, Protean::Physics::GetFrameRate());
 		return 1;
 	}
 
 	int Physics_BindLua::SetPosition(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) second argument is not a Vector!");
+				Protean::Lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::SetPosition(
+			Protean::Physics::SetPosition(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) not enough arguments!");
+			Protean::Lua::SError(L, "SetPosition(RigidBodyPhysicsComponent component, Vector position) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetPositionAndRotation(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 2)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) second argument is not a Vector!");
+				Protean::Lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) second argument is not a Vector!");
 				return 0;
 			}
 			Vector_BindLua* vec2 = Luna<Vector_BindLua>::lightcheck(L, 3);
 			if (vec2 == nullptr)
 			{
-				wi::lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) third argument is not a Vector!");
+				Protean::Lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) third argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::SetPositionAndRotation(
+			Protean::Physics::SetPositionAndRotation(
 				*component->component,
 				vec->GetFloat3(),
 				vec2->data
 			);
 		}
 		else
-			wi::lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) not enough arguments!");
+			Protean::Lua::SError(L, "SetPositionAndRotation(RigidBodyPhysicsComponent component, Vector position, Vector rotationQuaternion) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetLinearVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) second argument is not a Vector!");
+				Protean::Lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::SetLinearVelocity(
+			Protean::Physics::SetLinearVelocity(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) not enough arguments!");
+			Protean::Lua::SError(L, "SetLinearVelocity(RigidBodyPhysicsComponent component, Vector velocity) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetAngularVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) second argument is not a Vector!");
+				Protean::Lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::SetAngularVelocity(
+			Protean::Physics::SetAngularVelocity(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) not enough arguments!");
+			Protean::Lua::SError(L, "SetAngularVelocity(RigidBodyPhysicsComponent component, Vector velocity) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ApplyForce(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) second argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::ApplyForce(
+			Protean::Physics::ApplyForce(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) not enough arguments!");
+			Protean::Lua::SError(L, "ApplyForce(RigidBodyPhysicsComponent component, Vector force) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ApplyForceAt(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 2)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) second argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) second argument is not a Vector!");
 				return 0;
 			}
 			Vector_BindLua* vec2 = Luna<Vector_BindLua>::lightcheck(L, 3);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) third argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) third argument is not a Vector!");
 				return 0;
 			}
 			bool at_local = true;
 			if (argc > 3)
-				at_local = wi::lua::SGetBool(L, 4);
+				at_local = Protean::Lua::SGetBool(L, 4);
 
-			wi::physics::ApplyForceAt(
+			Protean::Physics::ApplyForceAt(
 				*component->component,
 				*(XMFLOAT3*)vec,
 				*(XMFLOAT3*)vec2,
@@ -327,32 +327,32 @@ namespace wi::lua
 			);
 		}
 		else
-			wi::lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) not enough arguments!");
+			Protean::Lua::SError(L, "ApplyForceAt(RigidBodyPhysicsComponent component, Vector force, Vector at) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ApplyImpulse(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				scene::HumanoidComponent_BindLua* humanoid = Luna<scene::HumanoidComponent_BindLua>::lightcheck(L, 1);
+				SceneBindings::HumanoidComponent_BindLua* humanoid = Luna<SceneBindings::HumanoidComponent_BindLua>::lightcheck(L, 1);
 				if (humanoid == nullptr)
 				{
-					wi::lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) first argument is not a RigidBodyPhysicsComponent!");
-					wi::lua::SError(L, "ApplyImpulse(HumanoidComponent component, HumanoidBone bone, Vector impulse) first argument is not a HumanoidComponent!");
+					Protean::Lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) first argument is not a RigidBodyPhysicsComponent!");
+					Protean::Lua::SError(L, "ApplyImpulse(HumanoidComponent component, HumanoidBone bone, Vector impulse) first argument is not a HumanoidComponent!");
 					return 0;
 				}
-				wi::scene::HumanoidComponent::HumanoidBone bone = (wi::scene::HumanoidComponent::HumanoidBone)wi::lua::SGetInt(L, 2);
+				Protean::HumanoidComponent::HumanoidBone bone = (Protean::HumanoidComponent::HumanoidBone)Protean::Lua::SGetInt(L, 2);
 				Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 3);
 				if (vec == nullptr)
 				{
-					wi::lua::SError(L, "ApplyImpulse(HumanoidComponent component, HumanoidBone bone, Vector impulse) third argument is not a Vector!");
+					Protean::Lua::SError(L, "ApplyImpulse(HumanoidComponent component, HumanoidBone bone, Vector impulse) third argument is not a Vector!");
 					return 0;
 				}
-				wi::physics::ApplyImpulse(
+				Protean::Physics::ApplyImpulse(
 					*humanoid->component,
 					bone,
 					*(XMFLOAT3*)vec
@@ -362,51 +362,51 @@ namespace wi::lua
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) second argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::ApplyImpulse(
+			Protean::Physics::ApplyImpulse(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) not enough arguments!");
+			Protean::Lua::SError(L, "ApplyImpulse(RigidBodyPhysicsComponent component, Vector impulse) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ApplyImpulseAt(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 2)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				scene::HumanoidComponent_BindLua* humanoid = Luna<scene::HumanoidComponent_BindLua>::lightcheck(L, 1);
+				SceneBindings::HumanoidComponent_BindLua* humanoid = Luna<SceneBindings::HumanoidComponent_BindLua>::lightcheck(L, 1);
 				if (humanoid == nullptr)
 				{
-					wi::lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) first argument is not a RigidBodyPhysicsComponent!");
-					wi::lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) first argument is not a HumanoidComponent!");
+					Protean::Lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) first argument is not a RigidBodyPhysicsComponent!");
+					Protean::Lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) first argument is not a HumanoidComponent!");
 					return 0;
 				}
-				wi::scene::HumanoidComponent::HumanoidBone bone = (wi::scene::HumanoidComponent::HumanoidBone)wi::lua::SGetInt(L, 2);
+				Protean::HumanoidComponent::HumanoidBone bone = (Protean::HumanoidComponent::HumanoidBone)Protean::Lua::SGetInt(L, 2);
 				Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 3);
 				if (vec == nullptr)
 				{
-					wi::lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) third argument is not a Vector!");
+					Protean::Lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) third argument is not a Vector!");
 					return 0;
 				}
 				Vector_BindLua* vec2 = Luna<Vector_BindLua>::lightcheck(L, 4);
 				if (vec2 == nullptr)
 				{
-					wi::lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) fourth argument is not a Vector!");
+					Protean::Lua::SError(L, "ApplyImpulseAt(HumanoidComponent component, HumanoidBone bone, Vector impulse, Vector at) fourth argument is not a Vector!");
 					return 0;
 				}
 				bool at_local = true;
 				if (argc > 4)
-					at_local = wi::lua::SGetBool(L, 5);
+					at_local = Protean::Lua::SGetBool(L, 5);
 
-				wi::physics::ApplyImpulseAt(
+				Protean::Physics::ApplyImpulseAt(
 					*humanoid->component,
 					bone,
 					*(XMFLOAT3*)vec,
@@ -418,20 +418,20 @@ namespace wi::lua
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) second argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) second argument is not a Vector!");
 				return 0;
 			}
 			Vector_BindLua* vec2 = Luna<Vector_BindLua>::lightcheck(L, 3);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) third argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) third argument is not a Vector!");
 				return 0;
 			}
 			bool at_local = true;
 			if (argc > 3)
-				at_local = wi::lua::SGetBool(L, 4);
+				at_local = Protean::Lua::SGetBool(L, 4);
 
-			wi::physics::ApplyImpulseAt(
+			Protean::Physics::ApplyImpulseAt(
 				*component->component,
 				*(XMFLOAT3*)vec,
 				*(XMFLOAT3*)vec2,
@@ -439,311 +439,311 @@ namespace wi::lua
 			);
 		}
 		else
-			wi::lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) not enough arguments!");
+			Protean::Lua::SError(L, "ApplyImpulseAt(RigidBodyPhysicsComponent component, Vector impulse, Vector at) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ApplyTorque(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) second argument is not a Vector!");
+				Protean::Lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) second argument is not a Vector!");
 				return 0;
 			}
-			wi::physics::ApplyTorque(
+			Protean::Physics::ApplyTorque(
 				*component->component,
 				*(XMFLOAT3*)vec
 			);
 		}
 		else
-			wi::lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) not enough arguments!");
+			Protean::Lua::SError(L, "ApplyTorque(RigidBodyPhysicsComponent component, Vector torque) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetActivationState(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* rigid = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* rigid = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (rigid == nullptr)
 			{
-				scene::SoftBodyPhysicsComponent_BindLua* soft = Luna<scene::SoftBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+				SceneBindings::SoftBodyPhysicsComponent_BindLua* soft = Luna<SceneBindings::SoftBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 				if (soft == nullptr)
 				{
-					wi::lua::SError(L, "SetActivationState(RigidBodyPhysicsComponent | SoftBodyPhysicsComponent component, int state) first argument is not a RigidBodyPhysicsComponent or SoftBodyPhysicsComponent!");
+					Protean::Lua::SError(L, "SetActivationState(RigidBodyPhysicsComponent | SoftBodyPhysicsComponent component, int state) first argument is not a RigidBodyPhysicsComponent or SoftBodyPhysicsComponent!");
 					return 0;
 				}
-				wi::physics::SetActivationState(
+				Protean::Physics::SetActivationState(
 					*soft->component,
-					(wi::physics::ActivationState)wi::lua::SGetInt(L, 2)
+					(Protean::Physics::ActivationState)Protean::Lua::SGetInt(L, 2)
 				);
 				return 0;
 			}
-			wi::physics::SetActivationState(
+			Protean::Physics::SetActivationState(
 				*rigid->component,
-				(wi::physics::ActivationState)wi::lua::SGetInt(L, 2)
+				(Protean::Physics::ActivationState)Protean::Lua::SGetInt(L, 2)
 			);
 		}
 		else
-			wi::lua::SError(L, "SetActivationState(RigidBodyPhysicsComponent | SoftBodyPhysicsComponent component, int state) not enough arguments!");
+			Protean::Lua::SError(L, "SetActivationState(RigidBodyPhysicsComponent | SoftBodyPhysicsComponent component, int state) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ActivateAllRigidBodies(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::Scene_BindLua* scene = Luna<scene::Scene_BindLua>::lightcheck(L, 1);
+			SceneBindings::Scene_BindLua* scene = Luna<SceneBindings::Scene_BindLua>::lightcheck(L, 1);
 			if (scene == nullptr)
 			{
-				wi::lua::SError(L, "ActivateAllRigidBodies(Scene scene) first argument is not a Scene!");
+				Protean::Lua::SError(L, "ActivateAllRigidBodies(Scene scene) first argument is not a Scene!");
 				return 0;
 			}
-			wi::physics::ActivateAllRigidBodies(*scene->scene);
+			Protean::Physics::ActivateAllRigidBodies(*scene->scene);
 		}
 		else
-			wi::lua::SError(L, "ActivateAllRigidBodies(Scene scene) not enough arguments!");
+			Protean::Lua::SError(L, "ActivateAllRigidBodies(Scene scene) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::OptimizeBroadPhase(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::Scene_BindLua* scene = Luna<scene::Scene_BindLua>::lightcheck(L, 1);
+			SceneBindings::Scene_BindLua* scene = Luna<SceneBindings::Scene_BindLua>::lightcheck(L, 1);
 			if (scene == nullptr)
 			{
-				wi::lua::SError(L, "OptimizeBroadPhase(Scene scene) first argument is not a Scene!");
+				Protean::Lua::SError(L, "OptimizeBroadPhase(Scene scene) first argument is not a Scene!");
 				return 0;
 			}
-			wi::physics::OptimizeBroadPhase(*scene->scene);
+			Protean::Physics::OptimizeBroadPhase(*scene->scene);
 		}
 		else
-			wi::lua::SError(L, "OptimizeBroadPhase(Scene scene, [opt bool force]) not enough arguments!");
+			Protean::Lua::SError(L, "OptimizeBroadPhase(Scene scene, [opt bool force]) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ResetPhysicsObjects(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::Scene_BindLua* scene = Luna<scene::Scene_BindLua>::lightcheck(L, 1);
+			SceneBindings::Scene_BindLua* scene = Luna<SceneBindings::Scene_BindLua>::lightcheck(L, 1);
 			if (scene == nullptr)
 			{
-				wi::lua::SError(L, "ResetPhysicsObjects(Scene scene) first argument is not a Scene!");
+				Protean::Lua::SError(L, "ResetPhysicsObjects(Scene scene) first argument is not a Scene!");
 				return 0;
 			}
-			wi::physics::ResetPhysicsObjects(*scene->scene);
+			Protean::Physics::ResetPhysicsObjects(*scene->scene);
 		}
 		else
-			wi::lua::SError(L, "ResetPhysicsObjects(Scene scene) not enough arguments!");
+			Protean::Lua::SError(L, "ResetPhysicsObjects(Scene scene) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetVelocity(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetVelocity(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetVelocity(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetVelocity(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetVelocity(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetVelocity(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetPosition(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetPosition(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetPosition(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetPosition(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetPosition(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetPosition(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetPosition(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetRotation(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetRotation(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetRotation(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetRotation(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetRotation(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetRotation(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetRotation(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetCharacterGroundPosition(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetCharacterGroundPosition(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetCharacterGroundPosition(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetCharacterGroundPosition(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetCharacterGroundPosition(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetCharacterGroundPosition(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetCharacterGroundPosition(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetCharacterGroundNormal(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetCharacterGroundNormal(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetCharacterGroundNormal(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetCharacterGroundNormal(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetCharacterGroundNormal(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetCharacterGroundNormal(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetCharacterGroundNormal(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetCharacterGroundVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetCharacterGroundVelocity(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetCharacterGroundVelocity(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			Luna<Vector_BindLua>::push(L, wi::physics::GetCharacterGroundVelocity(*component->component));
+			Luna<Vector_BindLua>::push(L, Protean::Physics::GetCharacterGroundVelocity(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetCharacterGroundVelocity(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetCharacterGroundVelocity(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::IsCharacterGroundSupported(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "IsCharacterGroundSupported(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "IsCharacterGroundSupported(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			wi::lua::SSetBool(L, wi::physics::IsCharacterGroundSupported(*component->component));
+			Protean::Lua::SSetBool(L, Protean::Physics::IsCharacterGroundSupported(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "IsCharacterGroundSupported(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "IsCharacterGroundSupported(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetCharacterGroundState(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "GetCharacterGroundState(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetCharacterGroundState(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			wi::lua::SSetInt(L, (int)wi::physics::GetCharacterGroundState(*component->component));
+			Protean::Lua::SSetInt(L, (int)Protean::Physics::GetCharacterGroundState(*component->component));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "GetCharacterGroundState(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "GetCharacterGroundState(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::ChangeCharacterShape(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "ChangeCharacterShape(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "ChangeCharacterShape(RigidBodyPhysicsComponent component) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
-			wi::scene::RigidBodyPhysicsComponent::CapsuleParams capsule;
+			Protean::RigidBodyPhysicsComponent::CapsuleParams capsule;
 			if (argc > 1)
 			{
-				capsule.height = wi::lua::SGetFloat(L, 2);
+				capsule.height = Protean::Lua::SGetFloat(L, 2);
 				if (argc > 2)
 				{
-					capsule.radius = wi::lua::SGetFloat(L, 3);
+					capsule.radius = Protean::Lua::SGetFloat(L, 3);
 				}
 			}
-			wi::lua::SSetBool(L, wi::physics::ChangeCharacterShape(*component->component, capsule));
+			Protean::Lua::SSetBool(L, Protean::Physics::ChangeCharacterShape(*component->component, capsule));
 			return 1;
 		}
 		else
-			wi::lua::SError(L, "ChangeCharacterShape(RigidBodyPhysicsComponent component) not enough arguments!");
+			Protean::Lua::SError(L, "ChangeCharacterShape(RigidBodyPhysicsComponent component) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::MoveCharacter(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 
 			Vector_BindLua* vec = Luna<Vector_BindLua>::lightcheck(L, 2);
 			if (vec == nullptr)
 			{
-				wi::lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) second argument is not a Vector!");
+				Protean::Lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) second argument is not a Vector!");
 				return 0;
 			}
 
@@ -753,18 +753,18 @@ namespace wi::lua
 
 			if (argc > 2)
 			{
-				movement_speed = wi::lua::SGetFloat(L, 3);
+				movement_speed = Protean::Lua::SGetFloat(L, 3);
 				if (argc > 3)
 				{
-					jump = wi::lua::SGetFloat(L, 4);
+					jump = Protean::Lua::SGetFloat(L, 4);
 					if (argc > 4)
 					{
-						controlMovementDuringJump = wi::lua::SGetBool(L, 5);
+						controlMovementDuringJump = Protean::Lua::SGetBool(L, 5);
 					}
 				}
 			}
 
-			wi::physics::MoveCharacter(
+			Protean::Physics::MoveCharacter(
 				*component->component,
 				vec->GetFloat3(),
 				movement_speed,
@@ -773,160 +773,160 @@ namespace wi::lua
 			);
 		}
 		else
-			wi::lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) not enough arguments!");
+			Protean::Lua::SError(L, "MoveCharacter(RigidBodyPhysicsComponent component, Vector movement_direction, opt float movement_speed = 6, opt float jump = 0, opt bool controlMovementDuringJump = false) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetGhostMode(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* component = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* component = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (component != nullptr)
 			{
-				bool value = wi::lua::SGetBool(L, 2);
-				wi::physics::SetGhostMode(*component->component, value);
+				bool value = Protean::Lua::SGetBool(L, 2);
+				Protean::Physics::SetGhostMode(*component->component, value);
 				return 0;
 			}
-			scene::HumanoidComponent_BindLua* humanoidcomponent = Luna<scene::HumanoidComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::HumanoidComponent_BindLua* humanoidcomponent = Luna<SceneBindings::HumanoidComponent_BindLua>::lightcheck(L, 1);
 			if (humanoidcomponent != nullptr)
 			{
-				bool value = wi::lua::SGetBool(L, 2);
-				wi::physics::SetGhostMode(*humanoidcomponent->component, value);
+				bool value = Protean::Lua::SGetBool(L, 2);
+				Protean::Physics::SetGhostMode(*humanoidcomponent->component, value);
 				return 0;
 			}
 		}
 		else
-			wi::lua::SError(L, "SetGhostMode(RigidBodyPhysicsComponent|HumanoidComponent component, bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetGhostMode(RigidBodyPhysicsComponent|HumanoidComponent component, bool value) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::SetRagdollGhostMode(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::HumanoidComponent_BindLua* component = Luna<scene::HumanoidComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::HumanoidComponent_BindLua* component = Luna<SceneBindings::HumanoidComponent_BindLua>::lightcheck(L, 1);
 			if (component == nullptr)
 			{
-				wi::lua::SError(L, "SetRagdollGhostMode(HumanoidComponent component, bool value) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "SetRagdollGhostMode(HumanoidComponent component, bool value) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
-			bool value = wi::lua::SGetBool(L, 2);
+			bool value = Protean::Lua::SGetBool(L, 2);
 
-			wi::physics::SetRagdollGhostMode(*component->component, value);
+			Protean::Physics::SetRagdollGhostMode(*component->component, value);
 			return 0;
 		}
 		else
-			wi::lua::SError(L, "SetRagdollGhostMode(HumanoidComponent component, bool value) not enough arguments!");
+			Protean::Lua::SError(L, "SetRagdollGhostMode(HumanoidComponent component, bool value) not enough arguments!");
 		return 0;
 	}
 
 	int Physics_BindLua::SetCharacterCollisionTolerance(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			wi::physics::SetCharacterCollisionTolerance(wi::lua::SGetFloat(L, 1));
+			Protean::Physics::SetCharacterCollisionTolerance(Protean::Lua::SGetFloat(L, 1));
 		}
 		else
-			wi::lua::SError(L, "SetCharacterCollisionTolerance(float value) not enough arguments!");
+			Protean::Lua::SError(L, "SetCharacterCollisionTolerance(float value) not enough arguments!");
 		return 0;
 	}
 
 	int Physics_BindLua::GetCharacterCollisionTolerance(lua_State* L)
 	{
-		wi::lua::SSetFloat(L, wi::physics::GetCharacterCollisionTolerance());
+		Protean::Lua::SSetFloat(L, Protean::Physics::GetCharacterCollisionTolerance());
 		return 1;
 	}
 
 	int Physics_BindLua::Intersects(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 1)
 		{
-			scene::Scene_BindLua* scene = Luna<scene::Scene_BindLua>::lightcheck(L, 1);
+			SceneBindings::Scene_BindLua* scene = Luna<SceneBindings::Scene_BindLua>::lightcheck(L, 1);
 			if (scene == nullptr)
 			{
-				wi::lua::SError(L, "Intersects(Scene, Ray) first argument is not a Scene!");
+				Protean::Lua::SError(L, "Intersects(Scene, Ray) first argument is not a Scene!");
 				return 0;
 			}
-			primitive::Ray_BindLua* ray = Luna<primitive::Ray_BindLua>::lightcheck(L, 2);
+			PrimitiveBindings::Ray_BindLua* ray = Luna<PrimitiveBindings::Ray_BindLua>::lightcheck(L, 2);
 			if (ray == nullptr)
 			{
-				wi::lua::SError(L, "Intersects(Scene, Ray) second argument is not a Ray!");
+				Protean::Lua::SError(L, "Intersects(Scene, Ray) second argument is not a Ray!");
 				return 0;
 			}
 
-			wi::physics::RayIntersectionResult result = wi::physics::Intersects(*scene->scene, ray->ray);
-			wi::lua::SSetLongLong(L, result.entity);
+			Protean::Physics::RayIntersectionResult result = Protean::Physics::Intersects(*scene->scene, ray->ray);
+			Protean::Lua::SSetLongLong(L, result.entity);
 			Luna<Vector_BindLua>::push(L, result.position);
 			Luna<Vector_BindLua>::push(L, result.normal);
-			wi::lua::SSetLongLong(L, result.humanoid_ragdoll_entity);
-			wi::lua::SSetInt(L, (int)result.humanoid_bone);
+			Protean::Lua::SSetLongLong(L, result.humanoid_ragdoll_entity);
+			Protean::Lua::SSetInt(L, (int)result.humanoid_bone);
 			Luna<Vector_BindLua>::push(L, result.position_local);
 			return 6;
 		}
-		wi::lua::SError(L, "Intersects(Scene, Ray) not enough arguments!");
+		Protean::Lua::SError(L, "Intersects(Scene, Ray) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::PickDrag(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 2)
 		{
-			scene::Scene_BindLua* scene = Luna<scene::Scene_BindLua>::lightcheck(L, 1);
+			SceneBindings::Scene_BindLua* scene = Luna<SceneBindings::Scene_BindLua>::lightcheck(L, 1);
 			if (scene == nullptr)
 			{
-				wi::lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) first argument is not a Scene!");
+				Protean::Lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) first argument is not a Scene!");
 				return 0;
 			}
-			primitive::Ray_BindLua* ray = Luna<primitive::Ray_BindLua>::lightcheck(L, 2);
+			PrimitiveBindings::Ray_BindLua* ray = Luna<PrimitiveBindings::Ray_BindLua>::lightcheck(L, 2);
 			if (ray == nullptr)
 			{
-				wi::lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) second argument is not a Ray!");
+				Protean::Lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) second argument is not a Ray!");
 				return 0;
 			}
 			PickDragOperation_BindLua* op = Luna<PickDragOperation_BindLua>::lightcheck(L, 3);
 			if (op == nullptr)
 			{
-				wi::lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) third argument is not a PickDragOperation!");
+				Protean::Lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) third argument is not a PickDragOperation!");
 				return 0;
 			}
 
-			wi::physics::ConstraintType type = wi::physics::ConstraintType::Fixed;
+			Protean::Physics::ConstraintType type = Protean::Physics::ConstraintType::Fixed;
 			float break_distance = FLT_MAX;
 
 			if (argc > 3)
 			{
-				type = (wi::physics::ConstraintType)wi::lua::SGetInt(L, 4);
+				type = (Protean::Physics::ConstraintType)Protean::Lua::SGetInt(L, 4);
 
 				if (argc > 4)
 				{
-					break_distance = wi::lua::SGetFloat(L, 5);
+					break_distance = Protean::Lua::SGetFloat(L, 5);
 				}
 			}
 
-			wi::physics::PickDrag(*scene->scene, ray->ray, op->op, type, break_distance);
+			Protean::Physics::PickDrag(*scene->scene, ray->ray, op->op, type, break_distance);
 			return 0;
 		}
-		wi::lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) not enough arguments!");
+		Protean::Lua::SError(L, "PickDrag(Scene, Ray, PickDragOperation) not enough arguments!");
 		return 0;
 	}
 
 	int Physics_BindLua::DriveVehicle(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* rb = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* rb = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (rb == nullptr)
 			{
-				wi::lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			if (!rb->component->IsVehicle())
 			{
-				wi::lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) argument is a RigidBodyPhysicsComponent, but not a vehicle!");
+				Protean::Lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) argument is a RigidBodyPhysicsComponent, but not a vehicle!");
 				return 0;
 			}
 
@@ -937,51 +937,51 @@ namespace wi::lua
 
 			if (argc > 1)
 			{
-				forward = wi::lua::SGetFloat(L, 2);
+				forward = Protean::Lua::SGetFloat(L, 2);
 
 				if (argc > 2)
 				{
-					right = wi::lua::SGetFloat(L, 3);
+					right = Protean::Lua::SGetFloat(L, 3);
 
 					if (argc > 3)
 					{
-						brake = wi::lua::SGetFloat(L, 4);
+						brake = Protean::Lua::SGetFloat(L, 4);
 
 						if (argc > 4)
 						{
-							handbrake = wi::lua::SGetFloat(L, 5);
+							handbrake = Protean::Lua::SGetFloat(L, 5);
 						}
 					}
 				}
 			}
 
-			wi::physics::DriveVehicle(*rb->component, forward, right, brake, handbrake);
+			Protean::Physics::DriveVehicle(*rb->component, forward, right, brake, handbrake);
 			return 0;
 		}
-		wi::lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) not enough arguments!");
+		Protean::Lua::SError(L, "DriveVehicle(RigidBodyPhysicsComponent rigidbody, opt float forward = 0, opt float right = 0, opt float brake = 0, opt float handbrake = 0) not enough arguments!");
 		return 0;
 	}
 	int Physics_BindLua::GetVehicleForwardVelocity(lua_State* L)
 	{
-		int argc = wi::lua::SGetArgCount(L);
+		int argc = Protean::Lua::SGetArgCount(L);
 		if (argc > 0)
 		{
-			scene::RigidBodyPhysicsComponent_BindLua* rb = Luna<scene::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
+			SceneBindings::RigidBodyPhysicsComponent_BindLua* rb = Luna<SceneBindings::RigidBodyPhysicsComponent_BindLua>::lightcheck(L, 1);
 			if (rb == nullptr)
 			{
-				wi::lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) first argument is not a RigidBodyPhysicsComponent!");
+				Protean::Lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) first argument is not a RigidBodyPhysicsComponent!");
 				return 0;
 			}
 			if (!rb->component->IsVehicle())
 			{
-				wi::lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) argument is a RigidBodyPhysicsComponent, but not a vehicle!");
+				Protean::Lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) argument is a RigidBodyPhysicsComponent, but not a vehicle!");
 				return 0;
 			}
 
-			wi::lua::SSetFloat(L, wi::physics::GetVehicleForwardVelocity(*rb->component));
+			Protean::Lua::SSetFloat(L, Protean::Physics::GetVehicleForwardVelocity(*rb->component));
 			return 1;
 		}
-		wi::lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) not enough arguments!");
+		Protean::Lua::SError(L, "GetVehicleForwardVelocity(RigidBodyPhysicsComponent rigidbody) not enough arguments!");
 		return 0;
 	}
 
@@ -991,11 +991,11 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<PickDragOperation_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Physics_BindLua>::Register(wi::lua::GetLuaState());
-			Luna<Physics_BindLua>::push_global(wi::lua::GetLuaState(), "physics");
+			Luna<PickDragOperation_BindLua>::Register(Protean::Lua::GetLuaState());
+			Luna<Physics_BindLua>::Register(Protean::Lua::GetLuaState());
+			Luna<Physics_BindLua>::push_global(Protean::Lua::GetLuaState(), "physics");
 
-			wi::lua::RunText(R"(
+			Protean::Lua::RunText(R"(
 ACTIVATION_STATE_ACTIVE = 0
 ACTIVATION_STATE_INACTIVE = 1
 

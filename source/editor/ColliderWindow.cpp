@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "ColliderWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 void ColliderWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
 
-	wi::gui::Window::Create(ICON_COLLIDER " Collider", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_COLLIDER " Collider", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(670, 340));
 
 	closeButton.SetTooltip("Delete ColliderComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -37,8 +35,8 @@ void ColliderWindow::Create(EditorComponent* _editor)
 	AddWidget(&infoLabel);
 
 	auto forEachSelectedCollider = [this](auto func) {
-		return [this, func](wi::gui::EventArgs args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+		return [this, func](Protean::Gui::EventArgs args) {
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				ColliderComponent* collider = scene.colliders.GetComponent(x.entity);
@@ -176,7 +174,7 @@ void ColliderWindow::SetEntity(Entity entity)
 
 void ColliderWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(infoLabel);

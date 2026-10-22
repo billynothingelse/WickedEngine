@@ -1,39 +1,39 @@
 #pragma once
 class EditorComponent;
 
-class HumanoidWindow : public wi::gui::Window
+class HumanoidWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 	void RefreshBoneList();
 
-	wi::gui::Label infoLabel;
-	wi::gui::Button importAnimationsButton;
-	wi::gui::Button activateAllRagdollsButton;
-	wi::gui::ComboBox animationTesterCombo;
-	wi::gui::CheckBox lookatMouseCheckBox;
-	wi::gui::CheckBox lookatCheckBox;
-	wi::gui::ComboBox lookatEntityCombo;
-	wi::gui::CheckBox ragdollDisabledCheckBox;
-	wi::gui::CheckBox ragdollCheckBox;
-	wi::gui::CheckBox ragdoll2DCheckBox;
-	wi::gui::CheckBox capsuleShadowCheckBox;
-	wi::gui::Slider headRotMaxXSlider;
-	wi::gui::Slider headRotMaxYSlider;
-	wi::gui::Slider headRotSpeedSlider;
-	wi::gui::Slider eyeRotMaxXSlider;
-	wi::gui::Slider eyeRotMaxYSlider;
-	wi::gui::Slider eyeRotSpeedSlider;
-	wi::gui::Slider headSizeSlider;
-	wi::gui::Slider ragdollFatnessSlider;
-	wi::gui::Slider ragdollHeadSizeSlider;
-	wi::gui::Slider armSpacingSlider;
-	wi::gui::Slider legSpacingSlider;
-	wi::gui::TreeList boneList;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Button importAnimationsButton;
+	Protean::Gui::Button activateAllRagdollsButton;
+	Protean::Gui::ComboBox animationTesterCombo;
+	Protean::Gui::CheckBox lookatMouseCheckBox;
+	Protean::Gui::CheckBox lookatCheckBox;
+	Protean::Gui::ComboBox lookatEntityCombo;
+	Protean::Gui::CheckBox ragdollDisabledCheckBox;
+	Protean::Gui::CheckBox ragdollCheckBox;
+	Protean::Gui::CheckBox ragdoll2DCheckBox;
+	Protean::Gui::CheckBox capsuleShadowCheckBox;
+	Protean::Gui::Slider headRotMaxXSlider;
+	Protean::Gui::Slider headRotMaxYSlider;
+	Protean::Gui::Slider headRotSpeedSlider;
+	Protean::Gui::Slider eyeRotMaxXSlider;
+	Protean::Gui::Slider eyeRotMaxYSlider;
+	Protean::Gui::Slider eyeRotSpeedSlider;
+	Protean::Gui::Slider headSizeSlider;
+	Protean::Gui::Slider ragdollFatnessSlider;
+	Protean::Gui::Slider ragdollHeadSizeSlider;
+	Protean::Gui::Slider armSpacingSlider;
+	Protean::Gui::Slider legSpacingSlider;
+	Protean::Gui::TreeList boneList;
 
 	void ResizeLayout() override;
 

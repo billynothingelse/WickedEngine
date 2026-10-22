@@ -8,9 +8,9 @@
 #define FFX_CPP
 #include "render/shaders/ffx-parallelsort/FFX_ParallelSort.h"
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi::gpusortlib
+namespace Protean::GPUSortLib
 {
 	static Shader radix_countCS;
 	static Shader radix_reduceCS;
@@ -32,18 +32,18 @@ namespace wi::gpusortlib
 
 	void LoadShaders()
 	{
-		wi::renderer::LoadShader(ShaderStage::CS, radix_countCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT"}, "FPS_Count");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_reduceCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT_REDUCE"}, "FPS_CountReduce");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_scanCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN"}, "FPS_Scan");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_scanaddCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN_ADD"}, "FPS_ScanAdd");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_scatterCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER"}, "FPS_Scatter");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_scatter_payloadCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER", "kRS_ValueCopy"}, "FPS_Scatter");
-		wi::renderer::LoadShader(ShaderStage::CS, radix_indirectCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_INDIRECT"}, "FPS_SetupIndirectParameters");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_countCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT"}, "FPS_Count");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_reduceCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_COUNT_REDUCE"}, "FPS_CountReduce");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scanCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN"}, "FPS_Scan");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scanaddCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCAN_ADD"}, "FPS_ScanAdd");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scatterCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER"}, "FPS_Scatter");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_scatter_payloadCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_SCATTER", "kRS_ValueCopy"}, "FPS_Scatter");
+		Protean::Renderer::LoadShader(ShaderStage::CS, radix_indirectCS, "radix_sortCS.cso", ShaderModel::SM_6_0, {"FPS_INDIRECT"}, "FPS_SetupIndirectParameters");
 	}
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		GraphicsDevice* device = GetDevice();
 
@@ -54,24 +54,24 @@ namespace wi::gpusortlib
 		bd.bind_flags = BindFlag::CONSTANT_BUFFER | BindFlag::UNORDERED_ACCESS;
 		bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
 		device->CreateBuffer(&bd, nullptr, &m_IndirectConstantBuffer);
-		device->SetName(&m_IndirectConstantBuffer, "gpusortlib::m_IndirectConstantBuffer");
+		device->SetName(&m_IndirectConstantBuffer, "GPUSortLib::m_IndirectConstantBuffer");
 
 		bd.stride = sizeof(uint32_t);
 		bd.size = bd.stride * 3;
 		bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 		bd.misc_flags = ResourceMiscFlag::INDIRECT_ARGS | ResourceMiscFlag::BUFFER_STRUCTURED;
 		device->CreateBuffer(&bd, nullptr, &m_IndirectCountScatterArgs);
-		device->SetName(&m_IndirectCountScatterArgs, "gpusortlib::m_IndirectCountScatterArgs");
+		device->SetName(&m_IndirectCountScatterArgs, "GPUSortLib::m_IndirectCountScatterArgs");
 		device->CreateBuffer(&bd, nullptr, &m_IndirectReduceScanArgs);
-		device->SetName(&m_IndirectReduceScanArgs, "gpusortlib::m_IndirectReduceScanArgs");
+		device->SetName(&m_IndirectReduceScanArgs, "GPUSortLib::m_IndirectReduceScanArgs");
 		bd.size = bd.stride;
 		device->CreateBuffer(&bd, nullptr, &m_IndirectCountBuffer);
-		device->SetName(&m_IndirectCountBuffer, "gpusortlib::m_IndirectCountBuffer");
+		device->SetName(&m_IndirectCountBuffer, "GPUSortLib::m_IndirectCountBuffer");
 
-		static wi::eventhandler::Handle handle = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
+		static Protean::EventHandler::Handle handle = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_RELOAD_SHADERS, [](uint64_t userdata) { LoadShaders(); });
 		LoadShaders();
 
-		wilog("wi::gpusortlib Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::GPUSortLib Initialized (%d ms)", (int)std::round(timer.elapsed()));
 	}
 
 
@@ -83,7 +83,7 @@ namespace wi::gpusortlib
 		const GPUBuffer& payloadBuffer_uint_RW,
 		CommandList cmd)
 	{
-		GraphicsDevice* device = wi::graphics::GetDevice();
+		GraphicsDevice* device = Protean::Graphics::GetDevice();
 
 		uint32_t scratchBufferSize;
 		uint32_t reducedScratchBufferSize;
@@ -100,7 +100,7 @@ namespace wi::gpusortlib
 			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_FPSScratchBuffer);
-			device->SetName(&m_FPSScratchBuffer, "gpusortlib::m_FPSScratchBuffer");
+			device->SetName(&m_FPSScratchBuffer, "GPUSortLib::m_FPSScratchBuffer");
 		}
 		if (m_FPSReducedScratchBuffer.desc.size < reducedScratchBufferSize)
 		{
@@ -110,7 +110,7 @@ namespace wi::gpusortlib
 			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_FPSReducedScratchBuffer);
-			device->SetName(&m_FPSReducedScratchBuffer, "gpusortlib::m_FPSReducedScratchBuffer");
+			device->SetName(&m_FPSReducedScratchBuffer, "GPUSortLib::m_FPSReducedScratchBuffer");
 		}
 		if (m_TmpKeyBuffer.desc.size < keyBuffer_uint_RW.desc.size)
 		{
@@ -120,7 +120,7 @@ namespace wi::gpusortlib
 			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_TmpKeyBuffer);
-			device->SetName(&m_TmpKeyBuffer, "gpusortlib::m_TmpKeyBuffer");
+			device->SetName(&m_TmpKeyBuffer, "GPUSortLib::m_TmpKeyBuffer");
 		}
 		if (m_TmpPayloadBuffer.desc.size < payloadBuffer_uint_RW.desc.size)
 		{
@@ -130,7 +130,7 @@ namespace wi::gpusortlib
 			bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 			bd.misc_flags = ResourceMiscFlag::BUFFER_STRUCTURED;
 			device->CreateBuffer(&bd, nullptr, &m_TmpPayloadBuffer);
-			device->SetName(&m_TmpPayloadBuffer, "gpusortlib::m_TmpPayloadBuffer");
+			device->SetName(&m_TmpPayloadBuffer, "GPUSortLib::m_TmpPayloadBuffer");
 		}
 		GPUBuffer m_DstKeyBuffers[2] = { keyBuffer_uint_RW, m_TmpKeyBuffer };
 		GPUBuffer m_DstPayloadBuffers[2] = { payloadBuffer_uint_RW, m_TmpPayloadBuffer };

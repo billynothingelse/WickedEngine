@@ -8,7 +8,7 @@
 
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	class SpriteFont
 	{
@@ -23,24 +23,24 @@ namespace wi
 		};
 		uint32_t _flags = EMPTY;
 		std::wstring text;
-		wi::font::Params params;
-		wi::Resource fontStyleResource;
+		Protean::Font::Params params;
+		Protean::Resource fontStyleResource;
 		std::string fontStyleName;
 
 		SpriteFont() = default;
-		SpriteFont(const std::string& value, const wi::font::Params& params = wi::font::Params(), const std::string& fontStyleName = "") :params(params), fontStyleName(fontStyleName)
+		SpriteFont(const std::string& value, const Protean::Font::Params& params = Protean::Font::Params(), const std::string& fontStyleName = "") :params(params), fontStyleName(fontStyleName)
 		{
 			SetText(value);
 			if (!fontStyleName.empty())
 			{
-				fontStyleResource = wi::resourcemanager::Load(fontStyleName);
+				fontStyleResource = Protean::ResourceManager::Load(fontStyleName);
 			}
 		}
 		virtual ~SpriteFont() = default;
 
 		virtual void FixedUpdate();
 		virtual void Update(float dt);
-		virtual void Draw(wi::graphics::CommandList cmd) const;
+		virtual void Draw(Protean::Graphics::CommandList cmd) const;
 
 		constexpr void SetHidden(bool value = true) { if (value) { _flags |= HIDDEN; } else { _flags &= ~HIDDEN; } }
 		constexpr bool IsHidden() const { return _flags & HIDDEN; }
@@ -66,7 +66,7 @@ namespace wi
 
 		size_t GetCurrentTextLength() const;
 
-		wi::primitive::AABB GetAABB() const;
+		Protean::AABB GetAABB() const;
 
 		struct Animation
 		{
@@ -75,8 +75,8 @@ namespace wi
 				float time = 0; // time to fully type the text in seconds (0: disable)
 				bool looped = false; // if true, typing starts over when finished
 				size_t character_start = 0; // starting character for the animation
-				wi::audio::Sound sound;
-				wi::audio::SoundInstance soundinstance;
+				Protean::Audio::Sound sound;
+				Protean::Audio::SoundInstance soundinstance;
 
 				float elapsed = 0; // internal use; you don't need to initialize
 
@@ -95,6 +95,6 @@ namespace wi
 			} typewriter;
 		} anim;
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 	};
 }

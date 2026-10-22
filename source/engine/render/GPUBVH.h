@@ -3,23 +3,23 @@
 #include "render/GraphicsAPI/GraphicsDevice.h"
 #include "scene/SceneDecl.h"
 
-namespace wi
+namespace Protean
 {
 	struct GPUBVH
 	{
 		// Scene BVH intersection resources:
-		wi::graphics::GPUBuffer bvhNodeBuffer;
-		wi::graphics::GPUBuffer bvhParentBuffer;
-		wi::graphics::GPUBuffer bvhFlagBuffer;
-		wi::graphics::GPUBuffer primitiveCounterBuffer;
-		wi::graphics::GPUBuffer primitiveIDBuffer;
-		wi::graphics::GPUBuffer primitiveBuffer;
-		wi::graphics::GPUBuffer primitiveMortonBuffer;
+		Protean::Graphics::GPUBuffer bvhNodeBuffer;
+		Protean::Graphics::GPUBuffer bvhParentBuffer;
+		Protean::Graphics::GPUBuffer bvhFlagBuffer;
+		Protean::Graphics::GPUBuffer primitiveCounterBuffer;
+		Protean::Graphics::GPUBuffer primitiveIDBuffer;
+		Protean::Graphics::GPUBuffer primitiveBuffer;
+		Protean::Graphics::GPUBuffer primitiveMortonBuffer;
 		uint32_t primitiveCapacity = 0;
 		bool IsValid() const { return primitiveCounterBuffer.IsValid(); }
 
-		void Update(const wi::scene::Scene& scene);
-		void Build(const wi::scene::Scene& scene, wi::graphics::CommandList cmd) const;
+		void Update(const Protean::Scene& scene);
+		void Build(const Protean::Scene& scene, Protean::Graphics::CommandList cmd) const;
 
 		void Clear();
 

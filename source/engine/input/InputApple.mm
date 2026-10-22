@@ -5,7 +5,7 @@ __asm__(".linker_option \"-framework\", \"GameController\"");
 
 #include <mutex>
 
-namespace wi::input::apple
+namespace Protean::Input::Apple
 {
 static std::mutex locker;
 static GCController* controllers[8] = {};
@@ -81,7 +81,7 @@ constexpr uint64_t buttonToBit(int button)
 {
 	return 1ull << (button - GAMEPAD_RANGE_START - 1);
 }
-bool GetControllerState(wi::input::ControllerState* state, int index)
+bool GetControllerState(Protean::Input::ControllerState* state, int index)
 {
 	std::scoped_lock lck(locker);
 	if (index < 0 || index >= arraysize(controllers))
@@ -97,7 +97,7 @@ bool GetControllerState(wi::input::ControllerState* state, int index)
 
 	if (state)
 	{
-		*state = wi::input::ControllerState();
+		*state = Protean::Input::ControllerState();
 		
 		if (pad.dpad.up.pressed)	state->buttons |= buttonToBit(GAMEPAD_BUTTON_UP);
 		if (pad.dpad.left.pressed)	state->buttons |= buttonToBit(GAMEPAD_BUTTON_LEFT);
@@ -129,7 +129,7 @@ bool GetControllerState(wi::input::ControllerState* state, int index)
 	return true;
 }
 
-void SetControllerFeedback(const wi::input::ControllerFeedback& data, int index)
+void SetControllerFeedback(const Protean::Input::ControllerFeedback& data, int index)
 {
 	std::scoped_lock lck(locker);
 	if (index < 0 || index >= arraysize(controllers))

@@ -7,7 +7,7 @@
 #include <limits>
 #include <cassert>
 
-namespace wi::primitive
+namespace Protean
 {
 	struct Sphere;
 	struct Ray;
@@ -85,7 +85,7 @@ namespace wi::primitive
 			return true;
 		}
 
-		void Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri);
+		void Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri);
 	};
 	struct Sphere
 	{
@@ -183,7 +183,7 @@ namespace wi::primitive
 	{
 		XMFLOAT3 origin = {};
 		XMFLOAT3 normal = {};
-		XMFLOAT4X4 projection = wi::math::IDENTITY_MATRIX;
+		XMFLOAT4X4 projection = Protean::Math::IDENTITY_MATRIX;
 
 		bool intersects(const Sphere& b) const;
 		bool intersects(const Sphere& b, float& dist) const;

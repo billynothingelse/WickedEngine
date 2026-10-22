@@ -7,7 +7,7 @@
 
 #include <functional>
 
-namespace wi
+namespace Protean
 {
 
 	class Application;
@@ -16,13 +16,13 @@ namespace wi
 		public RenderPath2D
 	{
 	protected:
-		wi::jobsystem::context ctx;
-		wi::vector<std::function<void(wi::jobsystem::JobArgs)>> tasks;
+		Protean::JobSystem::context ctx;
+		Protean::vector<std::function<void(Protean::JobSystem::JobArgs)>> tasks;
 		std::function<void()> finish;
 		uint32_t launchedTasks = 0;
 		bool finished = false;
 	public:
-		wi::Resource backgroundTexture;
+		Protean::Resource backgroundTexture;
 
 		enum class BackgroundMode
 		{
@@ -32,9 +32,9 @@ namespace wi
 		} background_mode = BackgroundMode::Fill;
 
 		//Add a loading task which should be executed
-		void addLoadingFunction(const std::function<void(wi::jobsystem::JobArgs)>& loadingFunction);
+		void addLoadingFunction(const std::function<void(Protean::JobSystem::JobArgs)>& loadingFunction);
 		//Helper for loading a whole renderable component
-		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, wi::Color fadeColor = wi::Color(0, 0, 0, 255), wi::FadeManager::FadeType fadetype = wi::FadeManager::FadeType::FadeToColor);
+		void addLoadingComponent(RenderPath* component, Application* main, float fadeSeconds = 0, Protean::Color fadeColor = Protean::Color(0, 0, 0, 255), Protean::FadeManager::FadeType fadetype = Protean::FadeManager::FadeType::FadeToColor);
 		//Set a function that should be called when the loading finishes
 		void onFinished(const std::function<void()>& finishFunction);
 		//See if the loading is currently running
@@ -50,7 +50,7 @@ namespace wi
 		// Stop called when swapped out usually at end of loading
 		void Stop() override;
 
-		void Compose(wi::graphics::CommandList cmd) const override;
+		void Compose(Protean::Graphics::CommandList cmd) const override;
 
 		// This is an identifier of RenderPath subtype that is used for lua binding.
 		static constexpr const auto script_check_identifier = relative_path_storage(__FILE__);

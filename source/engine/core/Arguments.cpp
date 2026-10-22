@@ -5,15 +5,15 @@
 #include <sstream>
 #include <iterator>
 
-namespace wi::arguments
+namespace Protean::Arguments
 {
-	wi::unordered_set<std::string> params;
+	Protean::unordered_set<std::string> params;
 
 	void Parse(const wchar_t* args)
 	{
 		std::wstring from = args;
 		std::string to;
-		wi::helper::StringConvert(from, to);
+		Protean::Helper::StringConvert(from, to);
 
 		std::istringstream iss(to);
 

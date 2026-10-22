@@ -1,6 +1,6 @@
 #include "render/FadeManager.h"
 
-namespace wi
+namespace Protean
 {
 
 	void FadeManager::Clear()
@@ -24,11 +24,11 @@ namespace wi
 		}
 
 		float t = timer / targetFadeTimeInSeconds;
-		timer += wi::math::Clamp(dt, 0, 0.033f);
+		timer += Protean::Math::Clamp(dt, 0, 0.033f);
 
 		if (state == FADE_IN)
 		{
-			opacity = wi::math::Lerp(0.0f, 1.0f, t);
+			opacity = Protean::Math::Lerp(0.0f, 1.0f, t);
 			if (t >= 1.0f)
 			{
 				state = FADE_MID;
@@ -45,7 +45,7 @@ namespace wi
 		}
 		else if (state == FADE_OUT)
 		{
-			opacity = wi::math::Lerp(1.0f, 0.0f, t);
+			opacity = Protean::Math::Lerp(1.0f, 0.0f, t);
 			if (t >= 1.0f)
 			{
 				state = FADE_FINISHED;

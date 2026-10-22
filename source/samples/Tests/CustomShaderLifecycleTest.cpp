@@ -17,12 +17,12 @@ namespace
 
 int main()
 {
-	using namespace wi::renderer;
+	using namespace Protean::Renderer;
 
 	const size_t initialCount = GetCustomShaders().size();
 	CustomShader first;
 	first.name = "first";
-	first.filterMask = wi::enums::FILTER_OPAQUE;
+	first.filterMask = Protean::FILTER_OPAQUE;
 	const int firstID = RegisterCustomShader(first);
 	if (!Check(firstID >= 0, "registration returned an invalid ID"))
 		return 1;
@@ -38,8 +38,8 @@ int main()
 
 	CustomShader replacement = first;
 	replacement.name = "replacement";
-	replacement.filterMask = wi::enums::FILTER_TRANSPARENT;
-	replacement.pso[wi::enums::RENDERPASS_MAIN].desc.pt = wi::graphics::PrimitiveTopology::LINELIST;
+	replacement.filterMask = Protean::FILTER_TRANSPARENT;
+	replacement.pso[Protean::RENDERPASS_MAIN].desc.pt = Protean::Graphics::PrimitiveTopology::LINELIST;
 	const size_t countBeforeUpdate = GetCustomShaders().size();
 	if (!Check(UpdateCustomShader(firstID, replacement), "valid update failed") ||
 		!Check(GetCustomShaders().size() == countBeforeUpdate, "update grew active registry storage") ||
@@ -47,7 +47,7 @@ int main()
 		!Check(resolved.id == firstID, "update changed stable ID") ||
 		!Check(resolved.name == replacement.name, "update did not publish replacement") ||
 		!Check(resolved.filterMask == replacement.filterMask, "update did not replace filter mask") ||
-		!Check(resolved.pso[wi::enums::RENDERPASS_MAIN].desc.pt == wi::graphics::PrimitiveTopology::LINELIST, "update did not replace PSO payload"))
+		!Check(resolved.pso[Protean::RENDERPASS_MAIN].desc.pt == Protean::Graphics::PrimitiveTopology::LINELIST, "update did not replace PSO payload"))
 		return 1;
 
 	CustomShader retainedCopy = resolved;

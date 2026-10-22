@@ -14,7 +14,7 @@ namespace std
 }
 #endif // WI_VECTOR_TYPE
 
-namespace wi::helper
+namespace Protean::Helper
 {
 	template <class T>
 	constexpr void hash_combine(std::size_t& seed, const T& v)
@@ -65,31 +65,31 @@ namespace wi::helper
 	MessageBoxResult messageBoxCustom(const std::string& msg, const std::string& caption = "Warning!", const std::string& buttons = "OK");
 
 	// Returns file path if successful, empty string otherwise
-	std::string screenshot(const wi::graphics::SwapChain& swapchain, const std::string& name = "");
+	std::string screenshot(const Protean::Graphics::SwapChain& swapchain, const std::string& name = "");
 
 	// Returns file path if successful, empty string otherwise
-	std::string screenshot(const wi::graphics::Texture& texture, const std::string& name = "");
+	std::string screenshot(const Protean::Graphics::Texture& texture, const std::string& name = "");
 
 	// Save raw pixel data from the texture to memory
-	bool saveTextureToMemory(const wi::graphics::Texture& texture, wi::vector<uint8_t>& texturedata);
+	bool saveTextureToMemory(const Protean::Graphics::Texture& texture, Protean::vector<uint8_t>& texturedata);
 
 	// Save texture to memory as a file format (file format is determined by extension, supported extensions: .png, .jpg, .jpeg, .tga, .bmp, .dds, .ico, .h, .raw)
-	bool saveTextureToMemoryFile(const wi::graphics::Texture& texture, const std::string& fileExtension, wi::vector<uint8_t>& filedata);
+	bool saveTextureToMemoryFile(const Protean::Graphics::Texture& texture, const std::string& fileExtension, Protean::vector<uint8_t>& filedata);
 
 	// Save raw texture data to memory as file format (file format is determined by extension, supported extensions: .png, .jpg, .jpeg, .tga, .bmp, .dds, .ico, .h, .raw)
-	bool saveTextureToMemoryFile(const wi::vector<uint8_t>& textureData, const wi::graphics::TextureDesc& desc, const std::string& fileExtension, wi::vector<uint8_t>& filedata);
+	bool saveTextureToMemoryFile(const Protean::vector<uint8_t>& textureData, const Protean::Graphics::TextureDesc& desc, const std::string& fileExtension, Protean::vector<uint8_t>& filedata);
 
 	// Save texture to file format (file format is determined by extension, supported extensions: .png, .jpg, .jpeg, .tga, .bmp, .dds, .ico, .h, .raw)
-	bool saveTextureToFile(const wi::graphics::Texture& texture, const std::string& fileName);
+	bool saveTextureToFile(const Protean::Graphics::Texture& texture, const std::string& fileName);
 
 	// Save raw texture data to file format (file format is determined by extension, supported extensions: .png, .jpg, .jpeg, .tga, .bmp, .dds, .ico, .h, .raw)
-	bool saveTextureToFile(const wi::vector<uint8_t>& texturedata, const wi::graphics::TextureDesc& desc, const std::string& fileName);
+	bool saveTextureToFile(const Protean::vector<uint8_t>& texturedata, const Protean::Graphics::TextureDesc& desc, const std::string& fileName);
 
 	// Download buffer from GPU into CPU memory
-	bool saveBufferToMemory(const wi::graphics::GPUBuffer& buffer, wi::vector<uint8_t>& data);
+	bool saveBufferToMemory(const Protean::Graphics::GPUBuffer& buffer, Protean::vector<uint8_t>& data);
 
 	// Creates cursor data from texture. If successful, the file data is returned in the data argument
-	bool CreateCursorFromTexture(const wi::graphics::Texture& texture, int hotspotX, int hotspotY, wi::vector<uint8_t>& data);
+	bool CreateCursorFromTexture(const Protean::Graphics::Texture& texture, int hotspotX, int hotspotY, Protean::vector<uint8_t>& data);
 
 	std::string getCurrentDateTimeAsString();
 
@@ -121,10 +121,10 @@ namespace wi::helper
 	// Returns the file size if the file exists, otherwise 0
 	size_t FileSize(const std::string& fileName);
 
-	bool FileRead(const std::string& fileName, wi::vector<uint8_t>& data, size_t max_read = ~0ull, size_t offset = 0);
+	bool FileRead(const std::string& fileName, Protean::vector<uint8_t>& data, size_t max_read = ~0ull, size_t offset = 0);
 
 #if WI_VECTOR_TYPE
-	// This version is provided if std::vector != wi::vector
+	// This version is provided if std::vector != Protean::vector
 	bool FileRead(const std::string& fileName, std::vector<uint8_t>& data, size_t max_read = ~0ull, size_t offset = 0);
 #endif // WI_VECTOR_TYPE
 
@@ -154,7 +154,7 @@ namespace wi::helper
 			SAVE,
 		} type = OPEN;
 		std::string description;
-		wi::vector<std::string> extensions;
+		Protean::vector<std::string> extensions;
 		bool multiselect = true; // only for TYPE::OPEN
 	};
 	void FileDialog(const FileDialogParams& params, const std::function<void(std::string fileName)>& onSuccess, const std::function<void()>& onFailure = nullptr);
@@ -229,13 +229,13 @@ namespace wi::helper
 	std::string GetTimerDurationText(float timerSeconds);
 
 	// Get error message from platform-specific error code, for example HRESULT on windows
-	std::string GetPlatformErrorString(wi::platform::error_type code);
+	std::string GetPlatformErrorString(Protean::Platform::error_type code);
 
 	// Lossless compression of byte array; level = 0 means "default compression level", currently 3
-	bool Compress(const uint8_t* src_data, size_t src_size, wi::vector<uint8_t>& dst_data, int level = 0);
+	bool Compress(const uint8_t* src_data, size_t src_size, Protean::vector<uint8_t>& dst_data, int level = 0);
 
-	// Lossless decompression of byte array that was compressed with wi::helper::Compress()
-	bool Decompress(const uint8_t* src_data, size_t src_size, wi::vector<uint8_t>& dst_data);
+	// Lossless decompression of byte array that was compressed with Protean::Helper::Compress()
+	bool Decompress(const uint8_t* src_data, size_t src_size, Protean::vector<uint8_t>& dst_data);
 
 	// Hash the contents of a file:
 	size_t HashByteData(const uint8_t* data, size_t size);
@@ -247,5 +247,5 @@ namespace wi::helper
 	void SetClipboardText(const std::wstring& wstr);
 
 	// Copies texture to clipboard
-	void SetClipboardImage(const wi::graphics::Texture& texture);
+	void SetClipboardImage(const Protean::Graphics::Texture& texture);
 };

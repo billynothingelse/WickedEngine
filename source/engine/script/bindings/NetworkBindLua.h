@@ -2,7 +2,7 @@
 #include "script/Lua.h"
 #include "script/Luna.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 
 	class Network_BindLua

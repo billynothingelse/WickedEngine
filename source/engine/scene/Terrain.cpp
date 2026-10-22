@@ -36,21 +36,20 @@ const uint32_t atlas_physical_width = 16384u;
 const uint32_t atlas_physical_height = 16384u;
 #endif // NOSPARSE
 
-using namespace wi::ecs;
-using namespace wi::scene;
-using namespace wi::graphics;
+using namespace Protean;
+using namespace Protean::Graphics;
 
-namespace wi::terrain
+namespace Protean::Terrain
 {
 	struct ChunkIndices
 	{
-		wi::vector<uint32_t> indices;
+		Protean::vector<uint32_t> indices;
 		struct LOD
 		{
 			uint32_t indexOffset = 0;
 			uint32_t indexCount = 0;
 		};
-		wi::vector<LOD> lods;
+		Protean::vector<LOD> lods;
 
 		ChunkIndices()
 		{
@@ -201,17 +200,17 @@ namespace wi::terrain
 
 	struct Generator
 	{
-		wi::scene::Scene scene; // The background generation thread can safely add things to this, it will be merged into the main scene when it is safe to do so
-		wi::jobsystem::context workload;
+		Protean::Scene scene; // The background generation thread can safely add things to this, it will be merged into the main scene when it is safe to do so
+		Protean::JobSystem::context workload;
 		std::atomic_bool cancelled{ false };
-		wi::vector<SplineComponent> splines;
-		wi::vector<wi::ecs::Entity> spline_entities;
-		wi::vector<Chunk> removable_chunks; // chunks that were invalidated are regenerated on the generator thread. Before merging them with the scene, the previous version of them will need to be removed from the destination scene
+		Protean::vector<SplineComponent> splines;
+		Protean::vector<Protean::Entity> spline_entities;
+		Protean::vector<Chunk> removable_chunks; // chunks that were invalidated are regenerated on the generator thread. Before merging them with the scene, the previous version of them will need to be removed from the destination scene
 		std::deque<Chunk> priority_invalidation; // to not let invalidation stuck at same chunks every frame while editing splines, for more appealing visual feedback
-		wi::vector<Chunk> build_batch; // Reused each generation run (cleared, capacity kept) to avoid per-frame allocation
+		Protean::vector<Chunk> build_batch; // Reused each generation run (cleared, capacity kept) to avoid per-frame allocation
 	};
 
-	wi::jobsystem::context virtual_texture_ctx;
+	Protean::JobSystem::context virtual_texture_ctx;
 
 	static std::mutex locker;
 
@@ -254,8 +253,8 @@ namespace wi::terrain
 			td.usage = Usage::DEFAULT;
 			td.layout = ResourceState::UNORDERED_ACCESS;
 			td.mip_levels = lod_count;
-			wi::vector<uint32_t> default_data(td.width * td.height, 0xff);
-			wi::vector<SubresourceData> initdata(lod_count);
+			Protean::vector<uint32_t> default_data(td.width * td.height, 0xff);
+			Protean::vector<SubresourceData> initdata(lod_count);
 			for (uint32_t lod = 0; lod < lod_count; ++lod)
 			{
 				initdata[lod].data_ptr = default_data.data();
@@ -296,7 +295,7 @@ namespace wi::terrain
 				bd.usage = Usage::DEFAULT;
 				bd.bind_flags = BindFlag::UNORDERED_ACCESS;
 				bd.size = sizeof(uint32_t) * (tile_count + 1); // +1: atomic global counter
-				wi::vector<uint32_t> data(tile_count + 1);
+				Protean::vector<uint32_t> data(tile_count + 1);
 				success = device->CreateBuffer(&bd, data.data(), &allocationBuffer);
 				assert(success);
 				device->SetName(&allocationBuffer, "VirtualTexture::allocationBuffer");
@@ -437,14 +436,14 @@ namespace wi::terrain
 
 		grass_properties.viewDistance = chunk_width;
 
-		generator = wi::allocator::make_shared_single<Generator>();
+		generator = Protean::Allocator::make_shared_single<Generator>();
 
 		materialEntities.resize(MATERIAL_COUNT);
 	}
 	Terrain::~Terrain()
 	{
 		Generation_Cancel();
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		Protean::JobSystem::Wait(virtual_texture_ctx);
 	}
 
 	void Terrain::Generation_Restart()
@@ -585,7 +584,7 @@ namespace wi::terrain
 
 	void Terrain::Generation_Update(const CameraComponent& camera)
 	{
-		if (wi::jobsystem::IsBusy(generator->workload))
+		if (Protean::JobSystem::IsBusy(generator->workload))
 			return; // updating can't run while generation is running. Note: we could cancel here, but it could take long until cancel request is fulfilled (happened with physics mesh creations)
 
 		bool restart_generation = false;
@@ -611,7 +610,7 @@ namespace wi::terrain
 			restart_generation = true;
 			modifiers_to_remove.clear();
 		}
-		for (wi::ecs::Entity entity : materialEntities)
+		for (Protean::Entity entity : materialEntities)
 		{
 			MaterialComponent* material = scene->materials.GetComponent(entity);
 			if (material == nullptr)
@@ -724,7 +723,7 @@ namespace wi::terrain
 
 		if (scene->materials.GetCount() > 0)
 		{
-			for (wi::ecs::Entity entity : materialEntities)
+			for (Protean::Entity entity : materialEntities)
 			{
 				MaterialComponent* material = scene->materials.GetComponent(entity);
 				if (material == nullptr)
@@ -804,7 +803,7 @@ namespace wi::terrain
 			ObjectComponent* chunk_object = scene->objects.GetComponent(chunk_data.entity);
 			if (chunk_object != nullptr)
 			{
-				if (wi::renderer::GetOcclusionCullingEnabled() && chunk_object->occlusion.IsOccluded())
+				if (Protean::Renderer::GetOcclusionCullingEnabled() && chunk_object->occlusion.IsOccluded())
 				{
 					chunk_data.visible = false;
 				}
@@ -847,7 +846,7 @@ namespace wi::terrain
 			// Grass property update:
 			if (chunk_data.visible && chunk_data.grass_entity != INVALID_ENTITY)
 			{
-				wi::HairParticleSystem* grass = scene->hairs.GetComponent(chunk_data.grass_entity);
+				Protean::HairParticleSystem* grass = scene->hairs.GetComponent(chunk_data.grass_entity);
 				if (grass != nullptr)
 				{
 					chunk_data.grass_density_current = grass_density;
@@ -911,7 +910,7 @@ namespace wi::terrain
 
 		if (props_regenerated)
 		{
-			wi::physics::OptimizeBroadPhase(*scene);
+			Protean::Physics::OptimizeBroadPhase(*scene);
 		}
 
 		if (virtual_texture_any)
@@ -934,12 +933,12 @@ namespace wi::terrain
 			desc.stride = sizeof(ShaderTerrainChunk);
 			bool success = device->CreateBuffer(&desc, nullptr, &chunk_buffer);
 			assert(success);
-			device->SetName(&chunk_buffer, "wi::terrain::Terrain::chunk_buffer");
+			device->SetName(&chunk_buffer, "Protean::Terrain::Terrain::chunk_buffer");
 		}
 
 		// Start the generation on a background thread and keep it running until the next frame
 		generator->cancelled.store(false);
-		generator->workload.priority = wi::jobsystem::Priority::Low;
+		generator->workload.priority = Protean::JobSystem::Priority::Low;
 		size_t terrain_spline_count_scene = 0; // Count the current terrain modifier splines in scene
 		for (size_t i = 0; i < scene->splines.GetCount(); ++i)
 		{
@@ -988,9 +987,9 @@ namespace wi::terrain
 				generator->spline_entities.push_back(scene->splines.GetEntity(i));
 			}
 		}
-		wi::jobsystem::Execute(generator->workload, [this](wi::jobsystem::JobArgs a) {
+		Protean::JobSystem::Execute(generator->workload, [this](Protean::JobSystem::JobArgs a) {
 
-			wi::Timer timer;
+			Protean::Timer timer;
 			bool generated_something = false;
 
 			// Allocate the chunk's entity + components in the generator scene and size its
@@ -1017,8 +1016,8 @@ namespace wi::terrain
 					}
 					ObjectComponent& object = *generator->scene.objects.GetComponent(chunk_data.entity);
 					object.lod_bias = lod_bias;
-					object.filterMask |= wi::enums::FILTER_NAVIGATION_MESH;
-					object.filterMask |= wi::enums::FILTER_TERRAIN;
+					object.filterMask |= Protean::FILTER_NAVIGATION_MESH;
+					object.filterMask |= Protean::FILTER_TERRAIN;
 					generator->scene.Component_Attach(chunk_data.entity, chunkGroupEntity);
 
 					TransformComponent& transform = *generator->scene.transforms.GetComponent(chunk_data.entity);
@@ -1090,7 +1089,7 @@ namespace wi::terrain
 					TransformComponent& transform = *generator->scene.transforms.GetComponent(chunk_data.entity);
 					MeshComponent& mesh = *generator->scene.meshes.GetComponent(chunk_data.entity);
 
-					wi::HairParticleSystem grass = grass_properties;
+					Protean::HairParticleSystem grass = grass_properties;
 					grass.vertex_lengths.resize(vertexCount);
 					std::atomic<uint32_t> grass_valid_vertex_count{ 0 };
 
@@ -1099,15 +1098,15 @@ namespace wi::terrain
 					slope_cast_shadow.store(false);
 
 					// Do a parallel for loop over all the chunk's vertices and compute their properties:
-					wi::jobsystem::context ctx;
-					ctx.priority = wi::jobsystem::Priority::Low;
+					Protean::JobSystem::context ctx;
+					ctx.priority = Protean::JobSystem::Priority::Low;
 
 					// Preload height grid with padding, because neighbors will need to be accessed to determine slopes:
 					constexpr int chunk_width_padded = chunk_width + 1;
 					constexpr uint32_t vertexCount_padded = chunk_width_padded * chunk_width_padded;
 					float heights_padded[chunk_width_padded * chunk_width_padded];
 					const XMVECTOR UP = XMVectorSet(0, 1, 0, 0);
-					wi::jobsystem::Dispatch(ctx, vertexCount_padded, chunk_width_padded * 4, [&](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Dispatch(ctx, vertexCount_padded, chunk_width_padded * 4, [&](Protean::JobSystem::JobArgs args) {
 						const uint32_t index = args.jobIndex;
 						const XMUINT2 coord = XMUINT2(index % chunk_width_padded, index / chunk_width_padded);
 						const float x = (float(coord.x) - chunk_half_width) * chunk_scale;
@@ -1126,7 +1125,7 @@ namespace wi::terrain
 
 						// Apply splines to height only:
 						const XMVECTOR P = XMVectorSet(world_pos.x, -100000, world_pos.y, 0);
-						const wi::primitive::Ray ray(P, UP);
+						const Protean::Ray ray(P, UP);
 						int splinematerialcnt = -1;
 						for (size_t j = 0; j < generator->splines.size(); ++j)
 						{
@@ -1138,7 +1137,7 @@ namespace wi::terrain
 							XMVECTOR S = spline.TraceSplinePlane(P, UP, 4);
 							S = spline.ClosestPointOnSpline(S, 4);
 							const float splineheight = XMVectorGetY(S);
-							const float splinedist = wi::math::Distance(XMVectorSetY(P, splineheight), S);
+							const float splinedist = Protean::Math::Distance(XMVectorSetY(P, splineheight), S);
 							const float splinefactor = 1.0f - smoothstep(0.0f, 1.0f, saturate(splinedist * sqr(spline.terrain_modifier_amount)));
 							if (is_real_vertex && spline.materialEntity != INVALID_ENTITY)
 							{
@@ -1149,9 +1148,9 @@ namespace wi::terrain
 
 						heights_padded[coord.x + coord.y * chunk_width_padded] = height;
 					});
-					wi::jobsystem::Wait(ctx);
+					Protean::JobSystem::Wait(ctx);
 
-					wi::jobsystem::Dispatch(ctx, vertexCount, chunk_width * 4, [&](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Dispatch(ctx, vertexCount, chunk_width * 4, [&](Protean::JobSystem::JobArgs args) {
 						const uint32_t index = args.jobIndex;
 						const XMUINT2 coord = XMUINT2(index % chunk_width, index / chunk_width);
 						const float x = (float(coord.x) - chunk_half_width) * chunk_scale;
@@ -1174,8 +1173,8 @@ namespace wi::terrain
 
 						float region_base = 1;
 						float region_slope = region1 == 0 ? 1 : smoothstep(0.0f, region1, slope_amount);
-						float region_low_altitude = region2 == 0 ? 1 : smoothstep(0.0f, region2, wi::math::InverseLerp(0, bottomLevel, height));
-						float region_high_altitude = region3 == 0 ? 1 : smoothstep(0.0f, region3, wi::math::InverseLerp(0, topLevel, height));
+						float region_low_altitude = region2 == 0 ? 1 : smoothstep(0.0f, region2, Protean::Math::InverseLerp(0, bottomLevel, height));
+						float region_high_altitude = region3 == 0 ? 1 : smoothstep(0.0f, region3, Protean::Math::InverseLerp(0, topLevel, height));
 
 						region_low_altitude = saturate(region_low_altitude - region_slope);
 						region_high_altitude = saturate(region_high_altitude - region_slope);
@@ -1223,12 +1222,12 @@ namespace wi::terrain
 						}
 						chunk_data.heightmap_data[index] = uint16_t(inverse_lerp(bottomLevel, topLevel, height) * 65535);
 					});
-					wi::jobsystem::Wait(ctx); // wait until chunk's vertex buffer is fully generated
+					Protean::JobSystem::Wait(ctx); // wait until chunk's vertex buffer is fully generated
 
 					object.SetCastShadow(slope_cast_shadow.load());
 					mesh.SetDoubleSidedShadow(slope_cast_shadow.load());
 
-					wi::jobsystem::Execute(ctx, [&](wi::jobsystem::JobArgs args) {
+					Protean::JobSystem::Execute(ctx, [&](Protean::JobSystem::JobArgs args) {
 						mesh.CreateRenderData();
 						chunk_data.sphere.center = mesh.aabb.getCenter();
 						chunk_data.sphere.center.x += chunk_data.position.x;
@@ -1246,9 +1245,9 @@ namespace wi::terrain
 					// tail tasks.
 					if (grass_valid_vertex_count.load() > 0)
 					{
-						wi::jobsystem::Execute(
+						Protean::JobSystem::Execute(
 							ctx,
-							[&](wi::jobsystem::JobArgs args)
+							[&](Protean::JobSystem::JobArgs args)
 						{
 							chunk_data.grass = std::move(grass); // the grass will be added to the scene later, only when the chunk is close to the camera (center chunk's neighbors)
 							chunk_data.grass.meshID = chunk_data.entity;
@@ -1268,16 +1267,16 @@ namespace wi::terrain
 						// It only reads the mesh and writes its own shape, so
 						// it runs concurrently with the render data and grass
 						// tasks.
-						wi::jobsystem::Execute(
+						Protean::JobSystem::Execute(
 							ctx,
-							[&](wi::jobsystem::JobArgs args)
+							[&](Protean::JobSystem::JobArgs args)
 						{
 							RigidBodyPhysicsComponent& newrigidbody = mesh.precomputed_rigidbody_physics_shape;
 							newrigidbody.shape = RigidBodyPhysicsComponent::HEIGHTFIELD;
 							newrigidbody.mass = 0; // terrain chunks are static
 							newrigidbody.friction = 0.8f;
 							//newrigidbody.mesh_lod = 2;
-							wi::physics::CreateRigidBodyShape(newrigidbody, transform.scale_local, &mesh);
+							Protean::Physics::CreateRigidBodyShape(newrigidbody, transform.scale_local, &mesh);
 						});
 					}
 
@@ -1289,7 +1288,7 @@ namespace wi::terrain
 
 					// Wait until the async render data / grass / physics tasks
 					// finish.
-					wi::jobsystem::Wait(ctx);
+					Protean::JobSystem::Wait(ctx);
 				}
 			};
 
@@ -1316,7 +1315,7 @@ namespace wi::terrain
 							{
 								chunk_data.grass_entity = CreateEntity();
 							}
-							wi::HairParticleSystem& grass = generator->scene.hairs.Create(chunk_data.grass_entity);
+							Protean::HairParticleSystem& grass = generator->scene.hairs.Create(chunk_data.grass_entity);
 							grass = chunk_data.grass;
 							chunk_data.grass_density_current = grass_density;
 							grass.strandCount = uint32_t(grass.strandCount * chunk_data.grass_density_current);
@@ -1346,7 +1345,7 @@ namespace wi::terrain
 							generator->scene.Component_Attach(chunk_data.props_entity, chunk_data.entity, true);
 							chunk_data.prop_density_current = prop_density;
 
-							wi::random::RNG rng(chunk.compute_hash());
+							Protean::Random::RNG rng(chunk.compute_hash());
 							for (const auto& prop : props)
 							{
 								const int gen_count = rng.next_int(
@@ -1362,9 +1361,9 @@ namespace wi::terrain
 									const XMFLOAT3& pos0 = chunk_data.mesh_vertex_positions[ind0];
 									const XMFLOAT3& pos1 = chunk_data.mesh_vertex_positions[ind1];
 									const XMFLOAT3& pos2 = chunk_data.mesh_vertex_positions[ind2];
-									XMFLOAT4 region0 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind0], chunk_data.blendmap_layers[1].pixels[ind0], chunk_data.blendmap_layers[2].pixels[ind0], chunk_data.blendmap_layers[3].pixels[ind0]);
-									XMFLOAT4 region1 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind1], chunk_data.blendmap_layers[1].pixels[ind1], chunk_data.blendmap_layers[2].pixels[ind1], chunk_data.blendmap_layers[3].pixels[ind1]);
-									XMFLOAT4 region2 = wi::Color(chunk_data.blendmap_layers[0].pixels[ind2], chunk_data.blendmap_layers[1].pixels[ind2], chunk_data.blendmap_layers[2].pixels[ind2], chunk_data.blendmap_layers[3].pixels[ind2]);
+									XMFLOAT4 region0 = Protean::Color(chunk_data.blendmap_layers[0].pixels[ind0], chunk_data.blendmap_layers[1].pixels[ind0], chunk_data.blendmap_layers[2].pixels[ind0], chunk_data.blendmap_layers[3].pixels[ind0]);
+									XMFLOAT4 region1 = Protean::Color(chunk_data.blendmap_layers[0].pixels[ind1], chunk_data.blendmap_layers[1].pixels[ind1], chunk_data.blendmap_layers[2].pixels[ind1], chunk_data.blendmap_layers[3].pixels[ind1]);
+									XMFLOAT4 region2 = Protean::Color(chunk_data.blendmap_layers[0].pixels[ind2], chunk_data.blendmap_layers[1].pixels[ind2], chunk_data.blendmap_layers[2].pixels[ind2], chunk_data.blendmap_layers[3].pixels[ind2]);
 									weight_norm(region0);
 									weight_norm(region1);
 									weight_norm(region2);
@@ -1415,14 +1414,14 @@ namespace wi::terrain
 									if (chance > prop.threshold && !prop.data.empty())
 									{
 										// No RNG must happen here, the random generation must be always consistent!
-										wi::Archive archive = wi::Archive(prop.data.data(), prop.data.size());
+										Protean::Archive archive = Protean::Archive(prop.data.data(), prop.data.size());
 										EntitySerializer seri;
 										Entity entity = generator->scene.Entity_Serialize(
 											archive,
 											seri,
 											INVALID_ENTITY,
-											wi::scene::Scene::EntitySerializeFlags::RECURSIVE |
-											wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+											Protean::Scene::EntitySerializeFlags::RECURSIVE |
+											Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 										);
 										NameComponent* name = generator->scene.names.GetComponent(entity);
 										if (name != nullptr)
@@ -1468,13 +1467,13 @@ namespace wi::terrain
 			//  capacity, so after the first run it never reallocates.
 			const uint32_t batch_capacity = std::max(
 				1u,
-				wi::jobsystem::GetThreadCount(wi::jobsystem::Priority::Low)
+				Protean::JobSystem::GetThreadCount(Protean::JobSystem::Priority::Low)
 			);
 			generator->build_batch.clear();
 			generator->build_batch.reserve(batch_capacity);
 
-			wi::jobsystem::context build_ctx;
-			build_ctx.priority = wi::jobsystem::Priority::Low;
+			Protean::JobSystem::context build_ctx;
+			build_ctx.priority = Protean::JobSystem::Priority::Low;
 
 			// Set up and build every chunk queued in the batch, then clear it.
 			// Returns false if the per-frame time budget was exceeded (the
@@ -1491,16 +1490,16 @@ namespace wi::terrain
 					setup_chunk(chunk);
 				}
 
-				wi::jobsystem::Dispatch(
+				Protean::JobSystem::Dispatch(
 					build_ctx,
 					uint32_t(generator->build_batch.size()),
 					1,
-					[&](wi::jobsystem::JobArgs args)
+					[&](Protean::JobSystem::JobArgs args)
 				{
 					build_chunk(generator->build_batch[args.jobIndex]);
 				});
 
-				wi::jobsystem::Wait(build_ctx);
+				Protean::JobSystem::Wait(build_ctx);
 				generated_something = true;
 
 				// Place grass/props on the chunks we just built, so props
@@ -1653,7 +1652,7 @@ namespace wi::terrain
 		if (generator == nullptr)
 			return;
 		generator->cancelled.store(true); // tell the generation thread that work must be stopped
-		wi::jobsystem::Wait(generator->workload); // waits until generation thread exits
+		Protean::JobSystem::Wait(generator->workload); // waits until generation thread exits
 		generator->cancelled.store(false); // the next generation can run
 	}
 
@@ -1661,7 +1660,7 @@ namespace wi::terrain
 	{
 		if (generator == nullptr)
 			return false;
-		return wi::jobsystem::IsBusy(generator->workload);
+		return Protean::JobSystem::IsBusy(generator->workload);
 	}
 
 	void Terrain::CreateChunkRegionTexture(ChunkData& chunk_data)
@@ -1682,7 +1681,7 @@ namespace wi::terrain
 
 			bool success = device->CreateTexture(&desc, &data, &chunk_data.heightmap);
 			assert(success);
-			device->SetName(&chunk_data.heightmap, "wi::terrain::ChunkData::heightmap");
+			device->SetName(&chunk_data.heightmap, "Protean::Terrain::ChunkData::heightmap");
 		}
 
 		const uint32_t required_layers = uint32_t(chunk_data.blendmap_layers.size() + chunk_data.spline_blendmap_layers.size());
@@ -1695,7 +1694,7 @@ namespace wi::terrain
 			desc.format = Format::R8_UNORM;
 			desc.bind_flags = BindFlag::SHADER_RESOURCE;
 
-			wi::vector<SubresourceData> data(required_layers);
+			Protean::vector<SubresourceData> data(required_layers);
 			for (size_t i = 0; i < chunk_data.blendmap_layers.size(); ++i)
 			{
 				data[i].data_ptr = chunk_data.blendmap_layers[i].pixels.data();
@@ -1710,14 +1709,14 @@ namespace wi::terrain
 
 			bool success = device->CreateTexture(&desc, data.data(), &chunk_data.blendmap);
 			assert(success);
-			device->SetName(&chunk_data.blendmap, "wi::terrain::ChunkData::blendmap");
+			device->SetName(&chunk_data.blendmap, "Protean::Terrain::ChunkData::blendmap");
 		}
 	}
 
 	void Terrain::UpdateVirtualTexturesCPU()
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
-		virtual_texture_ctx.priority = wi::jobsystem::Priority::Low;
+		Protean::JobSystem::Wait(virtual_texture_ctx);
+		virtual_texture_ctx.priority = Protean::JobSystem::Priority::Low;
 
 		GraphicsDevice* device = GetDevice();
 		virtual_textures_in_use.clear();
@@ -1875,7 +1874,7 @@ namespace wi::terrain
 
 			if (chunk_data.vt == nullptr)
 			{
-				chunk_data.vt = wi::allocator::make_shared<VirtualTexture>();
+				chunk_data.vt = Protean::Allocator::make_shared<VirtualTexture>();
 			}
 			VirtualTexture& vt = *chunk_data.vt;
 
@@ -1935,7 +1934,7 @@ namespace wi::terrain
 				continue;
 		}
 
-		wi::jobsystem::Execute(virtual_texture_ctx, [this](wi::jobsystem::JobArgs args) {
+		Protean::JobSystem::Execute(virtual_texture_ctx, [this](Protean::JobSystem::JobArgs args) {
 
 			// Update state of physical tiles:
 			//	Potentially each physical tile is getting marked as unused here (free_frames > 0), unless GPU requested them to be resident
@@ -2077,15 +2076,15 @@ namespace wi::terrain
 
 	void Terrain::UpdateVirtualTexturesGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		Protean::JobSystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 		device->EventBegin("Terrain - UpdateVirtualTexturesGPU", cmd);
-		auto range = wi::profiler::BeginRangeGPU("Terrain - UpdateVirtualTexturesGPU", cmd);
+		auto range = Protean::Profiler::BeginRangeGPU("Terrain - UpdateVirtualTexturesGPU", cmd);
 
 		device->Barrier(GPUBarrier::Memory(), cmd); // on Apple this fixes corruption so better be safe on all platforms, do not remove
 
 		device->EventBegin("Update Residency Maps", cmd);
-		device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_RESIDENCYUPDATE), cmd);
+		device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_VIRTUALTEXTURE_RESIDENCYUPDATE), cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
 		{
 			if (vt->residency == nullptr)
@@ -2118,7 +2117,7 @@ namespace wi::terrain
 		device->EventEnd(cmd);
 
 		device->EventBegin("Render Tile Regions", cmd);
-		wi::renderer::BindCommonResources(cmd);
+		Protean::Renderer::BindCommonResources(cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
 		{
 			if (vt->update_requests.empty())
@@ -2130,19 +2129,19 @@ namespace wi::terrain
 				switch (map_type)
 				{
 				case MaterialComponent::BASECOLORMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_BASECOLORMAP), cmd);
+					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_BASECOLORMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::BASECOLORMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::NORMALMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_NORMALMAP), cmd);
+					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_NORMALMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::NORMALMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::SURFACEMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_SURFACEMAP), cmd);
+					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_SURFACEMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::SURFACEMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				case MaterialComponent::EMISSIVEMAP:
-					device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_EMISSIVEMAP), cmd);
+					device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_TERRAIN_VIRTUALTEXTURE_UPDATE_EMISSIVEMAP), cmd);
 					push.output_texture = device->GetDescriptorIndex(&atlas.maps[MaterialComponent::EMISSIVEMAP].texture_raw_block, SubresourceType::UAV);
 					break;
 				default:
@@ -2257,10 +2256,10 @@ namespace wi::terrain
 		{
 			if (!map.texture.IsValid())
 				continue;
-			wi::renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::SHADER_RESOURCE, ResourceState::COPY_DST));
-			wi::renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::UNORDERED_ACCESS, ResourceState::COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::SHADER_RESOURCE, ResourceState::COPY_DST));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::UNORDERED_ACCESS, ResourceState::COPY_SRC));
 		}
-		wi::renderer::FlushBarriers(cmd);
+		Protean::Renderer::FlushBarriers(cmd);
 
 		for (auto& x : nosparse_copies)
 		{
@@ -2272,20 +2271,20 @@ namespace wi::terrain
 		{
 			if (!map.texture.IsValid())
 				continue;
-			wi::renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::COPY_DST, ResourceState::SHADER_RESOURCE));
-			wi::renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::COPY_SRC, ResourceState::UNORDERED_ACCESS));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture, ResourceState::COPY_DST, ResourceState::SHADER_RESOURCE));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&map.texture_raw_block, ResourceState::COPY_SRC, ResourceState::UNORDERED_ACCESS));
 		}
-		wi::renderer::FlushBarriers(cmd);
+		Protean::Renderer::FlushBarriers(cmd);
 		device->EventEnd(cmd);
 #endif // NOSPARSE
 
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 		device->EventEnd(cmd);
 	}
 
 	void Terrain::CopyVirtualTexturePageStatusGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		Protean::JobSystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 		device->EventBegin("Terrain - CopyVirtualTexturePageStatusGPU", cmd);
 		for (const VirtualTexture* vt : virtual_textures_in_use)
@@ -2330,14 +2329,14 @@ namespace wi::terrain
 
 	void Terrain::AllocateVirtualTextureTileRequestsGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		Protean::JobSystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 
 		device->EventBegin("Terrain - AllocateVirtualTextureTileRequestsGPU", cmd);
 
 		{
 			device->EventBegin("Tile Requests", cmd);
-			device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_TILEREQUESTS), cmd);
+			device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_VIRTUALTEXTURE_TILEREQUESTS), cmd);
 			for (const VirtualTexture* vt : virtual_textures_in_use)
 			{
 				if (vt->residency == nullptr)
@@ -2364,7 +2363,7 @@ namespace wi::terrain
 
 		{
 			device->EventBegin("Tile Allocation Requests", cmd);
-			device->BindComputeShader(wi::renderer::GetShader(wi::enums::CSTYPE_VIRTUALTEXTURE_TILEALLOCATE), cmd);
+			device->BindComputeShader(Protean::Renderer::GetShader(Protean::CSTYPE_VIRTUALTEXTURE_TILEALLOCATE), cmd);
 			for (const VirtualTexture* vt : virtual_textures_in_use)
 			{
 				if (vt->residency == nullptr)
@@ -2394,7 +2393,7 @@ namespace wi::terrain
 
 	void Terrain::WritebackTileRequestsGPU(CommandList cmd) const
 	{
-		wi::jobsystem::Wait(virtual_texture_ctx);
+		Protean::JobSystem::Wait(virtual_texture_ctx);
 		GraphicsDevice* device = GetDevice();
 
 		device->EventBegin("Terrain - WritebackTileRequestsGPU", cmd);
@@ -2404,10 +2403,10 @@ namespace wi::terrain
 			if (vt->residency == nullptr)
 				continue;
 			device->CopyResource(&vt->residency->allocationBuffer_CPU_readback[vt->residency->cpu_resource_id], &vt->residency->allocationBuffer, cmd);
-			wi::renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState::COPY_SRC, ResourceState::COPY_DST));
+			Protean::Renderer::PushBarrier(GPUBarrier::Buffer(&vt->residency->allocationBuffer, ResourceState::COPY_SRC, ResourceState::COPY_DST));
 		}
 
-		wi::renderer::FlushBarriers(cmd);
+		Protean::Renderer::FlushBarriers(cmd);
 
 		device->EventEnd(cmd);
 
@@ -2420,7 +2419,7 @@ namespace wi::terrain
 			// Note: instead of ClearUAV, we use copies from default initialized resources
 			//	With this it can be put on the async copy queue
 			//	Also, using the ClearUAV was having a very bad performance especially with DX12
-			static wi::unordered_map<uint32_t, VirtualTextureAtlas::Residency> clear_residencies;
+			static Protean::unordered_map<uint32_t, VirtualTextureAtlas::Residency> clear_residencies;
 			VirtualTextureAtlas::Residency& clear = clear_residencies[vt->resolution];
 			if (clear.resolution != vt->resolution)
 			{
@@ -2430,9 +2429,9 @@ namespace wi::terrain
 			device->CopyResource(&vt->residency->requestBuffer, &clear.requestBuffer, cmd);
 			device->CopyResource(&vt->residency->allocationBuffer, &clear.allocationBuffer, cmd);
 
-			wi::renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState::COPY_DST, ResourceState::COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&vt->residency->residencyMap, ResourceState::COPY_DST, ResourceState::COPY_SRC));
 		}
-		wi::renderer::FlushBarriers(cmd);
+		Protean::Renderer::FlushBarriers(cmd);
 		device->EventEnd(cmd);
 	}
 
@@ -2469,7 +2468,7 @@ namespace wi::terrain
 		}
 	}
 
-	void Terrain::InvalidateChunksAtSpline(const wi::scene::SplineComponent& spline)
+	void Terrain::InvalidateChunksAtSpline(const Protean::SplineComponent& spline)
 	{
 		for (auto it = chunks.begin(); it != chunks.end(); it++)
 		{
@@ -2485,16 +2484,16 @@ namespace wi::terrain
 		}
 	}
 
-	void Terrain::Serialize(wi::Archive& archive, wi::ecs::EntitySerializer& seri)
+	void Terrain::Serialize(Protean::Archive& archive, Protean::EntitySerializer& seri)
 	{
 		Generation_Cancel();
 
 		// Note: separate component types serialized within terrain must NOT use the version of the terrain, but their own!
 		ComponentLibrary& library = *seri.componentlibrary;
 		const uint64_t terrain_version = seri.GetVersion();
-		const uint64_t grass_version = seri.GetVersion("wi::scene::Scene::hairs");
-		const uint64_t material_version = seri.GetVersion("wi::scene::Scene::materials");
-		const uint64_t weather_version = seri.GetVersion("wi::scene::Scene::weathers");
+		const uint64_t grass_version = seri.GetVersion("Protean::Scene::hairs");
+		const uint64_t material_version = seri.GetVersion("Protean::Scene::materials");
+		const uint64_t weather_version = seri.GetVersion("Protean::Scene::weathers");
 
 		if (archive.IsReadMode())
 		{
@@ -2544,22 +2543,22 @@ namespace wi::terrain
 					{
 						// Serialize the prop data in read mode and remap internal entity references:
 						Scene tmp_scene;
-						wi::Archive tmp_archive = wi::Archive(prop.data.data(), prop.data.size());
+						Protean::Archive tmp_archive = Protean::Archive(prop.data.data(), prop.data.size());
 						Entity entity = tmp_scene.Entity_Serialize(
 							tmp_archive,
 							seri,
 							INVALID_ENTITY,
-							wi::scene::Scene::EntitySerializeFlags::RECURSIVE
+							Protean::Scene::EntitySerializeFlags::RECURSIVE
 						);
 
 						// Serialize again with the remapped references:
-						wi::Archive remapped_archive;
+						Protean::Archive remapped_archive;
 						remapped_archive.SetReadModeAndResetPos(false);
 						tmp_scene.Entity_Serialize(
 							remapped_archive,
 							seri,
 							entity,
-							wi::scene::Scene::EntitySerializeFlags::RECURSIVE
+							Protean::Scene::EntitySerializeFlags::RECURSIVE
 						);
 
 						// Replace original data with remapped references for current session:
@@ -2580,13 +2579,13 @@ namespace wi::terrain
 					tmp_scene.names.Create(object_entity) = name;
 					tmp_scene.objects.Create(object_entity) = object;
 					tmp_scene.transforms.Create(object_entity);
-					wi::Archive archive;
+					Protean::Archive archive;
 					EntitySerializer seri;
 					tmp_scene.Entity_Serialize(
 						archive,
 						seri,
 						object_entity,
-						wi::scene::Scene::EntitySerializeFlags::RECURSIVE | wi::scene::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
+						Protean::Scene::EntitySerializeFlags::RECURSIVE | Protean::Scene::EntitySerializeFlags::KEEP_INTERNAL_ENTITY_REFERENCES
 					);
 					archive.WriteData(prop.data);
 				}
@@ -2638,7 +2637,7 @@ namespace wi::terrain
 				}
 				else
 				{
-					wi::vector<wi::Color> blendmap4;
+					Protean::vector<Protean::Color> blendmap4;
 					archive >> blendmap4;
 					chunk_data.blendmap_layers.resize(4);
 					for (size_t i = 0; i < 4; ++i)
@@ -2671,7 +2670,7 @@ namespace wi::terrain
 				default:
 				case Modifier::Type::Perlin:
 					{
-						wi::allocator::shared_ptr<PerlinModifier> modifier = wi::allocator::make_shared_single<PerlinModifier>();
+						Protean::Allocator::shared_ptr<PerlinModifier> modifier = Protean::Allocator::make_shared_single<PerlinModifier>();
 						modifiers[i] = modifier;
 						archive >> modifier->octaves;
 						archive >> modifier->seed;
@@ -2680,7 +2679,7 @@ namespace wi::terrain
 					break;
 				case Modifier::Type::Voronoi:
 					{
-						wi::allocator::shared_ptr<VoronoiModifier> modifier = wi::allocator::make_shared_single<VoronoiModifier>();
+						Protean::Allocator::shared_ptr<VoronoiModifier> modifier = Protean::Allocator::make_shared_single<VoronoiModifier>();
 						modifiers[i] = modifier;
 						archive >> modifier->fade;
 						archive >> modifier->shape;
@@ -2692,7 +2691,7 @@ namespace wi::terrain
 					break;
 				case Modifier::Type::Heightmap:
 					{
-						wi::allocator::shared_ptr<HeightmapModifier> modifier = wi::allocator::make_shared_single<HeightmapModifier>();
+						Protean::Allocator::shared_ptr<HeightmapModifier> modifier = Protean::Allocator::make_shared_single<HeightmapModifier>();
 						modifiers[i] = modifier;
 						archive >> modifier->amount;
 						archive >> modifier->data;
@@ -2865,13 +2864,13 @@ namespace wi::terrain
 		{
 			// Convert terrain version below 4 to newer version:
 			seri.version = material_version;
-			wi::scene::MaterialComponent materials[MATERIAL_COUNT];
+			Protean::MaterialComponent materials[MATERIAL_COUNT];
 			materials[MATERIAL_BASE].Serialize(archive, seri);
 			materials[MATERIAL_SLOPE].Serialize(archive, seri);
 			materials[MATERIAL_LOW_ALTITUDE].Serialize(archive, seri);
 			materials[MATERIAL_HIGH_ALTITUDE].Serialize(archive, seri);
 			grass_material.Serialize(archive, seri);
-			wi::jobsystem::Wait(seri.ctx); // wait for material CreateRenderData() that was asynchronously launched in Serialize()!
+			Protean::JobSystem::Wait(seri.ctx); // wait for material CreateRenderData() that was asynchronously launched in Serialize()!
 
 			materialEntities[MATERIAL_BASE] = CreateEntity();
 			materialEntities[MATERIAL_SLOPE] = CreateEntity();
@@ -2879,14 +2878,14 @@ namespace wi::terrain
 			materialEntities[MATERIAL_HIGH_ALTITUDE] = CreateEntity();
 			grassEntity = CreateEntity();
 
-			ComponentManager<MaterialComponent>* scene_materials = library.Get<MaterialComponent>("wi::scene::Scene::materials");
+			ComponentManager<MaterialComponent>* scene_materials = library.Get<MaterialComponent>("Protean::Scene::materials");
 			scene_materials->Create(materialEntities[MATERIAL_BASE]) = materials[MATERIAL_BASE];
 			scene_materials->Create(materialEntities[MATERIAL_SLOPE]) = materials[MATERIAL_SLOPE];
 			scene_materials->Create(materialEntities[MATERIAL_LOW_ALTITUDE]) = materials[MATERIAL_LOW_ALTITUDE];
 			scene_materials->Create(materialEntities[MATERIAL_HIGH_ALTITUDE]) = materials[MATERIAL_HIGH_ALTITUDE];
 			scene_materials->Create(grassEntity) = grass_material;
 
-			ComponentManager<NameComponent>* scene_names = library.Get<NameComponent>("wi::scene::Scene::names");
+			ComponentManager<NameComponent>* scene_names = library.Get<NameComponent>("Protean::Scene::names");
 			scene_names->Create(materialEntities[MATERIAL_BASE]).name = "material_base";
 			scene_names->Create(materialEntities[MATERIAL_SLOPE]).name = "material_slope";
 			scene_names->Create(materialEntities[MATERIAL_LOW_ALTITUDE]).name = "material_low_altitude";
@@ -2903,7 +2902,7 @@ namespace wi::terrain
 			grass_properties.Serialize(archive, seri);
 			seri.version = terrain_version;
 
-			ComponentManager<wi::HairParticleSystem>* scene_hairs = library.Get<wi::HairParticleSystem>("wi::scene::Scene::hairs");
+			ComponentManager<Protean::HairParticleSystem>* scene_hairs = library.Get<Protean::HairParticleSystem>("Protean::Scene::hairs");
 			scene_hairs->Create(grassEntity) = grass_properties;
 		}
 

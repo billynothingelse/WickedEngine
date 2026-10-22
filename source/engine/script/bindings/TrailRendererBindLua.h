@@ -4,12 +4,12 @@
 #include "script/Luna.h"
 #include "render/TrailRenderer.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	class TrailRenderer_BindLua
 	{
 	public:
-		wi::TrailRenderer trail;
+		Protean::TrailRenderer trail;
 
 		inline static constexpr char className[] = "TrailRenderer";
 		static Luna<TrailRenderer_BindLua>::FunctionType methods[];
@@ -17,8 +17,8 @@ namespace wi::lua
 
 		TrailRenderer_BindLua() = default;
 		TrailRenderer_BindLua(lua_State* L) {}
-		TrailRenderer_BindLua(wi::TrailRenderer& ref) : trail(ref) {}
-		TrailRenderer_BindLua(wi::TrailRenderer* ref) : trail(*ref) {}
+		TrailRenderer_BindLua(Protean::TrailRenderer& ref) : trail(ref) {}
+		TrailRenderer_BindLua(Protean::TrailRenderer* ref) : trail(*ref) {}
 
 		int AddPoint(lua_State* L);
 		int Cut(lua_State* L);

@@ -7,7 +7,7 @@
 
 #include <functional>
 
-namespace wi
+namespace Protean
 {
 	class FadeManager
 	{
@@ -27,18 +27,18 @@ namespace wi
 			FADE_OUT,	// faded -> no fade
 			FADE_FINISHED,
 		} state = FADE_FINISHED;
-		wi::Color color = wi::Color(0, 0, 0, 255);
+		Protean::Color color = Protean::Color(0, 0, 0, 255);
 		std::function<void()> onFade = [] {};
 		bool fadeEventTriggeredThisFrame = false;
 		bool crossFadeTextureSaveRequired = false;
-		wi::graphics::Texture crossFadeTexture;
+		Protean::Graphics::Texture crossFadeTexture;
 
 		FadeManager()
 		{
 			Clear();
 		}
 		void Clear();
-		void Start(float seconds, wi::Color color, std::function<void()> onFadeFunction, FadeType fadetype = FadeType::FadeToColor)
+		void Start(float seconds, Protean::Color color, std::function<void()> onFadeFunction, FadeType fadetype = FadeType::FadeToColor)
 		{
 			type = fadetype;
 			targetFadeTimeInSeconds = seconds;

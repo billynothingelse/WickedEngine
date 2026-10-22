@@ -39,9 +39,9 @@ static std::atomic<uint32_t> number_of_heap_allocations{ 0 };
 static std::atomic<size_t> size_of_heap_allocations{ 0 };
 #endif // WICKED_ENGINE_HEAP_ALLOCATION_COUNTER
 
-using namespace wi::graphics;
+using namespace Protean::Graphics;
 
-namespace wi
+namespace Protean
 {
 	void Application::Initialize()
 	{
@@ -51,17 +51,17 @@ namespace wi
 		}
 		initialized = true;
 
-		wi::initializer::InitializeComponentsAsync();
+		Protean::Initializer::InitializeComponentsAsync();
 
-		alwaysactive = wi::arguments::HasArgument("alwaysactive");
+		alwaysactive = Protean::Arguments::HasArgument("alwaysactive");
 
-		// Note: lua is always initialized immediately on main thread by wi::initializer, so this is safe to do:
-		assert(wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_LUA));
-		Luna<wi::lua::Application_BindLua>::push_global(wi::lua::GetLuaState(), "main", this);
-		Luna<wi::lua::Application_BindLua>::push_global(wi::lua::GetLuaState(), "application", this);
+		// Note: lua is always initialized immediately on main thread by Protean::Initializer, so this is safe to do:
+		assert(Protean::Initializer::IsInitializeFinished(Protean::Initializer::INITIALIZED_SYSTEM_LUA));
+		Luna<Protean::Lua::Application_BindLua>::push_global(Protean::Lua::GetLuaState(), "main", this);
+		Luna<Protean::Lua::Application_BindLua>::push_global(Protean::Lua::GetLuaState(), "application", this);
 	}
 
-	void Application::ActivatePath(RenderPath* component, float fadeSeconds, wi::Color fadeColor, FadeManager::FadeType fadetype)
+	void Application::ActivatePath(RenderPath* component, float fadeSeconds, Protean::Color fadeColor, FadeManager::FadeType fadetype)
 	{
 		if (component != nullptr)
 		{
@@ -95,7 +95,7 @@ namespace wi
 			initialized = true;
 		}
 
-		wi::font::UpdateAtlas(canvas.GetDPIScaling());
+		Protean::Font::UpdateAtlas(canvas.GetDPIScaling());
 
 		ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
 		if (colorspace == ColorSpace::HDR10_ST2084)
@@ -133,7 +133,7 @@ namespace wi
 			rendertargetPreHDR10 = {};
 		}
 
-		if (!wi::initializer::IsInitializeFinished())
+		if (!Protean::Initializer::IsInitializeFinished())
 		{
 			// Until engine is not loaded, present initialization screen...
 			CommandList cmd = graphicsDevice->BeginCommandList();
@@ -153,10 +153,10 @@ namespace wi
 			if (!splash_screen.IsValid() && !splash_screen_check)
 			{
 				splash_screen_check = true;
-				std::string splash_screen_path = wi::helper::GetCurrentPath() + "/splash_screen.png";
-				if (wi::helper::FileExists(splash_screen_path))
+				std::string splash_screen_path = Protean::Helper::GetCurrentPath() + "/splash_screen.png";
+				if (Protean::Helper::FileExists(splash_screen_path))
 				{
-					wi::Resource resource = wi::resourcemanager::Load(splash_screen_path);
+					Protean::Resource resource = Protean::ResourceManager::Load(splash_screen_path);
 					if (resource.IsValid())
 					{
 						splash_screen = resource.GetTexture();
@@ -166,11 +166,11 @@ namespace wi
 			}
 			if (splash_screen.IsValid())
 			{
-				if (wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_IMAGE))
+				if (Protean::Initializer::IsInitializeFinished(Protean::Initializer::INITIALIZED_SYSTEM_IMAGE))
 				{
 					// Draw the splash screen while engine is initializing and image renderer is ready
-					wi::image::SetCanvas(canvas);
-					wi::image::Params fx;
+					Protean::Image::SetCanvas(canvas);
+					Protean::Image::Params fx;
 					const TextureDesc& desc = splash_screen.GetDesc();
 					const float canvas_aspect = canvas.GetLogicalWidth() / canvas.GetLogicalHeight();
 					const float image_aspect = float(desc.width) / float(desc.height);
@@ -193,25 +193,25 @@ namespace wi
 						fx.enableLinearOutputMapping(9);
 					}
 					fx.image_subresource = splash_screen_subresource;
-					wi::image::Draw(&splash_screen, fx, cmd);
+					Protean::Image::Draw(&splash_screen, fx, cmd);
 				}
 			}
-			else if (wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_FONT))
+			else if (Protean::Initializer::IsInitializeFinished(Protean::Initializer::INITIALIZED_SYSTEM_FONT))
 			{
 				// If there is no splash screen, the log is rendered while engine is initializing
 				ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
-				wi::backlog::DrawOutputText(canvas, cmd, colorspace);
+				Protean::Backlog::DrawOutputText(canvas, cmd, colorspace);
 			}
 			graphicsDevice->RenderPassEnd(cmd);
 
-			if (rendertargetPreHDR10.IsValid() && wi::initializer::IsInitializeFinished(wi::initializer::INITIALIZED_SYSTEM_IMAGE))
+			if (rendertargetPreHDR10.IsValid() && Protean::Initializer::IsInitializeFinished(Protean::Initializer::INITIALIZED_SYSTEM_IMAGE))
 			{
 				// In HDR10, we perform a final mapping from linear to HDR10, into the swapchain
 				graphicsDevice->RenderPassBegin(&swapChain, cmd);
-				wi::image::Params fx;
+				Protean::Image::Params fx;
 				fx.enableFullScreen();
 				fx.enableHDR10OutputMapping(); // this is doing the linear -> HDR10_ST2084 conversion
-				wi::image::Draw(&rendertargetPreHDR10, fx, cmd);
+				Protean::Image::Draw(&rendertargetPreHDR10, fx, cmd);
 				graphicsDevice->RenderPassEnd(cmd);
 			}
 
@@ -225,31 +225,31 @@ namespace wi
 		if (!startup_script)
 		{
 			startup_script = true;
-			const std::string workingdir = wi::helper::GetCurrentPath() + "/";
+			const std::string workingdir = Protean::Helper::GetCurrentPath() + "/";
 			const std::string rewriteable_script_filename = workingdir + rewriteable_startup_script_text;
-			if (wi::helper::FileExists(rewriteable_script_filename))
+			if (Protean::Helper::FileExists(rewriteable_script_filename))
 			{
-				if (wi::lua::RunFile(rewriteable_script_filename))
+				if (Protean::Lua::RunFile(rewriteable_script_filename))
 				{
-					wi::backlog::post("Executed startup file: " + rewriteable_script_filename);
+					Protean::Backlog::post("Executed startup file: " + rewriteable_script_filename);
 				}
 			}
 			else
 			{
 				const std::string startup_lua_filename = workingdir + "startup.lua";
-				if (wi::helper::FileExists(startup_lua_filename))
+				if (Protean::Helper::FileExists(startup_lua_filename))
 				{
-					if (wi::lua::RunFile(startup_lua_filename))
+					if (Protean::Lua::RunFile(startup_lua_filename))
 					{
-						wi::backlog::post("Executed startup file: " + startup_lua_filename);
+						Protean::Backlog::post("Executed startup file: " + startup_lua_filename);
 					}
 				}
 				const std::string startup_luab_filename = workingdir + "startup.luab";
-				if (wi::helper::FileExists(startup_luab_filename))
+				if (Protean::Helper::FileExists(startup_luab_filename))
 				{
-					if (wi::lua::RunBinaryFile(startup_luab_filename))
+					if (Protean::Lua::RunBinaryFile(startup_luab_filename))
 					{
-						wi::backlog::post("Executed startup file: " + startup_luab_filename);
+						Protean::Backlog::post("Executed startup file: " + startup_luab_filename);
 					}
 				}
 			}
@@ -259,30 +259,30 @@ namespace wi
 		{
 			// If the application is not active, disable Update loops:
 			deltaTimeAccumulator = 0;
-			wi::helper::Sleep(10);
-			wi::input::Update(window, canvas); // update input while inactive, this solves a problem with past inputs processed immediately after activation
+			Protean::Helper::Sleep(10);
+			Protean::Input::Update(window, canvas); // update input while inactive, this solves a problem with past inputs processed immediately after activation
 			timer.record_elapsed_seconds(); // after application becomes active, delta time shouldn't spike, could blow up gameplay or physics
 			return;
 		}
 
-		wi::profiler::BeginFrame();
+		Protean::Profiler::BeginFrame();
 
 		deltaTime = float(timer.record_elapsed_seconds());
 
 		const float target_deltaTime = 1.0f / targetFrameRate;
 		if (framerate_lock && deltaTime < target_deltaTime)
 		{
-			wi::helper::QuickSleep((target_deltaTime - deltaTime) * 1000);
+			Protean::Helper::QuickSleep((target_deltaTime - deltaTime) * 1000);
 			deltaTime += float(timer.record_elapsed_seconds());
 		}
 
 		// avoid instability caused by large delta time
 		deltaTime = clamp(deltaTime, 0.0f, 0.5f);
 
-		wi::input::Update(window, canvas);
+		Protean::Input::Update(window, canvas);
 
 		// Wake up the events that need to be executed on the main thread, in thread safe manner:
-		wi::eventhandler::FireEvent(wi::eventhandler::EVENT_THREAD_SAFE_POINT, 0);
+		Protean::EventHandler::FireEvent(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, 0);
 
 		fadeManager.Update(deltaTime);
 
@@ -295,7 +295,7 @@ namespace wi
 		}
 
 		// Fixed time update:
-		auto range = wi::profiler::BeginRangeCPU("Fixed Update");
+		auto range = Protean::Profiler::BeginRangeCPU("Fixed Update");
 		{
 			if (frameskip)
 			{
@@ -318,7 +318,7 @@ namespace wi
 				FixedUpdate();
 			}
 		}
-		wi::profiler::EndRange(range); // Fixed Update
+		Protean::Profiler::EndRange(range); // Fixed Update
 
 		// Variable-timed update:
 		Update(deltaTime);
@@ -344,18 +344,18 @@ namespace wi
 				assert(success);
 				graphicsDevice->SetName(&fadeManager.crossFadeTexture, "wiFadeManager::crossFadeTexture");
 			}
-			wi::renderer::PushBarrier(GPUBarrier::Image(&backbuffer, backbuffer.desc.layout, ResourceState::COPY_SRC));
-			wi::renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, fadeManager.crossFadeTexture.desc.layout, ResourceState::COPY_DST));
-			wi::renderer::FlushBarriers(cmd);
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, backbuffer.desc.layout, ResourceState::COPY_SRC));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, fadeManager.crossFadeTexture.desc.layout, ResourceState::COPY_DST));
+			Protean::Renderer::FlushBarriers(cmd);
 			graphicsDevice->CopyResource(&fadeManager.crossFadeTexture, &backbuffer, cmd);
-			wi::renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, ResourceState::COPY_DST, fadeManager.crossFadeTexture.desc.layout));
-			wi::renderer::PushBarrier(GPUBarrier::Image(&backbuffer, ResourceState::COPY_SRC, backbuffer.desc.layout));
-			wi::renderer::FlushBarriers(cmd);
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&fadeManager.crossFadeTexture, ResourceState::COPY_DST, fadeManager.crossFadeTexture.desc.layout));
+			Protean::Renderer::PushBarrier(GPUBarrier::Image(&backbuffer, ResourceState::COPY_SRC, backbuffer.desc.layout));
+			Protean::Renderer::FlushBarriers(cmd);
 			fadeManager.crossFadeTextureSaveRequired = false;
 		}
 
-		wi::image::SetCanvas(canvas);
-		wi::font::SetCanvas(canvas);
+		Protean::Image::SetCanvas(canvas);
+		Protean::Font::SetCanvas(canvas);
 		Viewport viewport;
 		viewport.width = (float)swapChain.desc.width;
 		viewport.height = (float)swapChain.desc.height;
@@ -376,31 +376,31 @@ namespace wi
 		{
 			// In HDR10, we perform a final mapping from linear to HDR10, into the swapchain
 			graphicsDevice->RenderPassBegin(&swapChain, cmd);
-			wi::image::Params fx;
+			Protean::Image::Params fx;
 			fx.enableFullScreen();
 			fx.enableHDR10OutputMapping();
-			wi::image::Draw(&rendertargetPreHDR10, fx, cmd);
+			Protean::Image::Draw(&rendertargetPreHDR10, fx, cmd);
 			graphicsDevice->RenderPassEnd(cmd);
 		}
 
-		wi::input::ClearForNextFrame();
-		wi::profiler::EndFrame(cmd);
+		Protean::Input::ClearForNextFrame();
+		Protean::Profiler::EndFrame(cmd);
 		graphicsDevice->SubmitCommandLists();
-		wi::renderer::UpdateGPUSuballocator();
+		Protean::Renderer::UpdateGPUSuballocator();
 	}
 
 	void Application::Update(float dt)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Update");
+		auto range = Protean::Profiler::BeginRangeCPU("Update");
 
 		infoDisplay.rect = {};
 
-		wi::lua::SetDeltaTime(double(dt));
-		wi::lua::Update();
+		Protean::Lua::SetDeltaTime(double(dt));
+		Protean::Lua::Update();
 
-		wi::backlog::Update(canvas, dt);
+		Protean::Backlog::Update(canvas, dt);
 
-		wi::resourcemanager::UpdateStreamingResources(dt);
+		Protean::ResourceManager::UpdateStreamingResources(dt);
 
 		if (activePath != nullptr)
 		{
@@ -408,12 +408,12 @@ namespace wi
 			activePath->PostUpdate();
 		}
 
-		wi::profiler::EndRange(range); // Update
+		Protean::Profiler::EndRange(range); // Update
 	}
 
 	void Application::FixedUpdate()
 	{
-		wi::lua::FixedUpdate();
+		Protean::Lua::FixedUpdate();
 
 		if (activePath != nullptr)
 		{
@@ -423,9 +423,9 @@ namespace wi
 
 	void Application::Render()
 	{
-		auto range = wi::profiler::BeginRangeCPU("Render");
+		auto range = Protean::Profiler::BeginRangeCPU("Render");
 
-		wi::lua::Render();
+		Protean::Lua::Render();
 
 		if (activePath != nullptr)
 		{
@@ -434,12 +434,12 @@ namespace wi
 			activePath->PostRender();
 		}
 
-		wi::profiler::EndRange(range); // Render
+		Protean::Profiler::EndRange(range); // Render
 	}
 
 	void Application::Compose(CommandList cmd)
 	{
-		auto range = wi::profiler::BeginRangeCPU("Compose");
+		auto range = Protean::Profiler::BeginRangeCPU("Compose");
 		ColorSpace colorspace = graphicsDevice->GetSwapChainColorSpace(&swapChain);
 
 		if (activePath != nullptr)
@@ -450,17 +450,17 @@ namespace wi
 		if (fadeManager.IsActive())
 		{
 			// display fade rect
-			wi::image::Params fx;
+			Protean::Image::Params fx;
 			fx.enableFullScreen();
 			fx.opacity = fadeManager.opacity;
 			if (fadeManager.type == FadeManager::FadeType::FadeToColor)
 			{
 				fx.color = fadeManager.color;
-				wi::image::Draw(nullptr, fx, cmd);
+				Protean::Image::Draw(nullptr, fx, cmd);
 			}
 			else if (fadeManager.type == FadeManager::FadeType::CrossFade)
 			{
-				wi::image::Draw(&fadeManager.crossFadeTexture, fx, cmd);
+				Protean::Image::Draw(&fadeManager.crossFadeTexture, fx, cmd);
 			}
 		}
 		else
@@ -480,7 +480,7 @@ namespace wi
 			if (infoDisplay.watermark)
 			{
 				infodisplay_str += "Wicked Engine ";
-				infodisplay_str += wi::version::GetVersionString();
+				infodisplay_str += Protean::Version::GetVersionString();
 				infodisplay_str += " ";
 
 #if defined(PLATFORM_WINDOWS_DESKTOP)
@@ -543,13 +543,13 @@ namespace wi
 				switch (colorSpace)
 				{
 				default:
-				case wi::graphics::ColorSpace::SRGB:
+				case Protean::Graphics::ColorSpace::SRGB:
 					infodisplay_str += "sRGB";
 					break;
-				case wi::graphics::ColorSpace::HDR10_ST2084:
+				case Protean::Graphics::ColorSpace::HDR10_ST2084:
 					infodisplay_str += "ST.2084 (HDR10)";
 					break;
-				case wi::graphics::ColorSpace::HDR_LINEAR:
+				case Protean::Graphics::ColorSpace::HDR_LINEAR:
 					infodisplay_str += "Linear (HDR)";
 					break;
 				}
@@ -594,7 +594,7 @@ namespace wi
 
 			if (infoDisplay.pipeline_creation)
 			{
-				int pipeline_creation = wi::renderer::IsPipelineCreationActive();
+				int pipeline_creation = Protean::Renderer::IsPipelineCreationActive();
 				if (pipeline_creation > 0)
 				{
 					infodisplay_str += "Pending pipeline creations by graphics driver: " + std::to_string(pipeline_creation) + ". Some rendering will be skipped.\n";
@@ -603,30 +603,30 @@ namespace wi
 			
 			if (infoDisplay.mouse_info)
 			{
-				infodisplay_str += "Mouse = (" + std::to_string(wi::input::GetPointer().x) + ", " + std::to_string(wi::input::GetPointer().y) + ") ";
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_LEFT))
+				infodisplay_str += "Mouse = (" + std::to_string(Protean::Input::GetPointer().x) + ", " + std::to_string(Protean::Input::GetPointer().y) + ") ";
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_LEFT))
 				{
 					infodisplay_str += "| Left ";
 				}
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_MIDDLE))
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_MIDDLE))
 				{
 					infodisplay_str += "| Middle ";
 				}
-				if (wi::input::Down(wi::input::MOUSE_BUTTON_RIGHT))
+				if (Protean::Input::Down(Protean::Input::MOUSE_BUTTON_RIGHT))
 				{
 					infodisplay_str += "| Right ";
 				}
 				infodisplay_str += "\n";
 			}
 			
-			wi::font::Params params = wi::font::Params(
+			Protean::Font::Params params = Protean::Font::Params(
 				4 + canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.left),
 				4 + canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.top),
 				infoDisplay.size,
-				wi::font::WIFALIGN_LEFT,
-				wi::font::WIFALIGN_TOP,
-				wi::Color::White(),
-				wi::Color::Shadow()
+				Protean::Font::WIFALIGN_LEFT,
+				Protean::Font::WIFALIGN_TOP,
+				Protean::Color::White(),
+				Protean::Color::Shadow()
 			);
 			params.shadow_softness = 0.4f;
 
@@ -637,7 +637,7 @@ namespace wi
 				params.enableLinearOutputMapping(9);
 			}
 
-			params.cursor = wi::font::Draw(infodisplay_str, params, cmd);
+			params.cursor = Protean::Font::Draw(infodisplay_str, params, cmd);
 
 			// VRAM:
 			{
@@ -645,51 +645,51 @@ namespace wi
 				bool warn = false;
 				if (vram.usage > vram.budget)
 				{
-					params.color = wi::Color::Error();
+					params.color = Protean::Color::Error();
 					warn = true;
 				}
 				else if (float(vram.usage) / float(vram.budget) > 0.9f)
 				{
-					params.color = wi::Color::Warning();
+					params.color = Protean::Color::Warning();
 					warn = true;
 				}
 				if (infoDisplay.vram_usage || warn)
 				{
-					params.cursor = wi::font::Draw("VRAM usage: " + std::to_string(vram.usage / 1024 / 1024) + "MB / " + std::to_string(vram.budget / 1024 / 1024) + "MB\n", params, cmd);
-					params.color = wi::Color::White();
+					params.cursor = Protean::Font::Draw("VRAM usage: " + std::to_string(vram.usage / 1024 / 1024) + "MB / " + std::to_string(vram.budget / 1024 / 1024) + "MB\n", params, cmd);
+					params.color = Protean::Color::White();
 				}
 			}
 
 			// Write warnings below:
-			params.color = wi::Color::Warning();
+			params.color = Protean::Color::Warning();
 #ifdef _DEBUG
-			params.cursor = wi::font::Draw("Warning: This is a [DEBUG] build, performance will be slow!\n", params, cmd);
+			params.cursor = Protean::Font::Draw("Warning: This is a [DEBUG] build, performance will be slow!\n", params, cmd);
 #endif
 			if (graphicsDevice->IsDebugDevice())
 			{
-				params.cursor = wi::font::Draw("Warning: Graphics is in [debugdevice] mode, performance will be slow!\n", params, cmd);
+				params.cursor = Protean::Font::Draw("Warning: Graphics is in [debugdevice] mode, performance will be slow!\n", params, cmd);
 			}
 
 			// Write errors below:
-			params.color = wi::Color::Error();
-			if (wi::renderer::GetShaderMissingCount() > 0)
+			params.color = Protean::Color::Error();
+			if (Protean::Renderer::GetShaderMissingCount() > 0)
 			{
-				params.cursor = wi::font::Draw(std::to_string(wi::renderer::GetShaderMissingCount()) + " shaders missing! Check the backlog for more information!\n", params, cmd);
+				params.cursor = Protean::Font::Draw(std::to_string(Protean::Renderer::GetShaderMissingCount()) + " shaders missing! Check the backlog for more information!\n", params, cmd);
 			}
-			if (wi::renderer::GetShaderErrorCount() > 0)
+			if (Protean::Renderer::GetShaderErrorCount() > 0)
 			{
-				params.cursor = wi::font::Draw(std::to_string(wi::renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
+				params.cursor = Protean::Font::Draw(std::to_string(Protean::Renderer::GetShaderErrorCount()) + " shader compilation errors! Check the backlog for more information!\n", params, cmd);
 			}
-			if (wi::backlog::GetUnseenLogLevelMax() >= wi::backlog::LogLevel::Error)
+			if (Protean::Backlog::GetUnseenLogLevelMax() >= Protean::Backlog::LogLevel::Error)
 			{
-				params.cursor = wi::font::Draw("Errors found, check the backlog for more information!", params, cmd);
+				params.cursor = Protean::Font::Draw("Errors found, check the backlog for more information!", params, cmd);
 			}
 
 			if (infoDisplay.colorgrading_helper)
 			{
-				wi::image::Draw(
-					wi::texturehelper::getColorGradeDefault(),
-					wi::image::Params(
+				Protean::Image::Draw(
+					Protean::TextureHelper::getColorGradeDefault(),
+					Protean::Image::Params(
 						canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.left),
 						canvas.PhysicalToLogical((uint32_t)infoDisplay.rect.top),
 						canvas.PhysicalToLogical(256),
@@ -701,26 +701,26 @@ namespace wi
 
 			if (infoDisplay.rect.right > 0)
 			{
-				wi::graphics::Rect rect;
+				Protean::Graphics::Rect rect;
 				rect.right = canvas.width;
 				rect.bottom = canvas.height;
 				graphicsDevice->BindScissorRects(1, &rect, cmd);
 			}
 		}
 
-		wi::profiler::DrawData(canvas, 4, 10, cmd, colorspace);
+		Protean::Profiler::DrawData(canvas, 4, 10, cmd, colorspace);
 
-		wi::backlog::Draw(canvas, cmd, colorspace);
+		Protean::Backlog::Draw(canvas, cmd, colorspace);
 
-		wi::profiler::EndRange(range); // Compose
+		Protean::Profiler::EndRange(range); // Compose
 	}
 
 	void Application::Exit()
 	{
-		wi::platform::Exit();
+		Protean::Platform::Exit();
 	}
 
-	void Application::SetWindow(wi::platform::window_type window)
+	void Application::SetWindow(Protean::Platform::window_type window)
 	{
 		this->window = window;
 
@@ -728,57 +728,57 @@ namespace wi
 		if (graphicsDevice == nullptr)
 		{
 			ValidationMode validationMode = ValidationMode::Disabled;
-			if (wi::arguments::HasArgument("debugdevice"))
+			if (Protean::Arguments::HasArgument("debugdevice"))
 			{
 				validationMode = ValidationMode::Enabled;
 			}
-			if (wi::arguments::HasArgument("gpuvalidation"))
+			if (Protean::Arguments::HasArgument("gpuvalidation"))
 			{
 				validationMode = ValidationMode::GPU;
 			}
-			if (wi::arguments::HasArgument("gpu_verbose"))
+			if (Protean::Arguments::HasArgument("gpu_verbose"))
 			{
 				validationMode = ValidationMode::Verbose;
 			}
 
 			GPUPreference preference = GPUPreference::Discrete;
-			if (wi::arguments::HasArgument("igpu"))
+			if (Protean::Arguments::HasArgument("igpu"))
 			{
 				preference = GPUPreference::Integrated;
 			}
-			else if (wi::arguments::HasArgument("nvidiagpu"))
+			else if (Protean::Arguments::HasArgument("nvidiagpu"))
 			{
 				preference = GPUPreference::Nvidia;
 			}
-			else if (wi::arguments::HasArgument("amdgpu"))
+			else if (Protean::Arguments::HasArgument("amdgpu"))
 			{
 				preference = GPUPreference::AMD;
 			}
-			else if (wi::arguments::HasArgument("intelgpu"))
+			else if (Protean::Arguments::HasArgument("intelgpu"))
 			{
 				preference = GPUPreference::Intel;
 			}
 
 #ifdef PLATFORM_PS5
-			wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "ps5/");
+			Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "ps5/");
 			graphicsDevice = std::make_unique<GraphicsDevice_PS5>(validationMode);
 #elif defined(PLATFORM_APPLE)
-			wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "metal/");
+			Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "metal/");
 			graphicsDevice = std::make_unique<GraphicsDevice_Metal>(validationMode, preference);
 
 #else
-			bool use_dx12 = wi::arguments::HasArgument("dx12");
-			bool use_vulkan = wi::arguments::HasArgument("vulkan");
+			bool use_dx12 = Protean::Arguments::HasArgument("dx12");
+			bool use_vulkan = Protean::Arguments::HasArgument("vulkan");
 
 #ifndef WICKEDENGINE_BUILD_DX12
 			if (use_dx12) {
-				wi::helper::messageBox("The engine was built without DX12 support!", "Error");
+				Protean::Helper::messageBox("The engine was built without DX12 support!", "Error");
 				use_dx12 = false;
 			}
 #endif // WICKEDENGINE_BUILD_DX12
 #ifndef WICKEDENGINE_BUILD_VULKAN
 			if (use_vulkan) {
-				wi::helper::messageBox("The engine was built without Vulkan support!", "Error");
+				Protean::Helper::messageBox("The engine was built without Vulkan support!", "Error");
 				use_vulkan = false;
 			}
 #endif // WICKEDENGINE_BUILD_VULKAN
@@ -790,7 +790,7 @@ namespace wi
 #elif defined(WICKEDENGINE_BUILD_VULKAN)
 				use_vulkan = true;
 #else
-				wi::backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", wi::backlog::LogLevel::Error);
+				Protean::Backlog::post("No rendering backend is enabled! Please enable at least one so we can use it as default", Protean::Backlog::LogLevel::Error);
 				assert(false);
 #endif
 			}
@@ -799,7 +799,7 @@ namespace wi
 			if (use_vulkan)
 			{
 #ifdef WICKEDENGINE_BUILD_VULKAN
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "spirv/");
+				Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "spirv/");
 				graphicsDevice = std::make_unique<GraphicsDevice_Vulkan>(window, validationMode, preference);
 #endif
 			}
@@ -807,21 +807,21 @@ namespace wi
 			{
 #ifdef WICKEDENGINE_BUILD_DX12
 #ifdef PLATFORM_XBOX
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "hlsl6_xs/");
+				Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "hlsl6_xs/");
 #else
-				wi::renderer::SetShaderPath(wi::renderer::GetShaderPath() + "hlsl6/");
+				Protean::Renderer::SetShaderPath(Protean::Renderer::GetShaderPath() + "hlsl6/");
 #endif // PLATFORM_XBOX
 				graphicsDevice = std::make_unique<GraphicsDevice_DX12>(validationMode, preference);
 #endif
 			}
 #endif // PLATFORM_PS5
 		}
-		wi::graphics::GetDevice() = graphicsDevice.get();
+		Protean::Graphics::GetDevice() = graphicsDevice.get();
 
 		if (renderWidth > 0 && renderHeight > 0)
 		{
-			platform::WindowProperties windowprops;
-			platform::GetWindowProperties(window, &windowprops);
+			Platform::WindowProperties windowprops;
+			Platform::GetWindowProperties(window, &windowprops);
 			canvas.init(renderWidth, renderHeight, windowprops.dpi);
 		}
 		else
@@ -856,7 +856,7 @@ namespace wi
 		canvas.init(swapChain.desc.width, swapChain.desc.height);
 #endif // PLATFORM_PS5
 
-		swapChainVsyncChangeEvent = wi::eventhandler::Subscribe(wi::eventhandler::EVENT_SET_VSYNC, [this](uint64_t userdata) {
+		swapChainVsyncChangeEvent = Protean::EventHandler::Subscribe(Protean::EventHandler::EVENT_SET_VSYNC, [this](uint64_t userdata) {
 			SwapChainDesc desc = swapChain.desc;
 			desc.vsync = userdata != 0;
 			bool success = graphicsDevice->CreateSwapChain(&desc, nullptr, &swapChain);
@@ -887,17 +887,17 @@ namespace wi
 
 	void Application::SetFullScreen(bool fullscreen)
 	{
-		wi::platform::SetWindowFullScreen(window, fullscreen);
+		Protean::Platform::SetWindowFullScreen(window, fullscreen);
 	}
 
 	bool Application::IsFullScreen() const
 	{
-		return wi::platform::IsWindowFullScreen(window);
+		return Protean::Platform::IsWindowFullScreen(window);
 	}
 
 	bool Application::IsScriptReplacement() const
 	{
-		return wi::helper::FileExists(rewriteable_startup_script_text);
+		return Protean::Helper::FileExists(rewriteable_startup_script_text);
 	}
 }
 

@@ -13,7 +13,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	wi::arguments::Parse(lpCmdLine);
+	Protean::Arguments::Parse(lpCmdLine);
 
 	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
@@ -32,20 +32,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			switch (wParam)
 			{
 			case VK_BACK:
-				wi::gui::TextInputField::DeleteFromInput();
+				Protean::Gui::TextInputField::DeleteFromInput();
 				break;
 			case VK_RETURN:
 				break;
 			default:
 				const wchar_t c = (const wchar_t)wParam;
-				wi::gui::TextInputField::AddInput(c);
+				Protean::Gui::TextInputField::AddInput(c);
 				break;
 			}
 			break;
 		case WM_INPUT:
 			if (editor.is_window_active)
 			{
-				wi::input::rawinput::ParseMessage((void*)lParam);
+				Protean::Input::RawInput::ParseMessage((void*)lParam);
 			}
 			break;
 		case WM_POINTERUPDATE:
@@ -55,10 +55,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			{
 				ScreenToClient(hWnd, &pen_info.pointerInfo.ptPixelLocation);
 				const float dpiscaling = (float)GetDpiForWindow(hWnd) / 96.0f;
-				wi::input::Pen pen;
+				Protean::Input::Pen pen;
 				pen.position = XMFLOAT2(pen_info.pointerInfo.ptPixelLocation.x / dpiscaling, pen_info.pointerInfo.ptPixelLocation.y / dpiscaling);
 				pen.pressure = float(pen_info.pressure) / 1024.0f;
-				wi::input::SetPen(pen);
+				Protean::Input::SetPen(pen);
 			}
 		}
 		break;
@@ -84,7 +84,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 					continue;
 				}
 				std::string filename;
-				wi::helper::StringConvert(wfilename, filename);
+				Protean::Helper::StringConvert(wfilename, filename);
 				editor.renderComponent.Open(filename);
 			}
 			SetForegroundWindow(hWnd);
@@ -111,7 +111,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				return DefWindowProc(hWnd, message, wParam, lParam);
 			default:
 				// notify the engine at other cursor changes to set its own cursor instead
-				wi::input::NotifyCursorChanged();
+				Protean::Input::NotifyCursorChanged();
 				break;
 			}
 			break;
@@ -159,7 +159,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = NULL;
 	wchar_t wname[256] = {};
-	wi::helper::StringConvert(wi::helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(), wname, arraysize(wname));
+	Protean::Helper::StringConvert(Protean::Helper::StringRemoveTrailingWhitespaces(exe_customization.name_padded).c_str(), wname, arraysize(wname));
 	wcex.lpszClassName = wname;
 	RegisterClassExW(&wcex);
 
@@ -170,7 +170,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bool fullscreen = false;
 	bool borderless = false;
 
-	wi::Timer timer;
+	Protean::Timer timer;
 	if (editor.config.Open("config.ini"))
 	{
 		if (editor.config.Has("width"))
@@ -259,7 +259,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	wi::jobsystem::ShutDown();
+	Protean::JobSystem::ShutDown();
 
     return (int)msg.wParam;
 }

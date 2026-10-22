@@ -1,24 +1,24 @@
 #pragma once
 class EditorComponent;
 
-class SoftBodyWindow : public wi::gui::Window
+class SoftBodyWindow : public Protean::Gui::Window
 {
 public:
 	void Create(EditorComponent* editor);
 
 	EditorComponent* editor = nullptr;
-	wi::ecs::Entity entity = wi::ecs::INVALID_ENTITY;
-	void SetEntity(wi::ecs::Entity entity);
+	Protean::Entity entity = Protean::INVALID_ENTITY;
+	void SetEntity(Protean::Entity entity);
 
-	wi::gui::Label infoLabel;
-	wi::gui::Button resetButton;
-	wi::gui::Slider detailSlider;
-	wi::gui::Slider massSlider;
-	wi::gui::Slider frictionSlider;
-	wi::gui::Slider pressureSlider;
-	wi::gui::Slider restitutionSlider;
-	wi::gui::Slider vertexRadiusSlider;
-	wi::gui::CheckBox windCheckbox;
+	Protean::Gui::Label infoLabel;
+	Protean::Gui::Button resetButton;
+	Protean::Gui::Slider detailSlider;
+	Protean::Gui::Slider massSlider;
+	Protean::Gui::Slider frictionSlider;
+	Protean::Gui::Slider pressureSlider;
+	Protean::Gui::Slider restitutionSlider;
+	Protean::Gui::Slider vertexRadiusSlider;
+	Protean::Gui::CheckBox windCheckbox;
 
 	void ResizeLayout() override;
 };

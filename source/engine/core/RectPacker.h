@@ -4,7 +4,7 @@
 
 #include "stb_rect_pack.h"
 
-namespace wi::rectpacker
+namespace Protean::RectPacker
 {
 	using Rect = stbrp_rect;
 
@@ -14,8 +14,8 @@ namespace wi::rectpacker
 	struct State
 	{
 		stbrp_context context = {};
-		wi::vector<stbrp_node> nodes;
-		wi::vector<Rect> rects;
+		Protean::vector<stbrp_node> nodes;
+		Protean::vector<Rect> rects;
 		int width = 0;
 		int height = 0;
 

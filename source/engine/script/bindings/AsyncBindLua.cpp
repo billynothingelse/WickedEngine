@@ -1,6 +1,6 @@
 #include "script/bindings/AsyncBindLua.h"
 
-namespace wi::lua
+namespace Protean::Lua
 {
 	Luna<Async_BindLua>::FunctionType Async_BindLua::methods[] = {
 		lunamethod(Async_BindLua, Wait),
@@ -13,12 +13,12 @@ namespace wi::lua
 
 	int Async_BindLua::Wait(lua_State* L)
 	{
-		wi::jobsystem::Wait(ctx);
+		Protean::JobSystem::Wait(ctx);
 		return 0;
 	}
 	int Async_BindLua::IsCompleted(lua_State* L)
 	{
-		wi::lua::SSetBool(L, wi::jobsystem::IsBusy(ctx) == false);
+		Protean::Lua::SSetBool(L, Protean::JobSystem::IsBusy(ctx) == false);
 		return 1;
 	}
 
@@ -28,7 +28,7 @@ namespace wi::lua
 		if (!initialized)
 		{
 			initialized = true;
-			Luna<Async_BindLua>::Register(wi::lua::GetLuaState());
+			Luna<Async_BindLua>::Register(Protean::Lua::GetLuaState());
 		}
 	}
 }

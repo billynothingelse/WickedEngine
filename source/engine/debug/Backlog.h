@@ -8,21 +8,21 @@
 #include <string>
 #include <cassert>
 
-#define wilog_level(str,level,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); wi::backlog::post(text, level);}
-#define wilog_messagebox(str,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); wi::backlog::post(text, wi::backlog::LogLevel::Error); wi::helper::messageBox(text, "Error!");}
-#define wilog_warning(str,...) {wilog_level(str, wi::backlog::LogLevel::Warning, ## __VA_ARGS__);}
-#define wilog_error(str,...) {wilog_level(str, wi::backlog::LogLevel::Error, ## __VA_ARGS__);}
-#define wilog_success(str,...) {wilog_level(str, wi::backlog::LogLevel::Success, ## __VA_ARGS__);}
-#define wilog(str,...) {wilog_level(str, wi::backlog::LogLevel::Default, ## __VA_ARGS__);}
+#define wilog_level(str,level,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); Protean::Backlog::post(text, level);}
+#define wilog_messagebox(str,...) {char text[1024]; snprintf(text, sizeof(text), str, ## __VA_ARGS__); Protean::Backlog::post(text, Protean::Backlog::LogLevel::Error); Protean::Helper::messageBox(text, "Error!");}
+#define wilog_warning(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Warning, ## __VA_ARGS__);}
+#define wilog_error(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Error, ## __VA_ARGS__);}
+#define wilog_success(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Success, ## __VA_ARGS__);}
+#define wilog(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Default, ## __VA_ARGS__);}
 #define wilog_assert(cond,str,...) {if(!(cond)){wilog_error(str, ## __VA_ARGS__); assert(cond);}}
 
 #ifdef _DEBUG
-#define wilog_debug(str,...) {wilog_level(str, wi::backlog::LogLevel::Default, ## __VA_ARGS__);}
+#define wilog_debug(str,...) {wilog_level(str, Protean::Backlog::LogLevel::Default, ## __VA_ARGS__);}
 #else
 #define wilog_debug(str,...)
 #endif // DEBUG
 
-namespace wi::backlog
+namespace Protean::Backlog
 {
 	// Keep it in sync with LogLevel LUA binding
 	enum class LogLevel
@@ -35,16 +35,16 @@ namespace wi::backlog
 	};
 	void Toggle();
 	void Scroll(float direction);
-	void Update(const wi::Canvas& canvas, float dt = 1.0f / 60.0f);
+	void Update(const Protean::Canvas& canvas, float dt = 1.0f / 60.0f);
 	void Draw(
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd,
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB
+		const Protean::Canvas& canvas,
+		Protean::Graphics::CommandList cmd,
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
 	);
 	void DrawOutputText(
-		const wi::Canvas& canvas,
-		wi::graphics::CommandList cmd,
-		wi::graphics::ColorSpace colorspace = wi::graphics::ColorSpace::SRGB
+		const Protean::Canvas& canvas,
+		Protean::Graphics::CommandList cmd,
+		Protean::Graphics::ColorSpace colorspace = Protean::Graphics::ColorSpace::SRGB
 	);
 
 	std::string getText();
@@ -57,11 +57,11 @@ namespace wi::backlog
 
 	bool isActive();
 
-	void setBackground(wi::graphics::Texture* texture);
-	void setBackgroundColor(wi::Color color);
+	void setBackground(Protean::Graphics::Texture* texture);
+	void setBackgroundColor(Protean::Color color);
 	void setFontSize(int value);
 	void setFontRowspacing(float value);
-	void setFontColor(wi::Color color);
+	void setFontColor(Protean::Color color);
 
 	void Lock();
 	void Unlock();

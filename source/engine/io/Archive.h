@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	// This is a data container used for serialization purposes.
 	//	It can be used to READ or WRITE data, but not both at the same time.
@@ -37,7 +37,7 @@ namespace wi
 		bool readMode = false; // archive can be either read or write mode, but not both
 		bool report_errors = true; // if false, version-incompatibility is silent (IsOpen() stays false) instead of popping a message box; used for internal/automatic reads (e.g. shader cache) that should regenerate rather than alert the user
 		size_t pos = 0; // position of the next memory operation, relative to the data's beginning
-		wi::vector<uint8_t> DATA; // data suitable for read/write operations
+		Protean::vector<uint8_t> DATA; // data suitable for read/write operations
 		const uint8_t* data_ptr = nullptr; // this can either be a memory mapped pointer (read only), or the DATA's pointer
 		size_t data_ptr_size = 0;
 		bool data_already_decompressed = false;
@@ -48,7 +48,7 @@ namespace wi
 		const uint8_t* thumbnail_data_ptr_write = nullptr; // temp ptr to write archive data
 		constexpr const uint8_t* get_thumbnail_data() const { return data_ptr + sizeof(Header); }
 
-		void WriteCompressedData(wi::vector<uint8_t>& final_data) const;
+		void WriteCompressedData(Protean::vector<uint8_t>& final_data) const;
 
 		void CreateEmpty(); // creates new archive in write mode
 
@@ -69,7 +69,7 @@ namespace wi
 		Archive& operator=(const Archive&) = default;
 		Archive& operator=(Archive&&) = default;
 
-		void WriteData(wi::vector<uint8_t>& dest) const;
+		void WriteData(Protean::vector<uint8_t>& dest) const;
 		const uint8_t* GetData() const { return data_ptr; }
 		const size_t GetSize() const { return data_ptr_size; }
 		size_t GetPos() const { return pos; }
@@ -109,14 +109,14 @@ namespace wi
 		constexpr bool IsCompressionEnabled() const { return header.properties.bits.compressed; }
 
 		// If Archive contains thumbnail image data, then creates a Texture from it:
-		wi::graphics::Texture CreateThumbnailTexture() const;
+		Protean::Graphics::Texture CreateThumbnailTexture() const;
 
 		// Set a Texture as the thumbnail. This resets the archive, so you should usually do this before writing data:
-		void SetThumbnailAndResetPos(const wi::graphics::Texture& texture);
+		void SetThumbnailAndResetPos(const Protean::Graphics::Texture& texture);
 
 		// Open just the tumbnail data from an archive, and return it as a Texture:
 		//	header: optional, can return header info if not null
-		static wi::graphics::Texture PeekThumbnail(const std::string& filename, Header* out_header = nullptr);
+		static Protean::Graphics::Texture PeekThumbnail(const std::string& filename, Header* out_header = nullptr);
 
 		// Appends the current archive write offset as uint64_t to the archive
 		//	Returns the previous write offset of the archive, which can be used by PatchUnknownJumpPosition()
@@ -267,7 +267,7 @@ namespace wi
 			_write(data);
 			return *this;
 		}
-		inline Archive& operator<<(const wi::Color& data)
+		inline Archive& operator<<(const Protean::Color& data)
 		{
 			_write(data.rgba);
 			return *this;
@@ -282,7 +282,7 @@ namespace wi
 			return *this;
 		}
 		template<typename T>
-		inline Archive& operator<<(const wi::vector<T>& data)
+		inline Archive& operator<<(const Protean::vector<T>& data)
 		{
 			// Here we will use the << operator so that non-specified types will have compile error!
 			(*this) << data.size();
@@ -292,7 +292,7 @@ namespace wi
 			}
 			return *this;
 		}
-		inline Archive& operator<<(const wi::Archive& other)
+		inline Archive& operator<<(const Protean::Archive& other)
 		{
 			// Here we will use the << operator so that non-specified types will have compile error!
 			//	Note: version and thumbnail data is skipped, only data is appended
@@ -437,7 +437,7 @@ namespace wi
 			_read(data);
 			return *this;
 		}
-		inline Archive& operator>>(wi::Color& data)
+		inline Archive& operator>>(Protean::Color& data)
 		{
 			_read(data.rgba);
 			return *this;
@@ -459,7 +459,7 @@ namespace wi
 			return *this;
 		}
 		template<typename T>
-		inline Archive& operator>>(wi::vector<T>& data)
+		inline Archive& operator>>(Protean::vector<T>& data)
 		{
 			// Here we will use the >> operator so that non-specified types will have compile error!
 			size_t count;

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace wi
+namespace Protean
 {
 	struct Localization
 	{
@@ -15,9 +15,9 @@ namespace wi
 			std::string text;
 			std::string hint;
 		};
-		wi::vector<Entry> entries;
-		wi::unordered_map<size_t, size_t> lookup;
-		wi::unordered_map<std::string, Localization> sections;
+		Protean::vector<Entry> entries;
+		Protean::unordered_map<size_t, size_t> lookup;
+		Protean::unordered_map<std::string, Localization> sections;
 		std::string section_hint;
 
 		// Check if localization contains anything

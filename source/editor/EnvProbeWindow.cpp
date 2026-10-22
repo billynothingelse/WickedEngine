@@ -1,21 +1,19 @@
 #include "stdafx.h"
 #include "EnvProbeWindow.h"
 
-using namespace wi::ecs;
-using namespace wi::scene;
-
+using namespace Protean;
 const std::string default_text = "Environment probes can be used to capture the scene from a specific location in a 360 degrees panorama. The probes will be used for reflections fallback, where a better reflection type is not available. The probes can affect the ambient colors slightly.\nTip: You can scale, rotate and move the probes to set up parallax correct rendering to affect a specific area only. The parallax correction will take effect inside the probe's bounds (indicated with a cyan colored box).";
 
 void EnvProbeWindow::Create(EditorComponent* _editor)
 {
 	editor = _editor;
-	wi::gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", wi::gui::Window::WindowControls::COLLAPSE | wi::gui::Window::WindowControls::CLOSE | wi::gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
+	Protean::Gui::Window::Create(ICON_ENVIRONMENTPROBE " Environment Probe", Protean::Gui::Window::WindowControls::COLLAPSE | Protean::Gui::Window::WindowControls::CLOSE | Protean::Gui::Window::WindowControls::FIT_ALL_WIDGETS_VERTICAL);
 	SetSize(XMFLOAT2(420, 340));
 
 	closeButton.SetTooltip("Delete EnvironmentProbeComponent");
-	OnClose([=](wi::gui::EventArgs args) {
+	OnClose([=](Protean::Gui::EventArgs args) {
 
-		wi::Archive& archive = editor->AdvanceHistory();
+		Protean::Archive& archive = editor->AdvanceHistory();
 		archive << EditorComponent::HISTORYOP_COMPONENT_DATA;
 		editor->RecordEntity(archive, entity);
 
@@ -27,7 +25,7 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	});
 
 	infoLabel.Create("");
-	infoLabel.SetColor(wi::Color::Transparent());
+	infoLabel.SetColor(Protean::Color::Transparent());
 	infoLabel.SetFitTextEnabled(true);
 	AddWidget(&infoLabel);
 
@@ -36,7 +34,7 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 
 	auto forEachSelected = [this] (auto func) {
 		return [this, func] (auto args) {
-			wi::scene::Scene& scene = editor->GetCurrentScene();
+			Protean::Scene& scene = editor->GetCurrentScene();
 			for (auto& x : editor->translator.selected)
 			{
 				EnvironmentProbeComponent* probe = scene.probes.GetComponent(x.entity);
@@ -105,22 +103,22 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	importButton.OnClick(forEachSelected([] (auto probe, auto args) {
 		if (probe != nullptr && probe->texture.IsValid())
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::OPEN;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::OPEN;
 			params.description = "DDS";
 			params.extensions = { "DDS" };
-			wi::helper::FileDialog(params, [=](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			Protean::Helper::FileDialog(params, [=](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-					probe->resource = wi::resourcemanager::Load(fileName);
-					if (has_flag(probe->resource.GetTexture().GetDesc().misc_flags, wi::graphics::ResourceMiscFlag::TEXTURECUBE))
+					probe->resource = Protean::ResourceManager::Load(fileName);
+					if (has_flag(probe->resource.GetTexture().GetDesc().misc_flags, Protean::Graphics::ResourceMiscFlag::TEXTURECUBE))
 					{
 						probe->textureName = fileName;
 						probe->CreateRenderData();
 					}
 					else
 					{
-						wi::helper::messageBox("Error!", "The texture you tried to open is not a cubemap texture, so it won't be imported!");
+						Protean::Helper::messageBox("Error!", "The texture you tried to open is not a cubemap texture, so it won't be imported!");
 					}
 
 					});
@@ -136,21 +134,21 @@ void EnvProbeWindow::Create(EditorComponent* _editor)
 	exportButton.OnClick(forEachSelected([this] (auto probe, auto args) {
 		if (probe != nullptr && probe->texture.IsValid())
 		{
-			wi::helper::FileDialogParams params;
-			params.type = wi::helper::FileDialogParams::SAVE;
+			Protean::Helper::FileDialogParams params;
+			params.type = Protean::Helper::FileDialogParams::SAVE;
 			params.description = "DDS";
 			params.extensions = { "DDS" };
-			wi::helper::FileDialog(params, [this, probe](std::string fileName) {
-				wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
+			Protean::Helper::FileDialog(params, [this, probe](std::string fileName) {
+				Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [=](uint64_t userdata) {
 
-					std::string extension = wi::helper::toUpper(wi::helper::GetExtensionFromFileName(fileName));
+					std::string extension = Protean::Helper::toUpper(Protean::Helper::GetExtensionFromFileName(fileName));
 					std::string filename_replaced = fileName;
 					if (extension != "DDS")
 					{
-						filename_replaced = wi::helper::ReplaceExtension(fileName, "DDS");
+						filename_replaced = Protean::Helper::ReplaceExtension(fileName, "DDS");
 					}
 
-					bool success = wi::helper::saveTextureToFile(probe->texture, filename_replaced);
+					bool success = Protean::Helper::saveTextureToFile(probe->texture, filename_replaced);
 					assert(success);
 
 					if (success)
@@ -211,7 +209,7 @@ void EnvProbeWindow::SetEntity(Entity entity)
 	}
 	else
 	{
-		wi::Resource res;
+		Protean::Resource res;
 		res.SetTexture(probe->texture);
 		preview.SetImage(res);
 		realTimeCheckBox.SetCheck(probe->IsRealTime());
@@ -226,10 +224,10 @@ void EnvProbeWindow::SetEntity(Entity entity)
 		resolutionCombo.SetSelectedByUserdata(probe->resolution);
 
 		std::string text =
-			"GPU Memory usage: " + wi::helper::GetMemorySizeText(probe->GetMemorySizeInBytes()) + "\n" +
+			"GPU Memory usage: " + Protean::Helper::GetMemorySizeText(probe->GetMemorySizeInBytes()) + "\n" +
 			"Resolution: " + std::to_string(probe->texture.desc.width) + "\n" +
 			"Mipmaps: " + std::to_string(probe->texture.desc.mip_levels) + "\n" +
-			"Format: " + std::string(wi::graphics::GetFormatString(probe->texture.desc.format)) + "\n"
+			"Format: " + std::string(Protean::Graphics::GetFormatString(probe->texture.desc.format)) + "\n"
 			;
 		if (!probe->textureName.empty())
 		{
@@ -244,7 +242,7 @@ void EnvProbeWindow::SetEntity(Entity entity)
 
 void EnvProbeWindow::ResizeLayout()
 {
-	wi::gui::Window::ResizeLayout();
+	Protean::Gui::Window::ResizeLayout();
 	layout.margin_left = 80;
 
 	layout.add_fullwidth(infoLabel);
@@ -273,10 +271,10 @@ void EnvProbeWindow::ResizeLayout()
 	layout.add_fullwidth(viewdistanceSlider);
 
 	layout.add_fullwidth_aspect(preview);
-	preview.SetColor(wi::Color::White());
+	preview.SetColor(Protean::Color::White());
 	for (auto& x : preview.sprites)
 	{
-		x.params.blendFlag = wi::enums::BLENDMODE_OPAQUE;
-		x.params.setBackgroundMap(wi::texturehelper::getBlack());
+		x.params.blendFlag = Protean::BLENDMODE_OPAQUE;
+		x.params.setBackgroundMap(Protean::TextureHelper::getBlack());
 	}
 }

@@ -9,7 +9,7 @@
 // Absolute path provided by the build system (premake compiles with relative paths, so __FILE__ is not usable)
 static const std::string SHADER_INTEROP_PATH = PROTEAN_SHADER_SOURCE_PATH;
 #else
-static const std::string SHADER_INTEROP_PATH = wi::helper::GetCurrentPath() + "/" + wi::helper::GetDirectoryFromPath(wi::helper::GetPathRelative(wi::helper::GetCurrentPath(), std::string(__FILE__)));
+static const std::string SHADER_INTEROP_PATH = Protean::Helper::GetCurrentPath() + "/" + Protean::Helper::GetDirectoryFromPath(Protean::Helper::GetPathRelative(Protean::Helper::GetCurrentPath(), std::string(__FILE__)));
 #endif // PROTEAN_SHADER_SOURCE_PATH
 
 // Application-side types:

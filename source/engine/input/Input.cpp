@@ -33,7 +33,7 @@
 #include <Carbon/Carbon.h>
 __asm__(".linker_option \"-framework\", \"CoreGraphics\"");
 __asm__(".linker_option \"-framework\", \"ApplicationServices\"");
-namespace wi::input::apple
+namespace Protean::Input::Apple
 {
 bool isLeftMouseButtonPressed()
 {
@@ -52,10 +52,10 @@ bool IsKeyDown(CGKeyCode keyCode)
 	return CGEventSourceKeyState(kCGEventSourceStateCombinedSessionState, keyCode) != 0;
 }
 }
-using namespace wi::input::apple;
+using namespace Protean::Input::Apple;
 #elif defined(PLATFORM_IOS)
 #include "input/InputApple.h"
-namespace wi::input::apple
+namespace Protean::Input::Apple
 {
 bool isLeftMouseButtonPressed()
 {
@@ -74,10 +74,10 @@ bool IsKeyDown(int keyCode)
 	return false;
 }
 }
-using namespace wi::input::apple;
+using namespace Protean::Input::Apple;
 #endif // PLATFORM_MACOS
 
-namespace wi::input
+namespace Protean::Input
 {
 #ifdef _WIN32
 #define KEY_DOWN(vk_code) (GetAsyncKeyState(vk_code) < 0)
@@ -88,8 +88,8 @@ namespace wi::input
 #endif // WIN32
 #define KEY_UP(vk_code) (!KEY_DOWN(vk_code))
 
-	wi::platform::window_type window = nullptr;
-	wi::Canvas canvas;
+	Protean::Platform::window_type window = nullptr;
+	Protean::Canvas canvas;
 	KeyboardState keyboard;
 	MouseState mouse;
 	Pen pen;
@@ -99,7 +99,7 @@ namespace wi::input
 	bool is_pan_starting = false;
 	bool pen_override = false;
 	bool double_click = false;
-	wi::Timer doubleclick_timer;
+	Protean::Timer doubleclick_timer;
 	XMFLOAT2 doubleclick_prevpos = XMFLOAT2(0, 0);
 	CURSOR cursor_current = CURSOR_COUNT; // something that's not default, because at least once code should change it to default
 	CURSOR cursor_next = CURSOR_DEFAULT;
@@ -175,7 +175,7 @@ namespace wi::input
 		};
 	};
 	std::map<Input, int, Input::LessComparer> inputs; // Input -> down frames (-1 = released)
-	wi::vector<Touch> touches;
+	Protean::vector<Touch> touches;
 
 	struct Controller
 	{
@@ -192,23 +192,23 @@ namespace wi::input
 		int deviceIndex;
 		ControllerState state;
 	};
-	wi::vector<Controller> controllers;
+	Protean::vector<Controller> controllers;
 	std::atomic_bool initialized{ false };
 
 	void Initialize()
 	{
-		wi::Timer timer;
+		Protean::Timer timer;
 
-		wi::input::rawinput::Initialize();
-		wi::input::sdlinput::Initialize();
+		Protean::Input::RawInput::Initialize();
+		Protean::Input::SDL::Initialize();
 
 #ifdef PLATFORM_PS5
-		wi::input::ps5::Initialize();
+		Protean::Input::ps5::Initialize();
 #endif // PLATFORM_PS5
 		
 #ifdef __APPLE__
-		wi::input::apple::Initialize();
-		wi::apple::CursorInit(cursor_table_original);
+		Protean::Input::Apple::Initialize();
+		Protean::Apple::CursorInit(cursor_table_original);
 #endif // __APPLE__
 
 		for (int i = 0; i < arraysize(cursor_table); ++i)
@@ -216,11 +216,11 @@ namespace wi::input
 			cursor_table[i] = cursor_table_original[i];
 		}
 
-		wilog("wi::input Initialized (%d ms)", (int)std::round(timer.elapsed()));
+		wilog("Protean::Input Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		initialized.store(true);
 	}
 
-	void Update(wi::platform::window_type _window, const wi::Canvas& _canvas)
+	void Update(Protean::Platform::window_type _window, const Protean::Canvas& _canvas)
 	{
 		window = _window;
 		canvas = _canvas;
@@ -229,19 +229,19 @@ namespace wi::input
 			return;
 		}
 
-		auto range = wi::profiler::BeginRangeCPU("Input");
+		auto range = Protean::Profiler::BeginRangeCPU("Input");
 
-		wi::input::xinput::Update();
-		wi::input::rawinput::Update();
-		wi::input::sdlinput::Update();
+		Protean::Input::XInput::Update();
+		Protean::Input::RawInput::Update();
+		Protean::Input::SDL::Update();
 
 #ifdef PLATFORM_PS5
-		wi::input::ps5::Update();
+		Protean::Input::ps5::Update();
 #endif // PLATFORM_PS5
 
 #if defined(_WIN32) && !defined(PLATFORM_XBOX)
-		wi::input::rawinput::GetMouseState(&mouse); // currently only the relative data can be used from this
-		wi::input::rawinput::GetKeyboardState(&keyboard); 
+		Protean::Input::RawInput::GetMouseState(&mouse); // currently only the relative data can be used from this
+		Protean::Input::RawInput::GetKeyboardState(&keyboard); 
 
 		// apparently checking the mouse here instead of Down() avoids missing the button presses (review!)
 		mouse.left_button_press |= KEY_DOWN(VK_LBUTTON);
@@ -256,7 +256,7 @@ namespace wi::input
 		mouse.position.y = (float)p.y;
 #elif defined(PLATFORM_MACOS)
 		mouse = {};
-		mouse.position = wi::apple::GetMousePositionInWindow(window);
+		mouse.position = Protean::Apple::GetMousePositionInWindow(window);
 		mouse.left_button_press = isLeftMouseButtonPressed();
 		mouse.right_button_press = isRightMouseButtonPressed();
 		mouse.middle_button_press = isMiddleMouseButtonPressed();
@@ -268,8 +268,8 @@ namespace wi::input
 		mouse.delta_position = XMFLOAT2(0, 0);
 		mouse.delta_wheel = 0;
 #elif defined(SDL2) || defined(SDL3)
-		wi::input::sdlinput::GetMouseState(&mouse);
-		wi::input::sdlinput::GetKeyboardState(&keyboard);
+		Protean::Input::SDL::GetMouseState(&mouse);
+		Protean::Input::SDL::GetKeyboardState(&keyboard);
 #endif
 		
 		for (auto& x : mouse_move_events)
@@ -356,9 +356,9 @@ namespace wi::input
 		}
 
 		// Check if low-level XINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::xinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < Protean::Input::XInput::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::xinput::GetControllerState(nullptr, i))
+			if (Protean::Input::XInput::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -387,9 +387,9 @@ namespace wi::input
 		}
 
 		// Check if low-level RAWINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::rawinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < Protean::Input::RawInput::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::rawinput::GetControllerState(nullptr, i))
+			if (Protean::Input::RawInput::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -418,9 +418,9 @@ namespace wi::input
 		}
 
 		// Check if low-level SDLINPUT controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::sdlinput::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < Protean::Input::SDL::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::sdlinput::GetControllerState(nullptr, i))
+			if (Protean::Input::SDL::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -450,9 +450,9 @@ namespace wi::input
 
 #ifdef __APPLE__
 		// Check if low-level Apple controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::apple::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < Protean::Input::Apple::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::apple::GetControllerState(nullptr, i))
+			if (Protean::Input::Apple::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -483,9 +483,9 @@ namespace wi::input
 
 #ifdef PLATFORM_PS5
 		// Check if low-level PS5 controller is not registered for playerindex slot and register:
-		for (int i = 0; i < wi::input::ps5::GetMaxControllerCount(); ++i)
+		for (int i = 0; i < Protean::Input::ps5::GetMaxControllerCount(); ++i)
 		{
-			if (wi::input::ps5::GetControllerState(nullptr, i))
+			if (Protean::Input::ps5::GetControllerState(nullptr, i))
 			{
 				int slot = -1;
 				for (int j = 0; j < (int)controllers.size(); ++j)
@@ -521,22 +521,22 @@ namespace wi::input
 			switch (controller.deviceType)
 			{
 				case Controller::XINPUT:
-					connected = wi::input::xinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = Protean::Input::XInput::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 				case Controller::RAWINPUT:
-					connected = wi::input::rawinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = Protean::Input::RawInput::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 				case Controller::SDLINPUT:
-					connected = wi::input::sdlinput::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = Protean::Input::SDL::GetControllerState(&controller.state, controller.deviceIndex);
 					break;
 				case Controller::PS5:
 #ifdef PLATFORM_PS5
-					connected = wi::input::ps5::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = Protean::Input::ps5::GetControllerState(&controller.state, controller.deviceIndex);
 #endif // PLATFORM_PS5
 					break;
 				case Controller::APPLE:
 #ifdef __APPLE__
-					connected = wi::input::apple::GetControllerState(&controller.state, controller.deviceIndex);
+					connected = Protean::Input::Apple::GetControllerState(&controller.state, controller.deviceIndex);
 #endif // __APPLE__
 					break;
 				case Controller::DISCONNECTED:
@@ -585,7 +585,7 @@ namespace wi::input
 		{
 			XMFLOAT2 pos = mouse.position;
 			double elapsed = doubleclick_timer.record_elapsed_seconds();
-			if (elapsed < 0.5 && wi::math::Distance(doubleclick_prevpos, pos) < 5)
+			if (elapsed < 0.5 && Protean::Math::Distance(doubleclick_prevpos, pos) < 5)
 			{
 				double_click = true;
 			}
@@ -604,7 +604,7 @@ namespace wi::input
 #ifdef PLATFORM_WINDOWS_DESKTOP
 			::SetCursor(cursorhandle);
 #elif defined(__APPLE__)
-			wi::apple::CursorSet(cursorhandle);
+			Protean::Apple::CursorSet(cursorhandle);
 #elif defined(SDL2) || defined(SDL3)
 			SDL_SetCursor(cursorhandle);
 #endif // SDL2
@@ -613,7 +613,7 @@ namespace wi::input
 		}
 		cursor_next = CURSOR_DEFAULT;
 
-		wi::profiler::EndRange(range);
+		Protean::Profiler::EndRange(range);
 	}
 
 	void ClearForNextFrame()
@@ -685,104 +685,104 @@ namespace wi::input
 
 			switch (button)
 			{
-			case wi::input::MOUSE_BUTTON_LEFT:
+			case Protean::Input::MOUSE_BUTTON_LEFT:
 				if (mouse.left_button_press) 
 					return true;
 				return false;
-			case wi::input::MOUSE_BUTTON_RIGHT:
+			case Protean::Input::MOUSE_BUTTON_RIGHT:
 				if (mouse.right_button_press) 
 					return true;
 				return false;
-			case wi::input::MOUSE_BUTTON_MIDDLE:
+			case Protean::Input::MOUSE_BUTTON_MIDDLE:
 				if (mouse.middle_button_press) 
 					return true;
 				return false;
 #ifdef _WIN32
-			case wi::input::KEYBOARD_BUTTON_UP:
+			case Protean::Input::KEYBOARD_BUTTON_UP:
 				keycode = VK_UP;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DOWN:
+			case Protean::Input::KEYBOARD_BUTTON_DOWN:
 				keycode = VK_DOWN;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LEFT:
+			case Protean::Input::KEYBOARD_BUTTON_LEFT:
 				keycode = VK_LEFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RIGHT:
+			case Protean::Input::KEYBOARD_BUTTON_RIGHT:
 				keycode = VK_RIGHT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_SPACE:
+			case Protean::Input::KEYBOARD_BUTTON_SPACE:
 				keycode = VK_SPACE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RSHIFT:
+			case Protean::Input::KEYBOARD_BUTTON_RSHIFT:
 				keycode = VK_RSHIFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LSHIFT:
+			case Protean::Input::KEYBOARD_BUTTON_LSHIFT:
 				keycode = VK_LSHIFT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F1: 
+			case Protean::Input::KEYBOARD_BUTTON_F1: 
 				keycode = VK_F1;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F2:
+			case Protean::Input::KEYBOARD_BUTTON_F2:
 				keycode = VK_F2;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F3:
+			case Protean::Input::KEYBOARD_BUTTON_F3:
 				keycode = VK_F3;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F4:
+			case Protean::Input::KEYBOARD_BUTTON_F4:
 				keycode = VK_F4;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F5:
+			case Protean::Input::KEYBOARD_BUTTON_F5:
 				keycode = VK_F5;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F6:
+			case Protean::Input::KEYBOARD_BUTTON_F6:
 				keycode = VK_F6;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F7:
+			case Protean::Input::KEYBOARD_BUTTON_F7:
 				keycode = VK_F7;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F8:
+			case Protean::Input::KEYBOARD_BUTTON_F8:
 				keycode = VK_F8;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F9:
+			case Protean::Input::KEYBOARD_BUTTON_F9:
 				keycode = VK_F9;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F10:
+			case Protean::Input::KEYBOARD_BUTTON_F10:
 				keycode = VK_F10;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F11:
+			case Protean::Input::KEYBOARD_BUTTON_F11:
 				keycode = VK_F11;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F12:
+			case Protean::Input::KEYBOARD_BUTTON_F12:
 				keycode = VK_F12;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ENTER:
+			case Protean::Input::KEYBOARD_BUTTON_ENTER:
 				keycode = VK_RETURN;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ESCAPE:
+			case Protean::Input::KEYBOARD_BUTTON_ESCAPE:
 				keycode = VK_ESCAPE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_HOME:
+			case Protean::Input::KEYBOARD_BUTTON_HOME:
 				keycode = VK_HOME;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LCONTROL:
+			case Protean::Input::KEYBOARD_BUTTON_LCONTROL:
 				keycode = VK_LCONTROL;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RCONTROL:
+			case Protean::Input::KEYBOARD_BUTTON_RCONTROL:
 				keycode = VK_RCONTROL;
 				break;
-			case wi::input::KEYBOARD_BUTTON_INSERT:
+			case Protean::Input::KEYBOARD_BUTTON_INSERT:
 				keycode = VK_INSERT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DELETE:
+			case Protean::Input::KEYBOARD_BUTTON_DELETE:
 				keycode = VK_DELETE;
 				break;
-			case wi::input::KEYBOARD_BUTTON_BACKSPACE:
+			case Protean::Input::KEYBOARD_BUTTON_BACKSPACE:
 				keycode = VK_BACK;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEDOWN:
+			case Protean::Input::KEYBOARD_BUTTON_PAGEDOWN:
 				keycode = VK_NEXT;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEUP:
+			case Protean::Input::KEYBOARD_BUTTON_PAGEUP:
 				keycode = VK_PRIOR;
 				break;
 			case KEYBOARD_BUTTON_NUMPAD0:
@@ -851,97 +851,97 @@ namespace wi::input
 #endif // _WIN32
 					
 #ifdef PLATFORM_MACOS
-			case wi::input::KEYBOARD_BUTTON_UP:
+			case Protean::Input::KEYBOARD_BUTTON_UP:
 				keycode = kVK_UpArrow;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DOWN:
+			case Protean::Input::KEYBOARD_BUTTON_DOWN:
 				keycode = kVK_DownArrow;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LEFT:
+			case Protean::Input::KEYBOARD_BUTTON_LEFT:
 				keycode = kVK_LeftArrow;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RIGHT:
+			case Protean::Input::KEYBOARD_BUTTON_RIGHT:
 				keycode = kVK_RightArrow;
 				break;
-			case wi::input::KEYBOARD_BUTTON_SPACE:
+			case Protean::Input::KEYBOARD_BUTTON_SPACE:
 				keycode = kVK_Space;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RSHIFT:
+			case Protean::Input::KEYBOARD_BUTTON_RSHIFT:
 				keycode = kVK_RightShift;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LSHIFT:
+			case Protean::Input::KEYBOARD_BUTTON_LSHIFT:
 				keycode = kVK_Shift;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F1:
+			case Protean::Input::KEYBOARD_BUTTON_F1:
 				keycode = kVK_F1;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F2:
+			case Protean::Input::KEYBOARD_BUTTON_F2:
 				keycode = kVK_F2;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F3:
+			case Protean::Input::KEYBOARD_BUTTON_F3:
 				keycode = kVK_F3;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F4:
+			case Protean::Input::KEYBOARD_BUTTON_F4:
 				keycode = kVK_F4;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F5:
+			case Protean::Input::KEYBOARD_BUTTON_F5:
 				keycode = kVK_F5;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F6:
+			case Protean::Input::KEYBOARD_BUTTON_F6:
 				keycode = kVK_F6;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F7:
+			case Protean::Input::KEYBOARD_BUTTON_F7:
 				keycode = kVK_F7;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F8:
+			case Protean::Input::KEYBOARD_BUTTON_F8:
 				keycode = kVK_F8;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F9:
+			case Protean::Input::KEYBOARD_BUTTON_F9:
 				keycode = kVK_F9;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F10:
+			case Protean::Input::KEYBOARD_BUTTON_F10:
 				keycode = kVK_F10;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F11:
+			case Protean::Input::KEYBOARD_BUTTON_F11:
 				keycode = kVK_F11;
 				break;
-			case wi::input::KEYBOARD_BUTTON_F12:
+			case Protean::Input::KEYBOARD_BUTTON_F12:
 				keycode = kVK_F12;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ENTER:
+			case Protean::Input::KEYBOARD_BUTTON_ENTER:
 				keycode = kVK_Return;
 				break;
-			case wi::input::KEYBOARD_BUTTON_ESCAPE:
+			case Protean::Input::KEYBOARD_BUTTON_ESCAPE:
 				keycode = kVK_Escape;
 				break;
-			case wi::input::KEYBOARD_BUTTON_HOME:
+			case Protean::Input::KEYBOARD_BUTTON_HOME:
 				keycode = kVK_Home;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LCONTROL:
+			case Protean::Input::KEYBOARD_BUTTON_LCONTROL:
 				keycode = kVK_Control;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RCONTROL:
+			case Protean::Input::KEYBOARD_BUTTON_RCONTROL:
 				keycode = kVK_RightControl;
 				break;
-			case wi::input::KEYBOARD_BUTTON_LCOMMAND:
+			case Protean::Input::KEYBOARD_BUTTON_LCOMMAND:
 				keycode = kVK_Command;
 				break;
-			case wi::input::KEYBOARD_BUTTON_RCOMMAND:
+			case Protean::Input::KEYBOARD_BUTTON_RCOMMAND:
 				keycode = kVK_RightCommand;
 				break;
-			case wi::input::KEYBOARD_BUTTON_INSERT:
+			case Protean::Input::KEYBOARD_BUTTON_INSERT:
 				keycode = unknown;
 				break;
-			case wi::input::KEYBOARD_BUTTON_DELETE:
+			case Protean::Input::KEYBOARD_BUTTON_DELETE:
 				keycode = kVK_ForwardDelete;
 				break;
-			case wi::input::KEYBOARD_BUTTON_BACKSPACE:
+			case Protean::Input::KEYBOARD_BUTTON_BACKSPACE:
 				keycode = kVK_Delete;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEDOWN:
+			case Protean::Input::KEYBOARD_BUTTON_PAGEDOWN:
 				keycode = kVK_PageDown;
 				break;
-			case wi::input::KEYBOARD_BUTTON_PAGEUP:
+			case Protean::Input::KEYBOARD_BUTTON_PAGEUP:
 				keycode = kVK_PageUp;
 				break;
 			case KEYBOARD_BUTTON_NUMPAD0:
@@ -1207,7 +1207,7 @@ namespace wi::input
 		ClientToScreen(hWnd, &p);
 		SetCursorPos(p.x, p.y);
 #elif defined(__APPLE__)
-		wi::apple::SetMousePositionInWindow(window, XMFLOAT2(float(posX), float(posY)));
+		Protean::Apple::SetMousePositionInWindow(window, XMFLOAT2(float(posX), float(posY)));
 #elif defined(SDL2)
 		SDL_WarpMouseInWindow(window, posX, posY);
 #elif defined(SDL3)
@@ -1226,7 +1226,7 @@ namespace wi::input
 			while (ShowCursor(true) < 0) {};
 		}
 #elif defined(__APPLE__)
-		wi::apple::CursorHide(value);
+		Protean::Apple::CursorHide(value);
 #elif defined(SDL2)
 		SDL_SetRelativeMouseMode(value ? SDL_TRUE : SDL_FALSE);
 #elif defined(SDL3)
@@ -1282,26 +1282,26 @@ namespace wi::input
 
 			if (controller.deviceType == Controller::XINPUT)
 			{
-				wi::input::xinput::SetControllerFeedback(data, controller.deviceIndex);
+				Protean::Input::XInput::SetControllerFeedback(data, controller.deviceIndex);
 			}
 			else if (controller.deviceType == Controller::RAWINPUT)
 			{
-				wi::input::rawinput::SetControllerFeedback(data, controller.deviceIndex);
+				Protean::Input::RawInput::SetControllerFeedback(data, controller.deviceIndex);
 			}
 			else if (controller.deviceType == Controller::SDLINPUT)
 			{
-				wi::input::sdlinput::SetControllerFeedback(data, controller.deviceIndex);
+				Protean::Input::SDL::SetControllerFeedback(data, controller.deviceIndex);
 			}
 #ifdef __APPLE__
 			else if (controller.deviceType == Controller::APPLE)
 			{
-				wi::input::apple::SetControllerFeedback(data, controller.deviceIndex);
+				Protean::Input::Apple::SetControllerFeedback(data, controller.deviceIndex);
 			}
 #endif // __APPLE__
 #ifdef PLATFORM_PS5
 			else if (controller.deviceType == Controller::PS5)
 			{
-				wi::input::ps5::SetControllerFeedback(data, controller.deviceIndex);
+				Protean::Input::ps5::SetControllerFeedback(data, controller.deviceIndex);
 			}
 #endif // PLATFORM_PS5
 		}
@@ -1313,7 +1313,7 @@ namespace wi::input
 		pen_override = true;
 	}
 
-	const wi::vector<Touch>& GetTouches()
+	const Protean::vector<Touch>& GetTouches()
 	{
 		return touches;
 	}
@@ -1327,14 +1327,14 @@ namespace wi::input
 {
 #ifdef PLATFORM_WINDOWS_DESKTOP
 		wchar_t wfilename[1024] = {};
-		wi::helper::StringConvert(filename, wfilename, arraysize(wfilename));
+		Protean::Helper::StringConvert(filename, wfilename, arraysize(wfilename));
 		cursor_table[cursor] = LoadCursorFromFile(wfilename);
 #endif // PLATFORM_WINDOWS_DESKTOP
 		
 #if defined(SDL2) || defined(SDL3) || defined(PLATFORM_MACOS)
 		// On other platforms, extract the raw color data from win32 .CUR file and create cursor from that:
-		wi::vector<uint8_t> data;
-		if (wi::helper::FileRead(filename, data))
+		Protean::vector<uint8_t> data;
+		if (Protean::Helper::FileRead(filename, data))
 		{
 			// Extract only the first image data:
 			ico::ICONDIRENTRY* icondirentry = (ico::ICONDIRENTRY*)(data.data() + sizeof(ico::ICONDIR));
@@ -1348,14 +1348,14 @@ namespace wi::input
 			const uint32_t height = icondirentry->bHeight;
 			
 			// Convert BGRA to ARGB and flip vertically
-			wi::vector<wi::Color> colors;
+			Protean::vector<Protean::Color> colors;
 			colors.reserve(width * height);
 			for (uint32_t y = height; y > 0; --y)
 			{
 				uint8_t* src = pixeldata + (y - 1) * width * 4;
 				for (uint32_t x = 0; x < width; ++x)
 				{
-					colors.push_back(wi::Color(src[3], src[2], src[1], src[0]));
+					colors.push_back(Protean::Color(src[3], src[2], src[1], src[0]));
 					src += 4;
 				}
 			}
@@ -1393,7 +1393,7 @@ namespace wi::input
 				SDL_DestroySurface(surface);
 			}
 #elif defined(PLATFORM_MACOS)
-			cursor_table[cursor] = wi::apple::CreateCursorFromARGB8ImageData(colors.data(), width, height, hotspotX, hotspotY);
+			cursor_table[cursor] = Protean::Apple::CreateCursorFromARGB8ImageData(colors.data(), width, height, hotspotX, hotspotY);
 #endif // SDL2
 		}
 #endif // defined(SDL2) || defined(SDL3) || defined(PLATFORM_MACOS)
@@ -1684,19 +1684,19 @@ namespace wi::input
 		{
 			switch (button)
 			{
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_SQUARE: return "■";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_CROSS: return "✖";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_CIRCLE: return "●";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_TRIANGLE: return "▲";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L1: return "L1";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L2: return "L2";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R1: return "R1";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R2: return "R2";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_L3: return "L3";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_R3: return "R3";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_SHARE: return "Share";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_OPTION: return "Option";
-			case wi::input::GAMEPAD_BUTTON_PLAYSTATION_TOUCHPAD: return "Touchpad";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_SQUARE: return "■";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_CROSS: return "✖";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_CIRCLE: return "●";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_TRIANGLE: return "▲";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_L1: return "L1";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_L2: return "L2";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_R1: return "R1";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_R2: return "R2";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_L3: return "L3";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_R3: return "R3";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_SHARE: return "Share";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_OPTION: return "Option";
+			case Protean::Input::GAMEPAD_BUTTON_PLAYSTATION_TOUCHPAD: return "Touchpad";
 			default:
 				break;
 			}
@@ -1706,18 +1706,18 @@ namespace wi::input
 		{
 			switch (button)
 			{
-			case wi::input::GAMEPAD_BUTTON_XBOX_X: return "(X)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_A: return "(A)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_B: return "(B)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_Y: return "(Y)";
-			case wi::input::GAMEPAD_BUTTON_XBOX_L1: return "L1";
-			case wi::input::GAMEPAD_BUTTON_XBOX_LT: return "LT";
-			case wi::input::GAMEPAD_BUTTON_XBOX_R1: return "R1";
-			case wi::input::GAMEPAD_BUTTON_XBOX_RT: return "RT";
-			case wi::input::GAMEPAD_BUTTON_XBOX_L3: return "L3";
-			case wi::input::GAMEPAD_BUTTON_XBOX_R3: return "R3";
-			case wi::input::GAMEPAD_BUTTON_XBOX_BACK: return "Back";
-			case wi::input::GAMEPAD_BUTTON_XBOX_START: return "Start";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_X: return "(X)";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_A: return "(A)";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_B: return "(B)";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_Y: return "(Y)";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_L1: return "L1";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_LT: return "LT";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_R1: return "R1";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_RT: return "RT";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_L3: return "L3";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_R3: return "R3";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_BACK: return "Back";
+			case Protean::Input::GAMEPAD_BUTTON_XBOX_START: return "Start";
 			default:
 				break;
 			}
@@ -1725,91 +1725,91 @@ namespace wi::input
 
 		switch (button)
 		{
-		case wi::input::GAMEPAD_BUTTON_UP: return "Dpad ↑";
-		case wi::input::GAMEPAD_BUTTON_LEFT: return "Dpad ←";
-		case wi::input::GAMEPAD_BUTTON_DOWN: return "Dpad ↓";
-		case wi::input::GAMEPAD_BUTTON_RIGHT: return "Dpad →";
-		case wi::input::GAMEPAD_BUTTON_1: return "Gamepad 1";
-		case wi::input::GAMEPAD_BUTTON_2: return "Gamepad 2";
-		case wi::input::GAMEPAD_BUTTON_3: return "Gamepad 3";
-		case wi::input::GAMEPAD_BUTTON_4: return "Gamepad 4";
-		case wi::input::GAMEPAD_BUTTON_5: return "Gamepad 5";
-		case wi::input::GAMEPAD_BUTTON_6: return "Gamepad 6";
-		case wi::input::GAMEPAD_BUTTON_7: return "Gamepad 7";
-		case wi::input::GAMEPAD_BUTTON_8: return "Gamepad 8";
-		case wi::input::GAMEPAD_BUTTON_9: return "Gamepad 9";
-		case wi::input::GAMEPAD_BUTTON_10: return "Gamepad 10";
-		case wi::input::GAMEPAD_BUTTON_11: return "Gamepad 11";
-		case wi::input::GAMEPAD_BUTTON_12: return "Gamepad 12";
-		case wi::input::GAMEPAD_BUTTON_13: return "Gamepad 13";
-		case wi::input::GAMEPAD_BUTTON_14: return "Gamepad 14";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_UP: return "Left Stick ↑";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_LEFT: return "Left Stick ←";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_DOWN: return "Left Stick ↓";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_RIGHT: return "Left Stick →";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_UP: return "Right Stick ↑";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_LEFT: return "Right Stick ←";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_DOWN: return "Right Stick ↓";
-		case wi::input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_RIGHT: return "Right Stick →";
-		case wi::input::GAMEPAD_ANALOG_TRIGGER_L_AS_BUTTON: return "Left Trigger";
-		case wi::input::GAMEPAD_ANALOG_TRIGGER_R_AS_BUTTON: return "Right Trigger";
-		case wi::input::MOUSE_BUTTON_LEFT: return "Left Mouse Button";
-		case wi::input::MOUSE_BUTTON_RIGHT: return "Right Mouse Button";
-		case wi::input::MOUSE_BUTTON_MIDDLE: return "Middle Mouse Button";
-		case wi::input::MOUSE_SCROLL_AS_BUTTON_UP: return "Mouse Wheel ↑";
-		case wi::input::MOUSE_SCROLL_AS_BUTTON_DOWN: return "Mouse Wheel ↓";
-		case wi::input::KEYBOARD_BUTTON_UP: return "↑";
-		case wi::input::KEYBOARD_BUTTON_DOWN: return "↓";
-		case wi::input::KEYBOARD_BUTTON_LEFT: return "←";
-		case wi::input::KEYBOARD_BUTTON_RIGHT: return "→";
-		case wi::input::KEYBOARD_BUTTON_SPACE: return "Space";
-		case wi::input::KEYBOARD_BUTTON_RSHIFT: return "Right Shift";
-		case wi::input::KEYBOARD_BUTTON_LSHIFT: return "Left Shift";
-		case wi::input::KEYBOARD_BUTTON_F1: return "F1";
-		case wi::input::KEYBOARD_BUTTON_F2: return "F2";
-		case wi::input::KEYBOARD_BUTTON_F3: return "F3";
-		case wi::input::KEYBOARD_BUTTON_F4: return "F4";
-		case wi::input::KEYBOARD_BUTTON_F5: return "F5";
-		case wi::input::KEYBOARD_BUTTON_F6: return "F6";
-		case wi::input::KEYBOARD_BUTTON_F7: return "F7";
-		case wi::input::KEYBOARD_BUTTON_F8: return "F8";
-		case wi::input::KEYBOARD_BUTTON_F9: return "F9";
-		case wi::input::KEYBOARD_BUTTON_F10: return "F10";
-		case wi::input::KEYBOARD_BUTTON_F11: return "F11";
-		case wi::input::KEYBOARD_BUTTON_F12: return "F12";
-		case wi::input::KEYBOARD_BUTTON_ENTER: return "Enter";
-		case wi::input::KEYBOARD_BUTTON_ESCAPE: return "Escape";
-		case wi::input::KEYBOARD_BUTTON_HOME: return "Home";
-		case wi::input::KEYBOARD_BUTTON_RCONTROL: return "Right Control";
-		case wi::input::KEYBOARD_BUTTON_LCONTROL: return "Left Control";
-		case wi::input::KEYBOARD_BUTTON_DELETE: return "Delete";
-		case wi::input::KEYBOARD_BUTTON_BACKSPACE: return "Backspace";
-		case wi::input::KEYBOARD_BUTTON_PAGEDOWN: return "Page Down";
-		case wi::input::KEYBOARD_BUTTON_PAGEUP: return "Page Up";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD0: return "Numpad 0";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD1: return "Numpad 1";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD2: return "Numpad 2";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD3: return "Numpad 3";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD4: return "Numpad 4";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD5: return "Numpad 5";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD6: return "Numpad 6";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD7: return "Numpad 7";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD8: return "Numpad 8";
-		case wi::input::KEYBOARD_BUTTON_NUMPAD9: return "Numpad 9";
-		case wi::input::KEYBOARD_BUTTON_MULTIPLY: return "*";
-		case wi::input::KEYBOARD_BUTTON_ADD: return "+";
-		case wi::input::KEYBOARD_BUTTON_SEPARATOR: return "Separator";
-		case wi::input::KEYBOARD_BUTTON_SUBTRACT: return "-";
-		case wi::input::KEYBOARD_BUTTON_DECIMAL: return "Decimal";
-		case wi::input::KEYBOARD_BUTTON_DIVIDE: return "/";
-		case wi::input::KEYBOARD_BUTTON_TAB: return "Tab";
-		case wi::input::KEYBOARD_BUTTON_TILDE: return "Tilde";
-		case wi::input::KEYBOARD_BUTTON_INSERT: return "Insert";
-		case wi::input::KEYBOARD_BUTTON_ALT: return "Alt";
-		case wi::input::KEYBOARD_BUTTON_ALTGR: return "Alt Gr";
-		case wi::input::KEYBOARD_BUTTON_LCOMMAND: return "Left Command";
-		case wi::input::KEYBOARD_BUTTON_RCOMMAND: return "Right Command";
-		case wi::input::KEYBOARD_BUTTON_END: return "End";
+		case Protean::Input::GAMEPAD_BUTTON_UP: return "Dpad ↑";
+		case Protean::Input::GAMEPAD_BUTTON_LEFT: return "Dpad ←";
+		case Protean::Input::GAMEPAD_BUTTON_DOWN: return "Dpad ↓";
+		case Protean::Input::GAMEPAD_BUTTON_RIGHT: return "Dpad →";
+		case Protean::Input::GAMEPAD_BUTTON_1: return "Gamepad 1";
+		case Protean::Input::GAMEPAD_BUTTON_2: return "Gamepad 2";
+		case Protean::Input::GAMEPAD_BUTTON_3: return "Gamepad 3";
+		case Protean::Input::GAMEPAD_BUTTON_4: return "Gamepad 4";
+		case Protean::Input::GAMEPAD_BUTTON_5: return "Gamepad 5";
+		case Protean::Input::GAMEPAD_BUTTON_6: return "Gamepad 6";
+		case Protean::Input::GAMEPAD_BUTTON_7: return "Gamepad 7";
+		case Protean::Input::GAMEPAD_BUTTON_8: return "Gamepad 8";
+		case Protean::Input::GAMEPAD_BUTTON_9: return "Gamepad 9";
+		case Protean::Input::GAMEPAD_BUTTON_10: return "Gamepad 10";
+		case Protean::Input::GAMEPAD_BUTTON_11: return "Gamepad 11";
+		case Protean::Input::GAMEPAD_BUTTON_12: return "Gamepad 12";
+		case Protean::Input::GAMEPAD_BUTTON_13: return "Gamepad 13";
+		case Protean::Input::GAMEPAD_BUTTON_14: return "Gamepad 14";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_UP: return "Left Stick ↑";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_LEFT: return "Left Stick ←";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_DOWN: return "Left Stick ↓";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_L_AS_BUTTON_RIGHT: return "Left Stick →";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_UP: return "Right Stick ↑";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_LEFT: return "Right Stick ←";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_DOWN: return "Right Stick ↓";
+		case Protean::Input::GAMEPAD_ANALOG_THUMBSTICK_R_AS_BUTTON_RIGHT: return "Right Stick →";
+		case Protean::Input::GAMEPAD_ANALOG_TRIGGER_L_AS_BUTTON: return "Left Trigger";
+		case Protean::Input::GAMEPAD_ANALOG_TRIGGER_R_AS_BUTTON: return "Right Trigger";
+		case Protean::Input::MOUSE_BUTTON_LEFT: return "Left Mouse Button";
+		case Protean::Input::MOUSE_BUTTON_RIGHT: return "Right Mouse Button";
+		case Protean::Input::MOUSE_BUTTON_MIDDLE: return "Middle Mouse Button";
+		case Protean::Input::MOUSE_SCROLL_AS_BUTTON_UP: return "Mouse Wheel ↑";
+		case Protean::Input::MOUSE_SCROLL_AS_BUTTON_DOWN: return "Mouse Wheel ↓";
+		case Protean::Input::KEYBOARD_BUTTON_UP: return "↑";
+		case Protean::Input::KEYBOARD_BUTTON_DOWN: return "↓";
+		case Protean::Input::KEYBOARD_BUTTON_LEFT: return "←";
+		case Protean::Input::KEYBOARD_BUTTON_RIGHT: return "→";
+		case Protean::Input::KEYBOARD_BUTTON_SPACE: return "Space";
+		case Protean::Input::KEYBOARD_BUTTON_RSHIFT: return "Right Shift";
+		case Protean::Input::KEYBOARD_BUTTON_LSHIFT: return "Left Shift";
+		case Protean::Input::KEYBOARD_BUTTON_F1: return "F1";
+		case Protean::Input::KEYBOARD_BUTTON_F2: return "F2";
+		case Protean::Input::KEYBOARD_BUTTON_F3: return "F3";
+		case Protean::Input::KEYBOARD_BUTTON_F4: return "F4";
+		case Protean::Input::KEYBOARD_BUTTON_F5: return "F5";
+		case Protean::Input::KEYBOARD_BUTTON_F6: return "F6";
+		case Protean::Input::KEYBOARD_BUTTON_F7: return "F7";
+		case Protean::Input::KEYBOARD_BUTTON_F8: return "F8";
+		case Protean::Input::KEYBOARD_BUTTON_F9: return "F9";
+		case Protean::Input::KEYBOARD_BUTTON_F10: return "F10";
+		case Protean::Input::KEYBOARD_BUTTON_F11: return "F11";
+		case Protean::Input::KEYBOARD_BUTTON_F12: return "F12";
+		case Protean::Input::KEYBOARD_BUTTON_ENTER: return "Enter";
+		case Protean::Input::KEYBOARD_BUTTON_ESCAPE: return "Escape";
+		case Protean::Input::KEYBOARD_BUTTON_HOME: return "Home";
+		case Protean::Input::KEYBOARD_BUTTON_RCONTROL: return "Right Control";
+		case Protean::Input::KEYBOARD_BUTTON_LCONTROL: return "Left Control";
+		case Protean::Input::KEYBOARD_BUTTON_DELETE: return "Delete";
+		case Protean::Input::KEYBOARD_BUTTON_BACKSPACE: return "Backspace";
+		case Protean::Input::KEYBOARD_BUTTON_PAGEDOWN: return "Page Down";
+		case Protean::Input::KEYBOARD_BUTTON_PAGEUP: return "Page Up";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD0: return "Numpad 0";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD1: return "Numpad 1";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD2: return "Numpad 2";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD3: return "Numpad 3";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD4: return "Numpad 4";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD5: return "Numpad 5";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD6: return "Numpad 6";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD7: return "Numpad 7";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD8: return "Numpad 8";
+		case Protean::Input::KEYBOARD_BUTTON_NUMPAD9: return "Numpad 9";
+		case Protean::Input::KEYBOARD_BUTTON_MULTIPLY: return "*";
+		case Protean::Input::KEYBOARD_BUTTON_ADD: return "+";
+		case Protean::Input::KEYBOARD_BUTTON_SEPARATOR: return "Separator";
+		case Protean::Input::KEYBOARD_BUTTON_SUBTRACT: return "-";
+		case Protean::Input::KEYBOARD_BUTTON_DECIMAL: return "Decimal";
+		case Protean::Input::KEYBOARD_BUTTON_DIVIDE: return "/";
+		case Protean::Input::KEYBOARD_BUTTON_TAB: return "Tab";
+		case Protean::Input::KEYBOARD_BUTTON_TILDE: return "Tilde";
+		case Protean::Input::KEYBOARD_BUTTON_INSERT: return "Insert";
+		case Protean::Input::KEYBOARD_BUTTON_ALT: return "Alt";
+		case Protean::Input::KEYBOARD_BUTTON_ALTGR: return "Alt Gr";
+		case Protean::Input::KEYBOARD_BUTTON_LCOMMAND: return "Left Command";
+		case Protean::Input::KEYBOARD_BUTTON_RCOMMAND: return "Right Command";
+		case Protean::Input::KEYBOARD_BUTTON_END: return "End";
 		default:
 			break;
 		}

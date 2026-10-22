@@ -30,20 +30,20 @@ int sdl_loop()
                     break;
                 case SDL_EVENT_WINDOW_FOCUS_GAINED:
                     tests.is_window_active = true;
-                    if (wi::shadercompiler::GetRegisteredShaderCount() > 0 && !wi::renderer::IsPipelineCreationActive())
+                    if (Protean::ShaderCompiler::GetRegisteredShaderCount() > 0 && !Protean::Renderer::IsPipelineCreationActive())
                     {
                         std::thread([] {
-                            wi::backlog::post("[Shader check] Started checking " + std::to_string(wi::shadercompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
-                            if (wi::shadercompiler::CheckRegisteredShadersOutdated())
+                            Protean::Backlog::post("[Shader check] Started checking " + std::to_string(Protean::ShaderCompiler::GetRegisteredShaderCount()) + " registered shaders for changes...");
+                            if (Protean::ShaderCompiler::CheckRegisteredShadersOutdated())
                             {
-                                wi::backlog::post("[Shader check] Changes detected, initiating reload...");
-                                wi::eventhandler::Subscribe_Once(wi::eventhandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
-                                    wi::renderer::ReloadShaders();
+                                Protean::Backlog::post("[Shader check] Changes detected, initiating reload...");
+                                Protean::EventHandler::Subscribe_Once(Protean::EventHandler::EVENT_THREAD_SAFE_POINT, [](uint64_t userdata) {
+                                    Protean::Renderer::ReloadShaders();
                                     });
                             }
                             else
                             {
-                                wi::backlog::post("[Shader check] All up to date");
+                                Protean::Backlog::post("[Shader check] All up to date");
                             }
                             }).detach();
                     }
@@ -51,7 +51,7 @@ int sdl_loop()
                 default:
                     break;
             }
-            wi::input::sdlinput::ProcessEvent(event);
+            Protean::Input::SDL::ProcessEvent(event);
         }
     }
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 {
     // TODO: Place code here.
 
-    wi::arguments::Parse(argc, argv);
+    Protean::Arguments::Parse(argc, argv);
 
     // SDL3 dropped SDL_INIT_EVERYTHING; list the subsystems the app actually needs instead.
     sdl3::sdlsystem_ptr_t system = sdl3::make_sdlsystem(
@@ -84,11 +84,11 @@ int main(int argc, char *argv[])
 
     int ret = sdl_loop();
 
-    // Must run before SDL_Quit() below: wi::audio's internal state is otherwise only
+    // Must run before SDL_Quit() below: Protean::Audio's internal state is otherwise only
     // destroyed as a static at process exit, which runs after SDL_Quit() has already torn
     // down the audio subsystem -- the FAudio SDL3 platform backend's device teardown then
     // dereferences an already-invalidated SDL3 audio device handle and crashes.
-    wi::audio::Deinitialize();
+    Protean::Audio::Deinitialize();
 
     SDL_Quit();
     return ret;

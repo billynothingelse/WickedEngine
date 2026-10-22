@@ -32,7 +32,7 @@
 #include <sys/qos.h>
 #endif // __APPLE__
 
-namespace wi::jobsystem
+namespace Protean::JobSystem
 {
 	struct alignas(64) Job
 	{
@@ -78,11 +78,11 @@ namespace wi::jobsystem
 			Block* next = nullptr;
 			Job items[256];
 		};
-		wi::allocator::BlockAllocator<Block, 16> allocator;
+		Protean::Allocator::BlockAllocator<Block, 16> allocator;
 		Block* first_block = nullptr;
 		Block* last_block = nullptr;
 		std::mutex locker;
-		//wi::SpinLock locker;
+		//Protean::SpinLock locker;
 		std::atomic_uint32_t cnt{ 0 }; // for early exit, reduce contention on locker in job stealing scenario
 
 		JobQueue()
@@ -139,7 +139,7 @@ namespace wi::jobsystem
 	struct PriorityResources
 	{
 		uint32_t numThreads = 0;
-		wi::vector<std::thread> threads;
+		Protean::vector<std::thread> threads;
 		std::unique_ptr<JobQueue[]> jobQueuePerThread;
 		std::atomic<uint8_t> nextQueue{ 0 };
 		std::condition_variable sleepingCondition; // for workers that are sleeping
@@ -239,7 +239,7 @@ namespace wi::jobsystem
 			return;
 		maxThreadCount = clamp(maxThreadCount, 1u, (uint32_t)arraysize(PriorityResources::mod_lut));
 
-		wi::Timer timer;
+		Protean::Timer timer;
 
 		// Retrieve the number of hardware threads in this system:
 		internal_state.numCores = std::thread::hardware_concurrency();
@@ -360,7 +360,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_NORMAL);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"Protean::job_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -369,7 +369,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_LOWEST);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_lo_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"Protean::job_lo_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -378,7 +378,7 @@ namespace wi::jobsystem
 					BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_BELOW_NORMAL);
 					assert(priority_result != 0);
 
-					std::wstring wthreadname = L"wi::job_st_" + std::to_wstring(threadID);
+					std::wstring wthreadname = L"Protean::job_st_" + std::to_wstring(threadID);
 					HRESULT hr = SetThreadDescription(handle, wthreadname.c_str());
 					assert(SUCCEEDED(hr));
 				}
@@ -400,14 +400,14 @@ namespace wi::jobsystem
 
 				if (priority == Priority::High)
 				{
-					std::string thread_name = "wi::job_" + std::to_string(threadID);
+					std::string thread_name = "Protean::job_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
 				}
 				else if (priority == Priority::Low)
 				{
-					std::string thread_name = "wi::job_lo_" + std::to_string(threadID);
+					std::string thread_name = "Protean::job_lo_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
@@ -415,7 +415,7 @@ namespace wi::jobsystem
 				}
 				else if (priority == Priority::Streaming)
 				{
-					std::string thread_name = "wi::job_st_" + std::to_string(threadID);
+					std::string thread_name = "Protean::job_st_" + std::to_string(threadID);
 					ret = pthread_setname_np(handle, thread_name.c_str());
 					if (ret != 0)
 						handle_error_en(ret, std::string(" pthread_setname_np[" + std::to_string(threadID) + ']').c_str());
@@ -424,12 +424,12 @@ namespace wi::jobsystem
 
 #undef handle_error_en
 #elif defined(PLATFORM_PS5)
-				wi::jobsystem::ps5::SetupWorker(worker, threadID, core, priority);
+				Protean::JobSystem::ps5::SetupWorker(worker, threadID, core, priority);
 #endif // _WIN32
 			}
 		}
 
-		wilog("wi::jobsystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
+		wilog("Protean::JobSystem Initialized with %d cores in %.2f ms\n\tHigh priority threads: %d\n\tLow priority threads: %d\n\tStreaming threads: %d", internal_state.numCores, timer.elapsed(), GetThreadCount(Priority::High), GetThreadCount(Priority::Low), GetThreadCount(Priority::Streaming));
 
 		std::atexit(ShutDown);
 	}
