@@ -70,7 +70,7 @@ workspace "Protean"
 
 	filter "system:windows"
 		systemversion "latest"
-		defines { "WIN32=1", "_HAS_EXCEPTIONS=0", "UNICODE", "_UNICODE", "NOMINMAX" }
+		defines { "WIN32=1", "UNICODE", "_UNICODE", "NOMINMAX" } -- exceptionhandling "Off" adds _HAS_EXCEPTIONS=0
 		buildoptions { "/utf-8", "/bigobj" }
 		vectorextensions "AVX"
 		disablewarnings { "4996" }
@@ -216,7 +216,7 @@ project "Editor"
 	pchheader "stdafx.h"
 	pchsource (SOURCE .. "/editor/stdafx.cpp")
 	UseEngine()
-	filter "files:../../external/**"
+	filter "files:../external/**"
 		flags { "NoPCH" }
 		warnings "Off"
 	filter "system:windows"
@@ -227,8 +227,8 @@ project "Editor"
 		files { SOURCE .. "/editor/main_MacOS.mm" }
 	filter {}
 
--- The game module. In Debug/Development it is a shared library loaded (and reloadable) by the
--- Launcher, in Shipping it is a standalone executable that links the engine statically.
+-- The game module. In Debug/Development it is a shared library (with the engine linked into it)
+-- loaded by the Launcher, in Shipping it is a standalone executable.
 project "Game"
 	location (ROOT .. "/build/projects/Game")
 	debugdir (DATA)
@@ -242,6 +242,7 @@ project "Game"
 		removefiles { SOURCE .. "/game/main/**" }
 	filter "configurations:Shipping"
 		kind "WindowedApp"
+		targetname "ProteanGame"
 	filter {}
 
 project "Launcher"
@@ -251,10 +252,9 @@ project "Launcher"
 	includedirs { SOURCE .. "/engine", SOURCE .. "/game" }
 	files { SOURCE .. "/game/launcher/**.h", SOURCE .. "/game/launcher/**.cpp" }
 	dependson { "Game" }
-	filter "configurations:Debug or configurations:Development"
-		kind "WindowedApp"
-	filter "configurations:Shipping"
-		kind "None"
+	kind "WindowedApp"
+	-- Shipping builds the game as a standalone executable, no launcher needed
+	removeconfigurations { "Shipping" }
 	filter "system:linux"
 		links { "dl" }
 		linkoptions { "-Wl,-rpath,'$$ORIGIN'" }

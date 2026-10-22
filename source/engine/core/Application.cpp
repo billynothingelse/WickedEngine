@@ -479,7 +479,7 @@ namespace Protean
 			infodisplay_str.clear();
 			if (infoDisplay.watermark)
 			{
-				infodisplay_str += "Wicked Engine ";
+				infodisplay_str += "Protean ";
 				infodisplay_str += Protean::Version::GetVersionString();
 				infodisplay_str += " ";
 

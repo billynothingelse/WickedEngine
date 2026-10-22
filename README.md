@@ -76,6 +76,19 @@ cd data/editor && ../../build/bin/Development/ProteanEditor
 | Development   | yes       | `Game` shared library, started by the `Launcher` exe      |
 | Shipping      | yes       | `Game` is a standalone executable, engine linked statically |
 
+### Game module
+
+Game code lives in `source/game`. `Game.h/.cpp` hold the game itself (an `Application` plus a
+`RenderPath3D`), `GamePlatform.cpp` owns the window and main loop, and `GameModule.h` defines the
+`ProteanGameMain` entry point shared by both build modes:
+
+- Debug / Development: `Game` builds as `Game.dll` / `libGame.so` (with the engine linked into it)
+  and `ProteanGame` (the `Launcher` project) loads it and calls `ProteanGameMain`.
+- Shipping: `Game` builds as a single executable; `source/game/main/Main.cpp` calls
+  `ProteanGameMain` directly.
+
+Run it from the `data` folder: `cd data && ../build/bin/Development/ProteanGame`.
+
 ## Projects
 
 | Project        | Kind                         | Notes                                        |

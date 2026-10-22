@@ -395,7 +395,7 @@ int main(int argc, char* argv[])
 		out = &std::cout;
 	}
 
-	*out << "[Wicked Engine Offline Shader Compiler]\n";
+	*out << "[Protean Shader Compiler]\n";
 	*out << "Available command arguments:\n";
 	*out << "\thlsl5 : \t\tCompile shaders to hlsl5 (dx11) format (using d3dcompiler)\n";
 	*out << "\thlsl6 : \t\tCompile shaders to hlsl6 (dx12) format (using dxcompiler)\n";
@@ -622,7 +622,7 @@ int main(int argc, char* argv[])
 	static std::string SHADERSOURCEPATH = Protean::Renderer::GetShaderSourcePath();
 	Protean::Helper::MakePathAbsolute(SHADERSOURCEPATH);
 
-	*out << "[Wicked Engine Offline Shader Compiler] Searching for outdated shaders...\n";
+	*out << "[Protean Shader Compiler] Searching for outdated shaders...\n";
 	Protean::Timer timer;
 	static int errors = 0;
 
@@ -747,11 +747,11 @@ int main(int argc, char* argv[])
 	}
 	Protean::JobSystem::Wait(ctx);
 
-	*out << "[Wicked Engine Offline Shader Compiler] Finished in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds with " << errors << " errors\n";
+	*out << "[Protean Shader Compiler] Finished in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds with " << errors << " errors\n";
 
 	if (shaderdump_enabled)
 	{
-		*out << "[Wicked Engine Offline Shader Compiler] Creating ShaderDump...\n";
+		*out << "[Protean Shader Compiler] Creating ShaderDump...\n";
 		timer.record();
 		size_t total_raw = 0;
 		size_t total_compressed = 0;
@@ -785,7 +785,7 @@ int main(int argc, char* argv[])
 			}
 			ss += "};\n";
 		}
-		*out << "[Wicked Engine Offline Shader Compiler] Compressed shaders: " << total_raw << " -> " << total_compressed << " (" << std::setprecision(3) << (100. * total_compressed / total_raw) << "%)" << std::endl;
+		*out << "[Protean Shader Compiler] Compressed shaders: " << total_raw << " -> " << total_compressed << " (" << std::setprecision(3) << (100. * total_compressed / total_raw) << "%)" << std::endl;
 		ss += "struct ShaderDumpEntry{const uint8_t* data; size_t size;};\n";
 		ss += "static const Protean::unordered_map<std::string, ShaderDumpEntry> shaderdump = {\n";
 		for (auto& x : results)
@@ -801,7 +801,7 @@ int main(int argc, char* argv[])
 		ss += "};\n"; // map end
 		ss += "}\n"; // namespace end
 		Protean::Helper::FileWrite("wiShaderDump.h", (uint8_t*)ss.c_str(), ss.length());
-		*out << "[Wicked Engine Offline Shader Compiler] ShaderDump written to wiShaderDump.h in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds\n";
+		*out << "[Protean Shader Compiler] ShaderDump written to wiShaderDump.h in " << std::setprecision(4) << timer.elapsed_seconds() << " seconds\n";
 	}
 
 	Protean::JobSystem::ShutDown();

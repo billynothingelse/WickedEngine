@@ -75,9 +75,4 @@
 #include "render/TrailRenderer.h"
 #include "render/GaussianSplatModel.h"
 
-
-
-
-
-
 #endif // PROTEAN_H

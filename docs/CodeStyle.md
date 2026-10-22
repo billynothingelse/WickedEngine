@@ -125,6 +125,7 @@ Done:
 - All engine/editor `enum class` types converted to prefixed plain enums.
 - Graphics backends split into multiple translation units under `render/GraphicsAPI`.
 - `core/Types.h` primitive aliases.
+- Game module (`source/game`) written in the new style.
 
 Still to do (in order of priority):
 - Rename struct members to the PascalCase / private-lowercase convention, subsystem by subsystem

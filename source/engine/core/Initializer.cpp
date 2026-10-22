@@ -60,7 +60,7 @@ namespace Protean::Initializer
 		static constexpr const char* compiler_string = "UNKNOWN";
 #endif
 
-		wilog("\n[Protean::Initializer] Initializing Wicked Engine, please wait...\nVersion: %s\nPlatform: %s\nCompiler: %s", Protean::Version::GetVersionString(), platform_string, compiler_string);
+		wilog("\n[Protean::Initializer] Initializing Protean, please wait...\nVersion: %s\nPlatform: %s\nCompiler: %s", Protean::Version::GetVersionString(), platform_string, compiler_string);
 
 		StackString<1024> cpustring;
 #ifdef CPUINFO_AVAILABLE
@@ -186,7 +186,7 @@ namespace Protean::Initializer
 
 		std::thread([] {
 			Protean::JobSystem::Wait(ctx);
-			wilog("\n[Protean::Initializer] Wicked Engine Initialized (%d ms)", (int)std::round(timer.elapsed()));
+			wilog("\n[Protean::Initializer] Protean Initialized (%d ms)", (int)std::round(timer.elapsed()));
 		}).detach();
 
 	}
